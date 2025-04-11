@@ -94,18 +94,3 @@ eInputState InputKey::GetMouseState(int mouse)const
 	}
 	return eInputState::None;
 }
-
-Cursor InputKey::GetMouseCursor()
-{
-	return cursor;
-}
-
-bool InputKey::CheckKeyCodeRange(int keycode)const
-{
-	return (0 <= keycode && keycode < D_KEYCODE_MAX);
-}
-
-bool InputKey::CheckMouseRange(int mouse)const
-{
-	return (0 <= mouse && mouse < MOUSE_MAX);
-}

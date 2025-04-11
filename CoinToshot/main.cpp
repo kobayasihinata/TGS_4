@@ -1,7 +1,6 @@
 #include "DxLib.h"
 
-#define SCREEN_WIDTH  1280		//âÊñ â°ïù
-#define SCREEN_HEIGHT 720		//âÊñ çÇÇ≥
+#include "Utility/common.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {

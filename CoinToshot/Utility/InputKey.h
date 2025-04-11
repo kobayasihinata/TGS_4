@@ -56,12 +56,23 @@ public:
 	eInputState GetMouseState(int mouse)const;
 
 	//マウスカーソルの座標を取得する
-	Cursor GetMouseCursor();
+	Cursor GetMouseCursor()
+	{
+		return cursor;
+	}
+
 private:
 	//指定した数字がキー配列の範囲内か確認
-	bool CheckKeyCodeRange(int key_code)const;
+	bool CheckKeyCodeRange(int key_code)const
+	{
+		return (0 <= key_code && key_code < D_KEYCODE_MAX);
+	}
 	//指定した数字がキー配列の範囲内か確認
-	bool CheckMouseRange(int mouse)const;
+	bool CheckMouseRange(int mouse)const
+	{
+		return (0 <= mouse && mouse < MOUSE_MAX);
+	}
+
 };
 
 

@@ -150,6 +150,7 @@
     <ClCompile Include="Utility\Vector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Utility\common.h" />
     <ClInclude Include="Utility\DebugInformation.h" />
     <ClInclude Include="Utility\FpsController.h" />
     <ClInclude Include="Utility\InputKey.h" />
