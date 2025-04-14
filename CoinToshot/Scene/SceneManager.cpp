@@ -1,6 +1,6 @@
 #include "SceneManager.h"
 #include "../Utility/common.h"
-#include "../Utility/InputControl.h"
+#include "../Utility/InputKey.h"
 #include "DxLib.h"
 #include "Factory/SceneFactory.h"
 #include "../Utility/DebugInformation.h"
@@ -48,7 +48,7 @@ void SceneManager::Update()
 	LONGLONG start_time = GetNowHiPerformanceCount();
 
 	//入力機能のインスタンス取得する処理
-	InputControl* input = InputControl::Get();
+	InputKey* input = InputKey::Get();
 
 	//fps制御
 	FpsController* FPSC = new FpsController(60, 800);

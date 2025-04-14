@@ -4,8 +4,8 @@ enum eSceneType
 {
 	eTitle,
 	eInGame,
+	eRanking,
 	eResult,
-	eEdit
 };
 
 class SceneBase

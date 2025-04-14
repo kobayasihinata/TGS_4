@@ -139,6 +139,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Scene\InGameScene.cpp" />
+    <ClCompile Include="Scene\Factory\SceneFactory.cpp" />
+    <ClCompile Include="Scene\Camera\Camera.cpp" />
+    <ClCompile Include="Scene\TitleScene.cpp" />
     <ClCompile Include="Utility\DebugInformation.cpp" />
     <ClCompile Include="Utility\FpsController.cpp" />
     <ClCompile Include="Utility\InputKey.cpp" />
@@ -150,6 +154,10 @@
     <ClCompile Include="Utility\Vector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Scene\InGameScene.h" />
+    <ClInclude Include="Scene\Factory\SceneFactory.h" />
+    <ClInclude Include="Scene\Camera\Camera.h" />
+    <ClInclude Include="Scene\TitleScene.h" />
     <ClInclude Include="Utility\common.h" />
     <ClInclude Include="Utility\DebugInformation.h" />
     <ClInclude Include="Utility\FpsController.h" />
