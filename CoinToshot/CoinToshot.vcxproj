@@ -139,10 +139,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Object\Item\Heal.cpp" />
+    <ClCompile Include="Object\Item\Coin.cpp" />
+    <ClCompile Include="Object\Enemy\Enemy2.cpp" />
+    <ClCompile Include="Object\Enemy\Enemy3.cpp" />
+    <ClCompile Include="Object\Enemy\enemy4.cpp" />
+    <ClCompile Include="Object\Enemy\Enemy5.cpp" />
+    <ClCompile Include="Object\Enemy\Enemy1.cpp" />
+    <ClCompile Include="Scene\RankingScene.cpp" />
+    <ClCompile Include="Scene\ResultScene.cpp" />
     <ClCompile Include="Scene\InGameScene.cpp" />
     <ClCompile Include="Scene\Factory\SceneFactory.cpp" />
     <ClCompile Include="Scene\Camera\Camera.cpp" />
     <ClCompile Include="Scene\TitleScene.cpp" />
+    <ClCompile Include="Object\Base\ShapeCollider.cpp" />
     <ClCompile Include="Utility\DebugInformation.cpp" />
     <ClCompile Include="Utility\FpsController.cpp" />
     <ClCompile Include="Utility\InputKey.cpp" />
@@ -154,10 +164,24 @@
     <ClCompile Include="Utility\Vector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Object\Item\Heal.h" />
+    <ClInclude Include="Object\Item\Coin.h" />
+    <ClInclude Include="Object\Enemy\Enemy2.h" />
+    <ClInclude Include="Object\Enemy\Enemy3.h" />
+    <ClInclude Include="Object\Enemy\enemy4.h" />
+    <ClInclude Include="Object\Enemy\Enemy5.h" />
+    <ClInclude Include="Object\Base\ActorBase.h" />
+    <ClInclude Include="Object\Base\ObjectBase.h" />
+    <ClInclude Include="Object\Base\ObjectList.h" />
+    <ClInclude Include="Object\Base\EnemyBase.h" />
+    <ClInclude Include="Object\Enemy\Enemy1.h" />
+    <ClInclude Include="Scene\RankingScene.h" />
+    <ClInclude Include="Scene\ResultScene.h" />
     <ClInclude Include="Scene\InGameScene.h" />
     <ClInclude Include="Scene\Factory\SceneFactory.h" />
     <ClInclude Include="Scene\Camera\Camera.h" />
     <ClInclude Include="Scene\TitleScene.h" />
+    <ClInclude Include="Object\Base\ShapeCollider.h" />
     <ClInclude Include="Utility\common.h" />
     <ClInclude Include="Utility\DebugInformation.h" />
     <ClInclude Include="Utility\FpsController.h" />

@@ -2,8 +2,8 @@
 #include "../SceneBase.h"
 #include "../TitleScene.h"
 #include "../InGameScene.h"
+#include "../RankingScene.h"
 #include "../ResultScene.h"
-#include "../Editor/EditScene.h"
 
 SceneBase* SceneFactory::CreateScene(eSceneType scene)
 {
@@ -13,10 +13,10 @@ SceneBase* SceneFactory::CreateScene(eSceneType scene)
 		return new TitleScene();
 	case eInGame:
 		return new InGameScene();
+	case eRanking:
+		return new RankingScene();
 	case eResult:
 		return new ResultScene();
-	case eEdit:
-		return new EditScene();
 	default:
 		break;
 	}

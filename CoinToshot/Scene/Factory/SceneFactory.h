@@ -1,25 +1,10 @@
-#include "SceneFactory.h"
-#include "../SceneBase.h"
-#include "../TitleScene.h"
-#include "../InGameScene.h"
-#include "../ResultScene.h"
-#include "../Editor/EditScene.h"
-
-SceneBase* SceneFactory::CreateScene(eSceneType scene)
+#pragma once
+class SceneFactory
 {
-	switch (scene)
-	{
-	case eTitle:
-		return new TitleScene();
-	case eInGame:
-		return new InGameScene();
-	case eResult:
-		return new ResultScene();
-	case eEdit:
-		return new EditScene();
-	default:
-		break;
-	}
+public:
+	static class SceneBase* CreateScene(enum eSceneType);
+};
 
-	return nullptr;
-}
+
+
+
