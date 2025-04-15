@@ -2,8 +2,6 @@
 #include "ObjectBase.h"
 #include "ObjectList.h"
 
-#define D_GRAVITY (9.807f)		//重力加速度(m/ss)
-//#define D_GRAVITY (4.807f)		//重力加速度(m/ss)
 #define KNOCK_BACK 1.5f;		//ノックバック時の倍率
 
 class ActorBase :
@@ -22,32 +20,20 @@ public:
 	virtual void Update()override
 	{
 		frame++;
-		//重力速度の計算(地面に触れているなら)
-		if (!on_floor)
-		{
-			g_velocity += D_GRAVITY / 222.0f;
-			velocity.y += g_velocity;
-		}
-		//Y軸の加速度が一定量を上回った時、地面に触れていないと判断する
-		if (fabsf(velocity.y) > 0.5f)
-		{
-			on_floor = false;
-		}
 	}
 
 	//当たり判定が被った時の処理
 	virtual void Hit(ObjectBase* hit_object)override
 	{
 		//攻撃とアイテム以外なら
-		if (hit_object->GetObjectType() != ObjectList::ATTACK &&
-			hit_object->GetObjectType() != ObjectList::GOALFLAG &&
-			hit_object->GetObjectType() != ObjectList::COIN &&
-			hit_object->GetObjectType() != ObjectList::ENERGYDRINK)
+		if (hit_object->GetObjectType() != ObjectList::eATTACK &&
+			hit_object->GetObjectType() != ObjectList::eCOIN &&
+			hit_object->GetObjectType() != ObjectList::eHEAL)
 		{
 			//押す前の座標を保存
 			float old = location.y;
 			//オブジェクトを押す
-			BoxCollider::Push(this, hit_object);
+			Push(hit_object);
 			//床に触れていた場合フラグを立てる
 			if (old >= location.y)on_floor = true;
 		}

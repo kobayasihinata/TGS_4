@@ -35,12 +35,6 @@ void InGameScene::Initialize()
 	//UI生成
 	ui = new GameSceneUI();
 
-	//読み込んだデータを基にステージを生成する
-	std::vector<ObjectData> obj_data = UserData::stage_data[UserData::now_stage];
-	for (const auto obj_data : obj_data)
-	{
-		objects->CreateObject(obj_data);
-	}
 }
 
 void InGameScene::Finalize()
@@ -81,14 +75,12 @@ eSceneType InGameScene::Update(float _delta)
 		change_scene = eSceneType::eResult;
 	}
 
-	//移動
-	test->Move({ 1,1 });
-
 	return change_scene;
 }
 
 void InGameScene::Draw()const
 {
+	DrawString(10, 10, "InGame", GetColor(255, 255, 255));
 	DrawString(10, 30, "1 = Title  2 = Result", 0xffffff);
 
 	//UI描画
@@ -96,8 +88,6 @@ void InGameScene::Draw()const
 
 	//プレイヤー描画
 	objects->Draw();
-
-	test->DrawShape();
 }
 
 eSceneType InGameScene::GetNowSceneType()const

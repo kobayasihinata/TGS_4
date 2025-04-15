@@ -40,8 +40,14 @@ public:
 	void SetStageSize(Vector2D _size);
 
 	//カメラ座標取得
-	Vector2D GetCameraLocation()const;
+	Vector2D GetCameraLocation()const
+	{
+		return camera_location;
+	}
 
 	//カメラ固定位置取得 _num 0は左上の固定座標 1は右下の固定座標
-	Vector2D GetLockPos(int _num);
+	Vector2D GetLockPos(int _num)const
+	{
+		return lock_pos[_num];
+	}
 };

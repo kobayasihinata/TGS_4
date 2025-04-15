@@ -37,9 +37,9 @@ void Coin::Draw()const
 void Coin::Hit(ObjectBase* hit_object)
 {
 	//プレイヤーに触れたらスコア加算して消える
-	if (hit_object->GetObjectType() == PLAYER)
+	if (hit_object->GetObjectType() == ePLAYER)
 	{
-		Data::score += add_num;
+		UserData::score += add_num;
 		manager->DeleteObject(this);
 	}
 }

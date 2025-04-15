@@ -12,4 +12,5 @@ static enum ObjectList
 	eHEAL,
 	eBLOCK,
 	eSLOT,
+	eATTACK,
 };

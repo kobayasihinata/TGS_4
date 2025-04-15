@@ -139,6 +139,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Scene\GameSceneUI.cpp" />
+    <ClCompile Include="Object\Block.cpp" />
+    <ClCompile Include="Object\Attack.cpp" />
+    <ClCompile Include="Object\ObjectManager.cpp" />
     <ClCompile Include="Object\Item\Heal.cpp" />
     <ClCompile Include="Object\Item\Coin.cpp" />
     <ClCompile Include="Object\Enemy\Enemy2.cpp" />
@@ -146,6 +150,7 @@
     <ClCompile Include="Object\Enemy\enemy4.cpp" />
     <ClCompile Include="Object\Enemy\Enemy5.cpp" />
     <ClCompile Include="Object\Enemy\Enemy1.cpp" />
+    <ClCompile Include="Object\Player\Player.cpp" />
     <ClCompile Include="Scene\RankingScene.cpp" />
     <ClCompile Include="Scene\ResultScene.cpp" />
     <ClCompile Include="Scene\InGameScene.cpp" />
@@ -164,6 +169,10 @@
     <ClCompile Include="Utility\Vector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Scene\GameSceneUI.h" />
+    <ClInclude Include="Object\Block.h" />
+    <ClInclude Include="Object\Attack.h" />
+    <ClInclude Include="Object\ObjectManager.h" />
     <ClInclude Include="Object\Item\Heal.h" />
     <ClInclude Include="Object\Item\Coin.h" />
     <ClInclude Include="Object\Enemy\Enemy2.h" />
@@ -175,6 +184,7 @@
     <ClInclude Include="Object\Base\ObjectList.h" />
     <ClInclude Include="Object\Base\EnemyBase.h" />
     <ClInclude Include="Object\Enemy\Enemy1.h" />
+    <ClInclude Include="Object\Player\Player.h" />
     <ClInclude Include="Scene\RankingScene.h" />
     <ClInclude Include="Scene\ResultScene.h" />
     <ClInclude Include="Scene\InGameScene.h" />

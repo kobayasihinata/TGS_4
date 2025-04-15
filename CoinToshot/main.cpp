@@ -1,44 +1,49 @@
 #include "DxLib.h"
+#include "Scene/SceneManager.h"
 
-#include "Utility/common.h"
+#include "Utility/UserData.h"
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+//メイン関数
+int WINAPI WinMain(_In_ HINSTANCE hInstance,
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_ LPSTR lpCmdLine,
+	_In_ int nShowCmd
+)
 {
-    unsigned int Cr;
+	//ローカル変数定義
+	SceneManager* scene_manager = nullptr;
+	int result = 0;
 
-    if (DxLib_Init() == -1)            // ＤＸライブラリ初期化処理
-    {
-        return -1;            // エラーが起きたら直ちに終了
-    }
+	//必要データ読み込み
+	UserData::ReadData();
 
-    //ウィンドウモードで起動
-    ChangeWindowMode(TRUE);
+	try {
+		//オブジェクト生成
+		scene_manager = new SceneManager();
 
-    //画面サイズの設定
-    SetGraphMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32);
+		//初期化処理
+		scene_manager->Initialize();
 
-    //裏画面から描画を始めるx
-    SetDrawScreen(DX_SCREEN_BACK);
+		//更新処理
+		scene_manager->Update();
 
-    Cr = GetColor(0, 0, 255);        // 青色の値を取得
-    int red, blue, green;
+		//終了時処理処理
+		scene_manager->Finalize();
+	}
+	catch (const char* error_log)
+	{
+		//エラー情報を出力
+		OutputDebugString(error_log);
+		result = -1;
+	}
 
-    for (int x = 0; x < 640; x += 20) {
-        for (int y = 0; y < 480; y += 20) {
-            red = GetRand(255);
-            blue = GetRand(255);
-            green = GetRand(255);
-            DrawBox(x, y, x + 18, y + 18, GetColor(red, green, blue), TRUE);    // 四角形を描画
+	//シーンマネージャーを生成していたら、削除する
+	if (scene_manager != nullptr)
+	{
+		delete scene_manager;
+		scene_manager = nullptr;
+	}
 
-        }
-    }
-
-    //裏画面の内容を表画面に反映する
-    ScreenFlip();
-
-    WaitKey();                // キーの入力待ち(『WaitKey』を使用)
-
-    DxLib_End();                // ＤＸライブラリ使用の終了処理
-
-    return 0;                // ソフトの終了
+	//終了状態の値を返却する
+	return result;
 }

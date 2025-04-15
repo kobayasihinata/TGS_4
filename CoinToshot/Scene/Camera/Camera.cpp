@@ -48,11 +48,6 @@ void Camera::Update(Vector2D _loc)
 	camera_location = _loc;
 }
 
-Vector2D Camera::GetCameraLocation()const
-{
-	return camera_location;
-}
-
 void Camera::SetStageSize(Vector2D _size)
 {
 	stage_size = _size;
@@ -61,9 +56,4 @@ void Camera::SetStageSize(Vector2D _size)
 	lock_pos[0].y = 0;
 	lock_pos[1].x = stage_size.x - SCREEN_WIDTH;
 	lock_pos[1].y = stage_size.y - SCREEN_HEIGHT;
-}
-
-Vector2D Camera::GetLockPos(int _num)
-{
-	return lock_pos[_num];
 }

@@ -57,6 +57,11 @@ public:
 		Vector2D::DrawBoxV2(local_location, local_location + box_size, 0xff0000, false);
 #endif // _DEBUG
 	}
+	//ローカル座標の設定
+	void SetLocalLocation(Vector2D camera_location)
+	{
+		local_location = this->location - camera_location;
+	}
 	//当たり判定が被った時の処理
 	virtual void Hit(ObjectBase* hit_Object) = 0;
 	//ダメージ処理
