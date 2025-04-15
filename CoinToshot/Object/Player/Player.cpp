@@ -5,6 +5,7 @@
 #include "DxLib.h"
 #include "../../Utility/UserData.h"
 #include "../ObjectManager.h"
+#include "../../Utility/InputPad.h"
 
 /// <summary>
 /// 初期化処理
@@ -15,6 +16,7 @@ void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init
 	__super::Initialize(_manager, _object_type, init_location, init_size);
 
 	camera = Camera::Get();
+	k_input = InputKey::Get();
 
 	g_velocity = 0.0f;
 	velocity = Vector2D(0.0f);
@@ -54,6 +56,9 @@ void Player::Update()
 
 	//カメラに座標を渡す
 	camera->player_location = this->location;
+
+	//各種入力処理
+	Control();
 
 	//移動処理
 	Move();
@@ -134,6 +139,38 @@ void Player::Death()
 	damage_timer = 0;
 	inv_flg = false;
 	inv_timer = 0;
+}
+
+/// <summary>
+/// プレイヤー操作処理
+/// </summary>
+void Player::Control()
+{
+	velocity.x = InputPad::TipLStick(STICKL_X);
+	InputPad::TipLStick(STICKL_Y);
+
+#ifdef _DEBUG
+	//左キーで左移動
+	if (k_input->GetKeyState(KEY_INPUT_LEFT) == eInputState::Held)
+	{
+		velocity.x = -10;
+	}
+	//右キーで右移動
+	if (k_input->GetKeyState(KEY_INPUT_RIGHT) == eInputState::Held)
+	{
+		velocity.x = 10;
+	}
+	//上キーで上移動
+	if (k_input->GetKeyState(KEY_INPUT_UP) == eInputState::Held)
+	{
+		velocity.y = -10;
+	}
+	//下キーで下移動
+	if (k_input->GetKeyState(KEY_INPUT_DOWN) == eInputState::Held)
+	{
+		velocity.y = 10;
+	}
+#endif // _DEBUG
 }
 
 /// <summary>

@@ -8,11 +8,13 @@ class Player :
 	public ActorBase
 {
 private:
-	class Camera* camera;	//ƒJƒƒ‰ƒ|ƒCƒ“ƒ^Ši”[(ƒvƒŒƒCƒ„[‚Ìî•ñ‚ğ“n‚·‚½‚ß‚¾‚¯‚Éæ“¾)
-	bool inv_flg;		//–³“G‚©”»’f
-	int inv_timer;		//–³“GŠÔ‘ª’è
-	bool damage_flg;	//”í’eŒã–³“G‚©”»’f
-	int damage_timer;	//”í’eŒã–³“GŠÔ‘ª’è
+
+	InputKey* k_input;			//“ü—Í‹@”\‚Ìæ“¾(ƒL[ƒ{[ƒh)
+	class Camera* camera;		//ƒJƒƒ‰ƒ|ƒCƒ“ƒ^Ši”[(ƒvƒŒƒCƒ„[‚Ìî•ñ‚ğ“n‚·‚½‚ß‚¾‚¯‚Éæ“¾)
+	bool inv_flg;				//–³“G‚©”»’f
+	int inv_timer;				//–³“GŠÔ‘ª’è
+	bool damage_flg;			//”í’eŒã–³“G‚©”»’f
+	int damage_timer;			//”í’eŒã–³“GŠÔ‘ª’è
 public:
 
 public:
@@ -58,6 +60,11 @@ public:
 	/// €–Sˆ—
 	/// </summary>
 	void Death();
+
+	/// <summary>
+	/// ƒvƒŒƒCƒ„[‘€ìˆ—
+	/// </summary>
+	void Control();
 
 public:
 

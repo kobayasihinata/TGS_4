@@ -35,6 +35,8 @@ void InGameScene::Initialize()
 	//UI生成
 	ui = new GameSceneUI();
 
+	//プレイヤー生成
+	objects->CreateObject({ Vector2D{0,0},Vector2D{0,0},ePLAYER });
 }
 
 void InGameScene::Finalize()
@@ -88,6 +90,25 @@ void InGameScene::Draw()const
 
 	//プレイヤー描画
 	objects->Draw();
+	camera->GetCameraLocation().x;
+	camera->GetCameraLocation().y;
+	//グリッド表示
+	for (int x = -STAGE_SIZE; x < STAGE_SIZE+SCREEN_WIDTH; x += 100)
+	{
+		DrawLine(x - camera->GetCameraLocation().x,
+			-STAGE_SIZE - camera->GetCameraLocation().y,
+			x - camera->GetCameraLocation().x,
+			STAGE_SIZE + SCREEN_HEIGHT - camera->GetCameraLocation().y,
+			0x00ff00);
+	}
+	for (int y = -STAGE_SIZE; y < STAGE_SIZE+SCREEN_HEIGHT; y += 100)
+	{
+		DrawLine(-STAGE_SIZE - camera->GetCameraLocation().x,
+			y - camera->GetCameraLocation().y,
+			STAGE_SIZE + SCREEN_WIDTH - camera->GetCameraLocation().x,
+			y - camera->GetCameraLocation().y,
+			0x00ff00);
+	}
 }
 
 eSceneType InGameScene::GetNowSceneType()const

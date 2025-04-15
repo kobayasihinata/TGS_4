@@ -3,8 +3,6 @@
 #include "../../Utility/Vector2D.h"
 #include "Dxlib.h"
 
-#define X_SHIFT_LIMIT 500.0f	//カメラのX可動域（半径）
-#define Y_SHIFT_LIMIT 300.0f	//カメラのY可動域（半径）
 
 class Camera
 {
