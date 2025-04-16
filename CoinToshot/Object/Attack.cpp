@@ -1,7 +1,7 @@
 #include "Attack.h"
 #include "ObjectManager.h"
 
-Attack::Attack(ObjectBase* _object, int _time)
+Attack::Attack(ObjectBase* _object, int _time, float _angle)
 {
 	object = _object;
 	time = _time;

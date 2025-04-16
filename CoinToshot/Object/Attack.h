@@ -11,7 +11,7 @@ private:
 public:
 	//コンストラクタ(_object = 攻撃を生成したオブジェクト いなければnullptr 
 	// _time = 存在できる時間)
-	Attack(ObjectBase* _object,int _time);
+	Attack(ObjectBase* _object,int _time,float _angle = 0);
 	//デストラクタ
 	~Attack();
 	//初期化処理

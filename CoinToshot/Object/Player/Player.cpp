@@ -152,6 +152,12 @@ void Player::Control()
 		shot_rad = atan2f(InputPad::TipRStick(STICKL_X), InputPad::TipRStick(STICKL_Y)) - 1.5f;
 	}
 
+	//ƒgƒŠƒK[‚Å’e‚ð”­ŽË‚·‚é
+	if (InputPad::OnButton(L_TRIGGER) || InputPad::OnButton(R_TRIGGER))
+	{
+		manager->CreateAttack(this->location, Vector2D{40, 40}, this, 30, shot_rad);
+	}
+
 	//Šp“x‚ð‰ÁŽZ‚·‚é
 	//if (InputPad::OnPressed(XINPUT_BUTTON_A))
 	//{

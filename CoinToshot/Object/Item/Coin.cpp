@@ -44,6 +44,7 @@ void Coin::Hit(ObjectBase* hit_object)
 		UserData::coin += add_num;
 		//ポップアップ表示
 		ingame->CreatePopUp(this->location, "+1", GetRand(100), 0xffff00, 1, 60);
+
 		manager->DeleteObject(this);
 	}
 }

@@ -124,9 +124,9 @@ void ObjectManager::DeleteAllObject()
 	}
 }
 
-void ObjectManager::CreateAttack(Vector2D init_location, Vector2D init_size, ObjectBase* _object, int _time)
+void ObjectManager::CreateAttack(Vector2D init_location, Vector2D init_size, ObjectBase* _object, int _time, float _angle)
 {
-	create_object.push_back(InitData{ new Attack(_object,_time),eATTACK,init_location,init_size });
+	create_object.push_back(InitData{ new Attack(_object,_time,_angle),eATTACK,init_location,init_size });
 }
 
 void ObjectManager::ObjectHitCheck()

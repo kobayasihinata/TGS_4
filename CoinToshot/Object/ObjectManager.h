@@ -54,8 +54,8 @@ public:
 	void DeleteObject(ObjectBase* _delete_object);
 	//オブジェクトの削除（全消し）
 	void DeleteAllObject();
-	//攻撃の生成 inti_location=初期座標 size=大きさ _object=この攻撃を生成したオブジェクト _time=判定発生時間
-	void CreateAttack(Vector2D init_location, Vector2D init_size, ObjectBase* _object, int _time);
+	//攻撃の生成 inti_location=初期座標 size=大きさ _object=この攻撃を生成したオブジェクト _time=判定発生時間 _angle=移動方向
+	void CreateAttack(Vector2D init_location, Vector2D init_size, ObjectBase* _object, int _time, float _angle = 0);
 	//当たり判定処理
 	void ObjectHitCheck();
 	//オブジェクト一覧を取得する

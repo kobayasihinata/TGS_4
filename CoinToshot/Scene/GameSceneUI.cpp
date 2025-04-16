@@ -20,7 +20,6 @@ void GameSceneUI::Update()
 		{
 			if (*it == delete_data)
 			{
-
 				it = ui_data.erase(it);
 				break;
 			}
