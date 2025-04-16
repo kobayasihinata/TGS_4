@@ -1,16 +1,12 @@
 #include "Player.h"
-
-#include <cmath>
-
 #include "DxLib.h"
 #include "../../Utility/UserData.h"
 #include "../ObjectManager.h"
 #include "../../Utility/InputPad.h"
+#include "../../Utility/common.h"
+#include <cmath>
+#define _USE_MATH_DEFINES
 
-/// <summary>
-/// 初期化処理
-/// </summary>
-/// <param name="init_location">初期座標</param>
 void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init_location, Vector2D init_size)
 {
 	__super::Initialize(_manager, _object_type, init_location, init_size);
@@ -18,7 +14,10 @@ void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init
 	camera = Camera::Get();
 	k_input = InputKey::Get();
 
-	g_velocity = 0.0f;
+	shot_rad = 0.f;				
+
+	inv_flg = 0;				
+	inv_timer = 0;		
 	velocity = Vector2D(0.0f);
 	damage_flg = false;
 	damage_timer = 0;
@@ -44,9 +43,6 @@ void Player::Finalize()
 
 }
 
-/// <summary>
-/// 更新処理
-/// </summary>
 void Player::Update()
 {
 	//HP同期
@@ -73,32 +69,31 @@ void Player::Update()
 	}
 }
 
-/// <summary>
-/// 描画処理
-/// </summary>
 void Player::Draw()const
 {
 	if (!damage_flg || (damage_flg && frame % 3 == 0))
 	{
 		__super::Draw();
 	}
-	DebugInfomation::Add("hp", UserData::player_hp);
+	//DebugInfomation::Add("hp", UserData::player_hp);
+	DebugInfomation::Add("rad", shot_rad);
+
+	//発射角度描画
+	DrawLineAA(local_location.x + (box_size.x/2), 
+		local_location.y + (box_size.y / 2),
+		local_location.x + (box_size.x / 2) + (cosf(shot_rad) * 60),
+		local_location.y + (box_size.y / 2) + (sinf(shot_rad) * 60),
+		0xff0000,
+		TRUE);
+
 }
 
-/// <summary>
-/// 当たり判定処理
-/// </summary>
-/// <param name="hit_Object">調べる相手</param>
 void Player::Hit(ObjectBase* hit_Object)
 {
 	__super::Hit(hit_Object);
 
 }
 
-/// <summary>
-/// ダメージ処理
-/// </summary>
-/// <param name="value">受けたダメージ量</param>
 void Player::Damage(float _value, Vector2D _attack_loc)
 {
 	//ダメージ後無敵でないならダメージを受ける
@@ -111,9 +106,6 @@ void Player::Damage(float _value, Vector2D _attack_loc)
 	}
 }
 
-/// <summary>
-/// 死亡処理
-/// </summary>
 void Player::Death()
 {
 	//残機マイナス１
@@ -141,14 +133,30 @@ void Player::Death()
 	inv_timer = 0;
 }
 
-/// <summary>
-/// プレイヤー操作処理
-/// </summary>
 void Player::Control()
 {
-	velocity.x = InputPad::TipLStick(STICKL_X);
-	InputPad::TipLStick(STICKL_Y);
+	//左スティックの傾きが一定以上なら移動する
+	if (fabsf(InputPad::TipLStick(STICKL_X)) > 0.1f)
+	{
+		velocity.x = InputPad::TipLStick(STICKL_X) * PLAYER_SPEED;
+	}
+	if (fabsf(InputPad::TipLStick(STICKL_Y)) > 0.1f)
+	{
+		velocity.y = -InputPad::TipLStick(STICKL_Y) * PLAYER_SPEED;
+	}
 
+	//右スティックの傾きが一定以上なら角度を変更する
+	if (fabsf(InputPad::TipRStick(STICKL_X)) > 0.3f || fabsf(InputPad::TipRStick(STICKL_Y)) > 0.3f)
+	{
+		//右スティックの傾きで発射角度を決める (-1.5f = ずれ調整)
+		shot_rad = atan2f(InputPad::TipRStick(STICKL_X), InputPad::TipRStick(STICKL_Y)) - 1.5f;
+	}
+
+	//角度を加算する
+	//if (InputPad::OnPressed(XINPUT_BUTTON_A))
+	//{
+	//	shot_rad += 0.01f;
+	//}
 #ifdef _DEBUG
 	//左キーで左移動
 	if (k_input->GetKeyState(KEY_INPUT_LEFT) == eInputState::Held)

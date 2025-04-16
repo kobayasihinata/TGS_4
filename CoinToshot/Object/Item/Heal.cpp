@@ -39,7 +39,7 @@ void Heal::Hit(ObjectBase* hit_object)
 	//プレイヤーに触れたらスコア加算して消える
 	if (hit_object->GetObjectType() == ePLAYER)
 	{
-		UserData::score += heal_num;
+		UserData::player_hp += heal_num;
 		manager->DeleteObject(this);
 	}
 }

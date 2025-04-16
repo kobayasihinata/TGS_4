@@ -1,6 +1,7 @@
 #include "SceneManager.h"
 #include "../Utility/common.h"
 #include "../Utility/InputKey.h"
+#include "../Utility/InputPad.h"
 #include "DxLib.h"
 #include "Factory/SceneFactory.h"
 #include "../Utility/DebugInformation.h"
@@ -61,6 +62,7 @@ void SceneManager::Update()
 
 		//入力機能の更新
 		input->Update();
+		InputPad::UpdateKey();
 
 		//デバッグ表示の更新
 		DebugInfomation::Update();

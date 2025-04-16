@@ -23,7 +23,7 @@ void InGameScene::Initialize()
 	UserData::now_stage = 0;
 	UserData::player_hp = DEFAULT_HP;
 	UserData::life = DEFAULT_LIFE;
-	UserData::score = 0;
+	UserData::coin = 0;
 
 	camera = Camera::Get();
 	camera->SetStageSize({ (float)UserData::width_num[UserData::now_stage],(float)UserData::height_num[UserData::now_stage] });
@@ -36,7 +36,7 @@ void InGameScene::Initialize()
 	ui = new GameSceneUI();
 
 	//プレイヤー生成
-	objects->CreateObject({ Vector2D{0,0},Vector2D{0,0},ePLAYER });
+	objects->CreateObject({ Vector2D{0,0},Vector2D{40,40},ePLAYER });
 }
 
 void InGameScene::Finalize()
@@ -58,6 +58,9 @@ eSceneType InGameScene::Update(float _delta)
 
 	//カメラ更新
 	camera->Update();
+
+	//アイテム生成
+	SpawnItem();
 
 	//オブジェクト更新
 	objects->Update();
@@ -145,4 +148,12 @@ void InGameScene::ChangeResult()
 	change_scene = eSceneType::eResult;
 }
 
+void InGameScene::SpawnItem()
+{
+	DebugInfomation::Add("frame", frame);
 
+	if ((int)frame % 60 == 0)
+	{
+		objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{40,40},eCOIN});
+	}
+}

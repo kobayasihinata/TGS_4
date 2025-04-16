@@ -10,6 +10,8 @@ enum eSceneType
 
 class SceneBase
 {
+protected:
+	float frame=0;		//フレーム測定
 
 public:
 	SceneBase() {}
@@ -23,6 +25,10 @@ public:
 	//戻り値：次のシーンタイプ
 	virtual eSceneType Update(float _delta)
 	{
+		if (++frame > 3600)
+		{
+			frame = 0;
+		}
 		return GetNowSceneType();
 	}
 

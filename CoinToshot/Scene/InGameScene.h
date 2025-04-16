@@ -45,6 +45,11 @@ public:
 	/// </summary>
 	/// <param name="_is_clear">false=ゲームオーバー true=ゲームクリア</param>
 	void ChangeResult();
+
+	/// <summary>
+	/// ランダムでアイテムを発生させる
+	/// </summary>
+	void SpawnItem();
 };
 
 

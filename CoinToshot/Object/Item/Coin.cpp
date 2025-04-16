@@ -4,7 +4,7 @@
 
 Coin::Coin()
 {
-	add_num = 100;
+	add_num = 1;
 }
 
 Coin::~Coin()
@@ -39,7 +39,7 @@ void Coin::Hit(ObjectBase* hit_object)
 	//プレイヤーに触れたらスコア加算して消える
 	if (hit_object->GetObjectType() == ePLAYER)
 	{
-		UserData::score += add_num;
+		UserData::coin += add_num;
 		manager->DeleteObject(this);
 	}
 }

@@ -24,7 +24,7 @@ public:
 	//UIに表示する必要があり、保持しておいた方が良い可能性があるプレイヤー情報はここで管理
 	static Vector2D spawn_loc[10];	//リスポーンする位置
 	static float player_hp;		//体力
-	static int score;			//スコア
+	static int coin;			//スコア
 	static int life;			//残機
 	static int timer;			//残り時間
 	static bool is_clear;		//false=ゲームオーバー true=ゲームクリア

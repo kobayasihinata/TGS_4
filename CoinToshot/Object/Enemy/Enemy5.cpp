@@ -51,9 +51,6 @@ void Enemy5::Update()
 
 	//アニメーション
 	Animation();
-
-	//地面判定リセット
-	on_floor = false;
 }
 
 void Enemy5::Draw()const

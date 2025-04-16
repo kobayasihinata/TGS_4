@@ -11,6 +11,11 @@ private:
 
 	InputKey* k_input;			//入力機能の取得(キーボード)
 	class Camera* camera;		//カメラポインタ格納(プレイヤーの情報を渡すためだけに取得)
+
+	//コイン発射関連
+	float shot_rad;				//発射角度
+
+	//無敵処理関連
 	bool inv_flg;				//無敵か判断
 	int inv_timer;				//無敵時間測定
 	bool damage_flg;			//被弾後無敵か判断

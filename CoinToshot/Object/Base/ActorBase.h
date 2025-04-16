@@ -13,8 +13,6 @@ protected:
 	Vector2D old_location = { 0.0f,0.0f };	//1フレーム前の座標
 public:
 	Vector2D velocity = { 0.0f,0.0f };
-	float g_velocity = 0.0f;						//重力速度	
-	bool on_floor;							//地面に触れているか判断
 
 public:
 	virtual void Update()override
@@ -34,8 +32,6 @@ public:
 			float old = location.y;
 			//オブジェクトを押す
 			Push(hit_object);
-			//床に触れていた場合フラグを立てる
-			if (old >= location.y)on_floor = true;
 		}
 	}
 
