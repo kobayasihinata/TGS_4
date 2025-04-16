@@ -1,14 +1,17 @@
 #pragma once
 #include "../Base/ObjectBase.h"
 
+class InGameScene;
+
 class Coin :
 	public ObjectBase
 {
 private:
 	float add_num;	//コイン追加数
+	InGameScene* ingame;		//現在のシーンのポインタを保存
 public:
 	//コンストラクタ
-	Coin();
+	Coin(InGameScene* _ingame);
 	//デストラクタ
 	~Coin();
 	//初期化処理

@@ -90,7 +90,7 @@ void ObjectManager::CreateObject(int object_type, Vector2D init_location, Vector
 		create_object.push_back(InitData{ new Enemy5(),object_type,init_location,init_size });
 		break;
 	case ObjectList::eCOIN:
-		create_object.push_back(InitData{ new Coin(),object_type,init_location,init_size });
+		create_object.push_back(InitData{ new Coin(ingame),object_type,init_location,init_size });
 		break;
 	//case ObjectList::eHEAL:
 	//	create_object.push_back(InitData{ new Heal(),object_type,init_location,init_size });

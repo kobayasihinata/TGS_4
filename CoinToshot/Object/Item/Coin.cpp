@@ -1,10 +1,12 @@
 #include "Coin.h"
 #include "../ObjectManager.h"
 #include "../../Utility/UserData.h"
+#include "../../Scene/InGameScene.h"
 
-Coin::Coin()
+Coin::Coin(InGameScene* _ingame)
 {
 	add_num = 1;
+	ingame = _ingame;
 }
 
 Coin::~Coin()
@@ -40,6 +42,8 @@ void Coin::Hit(ObjectBase* hit_object)
 	if (hit_object->GetObjectType() == ePLAYER)
 	{
 		UserData::coin += add_num;
+		//ポップアップ表示
+		ingame->CreatePopUp(this->location, "+1", GetRand(100), 0xffff00, 1, 60);
 		manager->DeleteObject(this);
 	}
 }

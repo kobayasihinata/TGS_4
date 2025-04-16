@@ -50,6 +50,16 @@ public:
 	/// ランダムでアイテムを発生させる
 	/// </summary>
 	void SpawnItem();
+
+	/// <summary>
+	/// 画面上に出るUI生成
+	/// </summary>
+	/// <param name="_location">表示する座標</param>
+	/// <param name="_text">表示する文字</param>
+	/// <param name="_text_color">文字色</param>
+	/// <param name="_move">移動量</param>
+	/// <param name="_life_span">生存期間</param>
+	void CreatePopUp(Vector2D _location, const char* _text, int _font_size, int _text_color, float _move, int _life_span);
 };
 
 

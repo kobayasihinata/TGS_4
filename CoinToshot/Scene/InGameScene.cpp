@@ -59,6 +59,9 @@ eSceneType InGameScene::Update(float _delta)
 	//カメラ更新
 	camera->Update();
 
+	//UI更新
+	ui->Update();
+
 	//アイテム生成
 	SpawnItem();
 
@@ -156,4 +159,9 @@ void InGameScene::SpawnItem()
 	{
 		objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{40,40},eCOIN});
 	}
+}
+
+void InGameScene::CreatePopUp(Vector2D _location, const char* _text, int _font_size, int _text_color, float _move, int _life_span)
+{
+	ui->SetUIData(_location, _text, _font_size,_text_color, _move, _life_span);
 }
