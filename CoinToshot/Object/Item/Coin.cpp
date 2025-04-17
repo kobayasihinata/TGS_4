@@ -33,7 +33,7 @@ void Coin::Draw()const
 {
 	__super::Draw();
 	//ƒRƒCƒ“‰¼
-	DrawCircleAA(local_location.x + (box_size.x / 2), local_location.y + (box_size.y / 2), (box_size.x / 2), 10, 0xffff00, true);
+	DrawCircleAA(local_location.x + (box_size.x / 2), local_location.y + (box_size.y / 2), (box_size.x / 2), 20, 0xffff00, true);
 }
 
 void Coin::Hit(ObjectBase* hit_object)

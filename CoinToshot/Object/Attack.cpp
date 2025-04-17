@@ -46,8 +46,8 @@ void Attack::Update()
 void Attack::Draw()const
 {
 	__super::Draw();
-	//çUåÇ
-	DrawString(local_location.x, local_location.y, "attack", 0xffffff);
+	//ÉRÉCÉìâº
+	DrawCircleAA(local_location.x + (box_size.x / 2), local_location.y + (box_size.y / 2), (box_size.x / 2), 20, 0xffaa00, true);
 }
 
 void Attack::Hit(ObjectBase* hit_object)

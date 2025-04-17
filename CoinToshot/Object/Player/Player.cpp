@@ -184,8 +184,8 @@ BulletData Player::GetBulletData()
 	_data.delete_time = 60;
 	_data.h_count = 1;
 	_data.location = this->location;
-	_data.radius = 40;
-	_data.speed = 5;
+	_data.radius = 20;
+	_data.speed = 15;
 	_data.who = this;
 
 	return _data;

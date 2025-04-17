@@ -54,6 +54,6 @@ void Camera::SetStageSize(Vector2D _size)
 	//ÉJÉÅÉâå≈íËà íuÇÃçƒê›íË
 	lock_pos[0].x = -STAGE_SIZE;
 	lock_pos[0].y = -STAGE_SIZE;
-	lock_pos[1].x = STAGE_SIZE;
-	lock_pos[1].y = STAGE_SIZE;
+	lock_pos[1].x = STAGE_SIZE - SCREEN_WIDTH;
+	lock_pos[1].y = STAGE_SIZE - SCREEN_HEIGHT;
 }

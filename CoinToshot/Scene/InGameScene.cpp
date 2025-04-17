@@ -22,7 +22,6 @@ void InGameScene::Initialize()
 	UserData::timer = DEFAULT_TIMELIMIT;
 	UserData::now_stage = 0;
 	UserData::player_hp = DEFAULT_HP;
-	UserData::life = DEFAULT_LIFE;
 	UserData::coin = 0;
 
 	camera = Camera::Get();
@@ -99,19 +98,19 @@ void InGameScene::Draw()const
 	camera->GetCameraLocation().x;
 	camera->GetCameraLocation().y;
 	//グリッド表示
-	for (int x = -STAGE_SIZE; x < STAGE_SIZE+SCREEN_WIDTH; x += 100)
+	for (int x = -STAGE_SIZE; x < STAGE_SIZE; x += 100)
 	{
 		DrawLine(x - camera->GetCameraLocation().x,
 			-STAGE_SIZE - camera->GetCameraLocation().y,
 			x - camera->GetCameraLocation().x,
-			STAGE_SIZE + SCREEN_HEIGHT - camera->GetCameraLocation().y,
+			STAGE_SIZE - camera->GetCameraLocation().y,
 			0x00ff00);
 	}
-	for (int y = -STAGE_SIZE; y < STAGE_SIZE+SCREEN_HEIGHT; y += 100)
+	for (int y = -STAGE_SIZE; y < STAGE_SIZE; y += 100)
 	{
 		DrawLine(-STAGE_SIZE - camera->GetCameraLocation().x,
 			y - camera->GetCameraLocation().y,
-			STAGE_SIZE + SCREEN_WIDTH - camera->GetCameraLocation().x,
+			STAGE_SIZE - camera->GetCameraLocation().x,
 			y - camera->GetCameraLocation().y,
 			0x00ff00);
 	}

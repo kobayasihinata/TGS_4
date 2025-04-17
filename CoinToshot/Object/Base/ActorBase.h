@@ -1,6 +1,7 @@
 #pragma once
 #include "ObjectBase.h"
 #include "ObjectList.h"
+#include "../../Utility/common.h"
 
 #define KNOCK_BACK 1.5f;		//ノックバック時の倍率
 
@@ -64,8 +65,31 @@ public:
 		old_location = location;
 		//移動の実行
 		location += velocity;
+		//壁に当たっていたら前の座標に戻す
+
+		//左端
+		if (location.x <= -STAGE_SIZE)
+		{
+			location.x = -STAGE_SIZE;
+		}
+		//右端
+		if (location.x + box_size.x > STAGE_SIZE)
+		{
+			location.x = STAGE_SIZE - box_size.x;
+		}
+		//上端
+		if (location.y <= -STAGE_SIZE)
+		{
+			location.y = -STAGE_SIZE;
+		}
+		//下端
+		if (location.y + box_size.y > STAGE_SIZE)
+		{
+			location.y = STAGE_SIZE - box_size.y;
+		}
 	}
 
 	//１フレーム前の座標を取得する
 	Vector2D GetOldLocation()const { return old_location; }
 };
+
