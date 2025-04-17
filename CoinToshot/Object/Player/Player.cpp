@@ -147,10 +147,11 @@ void Player::Control()
 		shot_rad = atan2f(InputPad::TipRStick(STICKL_X), InputPad::TipRStick(STICKL_Y)) - 1.5f;
 	}
 
-	//ƒgƒŠƒK[‚Å’e‚ð”­ŽË‚·‚é
-	if (InputPad::OnButton(L_TRIGGER) || InputPad::OnButton(R_TRIGGER))
+	//ƒRƒCƒ“‚ªˆê–‡ˆÈã‚È‚çA‚PÁ”ï‚Å’e‚ð”­ŽË‚·‚é
+	if (UserData::coin > 0 && (InputPad::OnButton(XINPUT_BUTTON_LEFT_SHOULDER) || InputPad::OnButton(XINPUT_BUTTON_RIGHT_SHOULDER)))
 	{
 		manager->CreateAttack(GetBulletData());
+		UserData::coin--;
 	}
 
 #ifdef _DEBUG
