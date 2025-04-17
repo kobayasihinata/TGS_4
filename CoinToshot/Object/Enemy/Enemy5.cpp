@@ -39,13 +39,6 @@ void Enemy5::Update()
 {
 	__super::Update();
 
-	//‘Ì‚ÉUŒ‚‚ð“Z‚¤
-	manager->CreateAttack(
-		{ this->location.x - 1,this->location.y - 1 },
-		{ this->box_size.x + 2 ,this->box_size.y + 2 },
-		this,
-		0);
-
 	//ˆÚ“®
 	Move();
 

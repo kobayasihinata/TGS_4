@@ -3,6 +3,7 @@
 #include "../../Utility/Vector2D.h"
 #include "../Base/ActorBase.h"
 #include "../../Scene/Camera/Camera.h"
+#include "../Base/BulletData.h"
 
 class Player :
 	public ActorBase
@@ -70,6 +71,12 @@ public:
 	/// ƒvƒŒƒCƒ„[‘€ìˆ—
 	/// </summary>
 	void Control();
+
+	/// <summary>
+	/// ’e‚ğ”­Ë‚·‚é‚½‚ß‚Ìî•ñ‚ğ“Z‚ß‚é
+	/// </summary>
+	/// <returns>’e‚ğ”­Ë‚·‚é‚½‚ß‚Ìî•ñ</returns>
+	BulletData GetBulletData();
 
 public:
 

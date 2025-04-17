@@ -155,7 +155,7 @@ void InGameScene::SpawnItem()
 {
 	DebugInfomation::Add("frame", frame);
 
-	if ((int)frame % 60 == 0)
+	if ((int)frame % 10 == 0)
 	{
 		objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{40,40},eCOIN});
 	}

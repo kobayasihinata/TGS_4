@@ -41,14 +41,14 @@ void GameSceneUI::Draw()const
 	Camera* camera = Camera::Get();
 
 	//プレイヤー情報描画
-	DrawFormatString(100, 10, 0xffffff, "HP:%d LIFE:%d SCORE:%d TIME:%d", (int)(UserData::player_hp), UserData::life, UserData::coin, UserData::timer / 60);
+	DrawFormatString(100, 10, 0xffffff, "HP:%d COIN:%d TIME:%d", (int)(UserData::player_hp), UserData::coin, UserData::timer / 60);
 
-	
+	//文字大きさ設定
+	SetFontSize(24);
+
 	//ui_dataの描画
 	for (const auto ui_data : ui_data)
 	{
-		//文字大きさ設定
-		SetFontSize(ui_data.font_size);
 		//文字透過設定
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 - (255 / ui_data.life_span)*ui_data.life_count);
 		DrawFormatStringF(ui_data.location.x - camera->GetCameraLocation().x,
@@ -57,8 +57,10 @@ void GameSceneUI::Draw()const
 			"%s",
 			ui_data.text
 			);
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 	}
+	//文字透過リセット
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+
 	SetFontSize(old);
 }
 

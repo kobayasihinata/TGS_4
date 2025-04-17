@@ -9,7 +9,7 @@
 
 #define DEFAULT_TIMELIMIT 18000	//制限時間初期値(フレーム単位)
 
-#define F_PI 3.1415				//円周率
+#define F_PI (float)(3.1415)				//円周率
 
 //プレイヤーのパラメータ関連
 #define DEFAULT_HP 100			//プレイヤー初期HP

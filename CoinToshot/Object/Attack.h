@@ -1,17 +1,20 @@
 #pragma once
 #include "Base/ObjectBase.h"
+#include "Base/BulletData.h"
 
 class Attack :
 	public ObjectBase
 {
 private:
-	ObjectBase* object;		//攻撃を生成したオブジェクト いなければnullptr
-	int time;				//存在できる時間
-	int count_up;			//生成されてからの時間測定
+	ObjectBase* object;			//攻撃を生成したオブジェクト いなければnullptr
+	int time;					//存在できる時間
+	int count_up;				//生成されてからの時間測定
+	Vector2D move_velocity;		//移動方向
+
 public:
 	//コンストラクタ(_object = 攻撃を生成したオブジェクト いなければnullptr 
-	// _time = 存在できる時間)
-	Attack(ObjectBase* _object,int _time,float _angle = 0);
+	// _bullet_data = 発射時に必要な情報)
+	Attack(BulletData _bullet_data);
 	//デストラクタ
 	~Attack();
 	//初期化処理

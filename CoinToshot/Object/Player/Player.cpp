@@ -92,6 +92,8 @@ void Player::Hit(ObjectBase* hit_Object)
 {
 	__super::Hit(hit_Object);
 
+	//敵に当たったらダメージとノックバック
+
 }
 
 void Player::Damage(float _value, Vector2D _attack_loc)
@@ -108,17 +110,10 @@ void Player::Damage(float _value, Vector2D _attack_loc)
 
 void Player::Death()
 {
-	//残機マイナス１
-	UserData::life--;
-
-	//残機が０以下になったらゲームオーバー
-	if (UserData::life < 0)
-	{
-		//ゲームオーバーに設定
-		UserData::is_clear = false;
-		//リザルト遷移
-		manager->Result();
-	}
+	//ゲームオーバーに設定
+	UserData::is_clear = false;
+	//リザルト遷移
+	manager->Result();
 
 	//リスポーン位置に移動
 	location = UserData::spawn_loc[UserData::now_stage];
@@ -155,14 +150,9 @@ void Player::Control()
 	//トリガーで弾を発射する
 	if (InputPad::OnButton(L_TRIGGER) || InputPad::OnButton(R_TRIGGER))
 	{
-		manager->CreateAttack(this->location, Vector2D{40, 40}, this, 30, shot_rad);
+		manager->CreateAttack(GetBulletData());
 	}
 
-	//角度を加算する
-	//if (InputPad::OnPressed(XINPUT_BUTTON_A))
-	//{
-	//	shot_rad += 0.01f;
-	//}
 #ifdef _DEBUG
 	//左キーで左移動
 	if (k_input->GetKeyState(KEY_INPUT_LEFT) == eInputState::Held)
@@ -187,10 +177,20 @@ void Player::Control()
 #endif // _DEBUG
 }
 
-/// <summary>
-/// 描画画像を取得
-/// </summary>
-/// <returns>画像ハンドル</returns>
+BulletData Player::GetBulletData()
+{
+	BulletData _data;
+	_data.b_angle = shot_rad;
+	_data.delete_time = 60;
+	_data.h_count = 1;
+	_data.location = this->location;
+	_data.radius = 40;
+	_data.speed = 5;
+	_data.who = this;
+
+	return _data;
+}
+
 int Player::GetImages()
 {
 	return image;

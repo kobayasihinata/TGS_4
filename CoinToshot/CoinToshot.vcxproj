@@ -169,6 +169,7 @@
     <ClCompile Include="Utility\Vector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Object\Base\BulletData.h" />
     <ClInclude Include="Scene\GameSceneUI.h" />
     <ClInclude Include="Object\Block.h" />
     <ClInclude Include="Object\Attack.h" />
