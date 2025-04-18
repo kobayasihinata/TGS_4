@@ -19,7 +19,7 @@ void ObjectManager::Update()
 	//オブジェクト配列に追加する処理
 	for (const auto& create_object : create_object)
 	{
-		create_object.object->Initialize(this, create_object.object_num, create_object.init_location, create_object.init_size);
+		create_object.object->Initialize(this, create_object.object_num, create_object.init_location, create_object.init_size,create_object.init_radius);
 		object_list.push_back(create_object.object);
 	}
 
@@ -67,39 +67,39 @@ void ObjectManager::Draw()const
 	}
 }
 
-void ObjectManager::CreateObject(int object_type, Vector2D init_location, Vector2D init_size)
+void ObjectManager::CreateObject(int object_type, Vector2D init_location, Vector2D init_size, float init_radius)
 {
 	switch (object_type)
 	{
 	case ObjectList::ePLAYER:
-		create_object.push_back(InitData{ new Player(),object_type,init_location,init_size });
+		create_object.push_back(InitData{ new Player(),object_type,init_location,init_size,init_radius });
 		break;
 	case ObjectList::eENEMY1:
-		create_object.push_back(InitData{ new Enemy1(),object_type,init_location,init_size });
+		create_object.push_back(InitData{ new Enemy1(),object_type,init_location,init_size,init_radius });
 		break;
 	case ObjectList::eENEMY2:
-		create_object.push_back(InitData{ new Enemy2(),object_type,init_location,init_size });
+		create_object.push_back(InitData{ new Enemy2(),object_type,init_location,init_size,init_radius });
 		break;
 	case ObjectList::eENEMY3:
-		create_object.push_back(InitData{ new Enemy3(),object_type,init_location,init_size });
+		create_object.push_back(InitData{ new Enemy3(),object_type,init_location,init_size,init_radius });
 		break;
 	case ObjectList::eENEMY4:
-		create_object.push_back(InitData{ new Enemy4(),object_type,init_location,init_size });
+		create_object.push_back(InitData{ new Enemy4(),object_type,init_location,init_size,init_radius });
 		break;
 	case ObjectList::eENEMY5:
-		create_object.push_back(InitData{ new Enemy5(),object_type,init_location,init_size });
+		create_object.push_back(InitData{ new Enemy5(),object_type,init_location,init_size,init_radius });
 		break;
 	case ObjectList::eCOIN:
-		create_object.push_back(InitData{ new Coin(ingame),object_type,init_location,init_size });
+		create_object.push_back(InitData{ new Coin(ingame),object_type,init_location,init_size,init_radius });
 		break;
 	//case ObjectList::eHEAL:
-	//	create_object.push_back(InitData{ new Heal(),object_type,init_location,init_size });
+	//	create_object.push_back(InitData{ new Heal(),object_type,init_location,init_size,init_radius });
 	//	break;
 	//case ObjectList::eBLOCK:
-	//	create_object.push_back(InitData{ new Block(),object_type,init_location,init_size });
+	//	create_object.push_back(InitData{ new Block(),object_type,init_location,init_size,init_radius });
 	//	break;
 	//case ObjectList::eSLOT:
-	//	create_object.push_back(InitData{ new Slot(),object_type,init_location,init_size });
+	//	create_object.push_back(InitData{ new Slot(),object_type,init_location,init_size,init_radius });
 	//	break;
 	default:
 		break;
@@ -107,7 +107,7 @@ void ObjectManager::CreateObject(int object_type, Vector2D init_location, Vector
 }
 void ObjectManager::CreateObject(ObjectData _data)
 {
-	CreateObject(_data.type, _data.loc, _data.size);
+	CreateObject(_data.type, _data.loc, _data.size, _data.radius);
 }
 
 void ObjectManager::DeleteObject(ObjectBase* _delete_object)
@@ -127,11 +127,12 @@ void ObjectManager::DeleteAllObject()
 void ObjectManager::CreateAttack(BulletData _bullet_data)
 {
 	create_object.push_back(
-		InitData{ 
+		InitData{
 			new Attack(_bullet_data),
 			eATTACK,
 			_bullet_data.location,
-			Vector2D{_bullet_data.radius * 2,_bullet_data.radius * 2} 
+			Vector2D{_bullet_data.radius * 2,_bullet_data.radius * 2},
+			_bullet_data.radius
 		}
 	);
 }

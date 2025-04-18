@@ -11,7 +11,7 @@ public:
 	//デストラクタ
 	~Enemy5();
 	//初期化処理
-	void Initialize(ObjectManager* _manager, int _object_type, Vector2D init_location = Vector2D(0.0f), Vector2D init_size = 40.0f)override;
+	void Initialize(ObjectManager* _manager, int _object_type, Vector2D init_location = Vector2D(0.0f), Vector2D init_size = 40.0f, float init_radius = 0.f)override;
 	//終了時処理
 	void Finalize()override;
 	//更新処理

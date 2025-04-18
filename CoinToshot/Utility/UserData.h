@@ -9,6 +9,7 @@ struct ObjectData
 	Vector2D loc;	//À•W
 	Vector2D size;	//‘å‚«‚³
 	int type;		//í—Ş
+	float radius = 0.f;	//”¼Œa(lŠp‚Íg‚í‚È‚¢)
 };
 class UserData
 {

@@ -32,9 +32,9 @@ public:
 	//ƒfƒXƒgƒ‰ƒNƒ^	
 	virtual ~ObjectBase() = default;
 	//‰Šú‰»ˆ—
-	virtual void Initialize(ObjectManager* _manager, int _object_type, Vector2D init_location = 0.0f, Vector2D init_size = 40.0f) {
+	virtual void Initialize(ObjectManager* _manager, int _object_type, Vector2D init_location = 0.0f, Vector2D init_size = 40.0f, float init_radius = 0.f) {
 		
-		__super::Initialize(init_location ,init_size);
+		__super::Initialize(init_location ,init_size, init_radius);
 
 		manager = _manager;
 		object_type = _object_type;
@@ -54,7 +54,17 @@ public:
 		DrawGraphF(local_location.x, local_location.y, image, false);
 #ifdef _DEBUG
 		//“–‚½‚è”»’è‚Ì•`‰æ
-		Vector2D::DrawBoxV2(local_location, local_location + box_size, 0xff0000, false);
+
+		//lŠp
+		if (this->radius <= 0.f)
+		{
+			Vector2D::DrawBoxV2(local_location-(box_size/2), local_location + (box_size/2), 0xff0000, false);
+		}
+		//‰~
+		else
+		{
+			DrawCircleAA(local_location.x, local_location.y, radius, 20, 0xff0000, false);
+		}
 #endif // _DEBUG
 	}
 

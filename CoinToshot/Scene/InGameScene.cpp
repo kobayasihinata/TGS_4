@@ -90,17 +90,15 @@ void InGameScene::Draw()const
 	DrawString(10, 10, "InGame", GetColor(255, 255, 255));
 	DrawString(10, 30, "1 = Title  2 = Result", 0xffffff);
 
-	//UI描画
-	ui->Draw();
-
 	//プレイヤー描画
 	objects->Draw();
 	camera->GetCameraLocation().x;
 	camera->GetCameraLocation().y;
+
 	//グリッド表示
 	for (int x = -STAGE_SIZE; x < STAGE_SIZE; x += 100)
 	{
-		DrawLine(x - camera->GetCameraLocation().x,
+		DrawLineAA(x - camera->GetCameraLocation().x,
 			-STAGE_SIZE - camera->GetCameraLocation().y,
 			x - camera->GetCameraLocation().x,
 			STAGE_SIZE - camera->GetCameraLocation().y,
@@ -108,12 +106,15 @@ void InGameScene::Draw()const
 	}
 	for (int y = -STAGE_SIZE; y < STAGE_SIZE; y += 100)
 	{
-		DrawLine(-STAGE_SIZE - camera->GetCameraLocation().x,
+		DrawLineAA(-STAGE_SIZE - camera->GetCameraLocation().x,
 			y - camera->GetCameraLocation().y,
 			STAGE_SIZE - camera->GetCameraLocation().x,
 			y - camera->GetCameraLocation().y,
 			0x00ff00);
 	}
+
+	//UI描画
+	ui->Draw();
 }
 
 eSceneType InGameScene::GetNowSceneType()const
@@ -156,7 +157,7 @@ void InGameScene::SpawnItem()
 
 	if ((int)frame % 10 == 0)
 	{
-		objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{40,40},eCOIN});
+		objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{40,40},eCOIN, 20.f});
 	}
 }
 

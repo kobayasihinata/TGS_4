@@ -33,7 +33,7 @@ public:
 	/// ‰Šú‰»ˆ—
 	/// </summary>
 	/// <param name="init_location">‰ŠúÀ•W</param>
-	void Initialize(ObjectManager* _manager, int _object_type, Vector2D init_location = Vector2D(0.0f), Vector2D init_size = { PLAYER_WIDTH ,PLAYER_HEIGHT })override;
+	void Initialize(ObjectManager* _manager, int _object_type, Vector2D init_location = Vector2D(0.0f), Vector2D init_size = { PLAYER_WIDTH ,PLAYER_HEIGHT }, float init_radius = 0.f)override;
 
 	/// <summary>
 	/// I—¹ˆ—

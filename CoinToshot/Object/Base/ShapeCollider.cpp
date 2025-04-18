@@ -2,20 +2,40 @@
 #include "ObjectBase.h"
 #include "ActorBase.h"
 
-void ShapeCollider::Initialize(Vector2D init_location, Vector2D init_size)
+void ShapeCollider::Initialize(Vector2D init_location, Vector2D init_size, float init_radius)
 {
 	location = init_location;
 	local_location = 0;
 	box_size = init_size;
+	radius = init_radius;
 }
 
-bool ShapeCollider::CheckHit(ShapeCollider* object2)
+bool ShapeCollider::CheckHit(ShapeCollider* object)
 {
-	return CheckHit(object2->GetLocation(), object2->GetSize());
+	//é©êgÇ‡ëäéËÇ‡éläpÇ»ÇÁ
+	if (this->radius <= 0.f && object->radius <= 0.f)
+	{
+		return CollisionCheckBtoB(object->GetLocation(), object->GetSize());
+	}
+	//é©êgÇ™éläpÇ≈ÅAëäéËÇ™â~Ç»ÇÁ
+	if (this->radius <= 0.f && object->radius > 0.f)
+	{
+		return CollisionCheckBtoC(this->location,this->box_size,object->GetLocation(), object->GetRadius());
+	}
+	//é©êgÇ‡ëäéËÇ‡â~Ç»ÇÁ
+	if (this->radius > 0.f && object->radius > 0.f)
+	{
+		return CollisionCheckCtoC(object->GetLocation(), object->GetRadius());
+	}
+	//é©êgÇ™â~Ç≈ÅAëäéËÇ™éläpÇ»ÇÁ
+	if (this->radius > 0.f && object->radius <= 0.f)
+	{
+		return CollisionCheckBtoC(object->GetLocation(), object->GetSize(), this->location, this->radius);
+	}
 }
 
 
-bool ShapeCollider::CheckHit(Vector2D _loc2, Vector2D _size2)
+bool ShapeCollider::CollisionCheckBtoB(Vector2D _loc2, Vector2D _size2)const
 {
 	Vector2D loc1 = this->location;
 	Vector2D size1 = this->box_size;
@@ -30,6 +50,92 @@ bool ShapeCollider::CheckHit(Vector2D _loc2, Vector2D _size2)
 		return true;
 	}
 	return false;
+}
+
+bool ShapeCollider::CollisionCheckBtoC(Vector2D _loc1, Vector2D _size1, Vector2D _loc2, float _radius2)const
+{
+	bool nResult = false;
+
+	float box_left = _loc1.x - (_size1.x / 2);
+	float box_right = _loc1.x + (_size1.x / 2);
+	float box_up = _loc1.y + (_size1.y / 2);
+	float box_down = _loc1.y - (_size1.y / 2);
+
+	// éläpå`ÇÃélï”Ç…ëŒÇµÇƒâ~ÇÃîºåaï™ÇæÇØë´ÇµÇΩÇ∆Ç´â~Ç™èdÇ»Ç¡ÇƒÇ¢ÇΩÇÁ
+	if ((_loc2.x > box_left - _radius2) &&
+		(_loc2.x < box_right + _radius2) &&
+		(_loc2.y > box_down - _radius2) &&
+		(_loc2.y < box_up + _radius2))
+	{
+		nResult = true;
+		float fl = _radius2 * _radius2;
+
+
+		// ç∂
+		if (_loc2.x < box_left)
+		{
+			// ç∂è„
+			if ((_loc2.y < box_down))
+			{
+				if ((DistanceSqrf(box_left, box_down, _loc2.x, _loc2.y) >= fl))
+				{
+					nResult = false;
+				}
+			}
+			else
+			{
+				// ç∂â∫
+				if (_loc2.y > box_up)
+				{
+					if ((DistanceSqrf(box_left, box_up, _loc2.x, _loc2.y) >= fl))
+					{
+						nResult = false;
+					}
+				}
+			}
+		}
+		else
+		{
+			// âE
+			if (_loc2.x > box_right)
+			{
+				// âEè„
+				if ((_loc2.y < box_down))
+				{
+					if ((DistanceSqrf(box_right, box_down, _loc2.x, _loc2.y) >= fl))
+					{
+						nResult = false;
+					}
+				}
+				else
+				{
+					// âEâ∫
+					if (_loc2.y > box_up)
+					{
+						if ((DistanceSqrf(box_right, box_up, _loc2.x, _loc2.y) >= fl))
+						{
+							nResult = false;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return nResult;
+}
+
+bool ShapeCollider::CollisionCheckCtoC(Vector2D _loc, float _radius)const
+{
+	return this->radius + _radius > sqrt(powf(location.x - _loc.x, 2) + pow(location.y - _loc.y, 2));
+}
+
+float ShapeCollider::DistanceSqrf(const float t_x1, const float t_y1, const float t_x2, const float t_y2)const
+{
+	float dx = t_x2 - t_x1;
+	float dy = t_y2 - t_y1;
+
+	return (dx * dx) + (dy * dy);
 }
 
 void ShapeCollider::Push(ShapeCollider* hit_object)

@@ -7,9 +7,9 @@
 #include <cmath>
 #define _USE_MATH_DEFINES
 
-void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init_location, Vector2D init_size)
+void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init_location, Vector2D init_size, float init_radius)
 {
-	__super::Initialize(_manager, _object_type, init_location, init_size);
+	__super::Initialize(_manager, _object_type, init_location, init_size, init_radius);
 
 	camera = Camera::Get();
 	k_input = InputKey::Get();
@@ -79,10 +79,10 @@ void Player::Draw()const
 	DebugInfomation::Add("rad", shot_rad);
 
 	//”­ŽËŠp“x•`‰æ
-	DrawLineAA(local_location.x + (box_size.x/2), 
-		local_location.y + (box_size.y / 2),
-		local_location.x + (box_size.x / 2) + (cosf(shot_rad) * 60),
-		local_location.y + (box_size.y / 2) + (sinf(shot_rad) * 60),
+	DrawLineAA(local_location.x, 
+		local_location.y,
+		local_location.x + (cosf(shot_rad) * 60),
+		local_location.y + (sinf(shot_rad) * 60),
 		0xff0000,
 		TRUE);
 

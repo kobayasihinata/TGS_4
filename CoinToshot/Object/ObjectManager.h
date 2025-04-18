@@ -23,6 +23,7 @@ struct InitData {
 	int object_num;
 	Vector2D init_location;
 	Vector2D init_size;
+	float init_radius = 0.f;	//四角の場合使わない
 };
 
 class ObjectManager
@@ -48,7 +49,7 @@ public:
 	//描画
 	void Draw()const;
 	//オブジェクトの生成
-	void CreateObject(int object_type, Vector2D init_location = 0.0f, Vector2D init_size = 40.0f);
+	void CreateObject(int object_type, Vector2D init_location = 0.0f, Vector2D init_size = 40.0f, float init_radius = 0.f);
 	//オブジェクトの生成(オブジェクトデータ用のオーバーロード)
 	void CreateObject(ObjectData _data);
 	//オブジェクトの削除

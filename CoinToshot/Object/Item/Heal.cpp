@@ -12,9 +12,9 @@ Heal::~Heal()
 
 }
 
-void Heal::Initialize(ObjectManager* _manager, int _object_type, Vector2D init_location, Vector2D init_size)
+void Heal::Initialize(ObjectManager* _manager, int _object_type, Vector2D init_location, Vector2D init_size, float init_radius)
 {
-	__super::Initialize(_manager, _object_type, init_location, init_size);
+	__super::Initialize(_manager, _object_type, init_location, init_size, init_radius);
 }
 
 void Heal::Finalize()
