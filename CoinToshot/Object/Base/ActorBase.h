@@ -24,8 +24,9 @@ public:
 	//当たり判定が被った時の処理
 	virtual void Hit(ObjectBase* hit_object)override
 	{
-		//攻撃とアイテム以外なら
-		if (hit_object->GetObjectType() != ObjectList::eATTACK &&
+		//自身がプレイヤーではなく、攻撃とアイテム以外なら
+		if (this->object_type != ePLAYER &&
+			hit_object->GetObjectType() != ObjectList::eATTACK &&
 			hit_object->GetObjectType() != ObjectList::eCOIN &&
 			hit_object->GetObjectType() != ObjectList::eHEAL)
 		{

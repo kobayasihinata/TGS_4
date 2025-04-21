@@ -8,6 +8,11 @@ void ShapeCollider::Initialize(Vector2D init_location, Vector2D init_size, float
 	local_location = 0;
 	box_size = init_size;
 	radius = init_radius;
+	//半径が0より大きく指定されていたら、box_sizeを半径に合わせる
+	if (radius > 0)
+	{
+		box_size = radius * 2;
+	}
 }
 
 bool ShapeCollider::CheckHit(ShapeCollider* object)
@@ -140,8 +145,11 @@ float ShapeCollider::DistanceSqrf(const float t_x1, const float t_y1, const floa
 
 void ShapeCollider::Push(ShapeCollider* hit_object)
 {
-	Vector2D saveloc = this->location;
+	Vector2D saveloc = this->location - (this->box_size/2);
 	Vector2D savesize = this->box_size;
+
+	Vector2D hit_loc = hit_object->GetLocation() - (hit_object->GetSize() / 2);
+	Vector2D hit_size = hit_object->GetSize();
 
 	Vector2D loc = saveloc;
 	Vector2D size = savesize;
@@ -150,20 +158,20 @@ void ShapeCollider::Push(ShapeCollider* hit_object)
 	float move[4] = { 0 };
 
 	//上下判定用に座標とエリアの調整
-	loc = { saveloc.x + 10.f,saveloc.y };
-	size = { savesize.x - 20.f, 1.f };
+	this->location = { saveloc.x + 10.f,saveloc.y };
+	this->box_size = { savesize.x - 20.f, 1.f };
 
 	//プレイヤー上方向の判定
 	if (CheckHit(hit_object) && !stageHitFlg[1][top]) {
 		stageHitFlg[0][top] = true;
-		stageHitFlg[1][top] = true;
+		stageHitFlg[1][top] = true;	
 	}
 	else {
 		stageHitFlg[0][top] = false;
 	}
 
 	//プレイヤー下方向の判定
-	loc.y = saveloc.y + savesize.y + 1;
+	this->location.y = saveloc.y + savesize.y + 1;
 
 	if (CheckHit(hit_object) && !stageHitFlg[1][bottom]) {
 		stageHitFlg[0][bottom] = true;
@@ -174,12 +182,12 @@ void ShapeCollider::Push(ShapeCollider* hit_object)
 	}
 
 	//最初の値に戻す
-	loc = saveloc;
-	size = savesize;
+	this->location = saveloc;
+	this->box_size = savesize;
 
 	//上方向に埋まらないようにする
 	if (stageHitFlg[0][top]) {//上方向に埋まっていたら
-		float t = (hit_object->GetLocation().y + hit_object->GetSize().y) - loc.y;
+		float t = (hit_loc.y + hit_size.y) - loc.y;
 		if ((int)t != 0) {
 			move[top] = t;
 		}
@@ -187,14 +195,14 @@ void ShapeCollider::Push(ShapeCollider* hit_object)
 
 	//下方向に埋まらないようにする
 	if (stageHitFlg[0][bottom]) {//下方向に埋まっていたら
-		float t = hit_object->GetLocation().y - (loc.y + size.y);
+		float t = hit_loc.y - (loc.y + size.y);
 		if ((int)t != 0) {
 			move[bottom] = t;
 		}
 	}
 
 	//左右判定用に座標とエリアの調整
-	size = { 1.f,savesize.y - 20.f };
+	this->box_size = { 1.f,savesize.y/* - 20.f*/ };
 
 	//プレイヤー左方向の判定
 	if (CheckHit(hit_object) && !stageHitFlg[1][left]) {
@@ -207,7 +215,7 @@ void ShapeCollider::Push(ShapeCollider* hit_object)
 
 
 	//プレイヤー右方向の判定
-	loc.x = saveloc.x + savesize.x + 1;
+	this->location.x = saveloc.x + savesize.x + 1;
 
 	if (CheckHit(hit_object) && !stageHitFlg[1][right]) {
 		stageHitFlg[0][right] = true;
@@ -218,12 +226,12 @@ void ShapeCollider::Push(ShapeCollider* hit_object)
 	}
 
 	//最初の値に戻す
-	loc = saveloc;
-	size = savesize;
+	this->location = saveloc;
+	this->box_size = savesize;
 
 	//左方向に埋まらないようにする
 	if (stageHitFlg[0][left]) {//左方向に埋まっていたら
-		float t = (hit_object->GetLocation().x + hit_object->GetSize().x) - loc.x;
+		float t = hit_loc.x + hit_size.x - loc.x;
 		if ((int)t != 0) {
 			move[left] = t;
 		}
@@ -231,7 +239,7 @@ void ShapeCollider::Push(ShapeCollider* hit_object)
 
 	//右方向に埋まらないようにする
 	if (stageHitFlg[0][right]) {//右方向に埋まっていたら
-		float t = hit_object->GetLocation().x - (loc.x + size.x);
+		float t = hit_loc.x - (loc.x + size.x);
 		if ((int)t != 0) {
 			move[right] = t;
 		}
@@ -244,19 +252,16 @@ void ShapeCollider::Push(ShapeCollider* hit_object)
 	loc.y += (move[top] + move[bottom]);
 	loc.x += (move[left] + move[right]);
 
-	if (loc.x +
-		size.x <
-		hit_object->GetLocation().x ||
-		loc.x >
-		hit_object->GetLocation().x +
-		hit_object->GetSize().x) {
+	if (loc.x + size.x < hit_loc.x ||
+		loc.x > hit_loc.x + hit_size.x) {
 		if (stageHitFlg[1][top] || stageHitFlg[1][bottom]) {
 			loc.x -= (move[left] + move[right]);
 		}
 	}
 
-	//移動量を実際のオブジェクトに反映させる
-	this->location = loc;
+	//移動量を実際のオブジェクトに反映させる	
+	this->location = loc + (savesize / 2);
+	this->box_size = savesize;
 
 	////当たった辺を保存する
 	//for (int i = 0; i < 4; i++)

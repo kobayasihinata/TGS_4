@@ -51,7 +51,7 @@ public:
 	virtual void Draw()const
 	{
 		//画像描画
-		DrawGraphF(local_location.x, local_location.y, image, false);
+		if(image != 0)DrawGraphF(local_location.x, local_location.y, image, false);
 #ifdef _DEBUG
 		//当たり判定の描画
 
@@ -78,6 +78,8 @@ public:
 	//アニメーション処理(基本的なループ用)
 	void Animation()
 	{
+		//画像が無い場合スキップ
+		if (image == 0)return;
 		//指定の時間に達したら
 		if (++anim_timer > anim_span)
 		{

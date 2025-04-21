@@ -2,6 +2,7 @@
 
 #include "InGameScene.h"
 #include "../Object/Player/Player.h"
+#include "../Object/Enemy/Enemy1.h"
 #include "../Utility/InputKey.h"
 #include "../Utility/UserData.h"
 
@@ -36,6 +37,8 @@ void InGameScene::Initialize()
 
 	//ƒvƒŒƒCƒ„[¶¬
 	objects->CreateObject({ Vector2D{0,0},Vector2D{40,40},ePLAYER });
+
+	objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{30,30},eENEMY1/*, 20.f*/ });
 }
 
 void InGameScene::Finalize()
@@ -157,7 +160,8 @@ void InGameScene::SpawnItem()
 
 	if ((int)frame % 10 == 0)
 	{
-		objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{40,40},eCOIN, 20.f});
+		//objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{40,40},eENEMY1/*, 20.f*/});
+		//objects->CreateObject({ Vector2D{-100,-100},Vector2D{30,30},eENEMY1,/* 20.f */ });
 	}
 }
 

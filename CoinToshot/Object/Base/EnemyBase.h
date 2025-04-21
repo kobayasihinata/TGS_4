@@ -7,12 +7,18 @@
 class EnemyBase :
 	public ActorBase
 {
-private:
-
+protected:
+	class Camera* camera;		//カメラポインタ格納(プレイヤーの情報を渡すためだけに取得)
 	int move_speed;	//移動速度
 
 
 public:
+
+	EnemyBase()
+	{
+		//カメラ取得
+		camera = Camera::Get();
+	}
 
 	virtual void Update()override
 	{
@@ -23,7 +29,9 @@ public:
 	//プレイヤーに向かって移動する
 	void MovetoPlayer()
 	{
-			
+		double radian = atan2(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x);
+		velocity.x = move_speed * cos(radian);
+		velocity.y = move_speed * sin(radian);
 	}
 
 };

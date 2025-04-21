@@ -3,7 +3,7 @@
 
 Enemy1::Enemy1()
 {
-
+	move_speed = 1;
 	////画像読込
 	//ResourceManager* rm = ResourceManager::GetInstance();
 	//std::vector<int>tmp;
@@ -40,7 +40,7 @@ void Enemy1::Update()
 	__super::Update();
 
 	//移動
-	Move();
+	//Move();
 
 	//アニメーション
 	Animation();
@@ -57,7 +57,8 @@ void Enemy1::Draw()const
 void Enemy1::Hit(ObjectBase* hit_Object)
 {
 	__super::Hit(hit_Object);
-
+	
+	//location -= (velocity * 10);
 }
 
 void Enemy1::Damage(float _value, Vector2D _attack_loc)
