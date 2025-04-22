@@ -4,6 +4,7 @@
 Enemy1::Enemy1()
 {
 	move_speed = 1;
+	hp = 2;
 	////‰æ‘œ“Ç
 	//ResourceManager* rm = ResourceManager::GetInstance();
 	//std::vector<int>tmp;

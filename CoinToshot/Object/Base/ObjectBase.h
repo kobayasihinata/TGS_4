@@ -52,6 +52,7 @@ public:
 	{
 		//‰æ‘œ•`‰æ
 		if(image != 0)DrawGraphF(local_location.x, local_location.y, image, false);
+
 #ifdef _DEBUG
 		//“–‚½‚è”»’è‚Ì•`‰æ
 

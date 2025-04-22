@@ -42,19 +42,19 @@ public:
 		hp -= _value;
 		//ノックバック処理
 
-		//プレイヤーの中心座標
-		Vector2D player_center = this->location + (this->box_size / 2);
-		//プレイヤーの中心座標が攻撃の中心座標より大きければ
-		if (player_center.x > _attack_loc.x)
-		{
-			velocity.x = 5;
-		}
-		//プレイヤーの中心座標が攻撃の中心座標より小さければ
-		else
-		{
-			velocity.x = -5;
-		}
-		velocity.y = -5;
+		////プレイヤーの中心座標
+		//Vector2D player_center = this->location + (this->box_size / 2);
+		////プレイヤーの中心座標が攻撃の中心座標より大きければ
+		//if (player_center.x > _attack_loc.x)
+		//{
+		//	velocity.x = 5;
+		//}
+		////プレイヤーの中心座標が攻撃の中心座標より小さければ
+		//else
+		//{
+		//	velocity.x = -5;
+		//}
+		//velocity.y = -5;
 	}
 	//移動処理
 	void Move()

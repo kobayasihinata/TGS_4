@@ -26,6 +26,14 @@ public:
 
 		MovetoPlayer();
 	}
+
+	virtual void Draw()const override
+	{
+		__super::Draw();
+
+		//hp•`‰æ
+		DrawFormatStringF(local_location.x, local_location.y - (box_size.y / 2), 0xffffff, "HP:%d", this->hp);
+	}
 	//ƒvƒŒƒCƒ„[‚ÉŒü‚©‚Á‚ÄˆÚ“®‚·‚é
 	void MovetoPlayer()
 	{
