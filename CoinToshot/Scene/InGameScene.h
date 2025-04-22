@@ -52,6 +52,11 @@ public:
 	void SpawnItem();
 
 	/// <summary>
+	/// ランダムに敵を生成
+	/// </summary>
+	void SpawnEnemy();
+
+	/// <summary>
 	/// 画面上に出るUI生成
 	/// </summary>
 	/// <param name="_location">表示する座標</param>

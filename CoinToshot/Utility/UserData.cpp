@@ -14,7 +14,7 @@ int UserData::now_stage = 0;								//現在のステージ数
 
 Vector2D UserData::spawn_loc[10] = { 0,0 };		//リスポーンする位置
 float UserData::player_hp = DEFAULT_HP;			//体力
-int UserData::coin = 0;							//スコア
+int UserData::coin = 10;						//スコア
 int UserData::timer = DEFAULT_TIMELIMIT;		//残り時間
 bool UserData::is_clear = true;					//false=ゲームオーバー true=ゲームクリア
 int UserData::invincible = 0;					//この数値が０以上なら、その時間だけプレイヤーを無敵にして、0に戻す

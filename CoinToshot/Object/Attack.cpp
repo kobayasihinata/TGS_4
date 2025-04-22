@@ -52,8 +52,8 @@ void Attack::Draw()const
 
 void Attack::Hit(ObjectBase* hit_object)
 {
-	//UŒ‚“¯Žm‚ª“–‚½‚Á‚½ê‡A–³Ž‹
-	if (hit_object->GetObjectType() == eATTACK)
+	//UŒ‚“¯Žm‚ª“–‚½‚Á‚½ê‡‚©A—Ž‚¿‚Ä‚éƒRƒCƒ“‚Æ“–‚½‚Á‚½ê‡A–³Ž‹
+	if (hit_object->GetObjectType() == eATTACK || hit_object->GetObjectType() == eCOIN)
 	{
 		return;
 	}
@@ -61,7 +61,7 @@ void Attack::Hit(ObjectBase* hit_object)
 	if (object->GetObjectType() != ePLAYER && hit_object->GetObjectType() == ePLAYER)
 	{
 		//ƒ_ƒ[ƒW
-		hit_object->Damage(1, this->location + (this->box_size / 2));
+		hit_object->Damage(1, this->location);
 		//UŒ‚‚ÌÁ‹Ž
 		manager->DeleteObject(this);
 	}
@@ -70,7 +70,7 @@ void Attack::Hit(ObjectBase* hit_object)
 	if (object->GetObjectType() == ePLAYER && hit_object->GetObjectType() != ePLAYER)
 	{
 		//ƒ_ƒ[ƒW
-		hit_object->Damage(1, this->location + (this->box_size / 2));
+		hit_object->Damage(1, this->location);
 		//UŒ‚‚ÌÁ‹Ž
 		manager->DeleteObject(this);
 	}

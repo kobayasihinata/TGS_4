@@ -32,7 +32,7 @@ public:
 		__super::Draw();
 
 		//hp•`‰æ
-		DrawFormatStringF(local_location.x, local_location.y - (box_size.y / 2), 0xffffff, "HP:%d", this->hp);
+		DrawFormatStringF(local_location.x, local_location.y - (box_size.y / 2), 0xffffff, "HP:%f", this->hp);
 	}
 	//ƒvƒŒƒCƒ„[‚ÉŒü‚©‚Á‚ÄˆÚ“®‚·‚é
 	void MovetoPlayer()

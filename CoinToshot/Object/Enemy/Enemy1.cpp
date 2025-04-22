@@ -41,7 +41,7 @@ void Enemy1::Update()
 	__super::Update();
 
 	//移動
-	//Move();
+	Move();
 
 	//アニメーション
 	Animation();
@@ -65,5 +65,16 @@ void Enemy1::Hit(ObjectBase* hit_Object)
 void Enemy1::Damage(float _value, Vector2D _attack_loc)
 {
 	__super::Damage(_value, _attack_loc);
+
+	//死
+	if (hp <= 0)
+	{
+		manager->DeleteObject(this);
+		for (int i = 0; i < 5; i++)
+		{
+			manager->CreateObject({ Vector2D{this->location.x + (float)(GetRand(50) - 25),this->location.y + (float)(GetRand(50) - 25)},Vector2D{40,40},eCOIN, 20.f });
+		}
+
+	}
 }
 

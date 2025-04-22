@@ -23,7 +23,7 @@ void InGameScene::Initialize()
 	UserData::timer = DEFAULT_TIMELIMIT;
 	UserData::now_stage = 0;
 	UserData::player_hp = DEFAULT_HP;
-	UserData::coin = 0;
+	UserData::coin = 20;
 
 	camera = Camera::Get();
 	camera->SetStageSize({ (float)UserData::width_num[UserData::now_stage],(float)UserData::height_num[UserData::now_stage] });
@@ -66,6 +66,9 @@ eSceneType InGameScene::Update(float _delta)
 
 	//アイテム生成
 	SpawnItem();
+
+	//敵生成
+	SpawnEnemy();
 
 	//オブジェクト更新
 	objects->Update();
@@ -158,10 +161,20 @@ void InGameScene::SpawnItem()
 {
 	DebugInfomation::Add("frame", frame);
 
-	if ((int)frame % 10 == 0)
+	if ((int)frame % 60 == 0)
 	{
-		//objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{40,40},eENEMY1/*, 20.f*/});
+		objects->CreateObject({ Vector2D{(float)(GetRand(100)),(float)(GetRand(100))},Vector2D{40,40},eCOIN, 20.f});
 		//objects->CreateObject({ Vector2D{-100,-100},Vector2D{30,30},eENEMY1,/* 20.f */ });
+	}
+}
+
+void InGameScene::SpawnEnemy()
+{
+	//画面外からランダムに一定周期でスポーン
+	if ((int)frame % 60 == 0)
+	{
+		objects->CreateObject({ Vector2D{(float)(camera->player_location.x - (SCREEN_WIDTH/2) + (SCREEN_WIDTH * GetRand(1))),(float)(camera->player_location.y - (SCREEN_HEIGHT / 2) + GetRand(SCREEN_HEIGHT))},Vector2D{40,40},eENEMY1, /*20.f */});
+
 	}
 }
 

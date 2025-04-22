@@ -3,7 +3,7 @@
 #include "ObjectList.h"
 #include "../../Utility/common.h"
 
-#define KNOCK_BACK 1.5f;		//ノックバック時の倍率
+#define KNOCK_BACK 10		//ノックバック時の倍率
 
 class ActorBase :
 	public ObjectBase
@@ -42,19 +42,10 @@ public:
 		hp -= _value;
 		//ノックバック処理
 
-		////プレイヤーの中心座標
-		//Vector2D player_center = this->location + (this->box_size / 2);
-		////プレイヤーの中心座標が攻撃の中心座標より大きければ
-		//if (player_center.x > _attack_loc.x)
-		//{
-		//	velocity.x = 5;
-		//}
-		////プレイヤーの中心座標が攻撃の中心座標より小さければ
-		//else
-		//{
-		//	velocity.x = -5;
-		//}
-		//velocity.y = -5;
+		//ダメージ源の中心座標からノックバック方向を求める
+		double radian = atan2(_attack_loc.y - this->location.y, _attack_loc.x - this->location.x);
+		location.x -= (KNOCK_BACK * cos(radian));
+		location.y -= (KNOCK_BACK * sin(radian));
 	}
 	//移動処理
 	void Move()
