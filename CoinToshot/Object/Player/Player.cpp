@@ -28,11 +28,19 @@ void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init
 	//画像読込
 	ResourceManager* rm = ResourceManager::GetInstance();
 	std::vector<int>tmp;
-	tmp = rm->GetImages("Resource/Images/Tri-pilot/1.png");
-	animation_image.push_back(tmp[0]);
-	tmp = rm->GetImages("Resource/Images/Tri-pilot/2.png");
-	animation_image.push_back(tmp[0]);
-	image = animation_image[0];
+	tmp = rm->GetImages("Resource/Images/Player/Idle2.png", 11, 11, 1, 64, 64);
+	animation_image.push_back(tmp);
+	tmp = rm->GetImages("Resource/Images/Player/Run2.png", 12, 12, 1, 64, 64);
+	animation_image.push_back(tmp);
+
+	//画像サイズの半分マイナス
+	image_shift = -32;
+	//アニメーション周期設定
+	anim_span = 3;
+	//アニメーション設定
+	image_line = 0;
+
+	image = animation_image[0][0];
 }
 
 /// <summary>
@@ -55,6 +63,16 @@ void Player::Update()
 
 	//各種入力処理
 	Control();
+
+	//少しでも移動していたら表示アニメーションを変える
+	if (fabsf(velocity.x) > 0.3f || fabsf(velocity.y) > 0.3f)
+	{
+		image_line = 1;
+	}
+	else
+	{
+		image_line = 0;
+	}
 
 	//移動処理
 	Move();

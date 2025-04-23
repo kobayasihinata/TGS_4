@@ -5,10 +5,10 @@
 #include "ObjectList.h"
 #include "ShapeCollider.h"
 #include <vector>
+#include "../../Utility/common.h"
 
 class ObjectManager;
 
-#define DEFAULT_ANIM_SPAN 20	//アニメーション周期
 
 class ObjectBase : public ShapeCollider
 {
@@ -16,8 +16,9 @@ protected:
 	ObjectManager* manager;
 	int object_type;					//オブジェクトの種類(順番はマネージャークラスのObjectList)
 
-	std::vector<int> animation_image;	//アニメーション画像格納
+	std::vector<std::vector<int>> animation_image;	//アニメーション画像格納
 	int image;							//現在描画する画像
+	int image_line;						//現在描画する画像の行
 	int anim_timer;						//アニメーション画像切り替え用タイマー
 	int anim_span;						//アニメーション周期保存用
 	int image_num;						//描画画像の配列上の位置格納
@@ -42,6 +43,7 @@ public:
 		//初期化
 		anim_span = DEFAULT_ANIM_SPAN;	//アニメーション周期保存用
 		image_num = 0;					//描画画像の配列上の位置格納
+		image_shift = 0;
 	}
 	//終了時処理
 	virtual void Finalize() = 0;
@@ -51,8 +53,10 @@ public:
 	virtual void Draw()const
 	{
 		//画像描画
-		if(image != 0)DrawGraphF(local_location.x, local_location.y, image, false);
-
+		if (image != 0)
+		{
+			DrawRotaGraphF(local_location.x, local_location.y, 1.f, 1.f, image, false);
+		}
 #ifdef _DEBUG
 		//当たり判定の描画
 
@@ -77,7 +81,7 @@ public:
 	int GetObjectType()const { return object_type; }
 
 	//アニメーション処理(基本的なループ用)
-	void Animation()
+	virtual void Animation()
 	{
 		//画像が無い場合スキップ
 		if (image == 0)return;
@@ -87,12 +91,12 @@ public:
 			//タイマーリセット
 			anim_timer = 0;
 			//画像の総数を上回ったら最初の画像に戻す
-			if (++image_num > (animation_image.size() - 1))
+			if (++image_num > (animation_image[image_line].size() - 1))
 			{
 				image_num = 0;
 			}
 			//アニメーション画像を切り替える
-			image = animation_image[image_num];
+			image = animation_image[image_line][image_num];
 		}
 	}
 };

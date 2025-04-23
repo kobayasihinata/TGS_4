@@ -1,10 +1,12 @@
 #include "Enemy1.h"
 #include "../ObjectManager.h"
+#include "../../Utility/common.h"
 
 Enemy1::Enemy1()
 {
-	move_speed = 1;
-	hp = 2;
+	move_speed = ENEMY1_SPEED;
+	hp = ENEMY1_HP;
+
 	////画像読込
 	//ResourceManager* rm = ResourceManager::GetInstance();
 	//std::vector<int>tmp;
@@ -70,7 +72,10 @@ void Enemy1::Damage(float _value, Vector2D _attack_loc)
 	if (hp <= 0)
 	{
 		manager->DeleteObject(this);
-		for (int i = 0; i < 5; i++)
+
+		//指定したドロップ量から±1の間でランダムにコインをドロップ
+		int drop = ENEMY1_DROPCOIN + (GetRand(2) - 1);
+		for (int i = 0; i < drop; i++)
 		{
 			manager->CreateObject({ Vector2D{this->location.x + (float)(GetRand(50) - 25),this->location.y + (float)(GetRand(50) - 25)},Vector2D{40,40},eCOIN, 20.f });
 		}

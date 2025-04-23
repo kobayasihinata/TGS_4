@@ -1,5 +1,6 @@
 #include "Enemy4.h"
 #include "../ObjectManager.h"
+#include "../../Utility/common.h"
 
 Enemy4::Enemy4()
 {

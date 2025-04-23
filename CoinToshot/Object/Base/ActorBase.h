@@ -12,6 +12,9 @@ protected:
 	int frame;	//ƒtƒŒ[ƒ€‘ª’è
 	float hp;
 	Vector2D old_location = { 0.0f,0.0f };	//1ƒtƒŒ[ƒ€‘O‚ÌÀ•W
+
+	Vector2D last_velocity;				//’â~‚·‚éi’l‚ªMOVE_LOWER_LIMIT‚ğ‰º‰ñ‚éj’¼‘O‚Ìvelocity
+
 public:
 	Vector2D velocity = { 0.0f,0.0f };
 
@@ -19,6 +22,45 @@ public:
 	virtual void Update()override
 	{
 		frame++;
+		//’â~‘O‚ÉˆÚ“®‚µ‚Ä‚½•ûŒü‚ğ•Û‘¶‚·‚é
+		if (fabsf(velocity.x) > MOVE_LOWER_LIMIT)
+		{
+			last_velocity.x = velocity.x;
+		}
+		if (fabsf(velocity.y) > MOVE_LOWER_LIMIT)
+		{
+			last_velocity.y = velocity.y;
+		}
+	}
+
+	virtual void Draw()const override
+	{
+		//‰æ‘œ•`‰æ
+		if (image != 0)
+		{
+			if (last_velocity.x > 0)
+			{
+				DrawRotaGraphF(local_location.x, local_location.y, 1.f, 0, image, false, false);
+			}
+			else
+			{
+				DrawRotaGraphF(local_location.x, local_location.y, 1.f, 0, image, false, true);
+			}
+		}
+#ifdef _DEBUG
+		//“–‚½‚è”»’è‚Ì•`‰æ
+
+		//lŠp
+		if (this->radius <= 0.f)
+		{
+			Vector2D::DrawBoxV2(local_location - (box_size / 2), local_location + (box_size / 2), 0xff0000, false);
+		}
+		//‰~
+		else
+		{
+			DrawCircleAA(local_location.x, local_location.y, radius, 20, 0xff0000, false);
+		}
+#endif // _DEBUG
 	}
 
 	//“–‚½‚è”»’è‚ª”í‚Á‚½‚Ìˆ—
@@ -47,9 +89,13 @@ public:
 		location.x -= (KNOCK_BACK * cos(radian));
 		location.y -= (KNOCK_BACK * sin(radian));
 	}
+
 	//ˆÚ“®ˆ—
 	void Move()
 	{
+
+		DebugInfomation::Add("velox", last_velocity.x);
+		DebugInfomation::Add("veloy", last_velocity.y);
 		//Œ¸‘¬‚ÌÀs
 		velocity.x -= velocity.x / 10;
 		velocity.y -= velocity.y / 10;

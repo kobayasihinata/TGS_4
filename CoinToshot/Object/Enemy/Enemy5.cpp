@@ -1,5 +1,6 @@
 #include "Enemy5.h"
 #include "../ObjectManager.h"
+#include "../../Utility/common.h"
 
 Enemy5::Enemy5()
 {
