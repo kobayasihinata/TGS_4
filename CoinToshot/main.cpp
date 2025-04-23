@@ -15,7 +15,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 	int result = 0;
 
 	//必要データ読み込み
-	UserData::ReadData();
+	UserData::ReadRankingData();
 
 	try {
 		//オブジェクト生成

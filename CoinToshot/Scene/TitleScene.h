@@ -2,10 +2,25 @@
 
 #include "SceneBase.h"
 
+#define ITEM_NUM 3	//タイトルの項目数
+
+enum TitleItem
+{
+	tGameMain = 0,
+	tRanking,
+	tEnd,
+};
+
+static char item_text[ITEM_NUM][256] =
+{
+	"Start",
+	"Ranking",
+	"End"
+};
 class TitleScene : public SceneBase
 {
 private:
-
+	int current_num;	//選択されている項目
 public:
 	TitleScene();
 	virtual ~TitleScene();

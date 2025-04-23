@@ -34,9 +34,6 @@ public:
 	//カメラ更新（カメラ座標指定）
 	void Update(Vector2D _loc);
 
-	//ステージの縦幅と横幅を格納する
-	void SetStageSize(Vector2D _size);
-
 	//カメラ座標取得
 	Vector2D GetCameraLocation()const
 	{

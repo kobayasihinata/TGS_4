@@ -21,12 +21,10 @@ void InGameScene::Initialize()
 
 	//各数字リセット
 	UserData::timer = DEFAULT_TIMELIMIT;
-	UserData::now_stage = 0;
 	UserData::player_hp = DEFAULT_HP;
 	UserData::coin = 20;
 
 	camera = Camera::Get();
-	camera->SetStageSize({ (float)UserData::width_num[UserData::now_stage],(float)UserData::height_num[UserData::now_stage] });
 
 	//オブジェクト管理クラス生成
 	objects = new ObjectManager();
@@ -128,30 +126,6 @@ eSceneType InGameScene::GetNowSceneType()const
 	return eSceneType::eInGame;
 }
 
-void InGameScene::ChangeNextStage()
-{
-	//現在のステージが最終ステージで遷移する場合はリザルトへ
-	if (UserData::now_stage >= UserData::stage_num - 1)
-	{
-		//リザルト遷移
-		ChangeResult();
-	}
-	//最終ステージ未満のステージなら次のステージへ
-	else
-	{
-		//次のステージへ移動
-		UserData::now_stage++;
-		//既存のオブジェクトは全消し
-		objects->DeleteAllObject();
-		//読み込んだデータを基にステージを生成する
-		std::vector<ObjectData> obj_data = UserData::stage_data[UserData::now_stage];
-		for (const auto obj_data : obj_data)
-		{
-			objects->CreateObject(obj_data);
-		}
-	}
-
-}
 void InGameScene::ChangeResult()
 {
 	change_scene = eSceneType::eResult;

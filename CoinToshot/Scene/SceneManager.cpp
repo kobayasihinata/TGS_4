@@ -75,6 +75,12 @@ void SceneManager::Update()
 		//シーンの更新処理
 		eSceneType next_scene_type = current_scene->Update(delta_second);
 
+		//eNullなら終了
+		if (next_scene_type == eSceneType::eNull)
+		{
+			break;
+		}
+
 		//シーンの描画処理
 		Draw();
 

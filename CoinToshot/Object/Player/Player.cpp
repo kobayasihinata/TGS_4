@@ -134,7 +134,7 @@ void Player::Death()
 	manager->Result();
 
 	//リスポーン位置に移動
-	location = UserData::spawn_loc[UserData::now_stage];
+	location = 0;
 
 	//各値リセット
 	hp = DEFAULT_HP;

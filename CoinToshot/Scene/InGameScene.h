@@ -35,10 +35,6 @@ public:
 	//現在のシーンタイプ(オーバーライド必須)
 	virtual eSceneType GetNowSceneType()const override;
 
-	/// <summary>
-	/// 次のステージに切り替える ないならクリアリザルト画面へ
-	/// </summary>
-	void ChangeNextStage();
 
 	/// <summary>
 	/// リザルト遷移

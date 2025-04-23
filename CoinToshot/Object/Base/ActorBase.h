@@ -106,24 +106,24 @@ public:
 		//壁に当たっていたら前の座標に戻す
 
 		//左端
-		if (location.x <= -STAGE_SIZE)
+		if (location.x - (box_size.x/2) <= -STAGE_SIZE)
 		{
-			location.x = -STAGE_SIZE;
+			location.x = -STAGE_SIZE + (box_size.x / 2);
 		}
 		//右端
-		if (location.x + box_size.x > STAGE_SIZE)
+		if (location.x + (box_size.x / 2) > STAGE_SIZE)
 		{
-			location.x = STAGE_SIZE - box_size.x;
+			location.x = STAGE_SIZE - (box_size.x / 2);
 		}
 		//上端
-		if (location.y <= -STAGE_SIZE)
+		if (location.y - (box_size.y / 2) <= -STAGE_SIZE)
 		{
-			location.y = -STAGE_SIZE;
+			location.y = -STAGE_SIZE + (box_size.y / 2);
 		}
 		//下端
-		if (location.y + box_size.y > STAGE_SIZE)
+		if (location.y + (box_size.y / 2) > STAGE_SIZE)
 		{
-			location.y = STAGE_SIZE - box_size.y;
+			location.y = STAGE_SIZE - (box_size.y / 2);
 		}
 	}
 

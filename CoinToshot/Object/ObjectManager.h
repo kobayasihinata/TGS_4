@@ -62,8 +62,6 @@ public:
 	void ObjectHitCheck();
 	//オブジェクト一覧を取得する
 	std::vector<ObjectBase*> GetObjectList()const;
-	//次のステージ遷移
-	void ChangeNextStage();
 	//リザルト画面遷移
 	void Result();
 

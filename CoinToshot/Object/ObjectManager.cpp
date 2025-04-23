@@ -156,12 +156,6 @@ std::vector<ObjectBase*> ObjectManager::GetObjectList()const
 	return object_list;
 }
 
-//次のステージ遷移
-void ObjectManager::ChangeNextStage()
-{
-	ingame->ChangeNextStage();
-}
-
 void ObjectManager::Result()
 {
 	ingame->ChangeResult();
