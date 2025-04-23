@@ -15,6 +15,8 @@
 
 #define MOVE_LOWER_LIMIT 0.3f	//停止とみなすvelocityの下限
 
+#define RANKING_DATA 10			//登録するランキングデータの数
+
 //プレイヤーのパラメータ関連
 #define DEFAULT_HP 100			//プレイヤー初期HP
 #define DEFAULT_LIFE 0			//プレイヤー初期残機

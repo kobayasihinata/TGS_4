@@ -1,9 +1,17 @@
 #pragma once
 #include "SceneBase.h"
 
+enum DispScene
+{
+	dIsClear = 0,
+	dEnterName,
+};
+
 class ResultScene : public SceneBase
 {
 private:
+	int now_disp;		//表示している画面
+	char name[10];		//名前入力用
 
 public:
 	ResultScene();
@@ -25,6 +33,12 @@ public:
 
 	//現在のシーンタイプ(オーバーライド必須)
 	virtual eSceneType GetNowSceneType()const override;
+
+	//名前入力
+	eSceneType EnterName();
+
+	//ランキング並べ替え
+	void SortRanking();
 };
 
 

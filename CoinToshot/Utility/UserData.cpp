@@ -6,7 +6,7 @@
 #include "common.h"
 
 
-std::vector<RankingData> UserData::ranking_data{ 0 };	//ランキングデータ格納
+RankingData UserData::ranking_data[RANKING_DATA]{ 0 };	//ランキングデータ格納
 
 Vector2D UserData::spawn_loc[10] = { 0,0 };		//リスポーンする位置
 float UserData::player_hp = DEFAULT_HP;			//体力
@@ -17,37 +17,37 @@ int UserData::invincible = 0;					//この数値が０以上なら、その時間だけプレイヤー
 
 void UserData::ReadRankingData()
 {
-	const char* a = "Resource/UserData/CTs_RankingData.txt";
+	const char* a = "Resource/Data/CTs_RankingData.txt";
 
 	std::ifstream file(a);
 	//ファイルが読み込めていたなら
 	if (file)
 	{
 		RankingData data = { 0 };
-		//ファイルの最後まで読み込む
-		while(!file.eof()){
-			file >> data.name;
-			file >> data.coin;
-			//格納
-			ranking_data.push_back(data);
+		//ランキングデータ読み込み
+		for (int i = 0; i < RANKING_DATA; i++)
+		{
+			file >> ranking_data[i].num;
+			file >> ranking_data[i].name;
+			file >> ranking_data[i].coin;
 		}
 	}
 }
 
 void UserData::WriteRankingData()
 {
-	const char* a = "Resource/UserData/CTs_RankingData.txt";
+	const char* a = "Resource/Data/CTs_RankingData.txt";
 
 	std::ofstream file(a);
 	//ファイルが読み込めていたなら
 	if (file)
 	{
-		//ランキングデータ配分列データを書き込む
-		for (const auto& ranking_data : ranking_data)
+		//ランキングデータ読み込み
+		for (int i = 0; i < RANKING_DATA; i++)
 		{
-			file << ranking_data.name;
-			file << ranking_data.coin;
-			file << "\n";
+			file << ranking_data[i].num << " ";
+			file << ranking_data[i].name << " ";
+			file << ranking_data[i].coin << "\n";
 		}
 	}
 }

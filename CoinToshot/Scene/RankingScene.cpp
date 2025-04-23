@@ -47,6 +47,12 @@ void RankingScene::Draw()const
 	DrawString(10, 10, "Ranking", GetColor(255, 255, 255));
 	DrawString(10, 30, "Pad:A = Title", GetColor(255, 255, 255));
 
+	for (int i = 0; i < 10; i++)
+	{
+		DrawFormatString(180, 200 + (UserData::ranking_data[i].num * 40), 0xffffff, "no.%d",   UserData::ranking_data[i].num);
+		DrawFormatString(240, 200 + (UserData::ranking_data[i].num * 40), 0xffffff, "name:%s", UserData::ranking_data[i].name);
+		DrawFormatString(380, 200 + (UserData::ranking_data[i].num * 40), 0xffffff, "coin:%d", UserData::ranking_data[i].coin);
+	}
 }
 
 void RankingScene::Finalize()

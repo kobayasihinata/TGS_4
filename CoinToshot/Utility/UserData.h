@@ -2,11 +2,13 @@
 #include <vector>
 
 #include "Vector2D.h"
-#define RANKING_DATA_NUM 2		//ランキングデータの項目数
+#include "common.h"
+
 struct RankingData
 {
-	char* name;
-	int coin;
+	int num;		//順番
+	char name[11];		//名前
+	int coin;		//コインの数
 };
 
 struct ObjectData
@@ -21,7 +23,7 @@ class UserData
 
 public:
 
-	static std::vector<RankingData> ranking_data;	//ランキングデータ格納
+	static RankingData ranking_data[RANKING_DATA];	//ランキングデータ格納
 
 	//UIに表示する必要があり、保持しておいた方が良い可能性があるプレイヤー情報はここで管理
 	static Vector2D spawn_loc[10];	//リスポーンする位置
