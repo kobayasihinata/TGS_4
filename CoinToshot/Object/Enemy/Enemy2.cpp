@@ -4,6 +4,9 @@
 
 Enemy2::Enemy2()
 {
+	move_speed = ENEMY2_SPEED;
+	hp = ENEMY2_HP;
+	hit_damage = ENEMY2_DAMAGE;
 
 	////‰æ‘œ“Ç
 	//ResourceManager* rm = ResourceManager::GetInstance();

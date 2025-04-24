@@ -3,7 +3,7 @@
 #include "ObjectList.h"
 #include "../../Utility/common.h"
 
-#define KNOCK_BACK 10		//ノックバック時の倍率
+#define KNOCK_BACK 20		//ノックバック時の倍率
 
 class ActorBase :
 	public ObjectBase
@@ -86,8 +86,8 @@ public:
 
 		//ダメージ源の中心座標からノックバック方向を求める
 		double radian = atan2(_attack_loc.y - this->location.y, _attack_loc.x - this->location.x);
-		location.x -= (KNOCK_BACK * cos(radian));
-		location.y -= (KNOCK_BACK * sin(radian));
+		velocity.x -= (KNOCK_BACK * cos(radian));
+		velocity.y -= (KNOCK_BACK * sin(radian));
 	}
 
 	//移動処理

@@ -147,7 +147,7 @@ void ResultScene::SortRanking()
 	for (int i = 0; i < RANKING_DATA - 1; i++) {
 		for (int j = i + 1; j < RANKING_DATA; j++) {
 			if (UserData::ranking_data[i].coin > UserData::ranking_data[j].coin) {
-				UserData::ranking_data[i].num++;
+				UserData::ranking_data[j].num++;
 			}
 		}
 	}

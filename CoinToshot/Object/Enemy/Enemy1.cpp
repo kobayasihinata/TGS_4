@@ -6,21 +6,16 @@ Enemy1::Enemy1()
 {
 	move_speed = ENEMY1_SPEED;
 	hp = ENEMY1_HP;
-
+	hit_damage = 1;
 	////‰æ‘œ“Ç
 	//ResourceManager* rm = ResourceManager::GetInstance();
 	//std::vector<int>tmp;
-	//tmp = rm->GetImages("Resource/Images/GoldEnemy/1.png");
-	//animation_image.push_back(tmp[0]);
-	//tmp = rm->GetImages("Resource/Images/GoldEnemy/2.png");
-	//animation_image.push_back(tmp[0]);
-	//tmp = rm->GetImages("Resource/Images/GoldEnemy/3.png");
-	//animation_image.push_back(tmp[0]);
-	//tmp = rm->GetImages("Resource/Images/GoldEnemy/4.png");
-	//animation_image.push_back(tmp[0]);
-	//tmp = rm->GetImages("Resource/Images/GoldEnemy/5.png");
-	//animation_image.push_back(tmp[0]);
-	//image = animation_image[0];
+	//tmp = rm->GetImages("Resource/Images/Enemy1/0_Skeleton_Crusader_Run Slashing_000.png");
+	//animation_image.push_back(tmp);
+	////tmp = rm->GetImages("Resource/Images/Player/Run2.png", 12, 12, 1, 64, 64);
+	////animation_image.push_back(tmp);
+	//image = animation_image[0][0];
+	
 }
 
 Enemy1::~Enemy1()

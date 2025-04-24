@@ -21,6 +21,7 @@ void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init
 	velocity = Vector2D(0.0f);
 	damage_flg = false;
 	damage_timer = 0;
+	damage_stop = false;
 
 	//HP同期
 	hp = UserData::player_hp;
@@ -31,6 +32,8 @@ void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init
 	tmp = rm->GetImages("Resource/Images/Player/Idle2.png", 11, 11, 1, 64, 64);
 	animation_image.push_back(tmp);
 	tmp = rm->GetImages("Resource/Images/Player/Run2.png", 12, 12, 1, 64, 64);
+	animation_image.push_back(tmp);
+	tmp = rm->GetImages("Resource/Images/Player/Hit2.png", 7, 7, 1, 64, 64);
 	animation_image.push_back(tmp);
 
 	//画像サイズの半分マイナス
@@ -61,8 +64,12 @@ void Player::Update()
 	//カメラに座標を渡す
 	camera->player_location = this->location;
 
-	//各種入力処理
-	Control();
+	//ダメージ後の移動不可状態なら操作を受け付けない
+	if (!damage_stop)
+	{
+		//各種入力処理
+		Control();
+	}
 
 	//少しでも移動していたら表示アニメーションを変える
 	if (fabsf(velocity.x) > 0.3f || fabsf(velocity.y) > 0.3f)
@@ -77,11 +84,29 @@ void Player::Update()
 	//移動処理
 	Move();
 
+	//ダメージ後無敵を測定する
+	if (damage_flg && --damage_timer <= 0)
+	{
+		damage_flg = false;
+	}
+
+	//ダメージ後の移動不可状態を計測する
+	if (damage_flg && damage_timer <= PLAYER_DAMAGE_CD - PLAYER_DAMAGE_STOP)
+	{
+		damage_stop = false;
+	}
+
+	//ダメージ後移動不可状態なら表示アニメーションを変える
+	if (damage_stop)
+	{
+		image_line = 2;
+	}
+
 	//アニメーション処理
 	Animation();
 
 	//hpが0以下の時死亡処理
-	if (hp <= 0 )
+	if (hp <= 0)
 	{
 		Death();
 	}
@@ -109,9 +134,6 @@ void Player::Draw()const
 void Player::Hit(ObjectBase* hit_Object)
 {
 	__super::Hit(hit_Object);
-
-	//敵に当たったらダメージとノックバック
-
 }
 
 void Player::Damage(float _value, Vector2D _attack_loc)
@@ -121,8 +143,9 @@ void Player::Damage(float _value, Vector2D _attack_loc)
 	{
 		__super::Damage(_value, _attack_loc);
 		damage_flg = true;
-		//120フレーム無敵
-		damage_timer = 120;
+		damage_stop = true;
+		//一定フレーム無敵
+		damage_timer = PLAYER_DAMAGE_CD;
 	}
 }
 
@@ -151,11 +174,19 @@ void Player::Control()
 	//左スティックの傾きが一定以上なら移動する
 	if (fabsf(InputPad::TipLStick(STICKL_X)) > 0.1f)
 	{
-		velocity.x = InputPad::TipLStick(STICKL_X) * PLAYER_SPEED;
+		//加速の上限値を越さないように加算する
+		if (fabsf(velocity.x) < PLAYER_SPEED)
+		{
+			velocity.x = InputPad::TipLStick(STICKL_X) * PLAYER_SPEED;
+		}
 	}
 	if (fabsf(InputPad::TipLStick(STICKL_Y)) > 0.1f)
 	{
-		velocity.y = -InputPad::TipLStick(STICKL_Y) * PLAYER_SPEED;
+		//加速の上限値を越さないように加算する
+		if (fabsf(velocity.y) < PLAYER_SPEED)
+		{
+			velocity.y = -InputPad::TipLStick(STICKL_Y) * PLAYER_SPEED;
+		}
 	}
 
 	//右スティックの傾きが一定以上なら角度を変更する
