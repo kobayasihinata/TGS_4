@@ -179,20 +179,30 @@ Vector2D InGameScene::GetRandLoc()
 
 ObjectList InGameScene::GetRandEnemy()
 {
-	//コインが20以下ならenemy1と2をランダムでスポーン
+	//コインが0～30ならenemy1をスポーン
 	if (UserData::coin < 30)
 	{
-		return GetEnemy(eENEMY1, 100);
+		return GetEnemy(eENEMY3, 100);
 	}
-	//コインが40以下ならenemy1と2をランダムでスポーン
-	if (UserData::coin < 50)
+	//コインが31～60ならenemy1と2をランダムでスポーン
+	if (UserData::coin < 60)
 	{
 		return GetEnemy(eENEMY1, 50, eENEMY2, 50);
 	}
-	//コインが60以下ならenemy2をスポーン
-	if (UserData::coin < 70)
+	//コインが61～90ならenemy2をスポーン
+	if (UserData::coin < 90)
 	{
 		return GetEnemy(eENEMY2, 100);
+	}
+	//コインが91～120ならenemy2と3をスポーン
+	if (UserData::coin < 120)
+	{
+		return GetEnemy(eENEMY2, 50, eENEMY3, 50);
+	}
+	//コインが120～150ならenemy3をスポーン
+	if (UserData::coin < 120)
+	{
+		return GetEnemy(eENEMY3, 100);
 	}
 	//何もなければ敵1をスポーンさせる
 	return eENEMY1;

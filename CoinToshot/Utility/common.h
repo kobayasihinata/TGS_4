@@ -40,8 +40,11 @@
 #define ENEMY2_DROPCOIN 10		//“G‚QƒRƒCƒ“ƒhƒƒbƒv—Ê
 
 #define ENEMY3_HP 3				//“G‚RHP
-#define ENEMY3_SPEED 0.f			//“G‚R‘¬“x
+#define ENEMY3_SPEED 0.f		//“G‚R‘¬“x
 #define ENEMY3_DAMAGE 3			//“G‚R—^ƒ_ƒ
+#define ENEMY3_ATTACK_SPAN 180	//“G‚RUŒ‚üŠú
+#define ENEMY3_ATTACK_SPEED 5	//“G‚R’e‘¬“x
+#define ENEMY3_ATTACK_LIMIT 180	//“G‚R’ec—¯ŠÔ
 #define ENEMY3_DROPCOIN 7		//“G‚RƒRƒCƒ“ƒhƒƒbƒv—Ê
 
 #define ENEMY4_HP 3				//“G‚SHP

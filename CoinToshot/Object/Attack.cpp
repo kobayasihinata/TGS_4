@@ -46,8 +46,16 @@ void Attack::Update()
 void Attack::Draw()const
 {
 	__super::Draw();
-	//コイン仮
-	DrawCircleAA(local_location.x, local_location.y, radius, 20, 0xffaa00, true);
+	//コイン仮(プレイヤー)
+	if (object->GetObjectType() == ePLAYER)
+	{
+		DrawCircleAA(local_location.x, local_location.y, radius, 20, 0xffaa00, true);
+	}
+	//コイン仮(敵)
+	else
+	{
+		DrawCircleAA(local_location.x, local_location.y, radius, 20, 0xff0000, true);
+	}
 }
 
 void Attack::Hit(ObjectBase* hit_object)

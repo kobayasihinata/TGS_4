@@ -52,6 +52,15 @@ void Enemy3::Update()
 	//アニメーション
 	Animation();
 
+
+	//指定の周期毎に弾を発射する
+	if (!death_flg && frame % ENEMY3_ATTACK_SPAN == 0)
+	{
+		//プレイヤーの位置で発射角度を決める
+		shot_rad = atan2f(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x);
+		manager->CreateAttack(GetBulletData());
+	}
+
 	//死亡演出フラグが立っているなら
 	if (death_flg)
 	{
@@ -85,3 +94,16 @@ void Enemy3::Damage(float _value, Vector2D _attack_loc)
 	__super::Damage(_value, _attack_loc);
 }
 
+BulletData Enemy3::GetBulletData()
+{
+	BulletData _data;
+	_data.b_angle = shot_rad;
+	_data.delete_time = ENEMY3_ATTACK_LIMIT;
+	_data.h_count = 1;
+	_data.location = this->location;
+	_data.radius = 15;
+	_data.speed = ENEMY3_ATTACK_SPEED;
+	_data.who = this;
+
+	return _data;
+}

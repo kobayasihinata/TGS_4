@@ -74,7 +74,7 @@ public:
 	void Control();
 
 	/// <summary>
-	/// ’e‚ğ”­Ë‚·‚é‚½‚ß‚Ìî•ñ‚ğ“Z‚ß‚é
+	/// ’e‚ğ”­Ë‚·‚é‚½‚ß‚Ìî•ñ‚ğ‚Ü‚Æ‚ß‚é
 	/// </summary>
 	/// <returns>’e‚ğ”­Ë‚·‚é‚½‚ß‚Ìî•ñ</returns>
 	BulletData GetBulletData();

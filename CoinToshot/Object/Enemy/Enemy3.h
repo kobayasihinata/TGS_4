@@ -1,10 +1,13 @@
 #pragma once
 #include "../Base/EnemyBase.h"
+#include "../Base/BulletData.h"
+
 class Enemy3 :
 	public EnemyBase
 {
 private:
-
+	//攻撃発射関連
+	float shot_rad;				//発射角度
 public:
 	//コンストラクタ
 	Enemy3();
@@ -23,5 +26,10 @@ public:
 	//ダメージ処理
 	void Damage(float _value, Vector2D _attack_loc)override;
 
+	// <summary>
+	// 弾を発射するための情報をまとめる
+	// </summary>
+	// <returns>弾を発射するための情報</returns>
+	BulletData GetBulletData();
 };
 
