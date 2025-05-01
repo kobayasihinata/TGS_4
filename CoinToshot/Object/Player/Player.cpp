@@ -232,7 +232,7 @@ BulletData Player::GetBulletData()
 	BulletData _data;
 	_data.b_angle = shot_rad;
 	_data.delete_time = 60;
-	_data.h_count = 1;
+	_data.h_count = 3;
 	_data.location = this->location;
 	_data.radius = 20;
 	_data.speed = 15;

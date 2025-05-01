@@ -10,6 +10,9 @@ private:
 	int time;					//存在できる時間
 	int count_up;				//生成されてからの時間測定
 	Vector2D move_velocity;		//移動方向
+	int hit_count;				//当たったオブジェクトの数を測定
+	int hit_max;				//いくつのオブジェクトに当たれるか
+	ObjectBase* old_hit_object;	//ひとつ前に当たったオブジェクトを保存
 
 public:
 	//コンストラクタ(_object = 攻撃を生成したオブジェクト いなければnullptr 

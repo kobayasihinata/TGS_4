@@ -9,6 +9,9 @@ Attack::Attack(BulletData _bullet_data)
 	count_up = 0;
 	move_velocity.x = _bullet_data.speed * cosf(_bullet_data.b_angle);
 	move_velocity.y = _bullet_data.speed * sinf(_bullet_data.b_angle);
+	hit_count = 0;
+	hit_max = _bullet_data.h_count;
+	old_hit_object = nullptr;
 
 	//location.x += ((b_speed + acceleration * 0.08) * cosf(rad));
 	//location.y += ((b_speed + acceleration * 0.08) * sinf(rad));
@@ -38,7 +41,6 @@ void Attack::Update()
 		manager->DeleteObject(this);
 	}
 
-
 	//弾の移動
 	this->location += move_velocity;
 }
@@ -60,6 +62,11 @@ void Attack::Draw()const
 
 void Attack::Hit(ObjectBase* hit_object)
 {
+	//当たったオブジェクトがひとつ前の同じものならスキップ
+	if (old_hit_object == hit_object)
+	{
+		return;
+	}
 	//当たったオブジェクトが死亡演出中ならスキップ
 	if (hit_object->GetDeathFlg())
 	{
@@ -77,8 +84,13 @@ void Attack::Hit(ObjectBase* hit_object)
 	{
 		//ダメージ
 		hit_object->Damage(1, this->location);
-		//攻撃の消去
-		manager->DeleteObject(this);
+		//当たった事を保存する
+		old_hit_object = hit_object;
+		//指定した回数オブジェクトに当たっていれば、攻撃の消去
+		if (++hit_count >= hit_max)
+		{
+			manager->DeleteObject(this);
+		}
 	}
 
 	//攻撃したのがプレイヤーで、プレイヤー以外に攻撃が当たっているなら
@@ -86,7 +98,12 @@ void Attack::Hit(ObjectBase* hit_object)
 	{
 		//ダメージ
 		hit_object->Damage(1, this->location);
-		//攻撃の消去
-		manager->DeleteObject(this);
+		//当たった事を保存する
+		old_hit_object = hit_object;
+		//指定した回数オブジェクトに当たっていれば、攻撃の消去
+		if (++hit_count >= hit_max)
+		{
+			manager->DeleteObject(this);
+		}
 	}
 }
