@@ -5,6 +5,12 @@
 Enemy3::Enemy3()
 {
 
+	move_speed = ENEMY3_SPEED;
+	hp = ENEMY3_HP;
+	hit_damage = ENEMY3_DAMAGE;
+	//指定したドロップ量から±1の間でランダムにコインをドロップ
+	drop_coin = ENEMY3_DROPCOIN + (GetRand(2) - 1);
+
 	////画像読込
 	//ResourceManager* rm = ResourceManager::GetInstance();
 	//std::vector<int>tmp;
@@ -45,6 +51,21 @@ void Enemy3::Update()
 
 	//アニメーション
 	Animation();
+
+	//死亡演出フラグが立っているなら
+	if (death_flg)
+	{
+		//死亡演出時間を過ぎたら自身を削除
+		if (--death_timer <= 0)
+		{
+			manager->DeleteObject(this);
+			//コインをドロップ
+			for (int i = 0; i < drop_coin; i++)
+			{
+				manager->CreateObject({ Vector2D{this->location.x + (float)(GetRand(50) - 25),this->location.y + (float)(GetRand(50) - 25)},Vector2D{40,40},eCOIN, 20.f });
+			}
+		}
+	}
 }
 
 void Enemy3::Draw()const

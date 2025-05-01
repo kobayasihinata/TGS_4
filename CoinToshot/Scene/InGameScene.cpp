@@ -147,7 +147,7 @@ void InGameScene::SpawnEnemy()
 	//画面外からランダムに一定周期でスポーン
 	if ((int)frame % 60 == 0)
 	{
-		objects->CreateObject({ Vector2D{(float)(camera->player_location.x - (SCREEN_WIDTH/2) + (SCREEN_WIDTH * GetRand(1))),(float)(camera->player_location.y - (SCREEN_HEIGHT / 2) + GetRand(SCREEN_HEIGHT))},Vector2D{40,40},eENEMY1, /*20.f */});
+		objects->CreateObject({GetRandLoc(),Vector2D{40,40},GetRandEnemy(), /*20.f */});
 
 	}
 }
@@ -155,4 +155,88 @@ void InGameScene::SpawnEnemy()
 void InGameScene::CreatePopUp(Vector2D _location, const char* _text, int _font_size, int _text_color, float _move, int _life_span)
 {
 	ui->SetUIData(_location, _text, _font_size,_text_color, _move, _life_span);
+}
+
+Vector2D InGameScene::GetRandLoc()
+{
+	Vector2D ret;
+
+	//左右の端か上下の端かランダムで決定
+	if ((bool)GetRand(1))
+	{
+		//左右の端
+		ret.x = (float)(camera->player_location.x - SCREEN_WIDTH + (SCREEN_WIDTH * 2 * GetRand(1)));
+		ret.y = (float)(camera->player_location.y - SCREEN_HEIGHT + GetRand(SCREEN_HEIGHT*2));
+	}
+	else
+	{
+		//上下の端
+		ret.x = (float)(camera->player_location.x - SCREEN_WIDTH + GetRand(SCREEN_WIDTH*2));
+		ret.y = (float)(camera->player_location.y - SCREEN_HEIGHT + (SCREEN_HEIGHT * 2 * GetRand(1)));
+	}
+	return ret;
+}
+
+ObjectList InGameScene::GetRandEnemy()
+{
+	//コインが20以下ならenemy1と2をランダムでスポーン
+	if (UserData::coin < 30)
+	{
+		return GetEnemy(eENEMY1, 100);
+	}
+	//コインが40以下ならenemy1と2をランダムでスポーン
+	if (UserData::coin < 50)
+	{
+		return GetEnemy(eENEMY1, 50, eENEMY2, 50);
+	}
+	//コインが60以下ならenemy2をスポーン
+	if (UserData::coin < 70)
+	{
+		return GetEnemy(eENEMY2, 100);
+	}
+	//何もなければ敵1をスポーンさせる
+	return eENEMY1;
+}
+
+ObjectList InGameScene::GetEnemy(ObjectList _list1, int _prob1,
+	ObjectList _list2, int _prob2,
+	ObjectList _list3, int _prob3,
+	ObjectList _list4, int _prob4,
+	ObjectList _list5, int _prob5)
+{
+	int rand = GetRand(_prob1 + _prob2 + _prob3 + _prob4 + _prob5);
+
+	//ランダムな値がオブジェクト１の確率の値を下回っていたら
+	if (rand < _prob1)
+	{
+		//オブジェクト１を返す
+		return _list1;
+	}
+	//ランダムな値がオブジェクト１、２の確率の合計を下回っていたら
+	else if (rand < _prob1 + _prob2)
+	{
+		//オブジェクト２
+		return _list2;
+	}
+	//ランダムな(略)
+	else if (rand < _prob1 + _prob2 + _prob3)
+	{
+		//オブジェクト３
+		return _list3;
+	}
+	//ランダムな(略)
+	else if (rand < _prob1 + _prob2 + _prob3 + _prob4)
+	{
+		//オブジェクト４
+		return _list4;
+	}
+	//ランダムな(略)
+	else if (rand < _prob1 + _prob2 + _prob3 + _prob4 + _prob5)
+	{
+		//オブジェクト５
+		return _list5;
+	}
+
+	//何かのエラーで失敗したらコインをドロップする
+	return eCOIN;
 }

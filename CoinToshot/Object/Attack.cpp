@@ -52,11 +52,18 @@ void Attack::Draw()const
 
 void Attack::Hit(ObjectBase* hit_object)
 {
+	//当たったオブジェクトが死亡演出中ならスキップ
+	if (hit_object->GetDeathFlg())
+	{
+		return;
+	}
+
 	//攻撃同士が当たった場合か、落ちてるコインと当たった場合、無視
 	if (hit_object->GetObjectType() == eATTACK || hit_object->GetObjectType() == eCOIN)
 	{
 		return;
 	}
+
 	//攻撃したのがプレイヤーではなく、プレイヤーにこの攻撃が当たっているなら
 	if (object->GetObjectType() != ePLAYER && hit_object->GetObjectType() == ePLAYER)
 	{

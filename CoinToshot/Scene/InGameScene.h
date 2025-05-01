@@ -61,6 +61,34 @@ public:
 	/// <param name="_move">移動量</param>
 	/// <param name="_life_span">生存期間</param>
 	void CreatePopUp(Vector2D _location, const char* _text, int _font_size, int _text_color, float _move, int _life_span);
+
+	/// <summary>
+	/// 画面端のランダムな座標を受け取る
+	/// </summary>
+	/// <returns>座標</returns>
+	Vector2D GetRandLoc();
+
+	/// <summary>
+	/// プレイヤーのコイン所持数に応じて敵の出現確率を変える
+	/// </summary>
+	/// <returns>スポーンさせる敵</returns>
+	ObjectList GetRandEnemy();
+
+	/// <summary>
+	/// 指定したオブジェクトを指定した確率で返す
+	/// 例：GetEnemy(eEnemy1,100)←確実にeEnemy1を返す
+	/// 例：GetEnemy(eEnemy1,50,eEnemy2,50)←五分五分でeEnemy1かeEnemy2を返す
+	/// 
+	/// 確率は、全ての値を合計して、１００％になるように割った値で抽選される
+	/// 例：GetEnemy(eEnemy1,100,eEnemy2,50)←合計が150なので、0~100でeEnemy1、101~150でeEnemy2　つまりeEnemy1は約66%の確率
+	/// 例：GetEnemy(eEnemy1,25,eEnemy2,25)←Enemy1は50%の確率
+	/// 
+	/// </summary>
+	ObjectList GetEnemy(ObjectList _list1,int _prob1,
+		ObjectList _list2 = eNULL, int _prob2 = 0,
+		ObjectList _list3 = eNULL, int _prob3 = 0,
+		ObjectList _list4 = eNULL, int _prob4 = 0, 
+		ObjectList _list5 = eNULL, int _prob5 = 0);
 };
 
 

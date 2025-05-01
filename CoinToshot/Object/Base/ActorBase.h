@@ -3,8 +3,6 @@
 #include "ObjectList.h"
 #include "../../Utility/common.h"
 
-#define KNOCK_BACK 20		//ノックバック時の倍率
-
 class ActorBase :
 	public ObjectBase
 {
@@ -66,8 +64,9 @@ public:
 	//当たり判定が被った時の処理
 	virtual void Hit(ObjectBase* hit_object)override
 	{
-		//自身がプレイヤーではなく、攻撃とアイテム以外なら
-		if (this->object_type != ePLAYER &&
+		//自身が生きてる且つプレイヤーではなく、攻撃とアイテム以外なら
+		if (!(this->death_flg) && 
+			this->object_type != ePLAYER &&
 			hit_object->GetObjectType() != ObjectList::eATTACK &&
 			hit_object->GetObjectType() != ObjectList::eCOIN &&
 			hit_object->GetObjectType() != ObjectList::eHEAL)
@@ -81,13 +80,23 @@ public:
 
 	virtual void Damage(float _value, Vector2D _attack_loc)override
 	{
-		hp -= _value;
-		//ノックバック処理
+		//自身のHPが1以上ならこの処理
+		if (hp > 0)
+		{
+			hp -= _value;
+			//ノックバック処理
 
-		//ダメージ源の中心座標からノックバック方向を求める
-		double radian = atan2(_attack_loc.y - this->location.y, _attack_loc.x - this->location.x);
-		velocity.x -= (KNOCK_BACK * cos(radian));
-		velocity.y -= (KNOCK_BACK * sin(radian));
+			//ダメージ源の中心座標からノックバック方向を求める
+			double radian = atan2(_attack_loc.y - this->location.y, _attack_loc.x - this->location.x);
+			velocity.x -= (KNOCK_BACK * cos(radian));
+			velocity.y -= (KNOCK_BACK * sin(radian));
+
+			//死
+			if (hp <= 0)
+			{
+				this->death_flg = true;
+			}
+		}
 	}
 
 	//移動処理
@@ -96,6 +105,7 @@ public:
 
 		DebugInfomation::Add("velox", last_velocity.x);
 		DebugInfomation::Add("veloy", last_velocity.y);
+
 		//減速の実行
 		velocity.x -= velocity.x / 10;
 		velocity.y -= velocity.y / 10;

@@ -24,6 +24,8 @@ protected:
 	int image_num;						//描画画像の配列上の位置格納
 	Vector2D image_shift;				//画像の位置調整用
 
+	bool death_flg;						//死亡時の演出をしているか判断
+	int death_timer;					//死亡演出の時間測定
 public:
 	bool hit_flg[4];					//辺ごとの当たり判定格納
 
@@ -44,14 +46,23 @@ public:
 		anim_span = DEFAULT_ANIM_SPAN;	//アニメーション周期保存用
 		image_num = 0;					//描画画像の配列上の位置格納
 		image_shift = 0;
+		death_flg = false;					
+		death_timer = DEFAULT_DEATH_TIMER;
 	}
 	//終了時処理
 	virtual void Finalize() = 0;
 	//更新処理
 	virtual void Update() = 0;
+
 	//描画処理
 	virtual void Draw()const
 	{
+		//死亡時透明になっていく（仮演出）
+		if (death_flg)
+		{
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, death_timer * 4);
+		}
+
 		//画像描画
 		if (image != 0)
 		{
@@ -71,6 +82,12 @@ public:
 			DrawCircleAA(local_location.x, local_location.y, radius, 20, 0xff0000, false);
 		}
 #endif // _DEBUG
+
+		//死亡時透明を解除（仮演出）
+		if (death_flg)
+		{
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+		}
 	}
 
 	//当たり判定が被った時の処理
@@ -79,7 +96,8 @@ public:
 	virtual void Damage(float _value, Vector2D _attack_loc) = 0;
 	//オブジェクトの種類取得
 	int GetObjectType()const { return object_type; }
-
+	//死亡演出中か取得
+	bool GetDeathFlg()const { return this->death_flg; }
 	//アニメーション処理(基本的なループ用)
 	virtual void Animation()
 	{
