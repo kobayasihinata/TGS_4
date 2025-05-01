@@ -171,6 +171,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Object\Base\BulletData.h" />
+    <ClInclude Include="Object\Player\PlayerBullet.h" />
     <ClInclude Include="Scene\EndScene.h" />
     <ClInclude Include="Scene\GameSceneUI.h" />
     <ClInclude Include="Object\Block.h" />

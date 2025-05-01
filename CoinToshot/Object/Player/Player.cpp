@@ -4,6 +4,8 @@
 #include "../ObjectManager.h"
 #include "../../Utility/InputPad.h"
 #include "../../Utility/common.h"
+#include "PlayerBullet.h"
+
 #include <cmath>
 #define _USE_MATH_DEFINES
 
@@ -15,6 +17,7 @@ void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init
 	k_input = InputKey::Get();
 
 	shot_rad = 0.f;				
+	bullet_type = 0;
 
 	inv_flg = 0;				
 	inv_timer = 0;		
@@ -108,7 +111,17 @@ void Player::Update()
 	//hp‚ª0ˆÈ‰º‚Ì€–Sˆ—
 	if (hp <= 0)
 	{
-		Death();
+		death_flg = true;
+	}
+
+	//€–S‰‰oƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚é‚È‚ç
+	if (death_flg)
+	{
+		//€–S‰‰oŠÔ‚ğ‰ß‚¬‚½‚ç©g‚ğíœ
+		if (--death_timer <= 0)
+		{
+			Death();
+		}
 	}
 }
 
@@ -129,6 +142,8 @@ void Player::Draw()const
 		0xff0000,
 		TRUE);
 
+	//’e‚Ìí—Ş•`‰æ
+	DrawFormatString(600, 30, 0xffffff, "%d", bullet_type);
 }
 
 void Player::Hit(ObjectBase* hit_Object)
@@ -151,6 +166,7 @@ void Player::Damage(float _value, Vector2D _attack_loc)
 
 void Player::Death()
 {
+
 	//ƒQ[ƒ€ƒI[ƒo[‚Éİ’è
 	UserData::is_clear = false;
 	//ƒŠƒUƒ‹ƒg‘JˆÚ
@@ -200,7 +216,24 @@ void Player::Control()
 	if (UserData::coin > 0 && (InputPad::OnButton(XINPUT_BUTTON_LEFT_SHOULDER) || InputPad::OnButton(XINPUT_BUTTON_RIGHT_SHOULDER)))
 	{
 		manager->CreateAttack(GetBulletData());
-		UserData::coin--;
+		UserData::coin -= ;
+	}
+
+	//ƒgƒŠƒK[‚Å’e‚Ìí—Ş‚ğ•Ï‚¦‚é
+	if (InputPad::OnButton(L_TRIGGER))
+	{
+		if (--bullet_type <= 0)
+		{
+			bullet_type = BULLET_NUM - 1;
+		}
+	}
+	//ƒgƒŠƒK[‚Å’e‚Ìí—Ş‚ğ•Ï‚¦‚é
+	if (InputPad::OnButton(R_TRIGGER))
+	{
+		if (++bullet_type > BULLET_NUM - 1)
+		{
+			bullet_type = 0;
+		}
 	}
 
 #ifdef _DEBUG
@@ -230,12 +263,13 @@ void Player::Control()
 BulletData Player::GetBulletData()
 {
 	BulletData _data;
+	_data.damage = pBullet[bullet_type].damage;
 	_data.b_angle = shot_rad;
 	_data.delete_time = 60;
-	_data.h_count = 3;
+	_data.h_count = pBullet[bullet_type].h_count;
 	_data.location = this->location;
-	_data.radius = 20;
-	_data.speed = 15;
+	_data.radius = pBullet[bullet_type].radius;
+	_data.speed = pBullet[bullet_type].speed;
 	_data.who = this;
 
 	return _data;

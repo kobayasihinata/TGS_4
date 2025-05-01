@@ -33,6 +33,13 @@ public:
 
 	virtual void Draw()const override
 	{
+
+		//死亡時透明になっていく（仮演出）
+		if (death_flg)
+		{
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, death_timer * 4);
+		}
+
 		//画像描画
 		if (image != 0)
 		{
@@ -59,6 +66,12 @@ public:
 			DrawCircleAA(local_location.x, local_location.y, radius, 20, 0xff0000, false);
 		}
 #endif // _DEBUG
+
+		//死亡時透明を解除（仮演出）
+		if (death_flg)
+		{
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+		}
 	}
 
 	//当たり判定が被った時の処理

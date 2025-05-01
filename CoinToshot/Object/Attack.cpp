@@ -4,6 +4,7 @@
 
 Attack::Attack(BulletData _bullet_data)
 {
+	damage = _bullet_data.damage;
 	object = _bullet_data.who;
 	time = _bullet_data.delete_time;
 	count_up = 0;
@@ -83,7 +84,7 @@ void Attack::Hit(ObjectBase* hit_object)
 	if (object->GetObjectType() != ePLAYER && hit_object->GetObjectType() == ePLAYER)
 	{
 		//ダメージ
-		hit_object->Damage(1, this->location);
+		hit_object->Damage(damage, this->location);
 		//当たった事を保存する
 		old_hit_object = hit_object;
 		//指定した回数オブジェクトに当たっていれば、攻撃の消去
@@ -97,7 +98,7 @@ void Attack::Hit(ObjectBase* hit_object)
 	if (object->GetObjectType() == ePLAYER && hit_object->GetObjectType() != ePLAYER)
 	{
 		//ダメージ
-		hit_object->Damage(1, this->location);
+		hit_object->Damage(damage, this->location);
 		//当たった事を保存する
 		old_hit_object = hit_object;
 		//指定した回数オブジェクトに当たっていれば、攻撃の消去

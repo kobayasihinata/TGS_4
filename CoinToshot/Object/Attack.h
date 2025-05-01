@@ -7,6 +7,7 @@ class Attack :
 {
 private:
 	ObjectBase* object;			//攻撃を生成したオブジェクト いなければnullptr
+	float damage;				//攻撃力を格納
 	int time;					//存在できる時間
 	int count_up;				//生成されてからの時間測定
 	Vector2D move_velocity;		//移動方向

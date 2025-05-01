@@ -15,6 +15,7 @@ private:
 
 	//ƒRƒCƒ“”­ËŠÖ˜A
 	float shot_rad;				//”­ËŠp“x
+	int bullet_type;			//’e‚Ìí—Ş
 
 	//–³“Gˆ—ŠÖ˜A
 	bool inv_flg;				//–³“G‚©”»’f
