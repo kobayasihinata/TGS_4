@@ -49,9 +49,9 @@ void RankingScene::Draw()const
 
 	for (int i = 0; i < 10; i++)
 	{
-		DrawFormatString(180, 200 + (UserData::ranking_data[i].num * 40), 0xffffff, "no.%d",   UserData::ranking_data[i].num);
-		DrawFormatString(240, 200 + (UserData::ranking_data[i].num * 40), 0xffffff, "name:%s", UserData::ranking_data[i].name.c_str());
-		DrawFormatString(380, 200 + (UserData::ranking_data[i].num * 40), 0xffffff, "coin:%d", UserData::ranking_data[i].coin);
+		DrawFormatString(180, 200 + i * 40, 0xffffff, "no.%d",   UserData::ranking_data[i].num);
+		DrawFormatString(240, 200 + i * 40, 0xffffff, "name:%s", UserData::ranking_data[i].name.c_str());
+		DrawFormatString(380, 200 + i * 40, 0xffffff, "coin:%d", UserData::ranking_data[i].coin);
 	}
 }
 

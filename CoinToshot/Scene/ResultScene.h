@@ -3,6 +3,17 @@
 #include <string>
 using namespace std;
 
+#define KEY_WIDTH 10	//名前入力キーボード横要素数
+#define KEY_HEIGHT 4	//名前入力キーボード縦要素数
+
+//入力できる文字たちとその配置
+static char key[KEY_HEIGHT][KEY_WIDTH]{
+	{'a','b','c','d','e','f','g','h','i','j',},
+	{'k','l','m','n','o','p','q','r','s','t',},
+	{'u','v','w','x','y','z',' ',' ',' ',' ',},
+	{'0','1','2','3','4','5','6','7','8','9',},
+};
+
 enum DispScene
 {
 	dIsClear = 0,

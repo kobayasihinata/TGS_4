@@ -108,18 +108,55 @@ eSceneType ResultScene::EnterName()
 	//名前入力は後で作ります
 
 	//十字キーか左スティックで項目の移動
-	if (InputPad::OnButton(XINPUT_BUTTON_DPAD_LEFT) || InputPad::OnButton(L_STICK_LEFT))
+	if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_LEFT) || InputPad::GetPressedButton(L_STICK_LEFT))
 	{
-		current_x--;
+		//空白が選択されなくなるまで繰り返す(空白を飛ばす)
+		do{
+			//移動下限
+			if (--current_x < 0)
+			{
+				current_x = KEY_WIDTH - 1;
+			}
+		} while (key[current_y][current_x] == ' ');
 	}
-	if (InputPad::OnButton(XINPUT_BUTTON_DPAD_RIGHT) || InputPad::OnButton(L_STICK_RIGHT))
+	if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_RIGHT) || InputPad::GetPressedButton(L_STICK_RIGHT))
 	{
-		current_x++;
+		//空白が選択されなくなるまで繰り返す(空白を飛ばす)
+		do {
+			//移動下限
+			if (++current_x > KEY_WIDTH - 1)
+			{
+				current_x = 0;
+			}
+		} while (key[current_y][current_x] == ' ');
 	}
+	if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_UP) || InputPad::GetPressedButton(L_STICK_UP))
+	{
+		//空白が選択されなくなるまで繰り返す(空白を飛ばす)
+		do {
+			//移動下限
+			if (--current_y < 0)
+			{
+				current_y = KEY_HEIGHT - 1;
+			}
+		} while (key[current_y][current_x] == ' ');
+	}
+	if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_DOWN) || InputPad::GetPressedButton(L_STICK_DOWN))
+	{
+		//空白が選択されなくなるまで繰り返す(空白を飛ばす)
+		do {
+			//移動上限
+			if (++current_y > KEY_HEIGHT - 1)
+			{
+				current_y = 0;
+			}
+		} while (key[current_y][current_x] == ' ');
+	}
+
 	//Aボタンを押したときの選択されている項目で文字を決める
-	if (InputPad::OnButton(XINPUT_BUTTON_A))
+	if (InputPad::OnButton(XINPUT_BUTTON_A) && name.size() < 10)
 	{
-		name.push_back(97 + current_x);
+		name.push_back(key[current_y][current_x]);
 	}
 
 	//STARTボタンで入力終了
@@ -137,10 +174,24 @@ eSceneType ResultScene::EnterName()
 
 void ResultScene::EnterNameDraw()const 
 {
-	DrawString(10, 30, "Pad:START = End", GetColor(255, 255, 255));
+	DrawString(10, 30, "Pad:START = Enter", GetColor(255, 255, 255));
 
-	//選択されている項目のカーソル
-	DrawCircle(current_x * 40 + 100, current_y * 40 + 100, 40,0x00ff00, false);
+	//文字の描画
+	for (int y = 0; y < KEY_HEIGHT; y++)
+	{
+		for (int x = 0; x < KEY_WIDTH; x++)
+		{
+			//選択されている項目の色を変える
+			if (current_x == x && current_y == y)
+			{
+				DrawFormatStringF(200 + x * 40, 200 + y * 40, 0xff0000, "%c", key[y][x]);
+			}
+			else
+			{
+				DrawFormatStringF(200 + x * 40, 200 + y * 40, 0x00ff00, "%c", key[y][x]);
+			}
+		}
+	}
 	DrawFormatString(current_x * 40 + 100, current_y * 40 + 100, 0x00ff00, "%d", current_x);
 	//現在の入力
 	DrawFormatString(SCREEN_WIDTH / 2, 50, 0x00ff00, "name:%s", name.c_str());
