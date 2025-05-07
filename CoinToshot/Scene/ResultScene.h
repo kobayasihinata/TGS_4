@@ -1,5 +1,7 @@
 #pragma once
 #include "SceneBase.h"
+#include <string>
+using namespace std;
 
 enum DispScene
 {
@@ -12,6 +14,11 @@ class ResultScene : public SceneBase
 private:
 	int now_disp;		//表示している画面
 	char name[10];		//名前入力用
+
+	//名前入力関連
+	int current_x;	//カーソルX位置
+	int current_y;	//カーソルY位置
+	string name;	//名前格納
 
 public:
 	ResultScene();

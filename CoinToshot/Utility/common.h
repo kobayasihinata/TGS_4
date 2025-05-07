@@ -30,7 +30,7 @@
 
 //敵のパラメータ関連
 #define ENEMY1_HP 2				//敵１HP
-#define ENEMY1_SPEED 1.0f			//敵１速度
+#define ENEMY1_SPEED 0.5f		//敵１速度
 #define ENEMY1_DAMAGE 1			//敵１与ダメ
 #define ENEMY1_DROPCOIN 5		//敵１コインドロップ量
 

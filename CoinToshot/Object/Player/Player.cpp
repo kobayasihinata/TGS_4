@@ -222,7 +222,7 @@ void Player::Control()
 	//ƒgƒŠƒK[‚Å’e‚Ìí—Ş‚ğ•Ï‚¦‚é
 	if (InputPad::OnButton(L_TRIGGER))
 	{
-		if (--bullet_type <= 0)
+		if (--bullet_type < 0)
 		{
 			bullet_type = BULLET_NUM - 1;
 		}
@@ -265,7 +265,7 @@ BulletData Player::GetBulletData()
 	BulletData _data;
 	_data.damage = pBullet[bullet_type].damage;
 	_data.b_angle = shot_rad;
-	_data.delete_time = 60;
+	_data.delete_time = pBullet[bullet_type].life_span;
 	_data.h_count = pBullet[bullet_type].h_count;
 	_data.location = this->location;
 	_data.radius = pBullet[bullet_type].radius;

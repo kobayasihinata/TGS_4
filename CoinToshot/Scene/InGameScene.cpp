@@ -147,7 +147,7 @@ void InGameScene::SpawnEnemy()
 	//画面外からランダムに一定周期でスポーン
 	if ((int)frame % 60 == 0)
 	{
-		objects->CreateObject({GetRandLoc(),Vector2D{40,40},GetRandEnemy(), /*20.f */});
+		objects->CreateObject({GetRandLoc(),Vector2D{50,50},GetRandEnemy()});
 
 	}
 }
@@ -179,33 +179,34 @@ Vector2D InGameScene::GetRandLoc()
 
 ObjectList InGameScene::GetRandEnemy()
 {
-	//コインが0～30ならenemy1をスポーン
-	if (UserData::coin < 30)
-	{
-		return GetEnemy(eENEMY3, 100);
-	}
-	//コインが31～60ならenemy1と2をランダムでスポーン
-	if (UserData::coin < 60)
-	{
-		return GetEnemy(eENEMY1, 50, eENEMY2, 50);
-	}
-	//コインが61～90ならenemy2をスポーン
-	if (UserData::coin < 90)
-	{
-		return GetEnemy(eENEMY2, 100);
-	}
-	//コインが91～120ならenemy2と3をスポーン
-	if (UserData::coin < 120)
-	{
-		return GetEnemy(eENEMY2, 50, eENEMY3, 50);
-	}
-	//コインが120～150ならenemy3をスポーン
-	if (UserData::coin < 120)
-	{
-		return GetEnemy(eENEMY3, 100);
-	}
+	////コインが0～30ならenemy1をスポーン
+	//if (UserData::coin < 30)
+	//{
+	//	return GetEnemy(eENEMY3, 100);
+	//}
+	////コインが31～60ならenemy1と2をランダムでスポーン
+	//if (UserData::coin < 60)
+	//{
+	//	return GetEnemy(eENEMY1, 50, eENEMY2, 50);
+	//}
+	////コインが61～90ならenemy2をスポーン
+	//if (UserData::coin < 90)
+	//{
+	//	return GetEnemy(eENEMY2, 100);
+	//}
+	////コインが91～120ならenemy2と3をスポーン
+	//if (UserData::coin < 120)
+	//{
+	//	return GetEnemy(eENEMY2, 50, eENEMY3, 50);
+	//}
+	////コインが120～150ならenemy3をスポーン
+	//if (UserData::coin < 120)
+	//{
+	//	return GetEnemy(eENEMY3, 100);
+	//}
+
 	//何もなければ敵1をスポーンさせる
-	return eENEMY1;
+	return eENEMY2;
 }
 
 ObjectList InGameScene::GetEnemy(ObjectList _list1, int _prob1,

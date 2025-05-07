@@ -10,20 +10,15 @@ Enemy2::Enemy2()
 	//指定したドロップ量から±1の間でランダムにコインをドロップ
 	drop_coin = ENEMY2_DROPCOIN + (GetRand(2) - 1);
 
-	////画像読込
-	//ResourceManager* rm = ResourceManager::GetInstance();
-	//std::vector<int>tmp;
-	//tmp = rm->GetImages("Resource/Images/GoldEnemy/1.png");
-	//animation_image.push_back(tmp[0]);
-	//tmp = rm->GetImages("Resource/Images/GoldEnemy/2.png");
-	//animation_image.push_back(tmp[0]);
-	//tmp = rm->GetImages("Resource/Images/GoldEnemy/3.png");
-	//animation_image.push_back(tmp[0]);
-	//tmp = rm->GetImages("Resource/Images/GoldEnemy/4.png");
-	//animation_image.push_back(tmp[0]);
-	//tmp = rm->GetImages("Resource/Images/GoldEnemy/5.png");
-	//animation_image.push_back(tmp[0]);
-	//image = animation_image[0];
+	//画像読込
+	ResourceManager* rm = ResourceManager::GetInstance();
+	std::vector<int>tmp;
+	tmp = rm->GetImages("Resource/Images/Enemy2/Enemy2_Run.png", 12, 5, 3, 96, 96);
+	animation_image.push_back(tmp);
+	tmp = rm->GetImages("Resource/Images/Enemy2/Enemy2_Death.png", 15, 5, 3, 96, 96);
+	animation_image.push_back(tmp);
+
+	image = animation_image[0][0];
 }
 
 Enemy2::~Enemy2()
@@ -34,6 +29,7 @@ Enemy2::~Enemy2()
 void Enemy2::Initialize(ObjectManager* _manager, int _object_type, Vector2D init_location, Vector2D init_size, float init_radius)
 {
 	__super::Initialize(_manager, _object_type, init_location, init_size, init_radius);
+	anim_span = 2;
 }
 
 void Enemy2::Finalize()
@@ -54,6 +50,10 @@ void Enemy2::Update()
 	//死亡演出フラグが立っているなら
 	if (death_flg)
 	{
+		//死亡アニメーションを表示
+		image_line = 1;
+		anim_span = 3;
+
 		//死亡演出時間を過ぎたら自身を削除
 		if (--death_timer <= 0)
 		{

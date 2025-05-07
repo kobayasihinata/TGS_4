@@ -12,6 +12,7 @@ protected:
 	Vector2D old_location = { 0.0f,0.0f };	//1フレーム前の座標
 
 	Vector2D last_velocity;				//停止する（値がMOVE_LOWER_LIMITを下回る）直前のvelocity
+	Vector2D move_velocity;				//移動したい方向の保存(実際の移動量とは異なる)
 
 public:
 	Vector2D velocity = { 0.0f,0.0f };
@@ -20,6 +21,7 @@ public:
 	virtual void Update()override
 	{
 		frame++;
+
 		//停止前に移動してた方向を保存する
 		if (fabsf(velocity.x) > MOVE_LOWER_LIMIT)
 		{
@@ -43,13 +45,13 @@ public:
 		//画像描画
 		if (image != 0)
 		{
-			if (last_velocity.x > 0)
+			if (move_velocity.x > 0)
 			{
-				DrawRotaGraphF(local_location.x, local_location.y, 1.f, 0, image, false, false);
+				DrawRotaGraphF(local_location.x, local_location.y, 1.f, 0, image, true, false);
 			}
 			else
 			{
-				DrawRotaGraphF(local_location.x, local_location.y, 1.f, 0, image, false, true);
+				DrawRotaGraphF(local_location.x, local_location.y, 1.f, 0, image, true, true);
 			}
 		}
 #ifdef _DEBUG
@@ -96,6 +98,7 @@ public:
 		//自身のHPが1以上ならこの処理
 		if (hp > 0)
 		{
+
 			hp -= _value;
 			//ノックバック処理
 
@@ -108,6 +111,8 @@ public:
 			if (hp <= 0)
 			{
 				this->death_flg = true;
+				//アニメーション位置をリセット
+				image_num = 0;
 			}
 		}
 	}
@@ -126,8 +131,8 @@ public:
 		old_location = location;
 		//移動の実行
 		location += velocity;
-		//壁に当たっていたら前の座標に戻す
 
+		//壁に当たっていたら前の座標に戻す
 		//左端
 		if (location.x - (box_size.x/2) <= -STAGE_SIZE)
 		{

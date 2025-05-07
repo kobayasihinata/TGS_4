@@ -3,11 +3,13 @@
 #include "../Utility/InputPad.h"
 #include "DxLib.h"
 #include "../Utility/UserData.h"
-#include <string>
 
 ResultScene::ResultScene()
 {
 	now_disp = 0;
+
+	current_x = 0;
+	current_y = 0;
 }
 
 ResultScene::~ResultScene()

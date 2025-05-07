@@ -56,6 +56,9 @@ public:
 			//ˆÚ“®‚ÌãŒÀ’lİ’è
 			if(fabsf(velocity.x) < move_speed)velocity.x += move_speed * cos(radian);
 			if(fabsf(velocity.y) < move_speed)velocity.y += move_speed * sin(radian);
+
+			//ˆÚ“®‚µ‚½‚¢•ûŒü•Û‘¶
+			move_velocity = { move_speed * cosf(radian) ,move_speed * sinf(radian) };
 		}
 	}
 

@@ -66,7 +66,7 @@ public:
 		//‰æ‘œ•`‰æ
 		if (image != 0)
 		{
-			DrawRotaGraphF(local_location.x, local_location.y, 1.f, 1.f, image, false);
+			DrawRotaGraphF(local_location.x, local_location.y, 1.f, 1.f, image, TRUE);
 		}
 #ifdef _DEBUG
 		//“–‚½‚è”»’è‚Ì•`‰æ
