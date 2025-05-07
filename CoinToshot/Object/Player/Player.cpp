@@ -213,10 +213,10 @@ void Player::Control()
 	}
 
 	//コインが一枚以上なら、１消費で弾を発射する
-	if (UserData::coin > 0 && (InputPad::OnButton(XINPUT_BUTTON_LEFT_SHOULDER) || InputPad::OnButton(XINPUT_BUTTON_RIGHT_SHOULDER)))
+	if (UserData::coin >= pBullet[bullet_type].cost && (InputPad::OnButton(XINPUT_BUTTON_LEFT_SHOULDER) || InputPad::OnButton(XINPUT_BUTTON_RIGHT_SHOULDER)))
 	{
 		manager->CreateAttack(GetBulletData());
-		UserData::coin -= ;
+		UserData::coin -= pBullet[bullet_type].cost;
 	}
 
 	//トリガーで弾の種類を変える
