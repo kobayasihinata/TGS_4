@@ -13,7 +13,6 @@ class ResultScene : public SceneBase
 {
 private:
 	int now_disp;		//表示している画面
-	char name[10];		//名前入力用
 
 	//名前入力関連
 	int current_x;	//カーソルX位置
@@ -43,6 +42,9 @@ public:
 
 	//名前入力
 	eSceneType EnterName();
+
+	//名前入力時のDraw
+	void EnterNameDraw()const;
 
 	//ランキング並べ替え
 	void SortRanking();

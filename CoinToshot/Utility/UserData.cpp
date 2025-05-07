@@ -46,7 +46,7 @@ void UserData::WriteRankingData()
 		for (int i = 0; i < RANKING_DATA; i++)
 		{
 			file << ranking_data[i].num << " ";
-			file << ranking_data[i].name << " ";
+			file << ranking_data[i].name.c_str() << " ";
 			file << ranking_data[i].coin << "\n";
 		}
 	}

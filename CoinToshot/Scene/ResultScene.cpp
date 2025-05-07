@@ -85,7 +85,7 @@ void ResultScene::Draw()const
 		}
 		break;
 	case DispScene::dEnterName:
-		DrawString(10, 30, "Pad:A = End", GetColor(255, 255, 255));
+		EnterNameDraw();
 		break;
 	default:
 		break;
@@ -107,21 +107,45 @@ eSceneType ResultScene::EnterName()
 {
 	//名前入力は後で作ります
 
-	//Aボタンで入力完了としてランキング入力
+	//十字キーか左スティックで項目の移動
+	if (InputPad::OnButton(XINPUT_BUTTON_DPAD_LEFT) || InputPad::OnButton(L_STICK_LEFT))
+	{
+		current_x--;
+	}
+	if (InputPad::OnButton(XINPUT_BUTTON_DPAD_RIGHT) || InputPad::OnButton(L_STICK_RIGHT))
+	{
+		current_x++;
+	}
+	//Aボタンを押したときの選択されている項目で文字を決める
 	if (InputPad::OnButton(XINPUT_BUTTON_A))
 	{
-		char a[11] = "aaa";
+		name.push_back(97 + current_x);
+	}
+
+	//STARTボタンで入力終了
+	if (InputPad::OnButton(XINPUT_BUTTON_START))
+	{
+		UserData::ranking_data[9].name = name.c_str();
 		UserData::ranking_data[9].coin = UserData::coin;
-		for (int i = 0; i < 11; i++)
-		{
-			UserData::ranking_data[9].name[i] = a[i];
-		}
 		SortRanking();
 		UserData::WriteRankingData();
 		return eSceneType::eRanking;
 	}
 
 	return GetNowSceneType();
+}
+
+void ResultScene::EnterNameDraw()const 
+{
+	DrawString(10, 30, "Pad:START = End", GetColor(255, 255, 255));
+
+	//選択されている項目のカーソル
+	DrawCircle(current_x * 40 + 100, current_y * 40 + 100, 40,0x00ff00, false);
+	DrawFormatString(current_x * 40 + 100, current_y * 40 + 100, 0x00ff00, "%d", current_x);
+	//現在の入力
+	DrawFormatString(SCREEN_WIDTH / 2, 50, 0x00ff00, "name:%s", name.c_str());
+
+	
 }
 
 void ResultScene::SortRanking()

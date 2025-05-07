@@ -194,6 +194,8 @@ void Player::Control()
 		if (fabsf(velocity.x) < PLAYER_SPEED)
 		{
 			velocity.x = InputPad::TipLStick(STICKL_X) * PLAYER_SPEED;
+			//ˆÚ“®‚µ‚½‚¢•ûŒü•Û‘¶
+			move_velocity.x = velocity.x;
 		}
 	}
 	if (fabsf(InputPad::TipLStick(STICKL_Y)) > 0.1f)
@@ -202,6 +204,8 @@ void Player::Control()
 		if (fabsf(velocity.y) < PLAYER_SPEED)
 		{
 			velocity.y = -InputPad::TipLStick(STICKL_Y) * PLAYER_SPEED;
+			//ˆÚ“®‚µ‚½‚¢•ûŒü•Û‘¶
+			move_velocity.y = velocity.y;
 		}
 	}
 

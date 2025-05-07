@@ -3,11 +3,13 @@
 
 #include "Vector2D.h"
 #include "common.h"
+#include <string>
+using namespace std;
 
 struct RankingData
 {
 	int num;		//順番
-	char name[11];		//名前
+	string name;		//名前
 	int coin;		//コインの数
 };
 
