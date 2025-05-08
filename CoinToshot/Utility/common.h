@@ -48,7 +48,7 @@
 #define ENEMY3_DROPCOIN 7		//敵３コインドロップ量
 
 #define ENEMY4_HP 3				//敵４HP
-#define ENEMY4_SPEED 2.f			//敵４速度
+#define ENEMY4_SPEED 1.f			//敵４速度
 #define ENEMY4_DAMAGE 0			//敵４与ダメ
 #define ENEMY4_DROPCOIN 5		//敵４コインドロップ量
 

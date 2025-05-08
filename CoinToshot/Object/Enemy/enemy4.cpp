@@ -4,21 +4,14 @@
 
 Enemy4::Enemy4()
 {
+	move_speed = ENEMY4_SPEED;
+	hp = ENEMY4_HP;
+	hit_damage = ENEMY4_DAMAGE;
+	//指定したドロップ量から±1の間でランダムにコインをドロップ
+	drop_coin = ENEMY4_DROPCOIN + (GetRand(2) - 1);
 
-	////画像読込
-	//ResourceManager* rm = ResourceManager::GetInstance();
-	//std::vector<int>tmp;
-	//tmp = rm->GetImages("Resource/Images/GoldEnemy/1.png");
-	//animation_image.push_back(tmp[0]);
-	//tmp = rm->GetImages("Resource/Images/GoldEnemy/2.png");
-	//animation_image.push_back(tmp[0]);
-	//tmp = rm->GetImages("Resource/Images/GoldEnemy/3.png");
-	//animation_image.push_back(tmp[0]);
-	//tmp = rm->GetImages("Resource/Images/GoldEnemy/4.png");
-	//animation_image.push_back(tmp[0]);
-	//tmp = rm->GetImages("Resource/Images/GoldEnemy/5.png");
-	//animation_image.push_back(tmp[0]);
-	//image = animation_image[0];
+	coin_num = 0;	//持っているコイン
+	steal_flg = false;	//コインを盗んだか
 }
 
 Enemy4::~Enemy4()
@@ -38,13 +31,43 @@ void Enemy4::Finalize()
 
 void Enemy4::Update()
 {
-	__super::Update();
+	/*********ActorBaseの内の処理*********/
+	frame++;
+
+	//停止前に移動してた方向を保存する
+	if (fabsf(velocity.x) > MOVE_LOWER_LIMIT)
+	{
+		last_velocity.x = velocity.x;
+	}
+	if (fabsf(velocity.y) > MOVE_LOWER_LIMIT)
+	{
+		last_velocity.y = velocity.y;
+	}
+	/*************************************/
+
+	//行動の処理
+	Enemy4Move();
 
 	//移動
 	Move();
 
 	//アニメーション
 	Animation();
+
+	//死亡演出フラグが立っているなら
+	if (death_flg)
+	{
+		//死亡演出時間を過ぎたら自身を削除
+		if (--death_timer <= 0)
+		{
+			manager->DeleteObject(this);
+			//コインをドロップ
+			for (int i = 0; i < drop_coin; i++)
+			{
+				manager->CreateObject({ Vector2D{this->location.x + (float)(GetRand(50) - 25),this->location.y + (float)(GetRand(50) - 25)},Vector2D{40,40},eCOIN, 20.f });
+			}
+		}
+	}
 }
 
 void Enemy4::Draw()const
@@ -54,9 +77,17 @@ void Enemy4::Draw()const
 	DrawString(local_location.x, local_location.y, "enemy4", 0xffffff);
 }
 
-void Enemy4::Hit(ObjectBase* hit_Object)
+void Enemy4::Hit(ObjectBase* hit_object)
 {
-	__super::Hit(hit_Object);
+	//プレイヤーに当たったらコインを奪い、コインを奪ったフラグを立てる
+	if (!steal_flg && hit_object->GetObjectType() == ePLAYER)
+	{
+		UserData::coin -= 10;
+		coin_num = 10;
+		drop_coin += coin_num * 2;
+		move_speed = 0.3f;
+		steal_flg = true;
+	}
 }
 
 void Enemy4::Damage(float _value, Vector2D _attack_loc)
@@ -64,3 +95,28 @@ void Enemy4::Damage(float _value, Vector2D _attack_loc)
 	__super::Damage(_value, _attack_loc);
 }
 
+void Enemy4::Enemy4Move()
+{		
+	//死亡していなければこの処理
+	if (!this->death_flg)
+	{
+		//プレイヤーへの角度計算
+		double radian = atan2(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x);
+		//プレイヤーからコインを盗んでいなければ、プレイヤーに向かって進む
+		if (!steal_flg)
+		{
+			//移動の上限値設定
+			if (fabsf(velocity.x) < move_speed)velocity.x += move_speed * cos(radian);
+			if (fabsf(velocity.y) < move_speed)velocity.y += move_speed * sin(radian);
+		}
+		//プレイヤーからコインを盗んでいれば、プレイヤーとは反対に進む
+		else
+		{
+			//移動の上限値設定
+			if (fabsf(velocity.x) < move_speed)velocity.x -= move_speed * cos(radian);
+			if (fabsf(velocity.y) < move_speed)velocity.y -= move_speed * sin(radian);
+		}
+		//移動したい方向保存
+		move_velocity = { move_speed * cosf(radian) ,move_speed * sinf(radian) };
+	}
+}

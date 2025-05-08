@@ -86,8 +86,6 @@ public:
 			hit_object->GetObjectType() != ObjectList::eCOIN &&
 			hit_object->GetObjectType() != ObjectList::eHEAL)
 		{
-			//押す前の座標を保存
-			float old = location.y;
 			//オブジェクトを押す
 			Push(hit_object);
 		}

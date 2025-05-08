@@ -4,6 +4,8 @@ class Enemy4 :
 	public EnemyBase
 {
 private:
+	int coin_num;	//持っているコイン
+	bool steal_flg;	//コインを盗んだか
 
 public:
 	//コンストラクタ
@@ -19,9 +21,11 @@ public:
 	//描画処理
 	void Draw()const override;
 	//当たり判定が被った時の処理
-	void Hit(ObjectBase* hit_Object)override;
+	void Hit(ObjectBase* hit_object)override;
 	//ダメージ処理
 	void Damage(float _value, Vector2D _attack_loc)override;
 
+	//Enemy4専用移動処理
+	void Enemy4Move();
 };
 
