@@ -5,6 +5,8 @@
 #include "../Object/Enemy/Enemy1.h"
 #include "../Utility/InputKey.h"
 #include "../Utility/UserData.h"
+#define _OPEN_SYS_ITOA_EXT
+#include <string.h>
 
 InGameScene::InGameScene() : objects(nullptr)
 {
@@ -152,7 +154,7 @@ void InGameScene::SpawnEnemy()
 	}
 }
 
-void InGameScene::CreatePopUp(Vector2D _location, const char* _text, int _font_size, int _text_color, float _move, int _life_span)
+void InGameScene::CreatePopUp(Vector2D _location, string _text, int _font_size, int _text_color, float _move, int _life_span)
 {
 	ui->SetUIData(_location, _text, _font_size,_text_color, _move, _life_span);
 }

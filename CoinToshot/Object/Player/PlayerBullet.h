@@ -19,5 +19,5 @@ static PlayerBullet pBullet[BULLET_NUM]
 	//cos   dam  spe   rad   h_c  life
 	{  1,	1.f, 10.f, 20.f,   1, 120},
 	{ 10,   7.f, 15.f, 30.f,   5, 180},
-	{100, 100.f, 20.f, 40.f, 100, 360}
+	{ 50,  50.f, 25.f, 40.f, 100, 360}
 };

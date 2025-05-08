@@ -55,7 +55,7 @@ void GameSceneUI::Draw()const
 			ui_data.location.y - camera->GetCameraLocation().y - (ui_data.life_count * ui_data.move_speed),
 			ui_data.text_color,
 			"%s",
-			ui_data.text
+			ui_data.text.c_str()
 			);
 	}
 	//•¶Žš“§‰ßƒŠƒZƒbƒg
@@ -64,7 +64,7 @@ void GameSceneUI::Draw()const
 	SetFontSize(old);
 }
 
-void GameSceneUI::SetUIData(Vector2D _location, const char* _text, int _font_size, int _text_color, float _move, int _life_span)
+void GameSceneUI::SetUIData(Vector2D _location, string _text, int _font_size, int _text_color, float _move, int _life_span)
 {
 	UIData data;
 	data.font_size = _font_size;

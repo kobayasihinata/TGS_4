@@ -178,7 +178,9 @@ eSceneType ResultScene::EnterName()
 
 void ResultScene::EnterNameDraw()const 
 {
-	DrawString(10, 30, "Pad:START = Enter", GetColor(255, 255, 255));
+	DrawString(10, 30, "Pad:START = Enter",  GetColor(255, 255, 255));
+	DrawString(10, 50, "Pad:A	  = Add",    GetColor(255, 255, 255));
+	DrawString(10, 70, "Pad:B	  = Delete", GetColor(255, 255, 255));
 
 	//•¶Žš‚Ì•`‰æ
 	for (int y = 0; y < KEY_HEIGHT; y++)
@@ -196,11 +198,8 @@ void ResultScene::EnterNameDraw()const
 			}
 		}
 	}
-	DrawFormatString(current_x * 40 + 100, current_y * 40 + 100, 0x00ff00, "%d", current_x);
 	//Œ»Ý‚Ì“ü—Í
 	DrawFormatString(SCREEN_WIDTH / 2, 50, 0x00ff00, "name:%s", name.c_str());
-
-	
 }
 
 void ResultScene::SortRanking()

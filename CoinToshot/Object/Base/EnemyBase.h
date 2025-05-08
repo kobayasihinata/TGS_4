@@ -37,11 +37,13 @@ public:
 
 	virtual void Hit(ObjectBase* hit_object)override
 	{
+		__super::Hit(hit_object);
+
 		//自身が生きていて、プレイヤーに当たったらダメージを与える
 		if (!this->death_flg &&
 			hit_object->GetObjectType() == ePLAYER)
 		{
-			hit_object->Damage(hit_damage, this->location);
+			//hit_object->Damage(hit_damage, this->location);
 		}
 
 	}

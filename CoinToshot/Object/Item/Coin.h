@@ -7,8 +7,12 @@ class Coin :
 	public ObjectBase
 {
 private:
-	float add_num;	//コイン追加数
 	InGameScene* ingame;		//現在のシーンのポインタを保存
+
+public:
+	float add_num;	//コイン追加数
+	bool check_flg;	//コインが合体するかを一度だけ判断する用	
+
 public:
 	//コンストラクタ
 	Coin(InGameScene* _ingame);

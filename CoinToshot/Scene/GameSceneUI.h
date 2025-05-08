@@ -1,13 +1,15 @@
 #pragma once
 #include "../Utility/UserData.h"
 #include <vector>
+#include <string>
+using namespace std;
 
 #define STRING_SPAN 10		//項目同士の間隔
 
 struct UIData
 {
 	Vector2D location;		//文字表示位置
-	const char* text;		//表示文字
+	string text;		//表示文字
 	int font_size;			//文字大きさ
 	int text_color;			//文字色
 	float move_speed;		//UI移動速度（上に進む）
@@ -38,5 +40,5 @@ public:
 	void Draw()const;
 
 	//文字生成
-	void SetUIData(Vector2D _location, const char* _text,int _font_size, int _text_color, float _move, int _life_span);
+	void SetUIData(Vector2D _location, string _text,int _font_size, int _text_color, float _move, int _life_span);
 };
