@@ -105,8 +105,6 @@ eSceneType ResultScene::GetNowSceneType()const
 
 eSceneType ResultScene::EnterName()
 {
-	//名前入力は後で作ります
-
 	//十字キーか左スティックで項目の移動
 	if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_LEFT) || InputPad::GetPressedButton(L_STICK_LEFT))
 	{
@@ -153,14 +151,20 @@ eSceneType ResultScene::EnterName()
 		} while (key[current_y][current_x] == ' ');
 	}
 
-	//Aボタンを押したときの選択されている項目で文字を決める
-	if (InputPad::OnButton(XINPUT_BUTTON_A) && name.size() < 10)
+	//Aボタンを押して文字の追加(現在の入力が10文字未満なら)
+	if (name.size() < 10 && InputPad::OnButton(XINPUT_BUTTON_A))
 	{
 		name.push_back(key[current_y][current_x]);
 	}
 
-	//STARTボタンで入力終了
-	if (InputPad::OnButton(XINPUT_BUTTON_START))
+	//Bボタンを押して一文字消す(現在の入力が0文字より大きいなら)
+	if (name.size() > 0 && InputPad::OnButton(XINPUT_BUTTON_B))
+	{
+		name.erase(name.end()-1);
+	}
+
+	//STARTボタンで入力終了(一文字以上入力されているなら)
+	if (name.size() > 0 && InputPad::OnButton(XINPUT_BUTTON_START))
 	{
 		UserData::ranking_data[9].name = name.c_str();
 		UserData::ranking_data[9].coin = UserData::coin;
