@@ -57,7 +57,7 @@ void Coin::Hit(ObjectBase* hit_object)
 	
 	//ƒRƒCƒ““¯Žm‚ªˆø‚«Šñ‚¹‚ç‚ê‚é
 	//if (hit_object->GetObjectType() == eCOIN && 
-	//	20.f < sqrtf(powf(this->location.x - hit_object->GetLocation().x,2) + powf(this->location.y - hit_object->GetLocation().y,2)) &&
+	//	COIN_FUSION_RANGE < sqrtf(powf(this->location.x - hit_object->GetLocation().x,2) + powf(this->location.y - hit_object->GetLocation().y,2)) &&
 	//	this->add_num > 0 && 
 	//	static_cast<Coin*>(hit_object)->add_num > 0)
 	//{
@@ -72,7 +72,7 @@ void Coin::Hit(ObjectBase* hit_object)
 	//ðŒ‚R:Ž©g‚ÌƒRƒCƒ“‰ÁŽZ”‚ª0ˆÈã
 	//ðŒ‚S:hit_object(coin)‚Ì‰ÁŽZ”‚ª0ˆÈã
 	if (hit_object->GetObjectType() == eCOIN &&
-		20.f > sqrtf(powf(this->location.x - hit_object->GetLocation().x, 2) + powf(this->location.y - hit_object->GetLocation().y, 2)) &&
+		COIN_FUSION_RANGE > sqrtf(powf(this->location.x - hit_object->GetLocation().x, 2) + powf(this->location.y - hit_object->GetLocation().y, 2)) &&
 		this->add_num > 0 &&
 		static_cast<Coin*>(hit_object)->add_num > 0)
 	{

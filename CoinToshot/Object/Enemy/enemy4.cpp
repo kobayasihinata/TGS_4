@@ -82,10 +82,20 @@ void Enemy4::Hit(ObjectBase* hit_object)
 	//プレイヤーに当たったらコインを奪い、コインを奪ったフラグを立てる
 	if (!steal_flg && hit_object->GetObjectType() == ePLAYER)
 	{
-		UserData::coin -= 10;
-		coin_num = 10;
+		//コイン量が盗む量より多ければ規定量盗む
+		if (UserData::coin > ENEMY4_STEAL)
+		{
+			UserData::coin -= ENEMY4_STEAL;
+			coin_num = ENEMY4_STEAL;
+		}
+		//コイン量が盗む量より少なければ有り金全て盗る
+		else
+		{
+			coin_num = UserData::coin;
+			UserData::coin = 0;
+		}
 		drop_coin += coin_num * 2;
-		move_speed = 0.3f;
+		move_speed = ENEMY4_ESCAPE_SPEED;
 		steal_flg = true;
 	}
 }

@@ -61,9 +61,9 @@ void ObjectManager::Update()
 void ObjectManager::Draw()const
 {
 	//描画
-	for (const auto& object_list : object_list)
+	for (const auto& object : object_list)
 	{
-		object_list->Draw();
+		if(CheckInScreen(object,50))object->Draw();
 	}
 }
 
@@ -159,4 +159,18 @@ std::vector<ObjectBase*> ObjectManager::GetObjectList()const
 void ObjectManager::Result()
 {
 	ingame->ChangeResult();
+}
+
+bool ObjectManager::CheckInScreen(ObjectBase* _object, int space)const
+{
+	//カメラ座標ーゆとりより左側に居たらアウト
+	if (_object->GetLocation().x < camera->GetCameraLocation().x - space)return false;
+	//カメラ座標＋スクリーン幅＋ゆとりより右側に居たらアウト
+	if (_object->GetLocation().x > camera->GetCameraLocation().x + SCREEN_WIDTH + space)return false;
+	//カメラ座標ーゆとりより上側に居たらアウト
+	if (_object->GetLocation().y < camera->GetCameraLocation().y - space)return false;
+	//カメラ座標＋スクリーン高さ＋ゆとりより下側に居たらアウト
+	if (_object->GetLocation().y > camera->GetCameraLocation().y + SCREEN_HEIGHT + space)return false;
+	//画面内
+	return true;
 }

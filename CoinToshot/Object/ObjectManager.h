@@ -64,6 +64,7 @@ public:
 	std::vector<ObjectBase*> GetObjectList()const;
 	//ƒŠƒUƒ‹ƒg‰æ–Ê‘JˆÚ
 	void Result();
-
+	//‰æ–Ê“à‚É‹‚é‚©”»’f(ˆø”‚Í‰æ–ÊŠO‚Ì‚Ç‚±‚Ü‚Å‚ğ‹–‚·‚©)
+	bool CheckInScreen(ObjectBase* _object, int space)const;
 };
 

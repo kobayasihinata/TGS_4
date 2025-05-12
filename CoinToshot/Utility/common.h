@@ -19,6 +19,9 @@
 
 #define RANKING_DATA 10			//登録するランキングデータの数
 
+//コインの設定
+#define COIN_FUSION_RANGE 30.f	//コインが融合する範囲
+
 //プレイヤーのパラメータ関連
 #define DEFAULT_HP 2			//プレイヤー初期HP
 #define DEFAULT_LIFE 0			//プレイヤー初期残機
@@ -48,11 +51,13 @@
 #define ENEMY3_DROPCOIN 7		//敵３コインドロップ量
 
 #define ENEMY4_HP 3				//敵４HP
-#define ENEMY4_SPEED 1.f			//敵４速度
+#define ENEMY4_SPEED 3.f		//敵４速度
+#define ENEMY4_ESCAPE_SPEED 0.5f//敵４逃げ速度
+#define ENEMY4_STEAL 10			//敵４盗むコイン量
 #define ENEMY4_DAMAGE 0			//敵４与ダメ
 #define ENEMY4_DROPCOIN 5		//敵４コインドロップ量
 
 #define ENEMY5_HP 10			//敵５HP
-#define ENEMY5_SPEED 0.5f			//敵５速度
+#define ENEMY5_SPEED 0.5f		//敵５速度
 #define ENEMY5_DAMAGE 2			//敵５与ダメ
 #define ENEMY5_DROPCOIN 20		//敵５コインドロップ量
