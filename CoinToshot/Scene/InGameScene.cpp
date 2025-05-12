@@ -208,7 +208,7 @@ ObjectList InGameScene::GetRandEnemy()
 	//}
 
 	//‰½‚à‚È‚¯‚ê‚Î“G1‚ğƒXƒ|[ƒ“‚³‚¹‚é
-	return eENEMY4;
+	return eENEMY2;
 }
 
 ObjectList InGameScene::GetEnemy(ObjectList _list1, int _prob1,

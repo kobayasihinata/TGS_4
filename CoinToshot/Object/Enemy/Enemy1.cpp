@@ -55,7 +55,6 @@ void Enemy1::Update()
 		//死亡アニメーションを表示
 		image_line = 1;
 		anim_span = 3;
-
 		//死亡演出時間を過ぎたら自身を削除
 		if (--death_timer <= 0)
 		{

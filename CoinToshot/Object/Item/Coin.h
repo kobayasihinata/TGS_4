@@ -1,10 +1,10 @@
 #pragma once
-#include "../Base/ObjectBase.h"
+#include "../Base/ActorBase.h"
 
 class InGameScene;
 
 class Coin :
-	public ObjectBase
+	public ActorBase
 {
 private:
 	InGameScene* ingame;		//現在のシーンのポインタを保存
@@ -15,7 +15,7 @@ public:
 
 public:
 	//コンストラクタ
-	Coin(InGameScene* _ingame);
+	Coin(InGameScene* _ingame,Vector2D _init_velocity = 0.f);
 	//デストラクタ
 	~Coin();
 	//初期化処理

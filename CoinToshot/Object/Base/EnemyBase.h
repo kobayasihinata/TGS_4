@@ -6,10 +6,11 @@ class EnemyBase :
 	public ActorBase
 {
 protected:
-	class Camera* camera;		//カメラポインタ格納(プレイヤーの情報を渡すためだけに取得)
-	float move_speed;	//移動速度
-	int hit_damage;	//プレイヤーに与えるダメージ量
-	int drop_coin;		//ドロップするコインの量
+	class Camera* camera;	//カメラポインタ格納(プレイヤーの情報を渡すためだけに取得)
+	float move_speed;		//移動速度
+	int hit_damage;			//プレイヤーに与えるダメージ量
+	int drop_coin;			//ドロップするコインの量
+	int drop_coin_count;	//ドロップするコインの計測
 
 public:
 
@@ -17,6 +18,10 @@ public:
 	{
 		//カメラ取得
 		camera = Camera::Get();
+		move_speed = 0.f;		
+		hit_damage = 0;			
+		drop_coin = 0;	
+		drop_coin_count = 0;
 	}
 
 	virtual void Update()override

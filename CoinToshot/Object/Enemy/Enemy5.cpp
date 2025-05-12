@@ -45,6 +45,21 @@ void Enemy5::Update()
 
 	//アニメーション
 	Animation();
+
+	//死亡演出フラグが立っているなら
+	if (death_flg)
+	{
+		//死亡演出時間を過ぎたら自身を削除
+		if (--death_timer <= 0)
+		{
+			manager->DeleteObject(this);
+			//コインをドロップ
+			for (int i = 0; i < drop_coin; i++)
+			{
+				manager->CreateObject({ Vector2D{this->location.x + (float)(GetRand(50) - 25),this->location.y + (float)(GetRand(50) - 25)},Vector2D{40,40},eCOIN, 20.f });
+			}
+		}
+	}
 }
 
 void Enemy5::Draw()const

@@ -3,10 +3,11 @@
 #include "../../Utility/UserData.h"
 #include "../../Scene/InGameScene.h"
 
-Coin::Coin(InGameScene* _ingame)
+Coin::Coin(InGameScene* _ingame, Vector2D _init_velocity)
 {
-	add_num = 1;
 	ingame = _ingame;
+	velocity = _init_velocity;
+	add_num = 1;
 	check_flg = false;
 }
 
@@ -22,12 +23,12 @@ void Coin::Initialize(ObjectManager* _manager, int _object_type, Vector2D init_l
 
 void Coin::Finalize()
 {
-
+	
 }
 
 void Coin::Update()
 {
-
+	Move();
 }
 
 void Coin::Draw()const

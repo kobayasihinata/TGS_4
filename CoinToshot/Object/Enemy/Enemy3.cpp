@@ -4,7 +4,7 @@
 
 Enemy3::Enemy3()
 {
-
+	
 	move_speed = ENEMY3_SPEED;
 	hp = ENEMY3_HP;
 	hit_damage = ENEMY3_DAMAGE;

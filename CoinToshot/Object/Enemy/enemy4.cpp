@@ -57,6 +57,7 @@ void Enemy4::Update()
 	//死亡演出フラグが立っているなら
 	if (death_flg)
 	{
+
 		//死亡演出時間を過ぎたら自身を削除
 		if (--death_timer <= 0)
 		{

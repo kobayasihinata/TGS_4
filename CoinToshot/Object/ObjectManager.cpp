@@ -139,13 +139,14 @@ void ObjectManager::CreateAttack(BulletData _bullet_data)
 
 void ObjectManager::ObjectHitCheck()
 {
-	for (const auto& object_list1 : object_list)
+	for (const auto& object1 : object_list)
 	{
-		for (const auto& object_list2 : object_list)
+		for (const auto& object2 : object_list)
 		{
-			if (object_list1 != object_list2 && object_list1->CheckHit(object_list2))
+			//オブジェクトのどちらかが画面外にあればスキップ
+			if (CheckInScreen(object2, 50) && CheckInScreen(object1,50) && object1 != object2 && object1->CheckHit(object2))
 			{
-				object_list1->Hit(object_list2);
+				object1->Hit(object2);
 			}
 		}
 	}
