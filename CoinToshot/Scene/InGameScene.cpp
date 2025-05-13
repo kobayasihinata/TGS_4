@@ -26,6 +26,8 @@ void InGameScene::Initialize()
 	UserData::player_hp = DEFAULT_HP;
 	UserData::coin = 20;
 
+	change_result_delay = 0;
+
 	camera = Camera::Get();
 
 	//オブジェクト管理クラス生成
@@ -128,8 +130,9 @@ eSceneType InGameScene::GetNowSceneType()const
 	return eSceneType::eInGame;
 }
 
-void InGameScene::ChangeResult()
+void InGameScene::ChangeResult(int _delay)
 {
+	//遅延無し
 	change_scene = eSceneType::eResult;
 }
 
@@ -180,31 +183,42 @@ Vector2D InGameScene::GetRandLoc()
 
 ObjectList InGameScene::GetRandEnemy()
 {
-	////コインが0～30ならenemy1をスポーン
-	//if (UserData::coin < 30)
-	//{
-	//	return GetEnemy(eENEMY3, 100);
-	//}
-	////コインが31～60ならenemy1と2をランダムでスポーン
-	//if (UserData::coin < 60)
-	//{
-	//	return GetEnemy(eENEMY1, 50, eENEMY2, 50);
-	//}
-	////コインが61～90ならenemy2をスポーン
-	//if (UserData::coin < 90)
-	//{
-	//	return GetEnemy(eENEMY2, 100);
-	//}
-	////コインが91～120ならenemy2と3をスポーン
-	//if (UserData::coin < 120)
-	//{
-	//	return GetEnemy(eENEMY2, 50, eENEMY3, 50);
-	//}
-	////コインが120～150ならenemy3をスポーン
-	//if (UserData::coin < 120)
-	//{
-	//	return GetEnemy(eENEMY3, 100);
-	//}
+	int coin = UserData::coin;
+	//コインが0～99ならenemy1をスポーン
+	if (coin < 100)
+	{
+		return GetEnemy(eENEMY3, 100);
+	}
+	//コインが100～199ならenemy1と2をランダムでスポーン
+	if (coin < 200)
+	{
+		return GetEnemy(eENEMY1, 50, eENEMY2, 50);
+	}
+	//コインが200～299ならenemy2をスポーン
+	if (coin < 300)
+	{
+		return GetEnemy(eENEMY2, 100);
+	}
+	//コインが300～399ならenemy2と3をスポーン
+	if (coin < 400)
+	{
+		return GetEnemy(eENEMY2, 50, eENEMY3, 50);
+	}
+	//コインが400～499ならenemy2と4をスポーン
+	if (coin < 500)
+	{
+		return GetEnemy(eENEMY2, 90, eENEMY4, 10);
+	}
+	//コインが500～599ならenemy2と5をスポーン
+	if (coin < 600)
+	{
+		return GetEnemy(eENEMY2, 80, eENEMY5, 20);
+	}
+	//それ以降は全ての敵を均等に
+	else
+	{
+		return GetEnemy(eENEMY1, 20, eENEMY2, 20, eENEMY3, 20, eENEMY4, 20, eENEMY5, 20);
+	}
 
 	//何もなければ敵1をスポーンさせる
 	return eENEMY2;
@@ -258,7 +272,25 @@ ObjectData InGameScene::EnemyRandSpawn()
 	ObjectData ret;
 	ObjectList spawn = GetRandEnemy();
 	//スポーンする敵に応じた大きさを初期値に代入する
-
-	ret = { GetRandLoc(), Vector2D{ 50,50 }, GetRandEnemy() };
+	switch (spawn)
+	{
+	case ObjectList::eENEMY1:
+		ret = { GetRandLoc(), Vector2D{ ENEMY1_WIDTH,ENEMY1_HEIGHT }, spawn};
+		break;														  
+	case ObjectList::eENEMY2:										  
+		ret = { GetRandLoc(), Vector2D{ ENEMY2_WIDTH,ENEMY2_HEIGHT }, spawn};
+		break;														  
+	case ObjectList::eENEMY3:										  
+		ret = { GetRandLoc(), Vector2D{ ENEMY3_WIDTH,ENEMY3_HEIGHT }, spawn};
+		break;														  
+	case ObjectList::eENEMY4:										  
+		ret = { GetRandLoc(), Vector2D{ ENEMY4_WIDTH,ENEMY4_HEIGHT }, spawn};
+		break;														  
+	case ObjectList::eENEMY5:										  
+		ret = { GetRandLoc(), Vector2D{ ENEMY5_WIDTH,ENEMY5_HEIGHT }, spawn};
+		break;
+	default:
+		break;
+	}
 	return ret;
 }

@@ -26,6 +26,11 @@ void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init
 	damage_timer = 0;
 	damage_stop = false;
 
+	//死亡処理に使う
+	drop_coin = 100;
+	drop_coin_count = 0;
+	death_timer = DEFAULT_DEATH_TIMER * 3;
+
 	//HP同期
 	hp = UserData::player_hp;
 
@@ -67,8 +72,8 @@ void Player::Update()
 	//カメラに座標を渡す
 	camera->player_location = this->location;
 
-	//ダメージ後の移動不可状態なら操作を受け付けない
-	if (!damage_stop)
+	//ダメージ後の移動不可状態なら操作を受け付けない 死んでても受け付けない
+	if (!damage_stop && !death_flg)
 	{
 		//各種入力処理
 		Control();
@@ -117,8 +122,36 @@ void Player::Update()
 	//死亡演出フラグが立っているなら
 	if (death_flg)
 	{
+		death_timer--;
+		//死にながらコインをまき散らす
+		if (death_timer % 10 == 0 && drop_coin_count < drop_coin && death_timer >= DEFAULT_DEATH_TIMER * 2)
+		{
+			Vector2D rand = { (float)(GetRand(40) - 20),(float)(GetRand(40) - 20) };
+			manager->CreateObject(
+				eCOIN,
+				this->location + rand,
+				Vector2D{ 40, 40 },
+				20.f,
+				rand);
+			drop_coin_count++;
+		}
+
 		//死亡演出時間を過ぎたら自身を削除
-		if (--death_timer <= 0)
+		if (death_timer == DEFAULT_DEATH_TIMER * 2)
+		{
+			//演出中に出せなかったコインをまとめてドロップ
+			for (int i = drop_coin_count; i < drop_coin; i++)
+			{
+				Vector2D rand = { (float)(GetRand(20) - 10),(float)(GetRand(20) - 10) };
+				manager->CreateObject(
+					eCOIN,
+					this->location + (rand*2),
+					Vector2D{ 40, 40 },
+					20.f,
+					rand);
+			}
+		}
+		if (death_timer <= 0)
 		{
 			Death();
 		}
@@ -127,7 +160,7 @@ void Player::Update()
 
 void Player::Draw()const
 {
-	if (!damage_flg || (damage_flg && frame % 3 == 0))
+	if ((!damage_flg || (damage_flg && frame % 3 == 0)) && (!death_flg || death_timer > DEFAULT_DEATH_TIMER * 2))
 	{
 		__super::Draw();
 	}

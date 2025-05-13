@@ -58,14 +58,32 @@ void Enemy4::Update()
 	if (death_flg)
 	{
 
+		//死にながらコインをまき散らす
+		if (death_timer % 15 == 0 && drop_coin_count < drop_coin)
+		{
+			manager->CreateObject(
+				eCOIN,
+				this->location,
+				Vector2D{40, 40},
+				20.f,
+				Vector2D{ (float)(GetRand(30) - 15),(float)(GetRand(30) - 15) });
+			drop_coin_count++;
+		}
+
 		//死亡演出時間を過ぎたら自身を削除
 		if (--death_timer <= 0)
 		{
 			manager->DeleteObject(this);
-			//コインをドロップ
-			for (int i = 0; i < drop_coin; i++)
+			//演出中に出せなかったコインをまとめてドロップ
+			for (int i = drop_coin_count; i < drop_coin; i++)
 			{
-				manager->CreateObject({ Vector2D{this->location.x + (float)(GetRand(50) - 25),this->location.y + (float)(GetRand(50) - 25)},Vector2D{40,40},eCOIN, 20.f });
+				Vector2D rand = { (float)(GetRand(20) - 10),(float)(GetRand(20) - 10) };
+				manager->CreateObject(
+					eCOIN,
+					this->location + rand,
+					Vector2D{ 40, 40 },
+					20.f,
+					rand);
 			}
 		}
 	}

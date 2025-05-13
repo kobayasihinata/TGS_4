@@ -75,7 +75,7 @@ void Enemy1::Update()
 			//演出中に出せなかったコインをまとめてドロップ
 			for (int i = drop_coin_count; i < drop_coin; i++)
 			{
-				Vector2D rand = {(float)(GetRand(30) - 15),(float)(GetRand(30) - 15) };
+				Vector2D rand = {(float)(GetRand(25) - 12),(float)(GetRand(25) - 12) };
 				manager->CreateObject(
 					eCOIN,
 					this->location + rand,

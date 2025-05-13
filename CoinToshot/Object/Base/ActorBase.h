@@ -14,6 +14,8 @@ protected:
 	Vector2D last_velocity;				//停止する（値がMOVE_LOWER_LIMITを下回る）直前のvelocity
 	Vector2D move_velocity;				//移動したい方向の保存(実際の移動量とは異なる)
 
+	int drop_coin;			//ドロップするコインの量
+	int drop_coin_count;	//ドロップするコインの計測
 public:
 	Vector2D velocity = { 0.0f,0.0f };
 
@@ -118,10 +120,6 @@ public:
 	//移動処理
 	void Move()
 	{
-
-		DebugInfomation::Add("velox", last_velocity.x);
-		DebugInfomation::Add("veloy", last_velocity.y);
-
 		//減速の実行
 		velocity.x -= velocity.x / 10;
 		velocity.y -= velocity.y / 10;

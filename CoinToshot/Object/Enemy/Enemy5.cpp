@@ -4,21 +4,11 @@
 
 Enemy5::Enemy5()
 {
-
-	////画像読込
-	//ResourceManager* rm = ResourceManager::GetInstance();
-	//std::vector<int>tmp;
-	//tmp = rm->GetImages("Resource/Images/GoldEnemy/1.png");
-	//animation_image.push_back(tmp[0]);
-	//tmp = rm->GetImages("Resource/Images/GoldEnemy/2.png");
-	//animation_image.push_back(tmp[0]);
-	//tmp = rm->GetImages("Resource/Images/GoldEnemy/3.png");
-	//animation_image.push_back(tmp[0]);
-	//tmp = rm->GetImages("Resource/Images/GoldEnemy/4.png");
-	//animation_image.push_back(tmp[0]);
-	//tmp = rm->GetImages("Resource/Images/GoldEnemy/5.png");
-	//animation_image.push_back(tmp[0]);
-	//image = animation_image[0];
+	move_speed = ENEMY5_SPEED;
+	hp = ENEMY5_HP;
+	hit_damage = ENEMY5_DAMAGE;
+	//指定したドロップ量から±1の間でランダムにコインをドロップ
+	drop_coin = ENEMY5_DROPCOIN + (GetRand(2) - 1);
 }
 
 Enemy5::~Enemy5()
@@ -49,14 +39,33 @@ void Enemy5::Update()
 	//死亡演出フラグが立っているなら
 	if (death_flg)
 	{
+		//死にながらコインをまき散らす
+		if (death_timer % 10 == 0 && drop_coin_count < drop_coin)
+		{
+			Vector2D rand = { (float)(GetRand(40) - 20),(float)(GetRand(40) - 20) };
+			manager->CreateObject(
+				eCOIN,
+				this->location + rand,
+				Vector2D{40, 40},
+				20.f,
+				rand);
+			drop_coin_count++;
+		}
+
 		//死亡演出時間を過ぎたら自身を削除
 		if (--death_timer <= 0)
 		{
 			manager->DeleteObject(this);
-			//コインをドロップ
-			for (int i = 0; i < drop_coin; i++)
+			//演出中に出せなかったコインをまとめてドロップ
+			for (int i = drop_coin_count; i < drop_coin; i++)
 			{
-				manager->CreateObject({ Vector2D{this->location.x + (float)(GetRand(50) - 25),this->location.y + (float)(GetRand(50) - 25)},Vector2D{40,40},eCOIN, 20.f });
+				Vector2D rand = { (float)(GetRand(20) - 10),(float)(GetRand(20) - 10) };
+				manager->CreateObject(
+					eCOIN,
+					this->location + rand,
+					Vector2D{ 40, 40 },
+					20.f,
+					rand);
 			}
 		}
 	}

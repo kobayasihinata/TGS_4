@@ -65,9 +65,9 @@
 #define ENEMY4_DAMAGE 0			//敵４与ダメ
 #define ENEMY4_DROPCOIN 5		//敵４コインドロップ量
 
-#define ENEMY5_HP 10			//敵５HP
-#define ENEMY5_WIDTH 30			//敵５幅
-#define ENEMY5_HEIGHT 100		//敵５高さ
+#define ENEMY5_HP 20			//敵５HP
+#define ENEMY5_WIDTH 50			//敵５幅
+#define ENEMY5_HEIGHT 200		//敵５高さ
 #define ENEMY5_SPEED 0.2f		//敵５速度
 #define ENEMY5_DAMAGE 2			//敵５与ダメ
-#define ENEMY5_DROPCOIN 50		//敵５コインドロップ量
+#define ENEMY5_DROPCOIN 30		//敵５コインドロップ量

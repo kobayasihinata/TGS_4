@@ -62,7 +62,7 @@ void Enemy2::Update()
 				this->location,
 				Vector2D{40, 40},
 				20.f,
-				Vector2D{ (float)(GetRand(20) - 10),(float)(GetRand(20) - 10) });
+				Vector2D{ (float)(GetRand(30) - 15),(float)(GetRand(30) - 15) });
 			drop_coin_count++;
 		}
 

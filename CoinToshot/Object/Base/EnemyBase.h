@@ -9,8 +9,6 @@ protected:
 	class Camera* camera;	//カメラポインタ格納(プレイヤーの情報を渡すためだけに取得)
 	float move_speed;		//移動速度
 	int hit_damage;			//プレイヤーに与えるダメージ量
-	int drop_coin;			//ドロップするコインの量
-	int drop_coin_count;	//ドロップするコインの計測
 
 public:
 

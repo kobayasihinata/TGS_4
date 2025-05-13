@@ -2,9 +2,9 @@
 2 hina 377
 3 q 43
 4 q 34
-5 5000vt 29
-6 qx 28
-7 abbcdnxyzz 26
-8 vz678 25
-8 abc 25
-10 aaaa 24
+5 0 32
+6 5000vt 29
+7 qx 28
+8 abbcdnxyzz 26
+9 abc 25
+9 vz678 25

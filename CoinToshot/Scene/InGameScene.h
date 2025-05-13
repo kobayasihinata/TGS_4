@@ -14,6 +14,7 @@ private:
 	eSceneType change_scene;	//遷移先
 
 	ShapeCollider* test;
+	int change_result_delay;	//リザルト遷移までの遅延時間
 public:
 	InGameScene();
 	virtual ~InGameScene();
@@ -39,8 +40,8 @@ public:
 	/// <summary>
 	/// リザルト遷移
 	/// </summary>
-	/// <param name="_is_clear">false=ゲームオーバー true=ゲームクリア</param>
-	void ChangeResult();
+	/// <param name="_delay">遷移するまでの遅延</param>
+	void ChangeResult(int _delay = 0);
 
 	/// <summary>
 	/// ランダムでアイテムを発生させる

@@ -29,6 +29,11 @@ void Coin::Finalize()
 void Coin::Update()
 {
 	Move();
+	//移動終了後にもう一回他のコインと結合しようとする
+	if ((int)velocity.x == 0 && (int)velocity.y == 0)
+	{
+		check_flg = false;
+	}
 }
 
 void Coin::Draw()const
@@ -44,7 +49,11 @@ void Coin::Draw()const
 
 void Coin::Hit(ObjectBase* hit_object)
 {
-
+	//触れた対象が死んでいたら終了
+	if (hit_object->GetDeathFlg())
+	{
+		return;
+	}
 	//触れた対象がコインで、フラグが立っているなら終了
 	if (hit_object->GetObjectType() == eCOIN && check_flg)
 	{
