@@ -98,6 +98,15 @@ public:
 	int GetObjectType()const { return object_type; }
 	//死亡演出中か取得
 	bool GetDeathFlg()const { return this->death_flg; }
+	//敵オブジェクトか判断
+	bool IsEnemy()const
+	{
+		return object_type == eENEMY1 ||
+			   object_type == eENEMY2 ||
+			   object_type == eENEMY3 ||
+			   object_type == eENEMY4 ||
+			   object_type == eENEMY5;
+	}
 	//アニメーション処理(基本的なループ用)
 	virtual void Animation()
 	{

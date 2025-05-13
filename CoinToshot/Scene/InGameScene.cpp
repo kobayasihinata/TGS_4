@@ -38,7 +38,7 @@ void InGameScene::Initialize()
 	//プレイヤー生成
 	objects->CreateObject({ Vector2D{0,0},Vector2D{40,40},ePLAYER });
 
-	objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{30,30},eENEMY1/*, 20.f*/ });
+	objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{40,40},eENEMY1/*, 20.f*/ });
 }
 
 void InGameScene::Finalize()
@@ -149,8 +149,7 @@ void InGameScene::SpawnEnemy()
 	//画面外からランダムに一定周期でスポーン
 	if ((int)frame % 60 == 0)
 	{
-		objects->CreateObject({GetRandLoc(),Vector2D{50,50},GetRandEnemy()});
-
+		objects->CreateObject(EnemyRandSpawn());
 	}
 }
 
@@ -252,4 +251,14 @@ ObjectList InGameScene::GetEnemy(ObjectList _list1, int _prob1,
 
 	//何かのエラーで失敗したらコインをドロップする
 	return eCOIN;
+}
+
+ObjectData InGameScene::EnemyRandSpawn()
+{
+	ObjectData ret;
+	ObjectList spawn = GetRandEnemy();
+	//スポーンする敵に応じた大きさを初期値に代入する
+
+	ret = { GetRandLoc(), Vector2D{ 50,50 }, GetRandEnemy() };
+	return ret;
 }

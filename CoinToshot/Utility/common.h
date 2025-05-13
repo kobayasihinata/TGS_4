@@ -33,16 +33,22 @@
 
 //“G‚Ìƒpƒ‰ƒ[ƒ^ŠÖ˜A
 #define ENEMY1_HP 2				//“G‚PHP
+#define ENEMY1_WIDTH 40			//“G‚P•
+#define ENEMY1_HEIGHT 40		//“G‚P‚‚³
 #define ENEMY1_SPEED 0.5f		//“G‚P‘¬“x
 #define ENEMY1_DAMAGE 1			//“G‚P—^ƒ_ƒ
 #define ENEMY1_DROPCOIN 5		//“G‚PƒRƒCƒ“ƒhƒƒbƒv—Ê
 
 #define ENEMY2_HP 5				//“G‚QHP
+#define ENEMY2_WIDTH 50			//“G‚Q•
+#define ENEMY2_HEIGHT 50		//“G‚Q‚‚³
 #define ENEMY2_SPEED 1.2f		//“G‚Q‘¬“x
 #define ENEMY2_DAMAGE 3			//“G‚Q—^ƒ_ƒ
 #define ENEMY2_DROPCOIN 10		//“G‚QƒRƒCƒ“ƒhƒƒbƒv—Ê
 
 #define ENEMY3_HP 3				//“G‚RHP
+#define ENEMY3_WIDTH 50			//“G‚R•
+#define ENEMY3_HEIGHT 50		//“G‚R‚‚³
 #define ENEMY3_SPEED 0.f		//“G‚R‘¬“x
 #define ENEMY3_DAMAGE 3			//“G‚R—^ƒ_ƒ
 #define ENEMY3_ATTACK_SPAN 180	//“G‚RUŒ‚üŠú
@@ -51,6 +57,8 @@
 #define ENEMY3_DROPCOIN 7		//“G‚RƒRƒCƒ“ƒhƒƒbƒv—Ê
 
 #define ENEMY4_HP 3				//“G‚SHP
+#define ENEMY4_WIDTH 40			//“G‚S•
+#define ENEMY4_HEIGHT 40		//“G‚S‚‚³
 #define ENEMY4_SPEED 3.f		//“G‚S‘¬“x
 #define ENEMY4_ESCAPE_SPEED 0.5f//“G‚S“¦‚°‘¬“x
 #define ENEMY4_STEAL 10			//“G‚S“‚ŞƒRƒCƒ“—Ê
@@ -58,6 +66,8 @@
 #define ENEMY4_DROPCOIN 5		//“G‚SƒRƒCƒ“ƒhƒƒbƒv—Ê
 
 #define ENEMY5_HP 10			//“G‚THP
-#define ENEMY5_SPEED 0.5f		//“G‚T‘¬“x
+#define ENEMY5_WIDTH 30			//“G‚T•
+#define ENEMY5_HEIGHT 100		//“G‚T‚‚³
+#define ENEMY5_SPEED 0.2f		//“G‚T‘¬“x
 #define ENEMY5_DAMAGE 2			//“G‚T—^ƒ_ƒ
-#define ENEMY5_DROPCOIN 30		//“G‚TƒRƒCƒ“ƒhƒƒbƒv—Ê
+#define ENEMY5_DROPCOIN 50		//“G‚TƒRƒCƒ“ƒhƒƒbƒv—Ê

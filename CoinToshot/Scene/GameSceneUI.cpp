@@ -51,6 +51,12 @@ void GameSceneUI::Draw()const
 	{
 		//•¶Žš“§‰ßÝ’è
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 - (255 / ui_data.life_span)*ui_data.life_count);
+		DrawFormatStringF(ui_data.location.x - camera->GetCameraLocation().x + 1.f,
+			ui_data.location.y - camera->GetCameraLocation().y - (ui_data.life_count * ui_data.move_speed) + 1.f,
+			0x000000,
+			"%s",
+			ui_data.text.c_str()
+		);
 		DrawFormatStringF(ui_data.location.x - camera->GetCameraLocation().x,
 			ui_data.location.y - camera->GetCameraLocation().y - (ui_data.life_count * ui_data.move_speed),
 			ui_data.text_color,

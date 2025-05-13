@@ -60,14 +60,33 @@ void ObjectManager::Update()
 
 void ObjectManager::Draw()const
 {
+	std::vector<ObjectBase*> enemy_list;
 	//•`‰æ
 	for (const auto& object : object_list)
 	{
-		if(CheckInScreen(object,50))object->Draw();
+		//‰æ–Ê“à‚É‚ ‚éƒIƒuƒWƒFƒNƒg‚¾‚¯•`‰æ
+		if (CheckInScreen(object, 50))
+		{
+			//“G‚¾‚¯Œã‚©‚ç•`‰æiŒ©‚â‚·‚³‚Ì‚½‚ß‚Éj
+			if (object->IsEnemy())
+			{
+				enemy_list.push_back(object);
+			}
+			else
+			{
+				object->Draw();
+			}
+		}
+	}
+
+	//“G•`‰æ
+	for (const auto& enemy : enemy_list)
+	{
+		enemy->Draw();
 	}
 }
 
-void ObjectManager::CreateObject(int object_type, Vector2D init_location, Vector2D init_size, float init_radius)
+void ObjectManager::CreateObject(int object_type, Vector2D init_location, Vector2D init_size, float init_radius, Vector2D init_velocity)
 {
 	switch (object_type)
 	{
@@ -90,7 +109,7 @@ void ObjectManager::CreateObject(int object_type, Vector2D init_location, Vector
 		create_object.push_back(InitData{ new Enemy5(),object_type,init_location,init_size,init_radius });
 		break;
 	case ObjectList::eCOIN:
-		create_object.push_back(InitData{ new Coin(ingame),object_type,init_location,init_size,init_radius });
+		create_object.push_back(InitData{ new Coin(ingame,init_velocity),object_type,init_location,init_size,init_radius });
 		break;
 	//case ObjectList::eHEAL:
 	//	create_object.push_back(InitData{ new Heal(),object_type,init_location,init_size,init_radius });

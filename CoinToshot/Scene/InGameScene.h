@@ -89,6 +89,12 @@ public:
 		ObjectList _list3 = eNULL, int _prob3 = 0,
 		ObjectList _list4 = eNULL, int _prob4 = 0, 
 		ObjectList _list5 = eNULL, int _prob5 = 0);
+
+	/// <summary>
+	/// 敵の生成に必要な情報を、現在の状態に応じて取得
+	/// </summary>
+	/// <returns>敵の生成に必要な情報</returns>
+	ObjectData EnemyRandSpawn();
 };
 
 
