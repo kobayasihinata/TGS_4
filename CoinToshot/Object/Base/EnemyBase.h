@@ -46,7 +46,7 @@ public:
 		if (!this->death_flg &&
 			hit_object->GetObjectType() == ePLAYER)
 		{
-			//hit_object->Damage(hit_damage, this->location);
+			hit_object->Damage(hit_damage, this->location);
 		}
 
 	}

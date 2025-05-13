@@ -150,7 +150,7 @@ void InGameScene::SpawnItem()
 void InGameScene::SpawnEnemy()
 {
 	//画面外からランダムに一定周期でスポーン
-	if ((int)frame % 60 == 0)
+	if ((int)frame % 90 == 0)
 	{
 		objects->CreateObject(EnemyRandSpawn());
 	}
@@ -185,32 +185,32 @@ ObjectList InGameScene::GetRandEnemy()
 {
 	int coin = UserData::coin;
 	//コインが0～99ならenemy1をスポーン
-	if (coin < 100)
+	if (coin < 50)
 	{
-		return GetEnemy(eENEMY3, 100);
+		return GetEnemy(eENEMY1, 100);
 	}
 	//コインが100～199ならenemy1と2をランダムでスポーン
-	if (coin < 200)
+	if (coin < 100)
 	{
 		return GetEnemy(eENEMY1, 50, eENEMY2, 50);
 	}
 	//コインが200～299ならenemy2をスポーン
-	if (coin < 300)
+	if (coin < 150)
 	{
 		return GetEnemy(eENEMY2, 100);
 	}
 	//コインが300～399ならenemy2と3をスポーン
-	if (coin < 400)
+	if (coin < 200)
 	{
 		return GetEnemy(eENEMY2, 50, eENEMY3, 50);
 	}
 	//コインが400～499ならenemy2と4をスポーン
-	if (coin < 500)
+	if (coin < 250)
 	{
 		return GetEnemy(eENEMY2, 90, eENEMY4, 10);
 	}
 	//コインが500～599ならenemy2と5をスポーン
-	if (coin < 600)
+	if (coin < 300)
 	{
 		return GetEnemy(eENEMY2, 80, eENEMY5, 20);
 	}
