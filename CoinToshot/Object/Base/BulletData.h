@@ -7,7 +7,7 @@ struct BulletData {
 	float damage;		//与ダメージ
 	float radius;		//半径
 	float speed;		//速度
-	ObjectBase* who;			//誰が打ち出したか
+	ObjectBase* who;	//誰が打ち出したか
 	float b_angle;		//角度
 	//int b_num;		 //弾を同時に何発撃つか
 	int h_count;		//貫通出来る敵の数

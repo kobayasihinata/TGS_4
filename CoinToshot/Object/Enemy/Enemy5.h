@@ -1,11 +1,26 @@
 #pragma once
 #include "../Base/EnemyBase.h"
+#include <vector>
+using namespace std;
+
+struct BlockData {
+	int block_anim_timer;	//防御エフェクトアニメーション
+	Vector2D attack_loc;	//アニメーション用 攻撃の座標
+
+	bool operator ==  (const BlockData _data)
+	{
+		if (this->block_anim_timer != _data.block_anim_timer)return false;
+		if (this->attack_loc != _data.attack_loc)return false;
+		return true;
+	}
+};
 class Enemy5 :
 	public EnemyBase
 {
 private:
-	int block_anim_timer;	//防御エフェクトアニメーション
-	Vector2D attack_loc;	//アニメーション用 攻撃の座標
+	std::vector<BlockData> block_data;	//攻撃を防いだ時にエフェクトを出す用
+	std::vector<BlockData> delete_block_data;	//攻撃を防いだ時にエフェクトを出す用
+
 public:
 	//コンストラクタ
 	Enemy5();

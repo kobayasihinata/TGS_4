@@ -23,7 +23,6 @@ void InputPad::UpdateKey()
 		NowKey[i] = Input.Buttons[i];
 	}
 
-
 	//左スティック
 	Lstick.ThumbX = Input.ThumbLX;
 	Lstick.ThumbY = Input.ThumbLY;

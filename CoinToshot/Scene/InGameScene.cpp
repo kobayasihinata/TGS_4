@@ -38,6 +38,7 @@ void InGameScene::Initialize()
 
 	//UI生成
 	ui = new GameSceneUI();
+	ui->Initialize();
 
 	//プレイヤー生成
 	objects->CreateObject({ Vector2D{0,0},Vector2D{40,40},ePLAYER });
@@ -123,10 +124,6 @@ void InGameScene::Draw()const
 	DrawString(10, 10, "InGame", GetColor(255, 255, 255));
 	DrawString(10, 30, "1 = Title  2 = Result", 0xffffff);
 
-	//プレイヤー描画
-	objects->Draw();
-	camera->GetCameraLocation().x;
-	camera->GetCameraLocation().y;
 
 	//グリッド表示
 	for (int x = -STAGE_SIZE; x < STAGE_SIZE; x += 100)
@@ -145,6 +142,9 @@ void InGameScene::Draw()const
 			y - camera->GetCameraLocation().y,
 			0x00ff00);
 	}
+
+	//オブジェクト描画
+	objects->Draw();
 
 	//UI描画
 	ui->Draw();

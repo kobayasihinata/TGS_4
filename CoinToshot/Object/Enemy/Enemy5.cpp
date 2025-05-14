@@ -9,8 +9,6 @@ Enemy5::Enemy5()
 	hit_damage = ENEMY5_DAMAGE;
 	//指定したドロップ量から±1の間でランダムにコインをドロップ
 	drop_coin = ENEMY5_DROPCOIN + (GetRand(2) - 1);
-
-	block_anim_timer = 0;
 }
 
 Enemy5::~Enemy5()
@@ -38,10 +36,30 @@ void Enemy5::Update()
 	//アニメーション
 	Animation();
 
-	//アニメーションタイマー減算
-	if (block_anim_timer > 0)
+	for (auto& data : block_data)
 	{
-		block_anim_timer--;
+		//時間を過ぎたら消す
+		if (--data.block_anim_timer <= 0)
+		{
+			delete_block_data.push_back(data);
+		}
+	}
+
+	//オブジェクト配列から削除する処理
+	for (const auto& delete_data : delete_block_data)
+	{
+		for (auto it = block_data.begin(); it != block_data.end();)
+		{
+			if (*it == delete_data)
+			{
+				it = block_data.erase(it);
+				break;
+			}
+			else
+			{
+				++it;
+			}
+		}
 	}
 
 	//死亡演出フラグが立っているなら
@@ -85,12 +103,11 @@ void Enemy5::Draw()const
 	//敵3
 	DrawString(local_location.x, local_location.y, "enemy5", 0xffffff);
 
-	//攻撃ブロックアニメーション
-	if (block_anim_timer > 0)
+	for (const auto data : block_data)
 	{
 		for (int i = 0; i < 5; i++)
 		{
-			DrawCircleAA(attack_loc.x - camera->GetCameraLocation().x, attack_loc.y - camera->GetCameraLocation().y, block_anim_timer * i%30, 6, 0xff0000, false);
+			DrawCircleAA(data.attack_loc.x - camera->GetCameraLocation().x, data.attack_loc.y - camera->GetCameraLocation().y, data.block_anim_timer * i % 30, 6, 0xff0000, false);
 		}
 	}
 }
@@ -114,7 +131,9 @@ void Enemy5::Damage(float _value, Vector2D _attack_loc, int _knock_back)
 	}
 
 	//ブロックアニメーション開始
-	block_anim_timer = 20;
-	attack_loc = _attack_loc;
+	BlockData data;
+	data.block_anim_timer = 20;
+	data.attack_loc = _attack_loc;
+	block_data.push_back(data);
 }
 

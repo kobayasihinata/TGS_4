@@ -3,6 +3,8 @@
 
 #include "Vector2D.h"
 #include "common.h"
+#include "InputPad.h"
+
 #include <string>
 using namespace std;
 
@@ -27,15 +29,14 @@ public:
 
 	static RankingData ranking_data[RANKING_DATA];	//ランキングデータ格納
 
-	//UIに表示する必要があり、保持しておいた方が良い可能性があるプレイヤー情報はここで管理
-	static Vector2D spawn_loc[10];	//リスポーンする位置
-	static float player_hp;		//体力
-	static int coin;			//スコア
-	static int timer;			//残り時間
-	static bool is_clear;		//false=ゲームオーバー true=ゲームクリア
-	static bool is_gamestop;			//false=ゲーム中 true=ゲーム終了
-	static int invincible;		//この数値が０以上なら、その時間だけプレイヤーを無敵にして、0に戻す
-
+	//UIに表示する必要がある or 保持しておいた方が良い可能性があるプレイヤー情報はここで管理
+	static float player_hp;			//体力
+	static int coin;				//スコア
+	static int timer;				//残り時間
+	static bool is_clear;			//false=ゲームオーバー true=ゲームクリア
+	static bool is_gamestop;		//false=ゲーム中 true=ゲーム終了
+	static int invincible;			//この数値が０以上なら、その時間だけプレイヤーを無敵にして、0に戻す
+	static int bullet_type;		//選択中の弾の種類
 public:
 	//ランキングデータを読み込む
 	static void ReadRankingData();

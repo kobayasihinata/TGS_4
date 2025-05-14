@@ -43,6 +43,7 @@ private:
 
 	//各ボタン長押し時間測定
 	static int PressingTime[R_TRIGGER];
+
 public:
 	//パッド情報の更新
 	static void UpdateKey();

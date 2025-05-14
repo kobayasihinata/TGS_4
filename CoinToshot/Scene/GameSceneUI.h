@@ -30,10 +30,15 @@ struct UIData
 class GameSceneUI
 {
 private:
+	int frame;		//フレーム計測
+	//ポップアップ表示用
 	std::vector<UIData> ui_data;
 	std::vector<UIData> delete_ui_data;
 
+	std::vector<std::vector<int>> button_image;
 public:
+	//初期化
+	void Initialize();
 	//更新
 	void Update();
 	//描画

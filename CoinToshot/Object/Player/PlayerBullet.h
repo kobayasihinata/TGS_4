@@ -5,6 +5,7 @@
 //プレイヤーの弾に必要な情報
 struct PlayerBullet
 {
+	char name[10];			//弾の名称
 	int cost;			//発射にかかるコイン数
 	float damage;		//ダメージ量
 	float speed;		//弾速
@@ -17,7 +18,7 @@ struct PlayerBullet
 static PlayerBullet pBullet[BULLET_NUM]
 {
 	//cos   dam  spe   rad   h_c  life
-	{  1,	1.f, 10.f, 20.f,   1, 120},
-	{ 10,   7.f, 15.f, 30.f,   5, 180},
-	{ 50,  50.f, 25.f, 40.f, 100, 360}
+	{"通常弾",  1,	1.f, 10.f, 20.f,   1, 120},
+	{"強化弾", 10,   7.f, 15.f, 30.f,   5, 180},
+	{"最強弾", 50,  50.f, 25.f, 40.f, 100, 360}
 };

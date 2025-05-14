@@ -5,16 +5,15 @@
 #include "../Object/Base/ObjectList.h"
 #include "common.h"
 
-
 RankingData UserData::ranking_data[RANKING_DATA]{ 0 };	//ランキングデータ格納
 
-Vector2D UserData::spawn_loc[10] = { 0,0 };		//リスポーンする位置
 float UserData::player_hp = DEFAULT_HP;			//体力
 int UserData::coin = 10;						//スコア
 int UserData::timer = DEFAULT_TIMELIMIT;		//残り時間
 bool UserData::is_clear = true;					//false=ゲームオーバー true=ゲームクリア
 bool UserData::is_gamestop = false;				//false=ゲーム中 true=ゲーム停止
 int UserData::invincible = 0;					//この数値が０以上なら、その時間だけプレイヤーを無敵にして、0に戻す
+int UserData::bullet_type = 0;				//選択中の弾の種類
 
 void UserData::ReadRankingData()
 {

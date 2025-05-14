@@ -16,8 +16,7 @@ void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init
 	camera = Camera::Get();
 	k_input = InputKey::Get();
 
-	shot_rad = 0.f;				
-	bullet_type = 0;
+	shot_rad = 0.f;	
 
 	inv_flg = 0;				
 	inv_timer = 0;		
@@ -160,6 +159,9 @@ void Player::Update()
 
 void Player::Draw()const
 {
+	//ƒtƒHƒ“ƒgƒTƒCƒY•Û‘¶
+	int old = GetFontSize();
+
 	if ((!damage_flg || (damage_flg && frame % 3 == 0)) && (!death_flg || death_timer > DEFAULT_DEATH_TIMER * 2))
 	{
 		__super::Draw();
@@ -167,16 +169,12 @@ void Player::Draw()const
 	//DebugInfomation::Add("hp", UserData::player_hp);
 	DebugInfomation::Add("rad", shot_rad);
 
-	//”­ËŠp“x•`‰æ
-	DrawLineAA(local_location.x, 
-		local_location.y,
-		local_location.x + (cosf(shot_rad) * 60),
-		local_location.y + (sinf(shot_rad) * 60),
-		0xff0000,
-		TRUE);
+	//’e‚Ì‹O“¹•`‰æ
+	DrawBulletOrbit();
 
-	//’e‚Ìí—Ş•`‰æ
-	DrawFormatString(600, 30, 0xffffff, "%d", bullet_type);
+
+	//ƒtƒHƒ“ƒg‘å‚«‚³Œ³’Ê‚è
+	SetFontSize(old);
 }
 
 void Player::Hit(ObjectBase* hit_Object)
@@ -250,26 +248,30 @@ void Player::Control()
 	}
 
 	//ƒRƒCƒ“‚ªˆê–‡ˆÈã‚È‚çA‚PÁ”ï‚Å’e‚ğ”­Ë‚·‚é
-	if (UserData::coin >= pBullet[bullet_type].cost && (InputPad::OnButton(XINPUT_BUTTON_LEFT_SHOULDER) || InputPad::OnButton(XINPUT_BUTTON_RIGHT_SHOULDER)))
+	if (UserData::coin >= pBullet[UserData::bullet_type].cost && (InputPad::OnButton(XINPUT_BUTTON_LEFT_SHOULDER) || InputPad::OnButton(XINPUT_BUTTON_RIGHT_SHOULDER)))
 	{
-		manager->CreateAttack(GetBulletData());
-		UserData::coin -= pBullet[bullet_type].cost;
+		manager->CreateAttack(GetBulletData(shot_rad-0.4f));
+		manager->CreateAttack(GetBulletData(shot_rad-0.2f));
+		manager->CreateAttack(GetBulletData(shot_rad));
+		manager->CreateAttack(GetBulletData(shot_rad+0.2f));
+		manager->CreateAttack(GetBulletData(shot_rad+0.4f));
+		UserData::coin -= pBullet[UserData::bullet_type].cost;
 	}
 
 	//ƒgƒŠƒK[‚Å’e‚Ìí—Ş‚ğ•Ï‚¦‚é
 	if (InputPad::OnButton(L_TRIGGER))
 	{
-		if (--bullet_type < 0)
+		if (--UserData::bullet_type < 0)
 		{
-			bullet_type = BULLET_NUM - 1;
+			UserData::bullet_type = BULLET_NUM - 1;
 		}
 	}
 	//ƒgƒŠƒK[‚Å’e‚Ìí—Ş‚ğ•Ï‚¦‚é
 	if (InputPad::OnButton(R_TRIGGER))
 	{
-		if (++bullet_type > BULLET_NUM - 1)
+		if (++UserData::bullet_type > BULLET_NUM - 1)
 		{
-			bullet_type = 0;
+			UserData::bullet_type = 0;
 		}
 	}
 
@@ -297,22 +299,28 @@ void Player::Control()
 #endif // _DEBUG
 }
 
-BulletData Player::GetBulletData()
+BulletData Player::GetBulletData(float _shot_rad)
 {
 	BulletData _data;
-	_data.damage = pBullet[bullet_type].damage;
-	_data.b_angle = shot_rad;
-	_data.delete_time = pBullet[bullet_type].life_span;
-	_data.h_count = pBullet[bullet_type].h_count;
+	_data.damage = pBullet[UserData::bullet_type].damage;
+	_data.b_angle = _shot_rad;
+	_data.delete_time = pBullet[UserData::bullet_type].life_span;
+	_data.h_count = pBullet[UserData::bullet_type].h_count;
 	_data.location = this->location;
-	_data.radius = pBullet[bullet_type].radius;
-	_data.speed = pBullet[bullet_type].speed;
+	_data.radius = pBullet[UserData::bullet_type].radius;
+	_data.speed = pBullet[UserData::bullet_type].speed;
 	_data.who = this;
 
 	return _data;
 }
 
-int Player::GetImages()
+void Player::DrawBulletOrbit()const
 {
-	return image;
+	//”­ËŠp“x•`‰æ
+	DrawLineAA(local_location.x,
+		local_location.y,
+		local_location.x + (cosf(shot_rad) * 60),
+		local_location.y + (sinf(shot_rad) * 60),
+		0xff0000,
+		TRUE);
 }

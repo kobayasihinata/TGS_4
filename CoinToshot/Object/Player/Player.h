@@ -15,7 +15,6 @@ private:
 
 	//ƒRƒCƒ“”­ËŠÖ˜A
 	float shot_rad;				//”­ËŠp“x
-	int bullet_type;			//’e‚Ìí—Ş
 
 	//–³“Gˆ—ŠÖ˜A
 	bool inv_flg;				//–³“G‚©”»’f
@@ -78,15 +77,14 @@ public:
 	/// ’e‚ğ”­Ë‚·‚é‚½‚ß‚Ìî•ñ‚ğ‚Ü‚Æ‚ß‚é
 	/// </summary>
 	/// <returns>’e‚ğ”­Ë‚·‚é‚½‚ß‚Ìî•ñ</returns>
-	BulletData GetBulletData();
+	BulletData GetBulletData(float _shot_rad);
 
-public:
+private:
 
 	/// <summary>
-	/// •`‰æ‰æ‘œ‚ğæ“¾
+	/// ƒvƒŒƒCƒ„[‚Ì’e‚Ì‹O“¹‚ğ•`‰æ
 	/// </summary>
-	/// <returns>‰æ‘œƒnƒ“ƒhƒ‹</returns>
-	int GetImages();
+	void DrawBulletOrbit()const;
 };
 
 
