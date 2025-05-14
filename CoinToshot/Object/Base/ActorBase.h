@@ -94,7 +94,7 @@ public:
 		}
 	}
 
-	virtual void Damage(float _value, Vector2D _attack_loc)override
+	virtual void Damage(float _value, Vector2D _attack_loc,int _knock_back = KNOCK_BACK)override
 	{
 		//自身のHPが1以上ならこの処理
 		if (hp > 0)
@@ -105,8 +105,8 @@ public:
 
 			//ダメージ源の中心座標からノックバック方向を求める
 			double radian = atan2(_attack_loc.y - this->location.y, _attack_loc.x - this->location.x);
-			velocity.x -= (KNOCK_BACK * cos(radian));
-			velocity.y -= (KNOCK_BACK * sin(radian));
+			velocity.x -= (_knock_back * cos(radian));
+			velocity.y -= (_knock_back * sin(radian));
 
 			//死
 			if (hp <= 0)

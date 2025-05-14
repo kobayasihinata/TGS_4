@@ -93,7 +93,7 @@ public:
 	//当たり判定が被った時の処理
 	virtual void Hit(ObjectBase* hit_Object) = 0;
 	//ダメージ処理
-	virtual void Damage(float _value, Vector2D _attack_loc) = 0;
+	virtual void Damage(float _value, Vector2D _attack_loc, int _knock_back = KNOCK_BACK) = 0;
 	//オブジェクトの種類取得
 	int GetObjectType()const { return object_type; }
 	//死亡演出中か取得

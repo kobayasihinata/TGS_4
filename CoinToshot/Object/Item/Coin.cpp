@@ -50,10 +50,10 @@ void Coin::Hit(ObjectBase* hit_object)
 		return;
 	}
 	//触れた対象がコインで、フラグが立っているなら終了
-	if (hit_object->GetObjectType() == eCOIN && check_flg)
-	{
-		return;
-	}
+	//if (hit_object->GetObjectType() == eCOIN && check_flg)
+	//{
+	//	return;
+	//}
 	//触れた対象がプレイヤーとコイン以外なら終了
 	if (hit_object->GetObjectType() != ePLAYER && hit_object->GetObjectType() != eCOIN)
 	{
@@ -61,14 +61,14 @@ void Coin::Hit(ObjectBase* hit_object)
 	}
 	
 	//コイン同士が引き寄せられる
-	//if (hit_object->GetObjectType() == eCOIN && 
-	//	COIN_FUSION_RANGE < sqrtf(powf(this->location.x - hit_object->GetLocation().x,2) + powf(this->location.y - hit_object->GetLocation().y,2)) &&
-	//	this->add_num > 0 && 
-	//	static_cast<Coin*>(hit_object)->add_num > 0)
-	//{
-	//	location.x += ((hit_object->GetLocation().x - this->location.x) / 200);
-	//	location.y += ((hit_object->GetLocation().y - this->location.y) / 200);
-	//}
+	if (hit_object->GetObjectType() == eCOIN && 
+		COIN_FUSION_RANGE < sqrtf(powf(this->location.x - hit_object->GetLocation().x,2) + powf(this->location.y - hit_object->GetLocation().y,2)) &&
+		this->add_num > 0 && 
+		static_cast<Coin*>(hit_object)->add_num > 0)
+	{
+		location.x += ((hit_object->GetLocation().x - this->location.x) / 200);
+		location.y += ((hit_object->GetLocation().y - this->location.y) / 200);
+	}
 
 
 	//コインに触れたらそのコインを消し、そのコインの獲得枚数を加算する

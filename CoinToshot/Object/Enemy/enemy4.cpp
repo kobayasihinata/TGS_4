@@ -95,7 +95,7 @@ void Enemy4::Update()
 void Enemy4::Draw()const
 {
 	__super::Draw();
-	//“G3
+	//“G4
 	DrawString(local_location.x, local_location.y, "enemy4", 0xffffff);
 }
 
@@ -125,7 +125,7 @@ void Enemy4::Hit(ObjectBase* hit_object)
 	}
 }
 
-void Enemy4::Damage(float _value, Vector2D _attack_loc)
+void Enemy4::Damage(float _value, Vector2D _attack_loc, int _knock_back)
 {
 	__super::Damage(_value, _attack_loc);
 }

@@ -101,8 +101,8 @@ void Attack::Hit(ObjectBase* hit_object)
 		hit_object->Damage(damage, this->location);
 		//当たった事を保存する
 		old_hit_object = hit_object;
-		//指定した回数オブジェクトに当たっていれば、攻撃の消去
-		if (++hit_count >= hit_max)
+		//指定した回数オブジェクトに当たっていれば、もしくは生きてる敵５に弾が当たったら、攻撃の消去
+		if (++hit_count >= hit_max || (hit_object->GetObjectType() == eENEMY5 && !hit_object->GetDeathFlg()))
 		{
 			manager->DeleteObject(this);
 		}

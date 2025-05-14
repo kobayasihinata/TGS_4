@@ -184,12 +184,12 @@ void Player::Hit(ObjectBase* hit_Object)
 	__super::Hit(hit_Object);
 }
 
-void Player::Damage(float _value, Vector2D _attack_loc)
+void Player::Damage(float _value, Vector2D _attack_loc, int _knock_back)
 {
 	//ダメージ後無敵でないならダメージを受ける
 	if (!damage_flg)
 	{
-		__super::Damage(_value, _attack_loc);
+		__super::Damage(_value, _attack_loc, _knock_back);
 		damage_flg = true;
 		damage_stop = true;
 		//一定フレーム無敵
@@ -203,7 +203,7 @@ void Player::Death()
 	//ゲームオーバーに設定
 	UserData::is_clear = false;
 	//リザルト遷移
-	manager->Result();
+	manager->Result(120);
 
 	//リスポーン位置に移動
 	location = 0;

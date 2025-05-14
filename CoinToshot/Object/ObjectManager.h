@@ -63,7 +63,7 @@ public:
 	//オブジェクト一覧を取得する
 	std::vector<ObjectBase*> GetObjectList()const;
 	//リザルト画面遷移
-	void Result();
+	void Result(int _delay = 0);
 	//画面内に居るか判断(引数は画面外のどこまでを許すか)
 	bool CheckInScreen(ObjectBase* _object, int space)const;
 };

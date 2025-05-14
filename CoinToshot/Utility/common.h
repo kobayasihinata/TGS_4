@@ -20,7 +20,7 @@
 #define RANKING_DATA 10			//登録するランキングデータの数
 
 //コインの設定
-#define COIN_FUSION_RANGE 35.f	//コインが融合する範囲
+#define COIN_FUSION_RANGE 10.f	//コインが融合する範囲
 
 //プレイヤーのパラメータ関連
 #define DEFAULT_HP 10			//プレイヤー初期HP
@@ -66,8 +66,8 @@
 #define ENEMY4_DROPCOIN 5		//敵４コインドロップ量
 
 #define ENEMY5_HP 20			//敵５HP
-#define ENEMY5_WIDTH 50			//敵５幅
-#define ENEMY5_HEIGHT 200		//敵５高さ
+#define ENEMY5_WIDTH 150		//敵５幅
+#define ENEMY5_HEIGHT 150		//敵５高さ
 #define ENEMY5_SPEED 0.2f		//敵５速度
 #define ENEMY5_DAMAGE 2			//敵５与ダメ
 #define ENEMY5_DROPCOIN 30		//敵５コインドロップ量

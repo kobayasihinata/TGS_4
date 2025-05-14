@@ -32,6 +32,6 @@ public:
 	//当たり判定が被った時の処理
 	void Hit(ObjectBase* hit_Object)override;
 	//ダメージ処理 value=ダメージの値 location=攻撃の中心座標 
-	void Damage(float _value,Vector2D _attack_loc)override {};
+	void Damage(float _value,Vector2D _attack_loc, int _knock_back = KNOCK_BACK)override {};
 };
 

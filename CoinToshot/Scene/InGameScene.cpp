@@ -25,8 +25,10 @@ void InGameScene::Initialize()
 	UserData::timer = DEFAULT_TIMELIMIT;
 	UserData::player_hp = DEFAULT_HP;
 	UserData::coin = 20;
+	UserData::is_gamestop = false;
 
-	change_result_delay = 0;
+	change_result_delay = -1;//0になったらリザルト遷移
+	change_result = false;
 
 	camera = Camera::Get();
 
@@ -57,38 +59,47 @@ eSceneType InGameScene::Update(float _delta)
 
 	change_scene = __super::Update(_delta);
 
-	//制限時間減少
-	UserData::timer--;
+	//時間停止フラグが立っていたらオブジェクトの動きはすべて止める
+	if (!UserData::is_gamestop)
+	{
+		//制限時間減少
+		UserData::timer--;
 
-	//カメラ更新
-	camera->Update();
+		//カメラ更新
+		camera->Update();
 
-	//UI更新
-	ui->Update();
+		//UI更新
+		ui->Update();
 
-	//アイテム生成
-	SpawnItem();
+		//アイテム生成
+		SpawnItem();
 
-	//敵生成
-	SpawnEnemy();
+		//敵生成
+		SpawnEnemy();
 
-	//オブジェクト更新
-	objects->Update();
+		//オブジェクト更新
+		objects->Update();
+	}
+
 
 	//入力機能の取得
 	InputKey* input = InputKey::Get();
 
 	//時間切れで終了（勝利扱い）
-	if (UserData::timer <= 0)
+	if (UserData::timer <= 0 && !change_result)
 	{
 		UserData::is_clear = true;
-		change_scene = eSceneType::eResult;
+		UserData::is_gamestop = true;
+		change_result = true;
+		change_result_delay = 120;
 	}
 
 	//リザルト遷移前の演出
-	if (change_result_delay > 0 && --change_result_delay);
+	if (change_result && --change_result_delay <= 0)
+	{
+		change_scene = eSceneType::eResult;
+	}
 
-	DebugInfomation::Add("delay", change_result_delay);
 
 #ifdef _DEBUG
 	//1キーでタイトル画面に遷移する
@@ -137,6 +148,23 @@ void InGameScene::Draw()const
 
 	//UI描画
 	ui->Draw();
+
+	//ゲームオーバーかクリアか表示
+	if (UserData::is_gamestop)
+	{
+		if (UserData::is_clear)
+		{
+			DrawBox((SCREEN_WIDTH/2) - 200, (SCREEN_HEIGHT/2) - 50, (SCREEN_WIDTH / 2) + 200, (SCREEN_HEIGHT / 2) + 50, 0x000000, true);
+			DrawBox((SCREEN_WIDTH / 2) - 200, (SCREEN_HEIGHT / 2) - 50, (SCREEN_WIDTH / 2) + 200, (SCREEN_HEIGHT / 2) + 50, 0xffffff, false);
+			DrawString((SCREEN_WIDTH / 2) - 150, (SCREEN_HEIGHT / 2) - 30, "GameClear!", 0xffffff);
+		}
+		else
+		{
+			DrawBox((SCREEN_WIDTH / 2) - 200, (SCREEN_HEIGHT / 2) - 50, (SCREEN_WIDTH / 2) + 200, (SCREEN_HEIGHT / 2) + 50, 0x000000, true);
+			DrawBox((SCREEN_WIDTH / 2) - 200, (SCREEN_HEIGHT / 2 )- 50, (SCREEN_WIDTH / 2) + 200, (SCREEN_HEIGHT / 2 )+ 50, 0xffffff, false);
+			DrawString((SCREEN_WIDTH / 2) - 150, (SCREEN_HEIGHT / 2) - 30, "GameOver...", 0xaaaaaa);
+		}
+	}
 }
 
 eSceneType InGameScene::GetNowSceneType()const
@@ -154,6 +182,11 @@ void InGameScene::ChangeResult(int _delay)
 	//遅延あり
 	else
 	{
+		//時止め
+		UserData::is_gamestop = true;
+		//リザルト遷移処理開始
+		change_result = true;
+		//リザルト遷移までの時間設定
 		change_result_delay = _delay;
 	}
 }

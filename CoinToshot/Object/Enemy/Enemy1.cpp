@@ -101,9 +101,9 @@ void Enemy1::Hit(ObjectBase* hit_Object)
 	//location -= (velocity * 10);
 }
 
-void Enemy1::Damage(float _value, Vector2D _attack_loc)
+void Enemy1::Damage(float _value, Vector2D _attack_loc, int _knock_back)
 {
-	__super::Damage(_value, _attack_loc);
+	__super::Damage(_value, _attack_loc, _knock_back);
 
 }
 

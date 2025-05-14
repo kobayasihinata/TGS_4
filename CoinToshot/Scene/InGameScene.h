@@ -15,6 +15,7 @@ private:
 
 	ShapeCollider* test;
 	int change_result_delay;	//リザルト遷移までの遅延時間
+	bool change_result;			//リザルト遷移処理を開始するか
 
 public:
 	InGameScene();

@@ -62,7 +62,7 @@ public:
 	/// ダメージ処理
 	/// </summary>
 	/// <param name="value">受けたダメージ量</param>
-	void Damage(float _value, Vector2D _attack_loc)override;
+	void Damage(float _value, Vector2D _attack_loc, int _knock_back = KNOCK_BACK)override;
 
 	/// <summary>
 	/// 死亡処理

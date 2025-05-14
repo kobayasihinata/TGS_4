@@ -9,6 +9,8 @@ Enemy5::Enemy5()
 	hit_damage = ENEMY5_DAMAGE;
 	//指定したドロップ量から±1の間でランダムにコインをドロップ
 	drop_coin = ENEMY5_DROPCOIN + (GetRand(2) - 1);
+
+	block_anim_timer = 0;
 }
 
 Enemy5::~Enemy5()
@@ -35,6 +37,12 @@ void Enemy5::Update()
 
 	//アニメーション
 	Animation();
+
+	//アニメーションタイマー減算
+	if (block_anim_timer > 0)
+	{
+		block_anim_timer--;
+	}
 
 	//死亡演出フラグが立っているなら
 	if (death_flg)
@@ -75,7 +83,16 @@ void Enemy5::Draw()const
 {
 	__super::Draw();
 	//敵3
-	DrawString(local_location.x, local_location.y, "enemy4", 0xffffff);
+	DrawString(local_location.x, local_location.y, "enemy5", 0xffffff);
+
+	//攻撃ブロックアニメーション
+	if (block_anim_timer > 0)
+	{
+		for (int i = 0; i < 5; i++)
+		{
+			DrawCircleAA(attack_loc.x - camera->GetCameraLocation().x, attack_loc.y - camera->GetCameraLocation().y, block_anim_timer * i%30, 6, 0xff0000, false);
+		}
+	}
 }
 
 void Enemy5::Hit(ObjectBase* hit_Object)
@@ -83,8 +100,21 @@ void Enemy5::Hit(ObjectBase* hit_Object)
 	__super::Hit(hit_Object);
 }
 
-void Enemy5::Damage(float _value, Vector2D _attack_loc)
+void Enemy5::Damage(float _value, Vector2D _attack_loc, int _knock_back)
 {
-	__super::Damage(_value, _attack_loc);
+	//死に至るダメージを受けたならノックバックする
+	if (hp - _value <= 0)
+	{
+		__super::Damage(_value, _attack_loc , _knock_back);
+	}
+	else
+	{
+		__super::Damage(_value, _attack_loc, 0);
+
+	}
+
+	//ブロックアニメーション開始
+	block_anim_timer = 20;
+	attack_loc = _attack_loc;
 }
 

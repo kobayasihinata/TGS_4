@@ -176,9 +176,9 @@ std::vector<ObjectBase*> ObjectManager::GetObjectList()const
 	return object_list;
 }
 
-void ObjectManager::Result()
+void ObjectManager::Result(int _delay)
 {
-	ingame->ChangeResult();
+	ingame->ChangeResult(_delay);
 }
 
 bool ObjectManager::CheckInScreen(ObjectBase* _object, int space)const

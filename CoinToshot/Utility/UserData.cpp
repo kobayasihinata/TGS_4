@@ -13,6 +13,7 @@ float UserData::player_hp = DEFAULT_HP;			//体力
 int UserData::coin = 10;						//スコア
 int UserData::timer = DEFAULT_TIMELIMIT;		//残り時間
 bool UserData::is_clear = true;					//false=ゲームオーバー true=ゲームクリア
+bool UserData::is_gamestop = false;				//false=ゲーム中 true=ゲーム停止
 int UserData::invincible = 0;					//この数値が０以上なら、その時間だけプレイヤーを無敵にして、0に戻す
 
 void UserData::ReadRankingData()
