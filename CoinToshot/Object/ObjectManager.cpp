@@ -103,7 +103,7 @@ void ObjectManager::CreateObject(int object_type, Vector2D init_location, Vector
 		create_object.push_back(InitData{ new Enemy3(),object_type,init_location,init_size,init_radius });
 		break;
 	case ObjectList::eENEMY4:
-		create_object.push_back(InitData{ new Enemy4(),object_type,init_location,init_size,init_radius });
+		create_object.push_back(InitData{ new Enemy4(ingame),object_type,init_location,init_size,init_radius });
 		break;
 	case ObjectList::eENEMY5:
 		create_object.push_back(InitData{ new Enemy5(),object_type,init_location,init_size,init_radius });

@@ -81,9 +81,10 @@ public:
 	//当たり判定が被った時の処理
 	virtual void Hit(ObjectBase* hit_object)override
 	{
-		//自身が生きてる且つプレイヤーではなく、攻撃とアイテム以外なら
+		//自身が生きてる且つプレイヤーではなく、相手が生きていて、攻撃とアイテム以外なら
 		if (!(this->death_flg) && 
 			this->object_type != ePLAYER &&
+			!hit_object->GetDeathFlg() &&
 			hit_object->GetObjectType() != ObjectList::eATTACK &&
 			hit_object->GetObjectType() != ObjectList::eCOIN &&
 			hit_object->GetObjectType() != ObjectList::eHEAL)

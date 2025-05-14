@@ -1,15 +1,20 @@
 #pragma once
 #include "../Base/EnemyBase.h"
+
+class InGameScene;
+
 class Enemy4 :
 	public EnemyBase
 {
 private:
+	InGameScene* ingame;		//現在のシーンのポインタを保存
+
 	int coin_num;	//持っているコイン
 	bool steal_flg;	//コインを盗んだか
 
 public:
 	//コンストラクタ
-	Enemy4();
+	Enemy4(InGameScene* _ingame);
 	//デストラクタ
 	~Enemy4();
 	//初期化処理
@@ -28,4 +33,3 @@ public:
 	//Enemy4専用移動処理
 	void Enemy4Move();
 };
-

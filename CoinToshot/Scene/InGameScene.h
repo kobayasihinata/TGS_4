@@ -15,6 +15,7 @@ private:
 
 	ShapeCollider* test;
 	int change_result_delay;	//リザルト遷移までの遅延時間
+
 public:
 	InGameScene();
 	virtual ~InGameScene();
@@ -95,7 +96,7 @@ public:
 	/// 敵の生成に必要な情報を、現在の状態に応じて取得
 	/// </summary>
 	/// <returns>敵の生成に必要な情報</returns>
-	ObjectData EnemyRandSpawn();
+	ObjectData GetEnemyData();
 };
 
 

@@ -1,9 +1,12 @@
 #include "Enemy4.h"
 #include "../ObjectManager.h"
 #include "../../Utility/common.h"
+#include "../../Scene/InGameScene.h"
 
-Enemy4::Enemy4()
+Enemy4::Enemy4(InGameScene* _ingame)
 {
+	ingame = _ingame;
+
 	move_speed = ENEMY4_SPEED;
 	hp = ENEMY4_HP;
 	hit_damage = ENEMY4_DAMAGE;
@@ -116,6 +119,9 @@ void Enemy4::Hit(ObjectBase* hit_object)
 		drop_coin += coin_num * 2;
 		move_speed = ENEMY4_ESCAPE_SPEED;
 		steal_flg = true;
+
+		std::string s = "-" + std::to_string(coin_num);
+		ingame->CreatePopUp(this->location, s, GetRand(100), 0xff0000, -1, 60);
 	}
 }
 

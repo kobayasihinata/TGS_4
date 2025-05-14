@@ -78,10 +78,23 @@ eSceneType InGameScene::Update(float _delta)
 	//入力機能の取得
 	InputKey* input = InputKey::Get();
 
+	//時間切れで終了（勝利扱い）
+	if (UserData::timer <= 0)
+	{
+		UserData::is_clear = true;
+		change_scene = eSceneType::eResult;
+	}
+
+	//リザルト遷移前の演出
+	if (change_result_delay > 0 && --change_result_delay);
+
+	DebugInfomation::Add("delay", change_result_delay);
+
+#ifdef _DEBUG
 	//1キーでタイトル画面に遷移する
 	if (input->GetKeyState(KEY_INPUT_1) == eInputState::Pressed)
 	{
-		change_scene = eSceneType::eTitle;
+		change_result_delay = 20;
 	}
 
 	//2キーでリザルト画面に遷移する
@@ -89,6 +102,7 @@ eSceneType InGameScene::Update(float _delta)
 	{
 		change_scene = eSceneType::eResult;
 	}
+#endif // _DEBUG
 
 	return change_scene;
 }
@@ -133,7 +147,15 @@ eSceneType InGameScene::GetNowSceneType()const
 void InGameScene::ChangeResult(int _delay)
 {
 	//遅延無し
-	change_scene = eSceneType::eResult;
+	if (_delay <= 0)
+	{
+		change_scene = eSceneType::eResult;
+	}
+	//遅延あり
+	else
+	{
+		change_result_delay = _delay;
+	}
 }
 
 void InGameScene::SpawnItem()
@@ -152,7 +174,7 @@ void InGameScene::SpawnEnemy()
 	//画面外からランダムに一定周期でスポーン
 	if ((int)frame % 90 == 0)
 	{
-		objects->CreateObject(EnemyRandSpawn());
+		objects->CreateObject(GetEnemyData());
 	}
 }
 
@@ -267,7 +289,7 @@ ObjectList InGameScene::GetEnemy(ObjectList _list1, int _prob1,
 	return eCOIN;
 }
 
-ObjectData InGameScene::EnemyRandSpawn()
+ObjectData InGameScene::GetEnemyData()
 {
 	ObjectData ret;
 	ObjectList spawn = GetRandEnemy();

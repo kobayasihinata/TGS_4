@@ -29,11 +29,6 @@ void Coin::Finalize()
 void Coin::Update()
 {
 	Move();
-	//ˆÚ“®I—¹Œã‚É‚à‚¤ˆê‰ñ‘¼‚ÌƒRƒCƒ“‚ÆŒ‹‡‚µ‚æ‚¤‚Æ‚·‚é
-	if ((int)velocity.x == 0 && (int)velocity.y == 0)
-	{
-		check_flg = false;
-	}
 }
 
 void Coin::Draw()const
@@ -77,14 +72,18 @@ void Coin::Hit(ObjectBase* hit_object)
 
 
 	//ƒRƒCƒ“‚ÉG‚ê‚½‚ç‚»‚ÌƒRƒCƒ“‚ðÁ‚µA‚»‚ÌƒRƒCƒ“‚ÌŠl“¾–‡”‚ð‰ÁŽZ‚·‚é
-	//ðŒ‚P:hit_object‚ªCoin‚Å‚ ‚é
-	//ðŒ‚Q:Ž©g‚Æhit_object“ñ“_ŠÔ‚Ì‹——£‚ªŽw’è‚µ‚½’lˆÈ‰º
-	//ðŒ‚R:Ž©g‚ÌƒRƒCƒ“‰ÁŽZ”‚ª0ˆÈã
-	//ðŒ‚S:hit_object(coin)‚Ì‰ÁŽZ”‚ª0ˆÈã
-	if (hit_object->GetObjectType() == eCOIN &&
+	//ðŒ‚PA‚Q:velocity‚ª0(ˆÚ“®‚µ‚Ä‚¢‚È‚¢)
+	//ðŒ‚R:hit_object‚ªCoin‚Å‚ ‚é
+	//ðŒ‚S:Ž©g‚Æhit_object“ñ“_ŠÔ‚Ì‹——£‚ªŽw’è‚µ‚½’lˆÈ‰º
+	//ðŒ‚T:Ž©g‚ÌƒRƒCƒ“‰ÁŽZ”‚ª0ˆÈã
+	//ðŒ‚U:hit_object(coin)‚Ì‰ÁŽZ”‚ª0ˆÈã
+	if ((int)velocity.x == 0 &&
+		(int)velocity.y == 0 &&
+		hit_object->GetObjectType() == eCOIN &&
 		COIN_FUSION_RANGE > sqrtf(powf(this->location.x - hit_object->GetLocation().x, 2) + powf(this->location.y - hit_object->GetLocation().y, 2)) &&
 		this->add_num > 0 &&
-		static_cast<Coin*>(hit_object)->add_num > 0)
+		static_cast<Coin*>(hit_object)->add_num > 0
+		)
 	{
 		add_num += static_cast<Coin*>(hit_object)->add_num;
 		static_cast<Coin*>(hit_object)->add_num = 0;
@@ -93,8 +92,12 @@ void Coin::Hit(ObjectBase* hit_object)
 		return;
 	}
 
-	//ã‚Ìˆ—‚Í¶¬Œã‚Ìˆê‰ñ‚¾‚¯
-	check_flg = true;
+	if ((int)velocity.x == 0 &&
+		(int)velocity.y == 0)
+	{
+		//ã‚Ìˆ—‚ÍˆÚ“®’âŽ~Œã‚Ìˆê‰ñ‚¾‚¯
+		check_flg = true;
+	}
 
 	//ƒvƒŒƒCƒ„[‚ÉG‚ê‚½‚çƒRƒCƒ“‰ÁŽZ‚µ‚ÄÁ‚¦‚é
 	if (this->add_num > 0 && hit_object->GetObjectType() == ePLAYER)
