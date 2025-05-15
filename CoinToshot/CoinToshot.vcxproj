@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Object\Effect\Ripples.cpp" />
     <ClCompile Include="Scene\EndScene.cpp" />
     <ClCompile Include="Scene\GameSceneUI.cpp" />
     <ClCompile Include="Object\Block.cpp" />
@@ -171,6 +172,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Object\Base\BulletData.h" />
+    <ClInclude Include="Object\Base\EffectBase.h" />
+    <ClInclude Include="Object\Base\EffectList.h" />
+    <ClInclude Include="Object\Effect\Ripples.h" />
     <ClInclude Include="Object\Player\PlayerBullet.h" />
     <ClInclude Include="Scene\EndScene.h" />
     <ClInclude Include="Scene\GameSceneUI.h" />

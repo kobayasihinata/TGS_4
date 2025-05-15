@@ -126,7 +126,7 @@ void Enemy5::Damage(float _value, Vector2D _attack_loc, int _knock_back)
 	}
 	else
 	{
-		__super::Damage(_value, _attack_loc, 0);
+		__super::Damage(_value, _attack_loc, 1);
 
 	}
 

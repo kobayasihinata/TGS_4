@@ -15,15 +15,27 @@
 #include "Base/ObjectList.h"
 #include "Base/BulletData.h"
 
+#include "Base/EffectBase.h"
+#include "Effect/Ripples.h"
+#include "Base/EffectList.h"
+
 class InGameScene;
 
-//初期化に必要なデータ
-struct InitData {
+//オブジェクトの初期化に必要なデータ
+struct ObjectInitData {
 	ObjectBase* object;
 	int object_num;
 	Vector2D init_location;
 	Vector2D init_size;
 	float init_radius = 0.f;	//四角の場合使わない
+};
+
+//エフェクトの初期化に必要なデータ
+struct EffectInitData {
+	EffectBase* effect;			
+	Vector2D init_location;
+	int timer;
+	int anim_span;
 };
 
 class ObjectManager
@@ -36,9 +48,16 @@ private:
 	//オブジェクト一覧
 	std::vector<ObjectBase*> object_list;
 	//生成するオブジェクト
-	std::vector<InitData>create_object;
+	std::vector<ObjectInitData>create_object;
 	//消去するオブジェクト
 	std::vector<ObjectBase*> delete_object;
+
+	//エフェクト一覧
+	std::vector<EffectBase*> effect_list;
+	//生成するエフェクト
+	std::vector<EffectInitData> create_effect;
+	//消去するエフェクト
+	std::vector<EffectBase*> delete_effect;
 public:
 	//初期化処理
 	void Initialize(InGameScene* _ingame);
@@ -48,6 +67,7 @@ public:
 	void Update();
 	//描画
 	void Draw()const;
+
 	//オブジェクトの生成
 	void CreateObject(int object_type, Vector2D init_location = 0.0f, Vector2D init_size = 40.0f, float init_radius = 0.f,Vector2D init_velocity = 0.f);
 	//オブジェクトの生成(オブジェクトデータ用のオーバーロード)
@@ -56,6 +76,12 @@ public:
 	void DeleteObject(ObjectBase* _delete_object);
 	//オブジェクトの削除（全消し）
 	void DeleteAllObject();
+
+	//エフェクトの生成
+	void CreateEffect(int object_type, Vector2D init_location = 0.0f, int _timer = 60, int _anim_span = 10);
+	//エフェクトの削除
+	void DeleteEffect(EffectBase* _delete_effect);
+
 	//攻撃の生成 inti_location=初期座標 size=大きさ _object=この攻撃を生成したオブジェクト _time=判定発生時間 _angle=移動方向
 	void CreateAttack(BulletData _bullet_data);
 	//当たり判定処理

@@ -80,6 +80,11 @@ public:
 	BulletData GetBulletData(float _shot_rad);
 
 private:
+	/// <summary>
+	/// ’e‚ğŒ‚‚Âˆ—
+	/// </summary>
+	/// <param name="_bullet_type">Œ‚‚Â‹Ê‚Ìí—Ş</param>
+	void ShotBullet();
 
 	/// <summary>
 	/// ƒvƒŒƒCƒ„[‚Ì’e‚Ì‹O“¹‚ğ•`‰æ

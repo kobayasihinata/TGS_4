@@ -250,11 +250,7 @@ void Player::Control()
 	//ƒRƒCƒ“‚ªˆê–‡ˆÈã‚È‚çA‚PÁ”ï‚Å’e‚ð”­ŽË‚·‚é
 	if (UserData::coin >= pBullet[UserData::bullet_type].cost && (InputPad::OnButton(XINPUT_BUTTON_LEFT_SHOULDER) || InputPad::OnButton(XINPUT_BUTTON_RIGHT_SHOULDER)))
 	{
-		manager->CreateAttack(GetBulletData(shot_rad-0.4f));
-		manager->CreateAttack(GetBulletData(shot_rad-0.2f));
-		manager->CreateAttack(GetBulletData(shot_rad));
-		manager->CreateAttack(GetBulletData(shot_rad+0.2f));
-		manager->CreateAttack(GetBulletData(shot_rad+0.4f));
+		ShotBullet();
 		UserData::coin -= pBullet[UserData::bullet_type].cost;
 	}
 
@@ -312,6 +308,24 @@ BulletData Player::GetBulletData(float _shot_rad)
 	_data.who = this;
 
 	return _data;
+}
+
+void Player::ShotBullet()
+{
+	//ˆê”­ˆÈãŒ‚‚Â’eŽí‚È‚ç
+	if (pBullet[UserData::bullet_type].bullet_num > 1)
+	{
+		float t = (pBullet[UserData::bullet_type].space * pBullet[UserData::bullet_type].bullet_num) / 2;
+		for (int i = 0; i < pBullet[UserData::bullet_type].bullet_num; i++)
+		{
+			manager->CreateAttack(GetBulletData(shot_rad - t + i * pBullet[UserData::bullet_type].space));
+		}
+	}
+	//’P”­‚È‚ç
+	else
+	{
+		manager->CreateAttack(GetBulletData(shot_rad));
+	}
 }
 
 void Player::DrawBulletOrbit()const

@@ -15,7 +15,6 @@ void ObjectManager::Finalize()
 
 void ObjectManager::Update()
 {
-
 	//オブジェクト配列に追加する処理
 	for (const auto& create_object : create_object)
 	{
@@ -54,6 +53,10 @@ void ObjectManager::Update()
 		object_list->Update();
 	}
 
+
+	//エフェクト配列に追加する処理
+	
+
 	//当たり判定処理
 	ObjectHitCheck();
 }
@@ -91,25 +94,25 @@ void ObjectManager::CreateObject(int object_type, Vector2D init_location, Vector
 	switch (object_type)
 	{
 	case ObjectList::ePLAYER:
-		create_object.push_back(InitData{ new Player(),object_type,init_location,init_size,init_radius });
+		create_object.push_back(ObjectInitData{ new Player(),object_type,init_location,init_size,init_radius });
 		break;
 	case ObjectList::eENEMY1:
-		create_object.push_back(InitData{ new Enemy1(),object_type,init_location,init_size,init_radius });
+		create_object.push_back(ObjectInitData{ new Enemy1(),object_type,init_location,init_size,init_radius });
 		break;
 	case ObjectList::eENEMY2:
-		create_object.push_back(InitData{ new Enemy2(),object_type,init_location,init_size,init_radius });
+		create_object.push_back(ObjectInitData{ new Enemy2(),object_type,init_location,init_size,init_radius });
 		break;
 	case ObjectList::eENEMY3:
-		create_object.push_back(InitData{ new Enemy3(),object_type,init_location,init_size,init_radius });
+		create_object.push_back(ObjectInitData{ new Enemy3(),object_type,init_location,init_size,init_radius });
 		break;
 	case ObjectList::eENEMY4:
-		create_object.push_back(InitData{ new Enemy4(ingame),object_type,init_location,init_size,init_radius });
+		create_object.push_back(ObjectInitData{ new Enemy4(ingame),object_type,init_location,init_size,init_radius });
 		break;
 	case ObjectList::eENEMY5:
-		create_object.push_back(InitData{ new Enemy5(),object_type,init_location,init_size,init_radius });
+		create_object.push_back(ObjectInitData{ new Enemy5(),object_type,init_location,init_size,init_radius });
 		break;
 	case ObjectList::eCOIN:
-		create_object.push_back(InitData{ new Coin(ingame,init_velocity),object_type,init_location,init_size,init_radius });
+		create_object.push_back(ObjectInitData{ new Coin(ingame,init_velocity),object_type,init_location,init_size,init_radius });
 		break;
 	//case ObjectList::eHEAL:
 	//	create_object.push_back(InitData{ new Heal(),object_type,init_location,init_size,init_radius });
@@ -143,10 +146,27 @@ void ObjectManager::DeleteAllObject()
 	}
 }
 
+void ObjectManager::CreateEffect(int object_type, Vector2D init_location = 0.0f, int _timer = 60, int _anim_span = 10)
+{
+	switch (object_type)
+	{
+	case EffectList::elRipples:
+		create_effect.push_back(EffectInitData{ new Ripples(),init_location, _timer, _anim_span});
+		break;
+	default:
+		break;
+	}
+}
+
+void ObjectManager::DeleteEffect(EffectBase* _delete_effect)
+{
+	delete_effect.push_back(_delete_effect);
+}
+
 void ObjectManager::CreateAttack(BulletData _bullet_data)
 {
 	create_object.push_back(
-		InitData{
+		ObjectInitData{
 			new Attack(_bullet_data),
 			eATTACK,
 			_bullet_data.location,
