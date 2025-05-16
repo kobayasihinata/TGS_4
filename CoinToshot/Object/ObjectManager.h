@@ -23,19 +23,20 @@ class InGameScene;
 
 //オブジェクトの初期化に必要なデータ
 struct ObjectInitData {
-	ObjectBase* object;
-	int object_num;
-	Vector2D init_location;
-	Vector2D init_size;
+	ObjectBase* object;			//生成するオブジェクト
+	int object_num;				//自身がeNum上の何番目か
+	Vector2D init_location;		//初期絶対座標
+	Vector2D init_size;			//初期サイズ
 	float init_radius = 0.f;	//四角の場合使わない
 };
 
 //エフェクトの初期化に必要なデータ
 struct EffectInitData {
-	EffectBase* effect;			
-	Vector2D init_location;
-	int timer;
-	int anim_span;
+	EffectBase* effect;			//生成するエフェクト	
+	Vector2D init_location;		//初期絶対座標
+	bool front_flg;				//オブジェクトより前に描画するか
+	int timer;					//表示時間
+	int anim_span;				//アニメーション切り替え間隔
 };
 
 class ObjectManager
@@ -78,7 +79,7 @@ public:
 	void DeleteAllObject();
 
 	//エフェクトの生成
-	void CreateEffect(int object_type, Vector2D init_location = 0.0f, int _timer = 60, int _anim_span = 10);
+	void CreateEffect(int object_type, Vector2D init_location = 0.0f, bool _front_flg = true, int _timer = 60, int _anim_span = 10);
 	//エフェクトの削除
 	void DeleteEffect(EffectBase* _delete_effect);
 

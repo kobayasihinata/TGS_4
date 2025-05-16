@@ -46,7 +46,7 @@ void ObjectManager::Update()
 	//削除したオブジェクトは消去
 	delete_object.clear();
 
-	//更新処理
+	//オブジェクト更新処理
 	for (const auto& object_list : object_list)
 	{
 		object_list->SetLocalLocation(camera->GetCameraLocation());	//ここでカメラ座標を渡せるようにする
@@ -55,7 +55,43 @@ void ObjectManager::Update()
 
 
 	//エフェクト配列に追加する処理
-	
+	for (const auto& create_effect : create_effect)
+	{
+		create_effect.effect->Initialize(this, create_effect.init_location, create_effect.front_flg, create_effect.timer, create_effect.anim_span);
+		effect_list.push_back(create_effect.effect);
+	}
+
+	//追加したオブジェクトは消去
+	create_effect.clear();
+
+	//エフェクト配列から削除する処理
+	for (const auto& delete_effect : delete_effect)
+	{
+		for (auto it = effect_list.begin(); it != effect_list.end();)
+		{
+			if (*it == delete_effect)
+			{
+
+				it = effect_list.erase(it);
+				break;
+			}
+			else
+			{
+				++it;
+			}
+		}
+	}
+
+	//削除したオブジェクトは消去
+	delete_effect.clear();
+
+	//エフェクト更新処理
+	for (const auto& effect_list : effect_list)
+	{
+		effect_list->SetLocalLocation(camera->GetCameraLocation());	//ここでカメラ座標を渡せるようにする
+		effect_list->Update();
+	}
+
 
 	//当たり判定処理
 	ObjectHitCheck();
@@ -63,7 +99,22 @@ void ObjectManager::Update()
 
 void ObjectManager::Draw()const
 {
-	std::vector<ObjectBase*> enemy_list;
+	std::vector<ObjectBase*> enemy_list;	//敵格納
+	std::vector<EffectBase*> front_effect;	//オブジェクトの後ろに描画するエフェクト格納
+
+	//オブジェクトの後ろに描画するエフェクト
+	for (const auto& effect : effect_list)
+	{
+		if (!effect->GetFrontFlg())
+		{
+			effect->Draw();
+		}
+		else
+		{
+			front_effect.push_back(effect);
+		}
+	}
+
 	//描画
 	for (const auto& object : object_list)
 	{
@@ -86,6 +137,12 @@ void ObjectManager::Draw()const
 	for (const auto& enemy : enemy_list)
 	{
 		enemy->Draw();
+	}
+
+	//オブジェクトの前に描画するエフェクト
+	for (const auto& effect : front_effect)
+	{
+		effect->Draw();
 	}
 }
 
@@ -146,12 +203,12 @@ void ObjectManager::DeleteAllObject()
 	}
 }
 
-void ObjectManager::CreateEffect(int object_type, Vector2D init_location = 0.0f, int _timer = 60, int _anim_span = 10)
+void ObjectManager::CreateEffect(int object_type, Vector2D init_location, bool _front_flg, int _timer, int _anim_span)
 {
 	switch (object_type)
 	{
 	case EffectList::elRipples:
-		create_effect.push_back(EffectInitData{ new Ripples(),init_location, _timer, _anim_span});
+		create_effect.push_back(EffectInitData{ new Ripples(),init_location, _front_flg,_timer, _anim_span});
 		break;
 	default:
 		break;

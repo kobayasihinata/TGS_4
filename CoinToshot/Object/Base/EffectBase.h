@@ -15,12 +15,13 @@ protected:
 	Vector2D location;					//絶対座標
 	Vector2D local_location;			//相対座標
 
-	std::vector<std::vector<int>> animation_image;	//アニメーション画像格納
+	std::vector<int> animation_image;	//アニメーション画像格納
 	int image;							//現在描画する画像
 	Vector2D image_shift;				//画像の位置調整用
 
 	int timer;							//時間測定
 	int anim_span;						//アニメーション間隔
+	bool front_flg;						//オブジェクトより前に描画するか判断
 
 public:
 	//コンストラクタ
@@ -30,7 +31,7 @@ public:
 	virtual ~EffectBase() = default;
 
 	//初期化処理
-	virtual void Initialize(ObjectManager* _manager, Vector2D init_location,int _timer, int _anim_span) {
+	virtual void Initialize(ObjectManager* _manager, Vector2D init_location, bool _front_flg, int _timer, int _anim_span) {
 
 		location = init_location;
 		local_location = 0;
@@ -48,7 +49,7 @@ public:
 	//更新処理
 	virtual void Update() = 0;
 
-	//描画処理
+	//描画処理(画像エフェクトなら__superする　Dxlibの関数でエフェクトを作るなら__superしない)
 	virtual void Draw()const
 	{
 		//画像描画
@@ -60,5 +61,17 @@ public:
 		{
 			DrawStringF(local_location.x, local_location.y, "画像無し", 0x00ff00);
 		}
+	}
+
+	//オブジェクトの後ろに描画するか取得
+	bool GetFrontFlg()const
+	{
+		return front_flg;
+	}
+
+	//ローカル座標の設定
+	void SetLocalLocation(Vector2D camera_location)
+	{
+		local_location = this->location - camera_location;
 	}
 };

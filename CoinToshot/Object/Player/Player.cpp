@@ -5,6 +5,7 @@
 #include "../../Utility/InputPad.h"
 #include "../../Utility/common.h"
 #include "PlayerBullet.h"
+#include "../Base/EffectList.h"
 
 #include <cmath>
 #define _USE_MATH_DEFINES
@@ -91,6 +92,11 @@ void Player::Update()
 	//移動処理
 	Move();
 
+	//テスト：エフェクトを生成
+	if (frame % 60 == 0)
+	{
+		manager->CreateEffect(elRipples, this->location);
+	}
 	//ダメージ後無敵を測定する
 	if (damage_flg && --damage_timer <= 0)
 	{
