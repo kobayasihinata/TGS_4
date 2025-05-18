@@ -28,14 +28,59 @@ public:
 
 		MovetoPlayer();
 
+		//HPの減った部分のアニメーション用
+		if (hpbar_move > 1)
+		{
+			hpbar_move -= hpbar_move / 10;
+		}
+		else
+		{
+			hpbar_move = 0;
+		}
 	}
 
 	virtual void Draw()const override
 	{
 		__super::Draw();
 
+		//HPゲージ外枠
+		DrawBoxAA(local_location.x - (HPBAR_SIZE / 2),
+			local_location.y - (box_size.y / 2) - 10,
+			local_location.x + (HPBAR_SIZE / 2),
+			local_location.y - (box_size.y / 2),
+			0x000000,
+			true
+		);
+		//HPゲージ内側
+		DrawBoxAA(local_location.x - (HPBAR_SIZE / 2),
+			local_location.y - (box_size.y / 2) - 10,
+			local_location.x + (HPBAR_SIZE / 2),
+			local_location.y - (box_size.y / 2),
+			0xffffff,
+			false
+		);
+		//HPゲージ本体
+		DrawBoxAA(local_location.x - (HPBAR_SIZE / 2),
+			local_location.y - (box_size.y / 2) - 10,
+			local_location.x - (HPBAR_SIZE / 2) + (hp * (HPBAR_SIZE / max_hp)) + hpbar_move,
+			local_location.y - (box_size.y / 2),
+			0xffff00,
+			true
+		);
+		//HPゲージ減少アニメーション
+		DrawBoxAA(local_location.x - (HPBAR_SIZE / 2) + (hp * (HPBAR_SIZE / max_hp)),
+			local_location.y - (box_size.y / 2) - 10,
+			local_location.x - (HPBAR_SIZE / 2) + (hp * (HPBAR_SIZE / max_hp)) + hpbar_move,
+			local_location.y - (box_size.y / 2),
+			0xff0000,
+			true
+		);
+
+#ifdef _DEBUG
 		//hp描画
 		DrawFormatStringF(local_location.x, local_location.y - (box_size.y / 2), 0xffffff, "HP:%f", this->hp);
+#endif // _DEBUG
+
 	}
 
 	virtual void Hit(ObjectBase* hit_object)override

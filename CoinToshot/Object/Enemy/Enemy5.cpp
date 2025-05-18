@@ -5,7 +5,7 @@
 Enemy5::Enemy5()
 {
 	move_speed = ENEMY5_SPEED;
-	hp = ENEMY5_HP;
+	max_hp = hp = ENEMY5_HP;
 	hit_damage = ENEMY5_DAMAGE;
 	//指定したドロップ量から±1の間でランダムにコインをドロップ
 	drop_coin = ENEMY5_DROPCOIN + (GetRand(2) - 1);

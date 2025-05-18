@@ -8,7 +8,7 @@ Enemy4::Enemy4(InGameScene* _ingame)
 	ingame = _ingame;
 
 	move_speed = ENEMY4_SPEED;
-	hp = ENEMY4_HP;
+	max_hp = hp = ENEMY4_HP;
 	hit_damage = ENEMY4_DAMAGE;
 	//指定したドロップ量から±1の間でランダムにコインをドロップ
 	drop_coin = ENEMY4_DROPCOIN + (GetRand(2) - 1);

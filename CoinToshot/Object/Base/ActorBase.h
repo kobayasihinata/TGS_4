@@ -7,8 +7,10 @@ class ActorBase :
 	public ObjectBase
 {
 protected:
-	int frame;	//フレーム測定
-	float hp;
+	int frame;		//フレーム測定
+	float max_hp;	//最大HP記憶
+	float hp;		//HP格納
+	float hpbar_move;	//HPゲージ減少アニメーション
 	Vector2D old_location = { 0.0f,0.0f };	//1フレーム前の座標
 
 	Vector2D last_velocity;				//停止する（値がMOVE_LOWER_LIMITを下回る）直前のvelocity
@@ -20,6 +22,19 @@ public:
 	Vector2D velocity = { 0.0f,0.0f };
 
 public:
+	virtual void Initialize(ObjectManager* _manager, int _object_type, Vector2D init_location = 0.0f, Vector2D init_size = 40.0f, float init_radius = 0.f)override
+	{
+		__super::Initialize(_manager, _object_type,init_location, init_size, init_radius);
+
+		//初期化
+		frame = 0;
+		hpbar_move = 0.f;
+		old_location = 0.f;
+		last_velocity = 0.f;				
+		move_velocity = 0.f;
+		drop_coin_count = 0;
+	}
+
 	virtual void Update()override
 	{
 		frame++;
@@ -101,6 +116,17 @@ public:
 		{
 
 			hp -= _value;
+			//HPが0より小さくなったら0にする
+			if (hp < 0)hp = 0;
+
+			//ダメージ量が自身の最大HPより大きければ、ダメージは最大HPとする
+			if (_value > max_hp)
+			{
+				_value = max_hp;
+			}
+			//減少アニメーション
+			hpbar_move += _value * (HPBAR_SIZE / max_hp);
+
 			//ノックバック処理
 
 			//ダメージ源の中心座標からノックバック方向を求める

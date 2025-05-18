@@ -21,18 +21,16 @@ void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init
 
 	inv_flg = 0;				
 	inv_timer = 0;		
-	velocity = Vector2D(0.0f);
 	damage_flg = false;
 	damage_timer = 0;
 	damage_stop = false;
 
 	//€–Sˆ—‚Ég‚¤
 	drop_coin = 100;
-	drop_coin_count = 0;
 	death_timer = DEFAULT_DEATH_TIMER * 3;
 
 	//HP“¯Šú
-	hp = UserData::player_hp;
+	max_hp = hp = UserData::player_hp;
 
 	//‰æ‘œ“Ç
 	ResourceManager* rm = ResourceManager::GetInstance();

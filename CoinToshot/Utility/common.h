@@ -19,6 +19,7 @@
 
 #define RANKING_DATA 10			//登録するランキングデータの数
 
+#define HPBAR_SIZE 50			//HPゲージの幅
 //コインの設定
 #define COIN_FUSION_RANGE 10.f	//コインが融合する範囲
 
