@@ -57,7 +57,7 @@ void Enemy1::Update()
 		anim_span = 3;
 
 		//死にながらコインをまき散らす
-		if (death_timer % 20 == 0 && drop_coin_count < drop_coin)
+		if (++death_timer % 20 == 0 && drop_coin_count < drop_coin)
 		{
 			Vector2D rand = { (float)(GetRand(this->GetSize().x) - this->GetSize().x / 2),(float)(GetRand(this->GetSize().y) - this->GetSize().y / 2) };
 			manager->CreateObject(
@@ -72,7 +72,7 @@ void Enemy1::Update()
 		}
 
 		//死亡演出時間を過ぎたら自身を削除
-		if (--death_timer <= 0)
+		if (anim_end_flg)
 		{
 			manager->DeleteObject(this);
 			//演出中に出せなかったコインをまとめてドロップ

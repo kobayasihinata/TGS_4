@@ -46,6 +46,16 @@ void Enemy4::Update()
 	{
 		last_velocity.y = velocity.y;
 	}
+
+	//HPの減った部分のアニメーション用
+	if (hpbar_move > 1)
+	{
+		hpbar_move -= hpbar_move / 10;
+	}
+	else
+	{
+		hpbar_move = 0;
+	}
 	/*************************************/
 
 	//行動の処理
@@ -62,9 +72,9 @@ void Enemy4::Update()
 	{
 
 		//死にながらコインをまき散らす
-		if (death_timer % 15 == 0 && drop_coin_count < drop_coin)
+		if (++death_timer % 15 == 0 && drop_coin_count < drop_coin)
 		{
-			Vector2D rand = { (float)(GetRand(this->GetSize().x) - this->GetSize().x / 2),(float)(GetRand(this->GetSize().y) - this->GetSize().y / 2) };
+			Vector2D rand = { (float)(GetRand((int)this->GetSize().x)) - this->GetSize().x / 2,(float)(GetRand((int)this->GetSize().y)) - this->GetSize().y / 2 };
 			manager->CreateObject(
 				eCOIN,
 				this->location + rand,
@@ -77,7 +87,7 @@ void Enemy4::Update()
 		}
 
 		//死亡演出時間を過ぎたら自身を削除
-		if (--death_timer <= 0)
+		if (anim_end_flg || death_timer > 60)
 		{
 			manager->DeleteObject(this);
 			//演出中に出せなかったコインをまとめてドロップ
@@ -102,7 +112,7 @@ void Enemy4::Draw()const
 {
 	__super::Draw();
 	//敵4
-	DrawString(local_location.x, local_location.y, "enemy4", 0xffffff);
+	DrawStringF(local_location.x, local_location.y, "enemy4", 0xffffff);
 }
 
 void Enemy4::Hit(ObjectBase* hit_object)

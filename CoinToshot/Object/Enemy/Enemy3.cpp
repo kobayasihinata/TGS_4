@@ -11,20 +11,17 @@ Enemy3::Enemy3()
 	//指定したドロップ量から±1の間でランダムにコインをドロップ
 	drop_coin = ENEMY3_DROPCOIN + (GetRand(2) - 1);
 
-	////画像読込
-	//ResourceManager* rm = ResourceManager::GetInstance();
-	//std::vector<int>tmp;
-	//tmp = rm->GetImages("Resource/Images/GoldEnemy/1.png");
-	//animation_image.push_back(tmp[0]);
-	//tmp = rm->GetImages("Resource/Images/GoldEnemy/2.png");
-	//animation_image.push_back(tmp[0]);
-	//tmp = rm->GetImages("Resource/Images/GoldEnemy/3.png");
-	//animation_image.push_back(tmp[0]);
-	//tmp = rm->GetImages("Resource/Images/GoldEnemy/4.png");
-	//animation_image.push_back(tmp[0]);
-	//tmp = rm->GetImages("Resource/Images/GoldEnemy/5.png");
-	//animation_image.push_back(tmp[0]);
-	//image = animation_image[0];
+	//画像読込
+	ResourceManager* rm = ResourceManager::GetInstance();
+	std::vector<int>tmp;
+	tmp = rm->GetImages("Resource/Images/Enemy3/Enemy3_Idle.png", 18, 5, 4, 96, 96);
+	animation_image.push_back(tmp);
+	tmp = rm->GetImages("Resource/Images/Enemy3/Enemy3_Throw.png", 12, 5, 3, 96, 96);
+	animation_image.push_back(tmp);
+
+	image = animation_image[0][0];
+
+	shot_once = false;
 }
 
 Enemy3::~Enemy3()
@@ -35,6 +32,7 @@ Enemy3::~Enemy3()
 void Enemy3::Initialize(ObjectManager* _manager, int _object_type, Vector2D init_location, Vector2D init_size, float init_radius)
 {
 	__super::Initialize(_manager, _object_type, init_location, init_size, init_radius);
+	anim_span = 2;
 }
 
 void Enemy3::Finalize()
@@ -46,19 +44,43 @@ void Enemy3::Update()
 {
 	__super::Update();
 
-	//移動
-	Move();
+	//顔の方向だけ変える
+	if (camera->player_location.x > this->location.x)
+	{
+		move_velocity.x = 1.f;
+	}
+	else
+	{
+		move_velocity.x = -1.f;
+	}
 
 	//アニメーション
 	Animation();
 
+	//投擲アニメーションが一周したら通常アニメーションに戻す
+	if (image_line == 1 && anim_end_flg)
+	{
+		image_line = 0;
+	}
 
-	//指定の周期毎に弾を発射する
-	if (!death_flg && frame % ENEMY3_ATTACK_SPAN == 0)
+	//投擲アニメーションが指定の画像まで再生されたら、弾を発射する
+	if (!shot_once && image_line == 1 && image_num == 4)
 	{
 		//プレイヤーの位置で発射角度を決める
 		shot_rad = atan2f(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x);
 		manager->CreateAttack(GetBulletData());
+		//一回だけ撃つ
+		shot_once = true;
+	}
+	//指定の周期毎にアニメーションを投擲に変える
+	if (!death_flg && frame % ENEMY3_ATTACK_SPAN == 0)
+	{
+		//投擲アニメーション開始
+		image_line = 1;
+		anim_timer = 0;
+		image_num = 0;
+		//一回だけ撃つ用変数リセット
+		shot_once = false;
 	}
 
 	//死亡演出フラグが立っているなら
@@ -66,7 +88,7 @@ void Enemy3::Update()
 	{
 
 		//死にながらコインをまき散らす
-		if (death_timer % 20 == 0 && drop_coin_count < drop_coin)
+		if (++death_timer % 20 == 0 && drop_coin_count < drop_coin)
 		{
 			Vector2D rand = { (float)(GetRand(this->GetSize().x) - this->GetSize().x / 2),(float)(GetRand(this->GetSize().y) - this->GetSize().y / 2) };
 			manager->CreateObject(
@@ -81,7 +103,7 @@ void Enemy3::Update()
 		}
 
 		//死亡演出時間を過ぎたら自身を削除
-		if (--death_timer <= 0)
+		if (anim_end_flg)
 		{
 			manager->DeleteObject(this);
 			//演出中に出せなかったコインをまとめてドロップ

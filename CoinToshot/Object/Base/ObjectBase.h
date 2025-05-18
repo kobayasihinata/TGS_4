@@ -21,6 +21,7 @@ protected:
 	int image_line;						//現在描画する画像の行
 	int anim_timer;						//アニメーション画像切り替え用タイマー
 	int anim_span;						//アニメーション周期保存用
+	bool anim_end_flg;					//アニメーション一周終了
 	int image_num;						//描画画像の配列上の位置格納
 	Vector2D image_shift;				//画像の位置調整用
 
@@ -44,10 +45,11 @@ public:
 
 		//初期化
 		anim_span = DEFAULT_ANIM_SPAN;	//アニメーション周期保存用
+		anim_end_flg = false;
 		image_num = 0;					//描画画像の配列上の位置格納
 		image_shift = 0;
 		death_flg = false;					
-		death_timer = DEFAULT_DEATH_TIMER;
+		death_timer = 0;
 	}
 	//終了時処理
 	virtual void Finalize() = 0;
@@ -57,11 +59,6 @@ public:
 	//描画処理
 	virtual void Draw()const
 	{
-		//死亡時透明になっていく（仮演出）
-		if (death_flg)
-		{
-			SetDrawBlendMode(DX_BLENDMODE_ALPHA, death_timer * 4);
-		}
 
 		//画像描画
 		if (image != 0)
@@ -82,12 +79,6 @@ public:
 			DrawCircleAA(local_location.x, local_location.y, radius, 20, 0xff0000, false);
 		}
 #endif // _DEBUG
-
-		//死亡時透明を解除（仮演出）
-		if (death_flg)
-		{
-			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
-		}
 	}
 
 	//当たり判定が被った時の処理
@@ -117,11 +108,18 @@ public:
 		{
 			//タイマーリセット
 			anim_timer = 0;
+
+			//アニメーション一周フラグをさげる
+			anim_end_flg = false;
+
 			//画像の総数を上回ったら最初の画像に戻す
 			if (++image_num > (animation_image[image_line].size() - 1))
 			{
 				image_num = 0;
+				//アニメーションが一周した事を検知
+				anim_end_flg = true;
 			}
+
 			//アニメーション画像を切り替える
 			image = animation_image[image_line][image_num];
 		}

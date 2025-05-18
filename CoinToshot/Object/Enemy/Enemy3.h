@@ -8,6 +8,7 @@ class Enemy3 :
 private:
 	//攻撃発射関連
 	float shot_rad;				//発射角度
+	bool shot_once;				//一回だけ撃つ
 public:
 	//コンストラクタ
 	Enemy3();
