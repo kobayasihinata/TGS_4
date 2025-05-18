@@ -68,14 +68,16 @@ void Enemy5::Update()
 		//死にながらコインをまき散らす
 		if (death_timer % 10 == 0 && drop_coin_count < drop_coin)
 		{
-			Vector2D rand = { (float)(GetRand(40) - 20),(float)(GetRand(40) - 20) };
+			Vector2D rand = { (float)(GetRand(this->GetSize().x) - this->GetSize().x / 2),(float)(GetRand(this->GetSize().y) - this->GetSize().y / 2) };
 			manager->CreateObject(
 				eCOIN,
 				this->location + rand,
-				Vector2D{40, 40},
+				Vector2D{ 40, 40 },
 				20.f,
-				rand);
+				rand/3);
 			drop_coin_count++;
+			//煙エフェクト生成
+			manager->CreateEffect(elSmoke, this->location + rand, true, 20);
 		}
 
 		//死亡演出時間を過ぎたら自身を削除

@@ -47,10 +47,10 @@ bool ShapeCollider::CollisionCheckBtoB(Vector2D _loc2, Vector2D _size2)const
 	Vector2D loc2 = _loc2;
 	Vector2D size2 = _size2;
 	//当たり判定確認
-	if (loc1.x < loc2.x + size2.x &&
-		loc2.x < loc1.x + size1.x &&
-		loc1.y < loc2.y + size2.y &&
-		loc2.y < loc1.y + size1.y)
+	if (loc1.x - (size1.x / 2) < loc2.x + (size2.x / 2) &&
+		loc2.x - (size2.x / 2) < loc1.x + (size1.x / 2) &&
+		loc1.y - (size1.y / 2) < loc2.y + (size2.y / 2) &&
+		loc2.y - (size2.y / 2) < loc1.y + (size1.y / 2))
 	{
 		return true;
 	}
@@ -145,130 +145,7 @@ float ShapeCollider::DistanceSqrf(const float t_x1, const float t_y1, const floa
 
 void ShapeCollider::Push(ShapeCollider* hit_object)
 {
-	Vector2D saveloc = this->location - (this->box_size/2);
-	Vector2D savesize = this->box_size;
-
-	Vector2D hit_loc = hit_object->GetLocation() - (hit_object->GetSize() / 2);
-	Vector2D hit_size = hit_object->GetSize();
-
-	Vector2D loc = saveloc;
-	Vector2D size = savesize;
-
-	bool stageHitFlg[2][4] = { false };
-	float move[4] = { 0 };
-
-	//上下判定用に座標とエリアの調整
-	this->location.x += 10.f;
-	this->box_size = { savesize.x - 20.f, 1.f };
-
-	//プレイヤー上方向の判定
-	if (CheckHit(hit_object) && !stageHitFlg[1][top]) {
-		stageHitFlg[0][top] = true;
-		stageHitFlg[1][top] = true;	
-	}
-	else {
-		stageHitFlg[0][top] = false;
-	}
-		
-	//プレイヤー下方向の判定
-	this->location.y += savesize.y + 1.f;
-
-	if (CheckHit(hit_object) && !stageHitFlg[1][bottom]) {
-		stageHitFlg[0][bottom] = true;
-		stageHitFlg[1][bottom] = true;
-	}
-	else {
-		stageHitFlg[0][bottom] = false;
-	}
-
-	//最初の値に戻す
-	this->location = saveloc;
-	this->box_size = savesize;
-
-	//上方向に埋まらないようにする
-	if (stageHitFlg[0][top]) {//上方向に埋まっていたら
-		float t = (hit_loc.y + hit_size.y) - loc.y;
-		if ((int)t != 0) {
-			move[top] = t;
-		}
-	}
-
-	//下方向に埋まらないようにする
-	if (stageHitFlg[0][bottom]) {//下方向に埋まっていたら
-		float t = hit_loc.y - (loc.y + size.y);
-		if ((int)t != 0) {
-			move[bottom] = t;
-		}
-	}
-
-	loc.y += (move[top] + move[bottom]);
-
-	//左右判定用に座標とエリアの調整
-	/*this->location.y -= 20.f;*/
-	this->box_size = { 1.f,savesize.y/2};
-
-	//プレイヤー左方向の判定
-	if (CheckHit(hit_object) && !stageHitFlg[1][left]) {
-		stageHitFlg[0][left] = true;
-		stageHitFlg[1][left] = true;
-	}
-	else {
-		stageHitFlg[0][left] = false;
-	}
-
-
-	//プレイヤー右方向の判定
-	this->location.x = saveloc.x + (savesize.x / 2) + savesize.x + 1.f;
-
-	if (CheckHit(hit_object) && !stageHitFlg[1][right]) {
-		stageHitFlg[0][right] = true;
-		stageHitFlg[1][right] = true;
-	}
-	else {
-		stageHitFlg[0][right] = false;
-	}
-
-	//最初の値に戻す
-	this->location = saveloc;
-	this->box_size = savesize;
-
-	//左方向に埋まらないようにする
-	if (stageHitFlg[0][left]) {//左方向に埋まっていたら
-		float t = (hit_loc.x + hit_size.x) - loc.x;
-		if ((int)t != 0) {
-			move[left] = t;
-		}
-	}
-
-	//右方向に埋まらないようにする
-	if (stageHitFlg[0][right]) {//右方向に埋まっていたら
-		float t = hit_loc.x - (loc.x + size.x);
-		if ((int)t != 0) {
-			move[right] = t;
-		}
-	}
-
-
-	//上下左右の移動量から移動後も埋まってるか調べる
-	//左右移動させてみてまだ埋まってたら戻す
-		//上下の座標更新
-	
-	loc.x += (move[left] + move[right]);
-
-	if (loc.x + size.x < hit_loc.x ||
-		loc.x > hit_loc.x + hit_size.x) {
-		if (stageHitFlg[1][top] || stageHitFlg[1][bottom]) {
-			loc.x -= (move[left] + move[right]);
-		}
-	}
-
-	//移動量を実際のオブジェクトに反映させる	
-	this->location = loc + (savesize / 2);
-	this->box_size = savesize;
-
-	////当たった辺を保存する
-	//for (int i = 0; i < 4; i++)
-	//{
-	//	myself->hit_flg[i] = stageHitFlg[0][i];
-	//}
+	float shot_rad = atan2f(hit_object->GetLocation().y - this->location.y, hit_object->GetLocation().x - this->location.x);
+	this->location.x -= cosf(shot_rad);
+	this->location.y -= sinf(shot_rad);
 }

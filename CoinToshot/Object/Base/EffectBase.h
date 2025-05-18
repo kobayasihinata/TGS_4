@@ -54,7 +54,9 @@ public:
 	virtual void Update()
 	{
 		//アニメーションの切り替え速度を、画像枚数とエフェクト時間から割り出す
-		if (timer % (int)(init_timer / (animation_image.size()-1)) == 0)
+		int r = init_timer / (animation_image.size() - 1);
+		if (r <= 0)r = 1;
+		if (timer % r == 0)
 		{
 			if (now_anim >= animation_image.size())
 			{
@@ -74,7 +76,7 @@ public:
 		//画像描画
 		if (image != 0)
 		{
-			DrawRotaGraphF(local_location.x, local_location.y, 1.f, 1.f, image, TRUE);
+			DrawRotaGraphF(local_location.x, local_location.y, 1.f, 0.f, image, TRUE);
 		}
 	}
 

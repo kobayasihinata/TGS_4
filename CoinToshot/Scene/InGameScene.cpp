@@ -43,7 +43,8 @@ void InGameScene::Initialize()
 	//ƒvƒŒƒCƒ„[¶¬
 	objects->CreateObject({ Vector2D{0,0},Vector2D{40,40},ePLAYER });
 
-	objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{40,40},eENEMY1/*, 20.f*/ });
+	//objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{40,40},eENEMY1/*, 20.f*/ });
+	objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{ENEMY5_WIDTH,ENEMY5_HEIGHT},eENEMY5/*, 20.f*/ });
 }
 
 void InGameScene::Finalize()

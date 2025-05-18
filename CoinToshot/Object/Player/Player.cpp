@@ -119,7 +119,10 @@ void Player::Update()
 		death_flg = true;
 	}
 
-
+	//if (frame % 30 == 0)
+	//{
+	//	manager->CreateEffect(elSmoke, this->location);
+	//}
 	//€–S‰‰oƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚é‚È‚ç
 	if (death_flg)
 	{

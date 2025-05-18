@@ -56,7 +56,7 @@ public:
 				DrawRotaGraphF(local_location.x, local_location.y, 1.f, 0, image, true, true);
 			}
 		}
-//#ifdef _DEBUG
+#ifdef _DEBUG
 		//当たり判定の描画
 
 		//四角
@@ -69,7 +69,7 @@ public:
 		{
 			DrawCircleAA(local_location.x, local_location.y, radius, 20, 0xff0000, false);
 		}
-//#endif // _DEBUG
+#endif // _DEBUG
 
 		//死亡時透明を解除（仮演出）
 		if (death_flg)
