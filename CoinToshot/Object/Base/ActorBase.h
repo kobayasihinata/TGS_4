@@ -128,6 +128,7 @@ public:
 				this->death_flg = true;
 				//アニメーション位置をリセット
 				image_num = 0;
+				anim_end_flg = false;
 			}
 		}
 	}

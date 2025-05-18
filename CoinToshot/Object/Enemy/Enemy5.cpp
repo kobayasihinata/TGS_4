@@ -9,6 +9,14 @@ Enemy5::Enemy5()
 	hit_damage = ENEMY5_DAMAGE;
 	//指定したドロップ量から±1の間でランダムにコインをドロップ
 	drop_coin = ENEMY5_DROPCOIN + (GetRand(2) - 1);
+
+	//画像読込
+	ResourceManager* rm = ResourceManager::GetInstance();
+	std::vector<int>tmp;
+	tmp = rm->GetImages("Resource/Images/Enemy5/Enemy5_Walk2.png", 24, 5, 5, 200, 200);
+	animation_image.push_back(tmp);
+
+	image = animation_image[0][0];
 }
 
 Enemy5::~Enemy5()
@@ -19,6 +27,7 @@ Enemy5::~Enemy5()
 void Enemy5::Initialize(ObjectManager* _manager, int _object_type, Vector2D init_location, Vector2D init_size, float init_radius)
 {
 	__super::Initialize(_manager, _object_type, init_location, init_size, init_radius);
+	anim_span = 5;
 }
 
 void Enemy5::Finalize()

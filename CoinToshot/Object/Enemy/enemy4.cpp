@@ -15,6 +15,18 @@ Enemy4::Enemy4(InGameScene* _ingame)
 
 	coin_num = 0;	//持っているコイン
 	steal_flg = false;	//コインを盗んだか
+
+	//画像読込
+	ResourceManager* rm = ResourceManager::GetInstance();
+	std::vector<int>tmp;
+	tmp = rm->GetImages("Resource/Images/Enemy4/Enemy4_Run.png", 12, 5, 3, 96, 96);
+	animation_image.push_back(tmp);
+	tmp = rm->GetImages("Resource/Images/Enemy4/Enemy4_Walk.png", 24, 5, 5, 96, 96);
+	animation_image.push_back(tmp);
+	tmp = rm->GetImages("Resource/Images/Enemy4/Enemy4_Death.png", 15, 5, 3, 96, 96);
+	animation_image.push_back(tmp);
+
+	image = animation_image[0][0];
 }
 
 Enemy4::~Enemy4()
@@ -25,6 +37,7 @@ Enemy4::~Enemy4()
 void Enemy4::Initialize(ObjectManager* _manager, int _object_type, Vector2D init_location, Vector2D init_size, float init_radius)
 {
 	__super::Initialize(_manager, _object_type, init_location, init_size, init_radius);
+	anim_span = 1;
 }
 
 void Enemy4::Finalize()
@@ -64,12 +77,21 @@ void Enemy4::Update()
 	//移動
 	Move();
 
+	//コインを盗んだ後、且つ生きているなら、アニメーションを歩きにする
+	if (steal_flg && !death_flg)
+	{
+		image_line = 1;
+	}
+
 	//アニメーション
 	Animation();
 
 	//死亡演出フラグが立っているなら
 	if (death_flg)
 	{
+		//死亡時アニメーションに遷移
+		image_line = 2;
+		anim_span = 3;
 
 		//死にながらコインをまき散らす
 		if (++death_timer % 15 == 0 && drop_coin_count < drop_coin)
@@ -87,7 +109,7 @@ void Enemy4::Update()
 		}
 
 		//死亡演出時間を過ぎたら自身を削除
-		if (anim_end_flg || death_timer > 60)
+		if (anim_end_flg)
 		{
 			manager->DeleteObject(this);
 			//演出中に出せなかったコインをまとめてドロップ
@@ -168,6 +190,7 @@ void Enemy4::Enemy4Move()
 			if (fabsf(velocity.y) < move_speed)velocity.y -= move_speed * sin(radian);
 		}
 		//移動したい方向保存
-		move_velocity = { move_speed * cosf(radian) ,move_speed * sinf(radian) };
+		//move_velocity = { move_speed * cosf(radian) ,move_speed * sinf(radian) };
+		move_velocity = velocity;
 	}
 }

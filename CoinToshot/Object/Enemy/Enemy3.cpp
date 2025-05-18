@@ -18,6 +18,8 @@ Enemy3::Enemy3()
 	animation_image.push_back(tmp);
 	tmp = rm->GetImages("Resource/Images/Enemy3/Enemy3_Throw.png", 12, 5, 3, 96, 96);
 	animation_image.push_back(tmp);
+	tmp = rm->GetImages("Resource/Images/Enemy3/Enemy3_Death.png", 15, 5, 3, 96, 96);
+	animation_image.push_back(tmp);
 
 	image = animation_image[0][0];
 
@@ -44,14 +46,20 @@ void Enemy3::Update()
 {
 	__super::Update();
 
-	//顔の方向だけ変える
-	if (camera->player_location.x > this->location.x)
+	//移動
+	Move();
+
+	//生きてるなら、顔の方向だけ変える
+	if (!death_flg)
 	{
-		move_velocity.x = 1.f;
-	}
-	else
-	{
-		move_velocity.x = -1.f;
+		if (camera->player_location.x > this->location.x)
+		{
+			move_velocity.x = 1.f;
+		}
+		else
+		{
+			move_velocity.x = -1.f;
+		}
 	}
 
 	//アニメーション
@@ -86,6 +94,10 @@ void Enemy3::Update()
 	//死亡演出フラグが立っているなら
 	if (death_flg)
 	{
+
+		//死亡アニメーションを表示
+		image_line = 2;
+		anim_span = 3;
 
 		//死にながらコインをまき散らす
 		if (++death_timer % 20 == 0 && drop_coin_count < drop_coin)

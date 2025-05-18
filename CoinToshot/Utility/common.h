@@ -67,8 +67,8 @@
 #define ENEMY4_DROPCOIN 5		//“G‚SƒRƒCƒ“ƒhƒƒbƒv—Ê
 
 #define ENEMY5_HP 20			//“G‚THP
-#define ENEMY5_WIDTH 150		//“G‚T•
-#define ENEMY5_HEIGHT 150		//“G‚T‚‚³
+#define ENEMY5_WIDTH 90			//“G‚T•
+#define ENEMY5_HEIGHT 130		//“G‚T‚‚³
 #define ENEMY5_SPEED 0.2f		//“G‚T‘¬“x
 #define ENEMY5_DAMAGE 2			//“G‚T—^ƒ_ƒ
 #define ENEMY5_DROPCOIN 30		//“G‚TƒRƒCƒ“ƒhƒƒbƒv—Ê
