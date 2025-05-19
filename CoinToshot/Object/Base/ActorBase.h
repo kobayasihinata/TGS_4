@@ -92,8 +92,12 @@ public:
 			hit_object->GetObjectType() != ObjectList::eCOIN &&
 			hit_object->GetObjectType() != ObjectList::eHEAL)
 		{
-			//オブジェクトを押す
-			Push(hit_object);
+			//当たらなくなるまで繰り返す
+			while (this->CheckHit(hit_object))
+			{
+				//オブジェクトを押す
+				Push(hit_object);
+			}
 		}
 	}
 

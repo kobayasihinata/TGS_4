@@ -20,6 +20,8 @@ public:
 	//•`‰æˆ—
 	void Draw()const override;
 	//“–‚½‚è”»’è‚ª”í‚Á‚½‚Ìˆ—
-	void Hit(ObjectBase* hit_Object)override;
+	void Hit(ObjectBase* hit_object)override;
+	//ƒ_ƒ[ƒWˆ—
+	void Damage(float _value, Vector2D _attack_loc, int _knock_back = KNOCK_BACK)override;
 };
 

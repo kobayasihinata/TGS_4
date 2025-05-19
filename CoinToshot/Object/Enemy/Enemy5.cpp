@@ -15,6 +15,8 @@ Enemy5::Enemy5()
 	std::vector<int>tmp;
 	tmp = rm->GetImages("Resource/Images/Enemy5/Enemy5_Walk2.png", 24, 5, 5, 200, 200);
 	animation_image.push_back(tmp);
+	tmp = rm->GetImages("Resource/Images/Enemy5/Enemy5_Death.png", 15, 5, 3, 200, 200);
+	animation_image.push_back(tmp);
 
 	image = animation_image[0][0];
 }
@@ -74,6 +76,10 @@ void Enemy5::Update()
 	//死亡演出フラグが立っているなら
 	if (death_flg)
 	{
+		//死亡時アニメーションに遷移
+		image_line = 1;
+		anim_span = 5;
+
 		//死にながらコインをまき散らす
 		if (++death_timer % 10 == 0 && drop_coin_count < drop_coin)
 		{
@@ -90,7 +96,7 @@ void Enemy5::Update()
 		}
 
 		//死亡演出時間を過ぎたら自身を削除
-		if (anim_end_flg || death_timer > 60)
+		if (anim_end_flg)
 		{
 			manager->DeleteObject(this);
 			//演出中に出せなかったコインをまとめてドロップ
