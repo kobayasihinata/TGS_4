@@ -177,9 +177,9 @@ void ObjectManager::CreateObject(int object_type, Vector2D init_location, Vector
 	case ObjectList::eBLOCK:
 		create_object.push_back(ObjectInitData{ new Block(),object_type,init_location,init_size,init_radius });
 		break;
-	//case ObjectList::eSLOT:
-	//	create_object.push_back(ObjectInitData{ new Slot(),object_type,init_location,init_size,init_radius });
-	//	break;
+	case ObjectList::eSLOT:
+		create_object.push_back(ObjectInitData{ new Slot(),object_type,init_location,init_size,init_radius });
+		break;
 	default:
 		break;
 	}
