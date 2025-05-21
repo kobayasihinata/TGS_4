@@ -99,8 +99,8 @@ void Attack::Hit(ObjectBase* hit_object)
 		}
 	}
 
-	//攻撃したのがプレイヤーで、プレイヤー以外に攻撃が当たっているなら
-	if (object->GetObjectType() == ePLAYER && hit_object->GetObjectType() != ePLAYER)
+	//攻撃したのがプレイヤーで、敵に攻撃が当たっているなら
+	if (object->GetObjectType() == ePLAYER && hit_object->IsEnemy())
 	{
 		//ダメージ
 		hit_object->Damage(damage, this->location);

@@ -100,6 +100,7 @@ void ObjectManager::Update()
 void ObjectManager::Draw()const
 {
 	std::vector<ObjectBase*> enemy_list;	//敵格納
+	std::vector<ObjectBase*> slot_list;		//スロット格納
 	std::vector<EffectBase*> front_effect;	//オブジェクトの後ろに描画するエフェクト格納
 
 	//オブジェクトの後ろに描画するエフェクト
@@ -126,6 +127,10 @@ void ObjectManager::Draw()const
 			{
 				enemy_list.push_back(object);
 			}
+			else if (object->GetObjectType() == eSLOT)
+			{
+				slot_list.push_back(object);
+			}
 			else
 			{
 				object->Draw();
@@ -137,6 +142,12 @@ void ObjectManager::Draw()const
 	for (const auto& enemy : enemy_list)
 	{
 		enemy->Draw();
+	}
+
+	//スロット描画
+	for (const auto& slot : slot_list)
+	{
+		slot->Draw();
 	}
 
 	//オブジェクトの前に描画するエフェクト
