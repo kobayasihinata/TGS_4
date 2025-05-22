@@ -1,6 +1,6 @@
 #pragma once
 
-#define BULLET_NUM 4	//’e‚Ìí—Ş
+#define BULLET_NUM 5	//’e‚Ìí—Ş
 
 //ƒvƒŒƒCƒ„[‚Ì’e‚É•K—v‚Èî•ñ
 struct PlayerBullet
@@ -24,5 +24,6 @@ static PlayerBullet pBullet[BULLET_NUM]
 	{"’Êí’e",  1,	 1.f, 10.f, 20.f,   1, 120,1,    0},
 	{"‹­‰»’e", 10,   7.f, 15.f, 30.f,   5, 180,1,    0},
 	{"Å‹­’e", 50,  50.f, 25.f, 40.f, 100, 360,1,    0},
-	{"ŠgU’e", 5,   2.f, 10.f, 20.f,   1,   30,5, 0.2f},
+	{"ŠgU’e",  5,   2.f, 10.f, 20.f,   1,  30,5, 0.2f},
+	{"”š”­’e", 10,   3.f, 10.f, 30.f,  10,  20,1,	 0},
 };

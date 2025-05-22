@@ -33,5 +33,8 @@ public:
 	void Hit(ObjectBase* hit_Object)override;
 	//ダメージ処理 value=ダメージの値 location=攻撃の中心座標 
 	void Damage(float _value,Vector2D _attack_loc, int _knock_back = KNOCK_BACK)override {};
+
+	//弾の情報を取得
+	BulletData GetBulletData(float _shot_rad);
 };
 

@@ -40,6 +40,14 @@ void Attack::Update()
 	{
 		//UŒ‚‚ÌÁ‹Ž
 		manager->DeleteObject(this);
+
+		if (radius > 5)
+		{
+			for (float i = 0; i < 6.28; i+=0.53f)
+			{
+				manager->CreateAttack(GetBulletData(i));
+			}
+		}
 	}
 
 	//”g–ä‚ð¶¬
@@ -112,4 +120,19 @@ void Attack::Hit(ObjectBase* hit_object)
 			manager->DeleteObject(this);
 		}
 	}
+}
+
+BulletData Attack::GetBulletData(float _shot_rad)
+{
+	BulletData _data;
+	_data.damage = damage;
+	_data.b_angle = _shot_rad;
+	_data.delete_time = time;
+	_data.h_count = 1;
+	_data.location = this->location;
+	_data.radius = 5;
+	_data.speed = 10;
+	_data.who = object;
+
+	return _data;
 }
