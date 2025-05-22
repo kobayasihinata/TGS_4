@@ -117,10 +117,6 @@ void Player::Update()
 		death_flg = true;
 	}
 
-	//if (frame % 30 == 0)
-	//{
-	//	manager->CreateEffect(elSmoke, this->location);
-	//}
 	//死亡演出フラグが立っているなら
 	if (death_flg)
 	{
@@ -158,6 +154,20 @@ void Player::Update()
 			Death();
 		}
 	}
+
+#ifdef _DEBUG
+	//if (frame % 30 == 0)
+	//{
+	//	manager->CreateEffect(elSmoke, this->location);
+	//}
+	
+	//Aボタンが押されたら吸い寄せ
+	if (InputPad::OnButton(XINPUT_BUTTON_A))
+	{
+		UserData::attraction_flg = !UserData::attraction_flg;
+	}
+#endif // _DEBUG
+
 }
 
 void Player::Draw()const

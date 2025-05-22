@@ -6,6 +6,7 @@ Slot::Slot()
 {
 	spin_flg = false;
 	peka_flg = false;
+	can_stop = false;
 	timer = 0;
 	now_reel = 0;
 	reel_wait = 0;
@@ -39,15 +40,19 @@ void Slot::Update()
 	{
 		frame = 0;
 	}
-	//ペカっていたら目押し処理
-	if (peka_flg)
+	//プレイヤーが触れている間だけリールが回る
+	if (can_stop)
 	{
-		BonusStop();
-	}
-	//ペカっていなければ自動消化
-	else
-	{
-		AutoPlay();
+		//ペカっていたら目押し処理
+		if (peka_flg)
+		{
+			BonusStop();
+		}
+		//ペカっていなければ自動消化
+		else
+		{
+			AutoPlay();
+		}
 	}
 
 	//７が揃ったらメダルを出す
@@ -69,6 +74,9 @@ void Slot::Update()
 
 		}
 	}
+
+	//プレイヤーが触れているか判断するフラグをリセット
+	can_stop = false;
 }
 
 void Slot::Draw()const
@@ -134,6 +142,7 @@ void Slot::Hit(ObjectBase* hit_object)
 	if (hit_object->GetObjectType() == ePLAYER)
 	{
 		spin_flg = true;
+		can_stop = true;
 	}
 
 	//敵が触れたら弾かれる
@@ -264,7 +273,11 @@ void Slot::BonusStop()
 					reel[0] += 1;
 					if (!CheckBigBonus())
 					{
-						reel[0] -= 1;
+						reel[0] += 1;
+						if (!CheckBigBonus())
+						{
+							reel[0] -= 2;
+						}
 					}
 				}
 			}
@@ -277,7 +290,11 @@ void Slot::BonusStop()
 					reel[1] += 1;
 					if (!CheckBigBonus())
 					{
-						reel[1] -= 1;
+						reel[1] += 1;
+						if (!CheckBigBonus())
+						{
+							reel[1] -= 2;
+						}
 					}
 				}
 			}
@@ -290,7 +307,11 @@ void Slot::BonusStop()
 					reel[2] += 1;
 					if (!CheckBigBonus())
 					{
-						reel[2] -= 1;
+						reel[2] += 1;
+						if (!CheckBigBonus())
+						{
+							reel[2] -= 2;
+						}
 					}
 				}
 			}

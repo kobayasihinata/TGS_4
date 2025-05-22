@@ -20,6 +20,7 @@ class Slot :
 private:
 	int frame;		//フレーム測定
 	bool spin_flg;	//リールを回すか判断
+	bool can_stop;	//プレイヤーが触れている間だけリールに触れる
 	bool peka_flg;	//目押しが可能な状態か判断
 	int reel[3];	//今止まっているリール
 	int reel_wait;	//リールの時間

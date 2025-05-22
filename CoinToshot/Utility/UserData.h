@@ -37,6 +37,7 @@ public:
 	static bool is_gamestop;		//false=ゲーム中 true=ゲーム終了
 	static int invincible;			//この数値が０以上なら、その時間だけプレイヤーを無敵にして、0に戻す
 	static int bullet_type;		//選択中の弾の種類
+	static bool attraction_flg;		//コイン吸い寄せ
 public:
 	//ランキングデータを読み込む
 	static void ReadRankingData();

@@ -1,6 +1,6 @@
 #pragma once
 #include "../Base/ActorBase.h"
-
+#include "../../Scene/Camera/Camera.h"
 class InGameScene;
 
 class Coin :
@@ -8,7 +8,7 @@ class Coin :
 {
 private:
 	InGameScene* ingame;		//現在のシーンのポインタを保存
-
+	class Camera* camera;		//カメラポインタ格納(プレイヤーの情報を渡すためだけに取得)
 public:
 	float add_num;	//コイン追加数
 	bool check_flg;	//コインが合体するかを一度だけ判断する用	

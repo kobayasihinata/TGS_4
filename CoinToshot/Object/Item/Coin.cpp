@@ -5,6 +5,8 @@
 
 Coin::Coin(InGameScene* _ingame, Vector2D _init_velocity)
 {
+	camera = Camera::Get();
+
 	ingame = _ingame;
 	velocity = _init_velocity;
 	add_num = 1;
@@ -29,6 +31,13 @@ void Coin::Finalize()
 void Coin::Update()
 {
 	Move();
+
+	//‹z‚¢Šñ‚¹‚Ìƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚½‚çAƒvƒŒƒCƒ„[‚ÉŒü‚¯‚ÄˆÚ“®‚·‚é
+	if (UserData::attraction_flg)
+	{
+		velocity.x += ((camera->player_location.x - this->location.x) / 200);
+		velocity.y += ((camera->player_location.y - this->location.y) / 200);
+	}
 }
 
 void Coin::Draw()const
@@ -77,8 +86,9 @@ void Coin::Hit(ObjectBase* hit_object)
 	//ðŒ‚S:Ž©g‚Æhit_object“ñ“_ŠÔ‚Ì‹——£‚ªŽw’è‚µ‚½’lˆÈ‰º
 	//ðŒ‚T:Ž©g‚ÌƒRƒCƒ“‰ÁŽZ”‚ª0ˆÈã
 	//ðŒ‚U:hit_object(coin)‚Ì‰ÁŽZ”‚ª0ˆÈã
-	if ((int)velocity.x == 0 &&
-		(int)velocity.y == 0 &&
+	if ((((int)velocity.x == 0 && (int)velocity.y == 0)||
+		(location == hit_object->GetLocation()))
+		&&
 		hit_object->GetObjectType() == eCOIN &&
 		COIN_FUSION_RANGE > sqrtf(powf(this->location.x - hit_object->GetLocation().x, 2) + powf(this->location.y - hit_object->GetLocation().y, 2)) &&
 		this->add_num > 0 &&
