@@ -1,6 +1,7 @@
 #pragma once
 #include "Base/ObjectBase.h"
 #include "Base/BulletData.h"
+#include "Player/PlayerBullet.h"
 
 class Attack :
 	public ObjectBase
@@ -14,7 +15,7 @@ private:
 	int hit_count;				//当たったオブジェクトの数を測定
 	int hit_max;				//いくつのオブジェクトに当たれるか
 	ObjectBase* old_hit_object;	//ひとつ前に当たったオブジェクトを保存
-
+	BulletType bullet_type;		//自身の弾種類を格納
 public:
 	//コンストラクタ(_object = 攻撃を生成したオブジェクト いなければnullptr 
 	// _bullet_data = 発射時に必要な情報)

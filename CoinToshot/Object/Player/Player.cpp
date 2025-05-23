@@ -319,6 +319,7 @@ BulletData Player::GetBulletData(float _shot_rad)
 	_data.radius = pBullet[UserData::bullet_type].radius;
 	_data.speed = pBullet[UserData::bullet_type].speed;
 	_data.who = this;
+	_data.b_type = (BulletType)UserData::bullet_type;
 
 	return _data;
 }

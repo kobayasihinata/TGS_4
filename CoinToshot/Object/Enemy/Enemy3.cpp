@@ -164,6 +164,6 @@ BulletData Enemy3::GetBulletData()
 	_data.radius = 15;
 	_data.speed = ENEMY3_ATTACK_SPEED;
 	_data.who = this;
-
+	_data.b_type = BulletType::bNormal;
 	return _data;
 }

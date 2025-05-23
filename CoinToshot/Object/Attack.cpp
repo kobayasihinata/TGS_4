@@ -13,6 +13,7 @@ Attack::Attack(BulletData _bullet_data)
 	hit_count = 0;
 	hit_max = _bullet_data.h_count;
 	old_hit_object = nullptr;
+	bullet_type = _bullet_data.b_type;
 
 	//location.x += ((b_speed + acceleration * 0.08) * cosf(rad));
 	//location.y += ((b_speed + acceleration * 0.08) * sinf(rad));
@@ -41,7 +42,8 @@ void Attack::Update()
 		//UŒ‚‚ÌÁ‹
 		manager->DeleteObject(this);
 
-		if (radius > 5)
+		//U’eˆ—
+		if (bullet_type == BulletType::bExplosion)
 		{
 			for (float i = 0; i < 6.28; i+=0.53f)
 			{
@@ -128,11 +130,12 @@ BulletData Attack::GetBulletData(float _shot_rad)
 	_data.damage = damage;
 	_data.b_angle = _shot_rad;
 	_data.delete_time = time;
-	_data.h_count = 1;
+	_data.h_count = 100;
 	_data.location = this->location;
 	_data.radius = 5;
 	_data.speed = 10;
 	_data.who = object;
+	_data.b_type = BulletType::bNormal;
 
 	return _data;
 }

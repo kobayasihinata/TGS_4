@@ -27,3 +27,13 @@ static PlayerBullet pBullet[BULLET_NUM]
 	{"ägéUíe",  5,   2.f, 10.f, 20.f,   1,  30,5, 0.2f},
 	{"îöî≠íe", 10,   3.f, 10.f, 30.f,  10,  20,1,	 0},
 };
+
+//ÉfÅ[É^Ç∆ìØÇ∂èáî‘
+static enum BulletType {
+	bNormal=0,
+	bStrong,
+	bStrongest,
+	bShotgun,
+	bExplosion
+
+};

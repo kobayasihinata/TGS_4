@@ -1,6 +1,7 @@
 #pragma once
 #include "../../Utility/Vector2D.h"
 #include "ObjectBase.h"
+#include "../Player/PlayerBullet.h"
 
 struct BulletData {
 	Vector2D location;	//À•W
@@ -12,5 +13,5 @@ struct BulletData {
 	//int b_num;		 //’e‚ğ“¯‚É‰½”­Œ‚‚Â‚©
 	int h_count;		//ŠÑ’Êo—ˆ‚é“G‚Ì”
 	int delete_time;	//’e‚ğÁ‚·‚Ü‚Å‚ÌŠÔ
-	//int b_type;		 //’e‚Ìí—Ş
+	BulletType b_type;		 //’e‚Ìí—Ş
 };
