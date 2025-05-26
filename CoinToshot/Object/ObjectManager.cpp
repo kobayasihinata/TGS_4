@@ -6,6 +6,16 @@ void ObjectManager::Initialize(InGameScene* _ingame)
 {
 	camera = Camera::Get();
 	ingame = _ingame;
+
+	ResourceManager* rm = ResourceManager::GetInstance();
+	std::vector<int>tmp;
+	tmp = rm->GetImages("Resource/Images/UI/button1.png", 26, 7, 4, 40, 40);
+	button_image.push_back(tmp);
+	tmp = rm->GetImages("Resource/Images/UI/button2.png", 26, 7, 4, 40, 40);
+	button_image.push_back(tmp);
+
+	frame = 0;
+	b_anim = 0;
 }
 
 void ObjectManager::Finalize()
@@ -15,6 +25,20 @@ void ObjectManager::Finalize()
 
 void ObjectManager::Update()
 {
+	//フレーム測定
+	if (++frame > 6000)
+	{
+		frame = 0;
+	}
+	//アニメーション更新
+	if (frame % 10 == 0)
+	{
+		if (++b_anim > 1)
+		{
+			b_anim = 0;
+		}
+	}
+
 	//オブジェクト配列に追加する処理
 	for (const auto& create_object : create_object)
 	{
@@ -189,7 +213,7 @@ void ObjectManager::CreateObject(int object_type, Vector2D init_location, Vector
 		create_object.push_back(ObjectInitData{ new Block(),object_type,init_location,init_size,init_radius });
 		break;
 	case ObjectList::eSLOT:
-		create_object.push_back(ObjectInitData{ new Slot(),object_type,init_location,init_size,init_radius });
+		create_object.push_back(ObjectInitData{ new Slot(ingame),object_type,init_location,init_size,init_radius });
 		break;
 	default:
 		break;
@@ -284,4 +308,9 @@ bool ObjectManager::CheckInScreen(ObjectBase* _object, int space)const
 	if (_object->GetLocation().y > camera->GetCameraLocation().y + SCREEN_HEIGHT + space)return false;
 	//画面内
 	return true;
+}
+
+void ObjectManager::DrawButton(Vector2D _location,int _button)const
+{
+	DrawGraphF(_location.x, _location.y, button_image[b_anim][_button], true);
 }

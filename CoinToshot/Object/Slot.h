@@ -2,9 +2,11 @@
 #include "Base/ObjectBase.h"
 
 #define REEL_NUM 9		//リールの要素数
-#define PEKA 2			//光る確率
+#define PEKA 50			//光る確率 〇分の１
 #define REEL_WAIT 120	//待ち時間
-#define BIG_BONUS 24	//ドロップコイン量
+#define BIG_BONUS 240	//ドロップコイン量
+
+class InGameScene;
 
 //リール配列
 static int ReelArray[3][REEL_NUM]
@@ -18,21 +20,27 @@ class Slot :
 	public ObjectBase
 {
 private:
+	InGameScene* ingame;		//現在のシーンのポインタを保存
+
 	int frame;		//フレーム測定
-	bool spin_flg;	//リールを回すか判断
 	bool can_stop;	//プレイヤーが触れている間だけリールに触れる
 	bool peka_flg;	//目押しが可能な状態か判断
+	bool bet_once;	//コイン消費用
 	int reel[3];	//今止まっているリール
 	int reel_wait;	//リールの時間
 	int stop_reel_num;	//今止まっているリールの数
 	int timer;		//フレーム測定
-	int now_reel;	//今指しているリール
+	int now_reel[3];	//今指しているリール
 
 	int drop_coin;			//ドロップするコインの量
 	int drop_coin_count;	//ドロップするコインの計測
+
+	Vector2D real_location;	//リール描画位置
+	Vector2D real_size;		//リール描画箱大きさ
+	Vector2D hana_location;	//華描画位置
 public:
 	//コンストラクタ
-	Slot();
+	Slot(InGameScene* _ingame);
 	//デストラクタ
 	~Slot();
 	//初期化処理

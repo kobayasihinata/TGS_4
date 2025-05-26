@@ -62,6 +62,10 @@ private:
 	std::vector<EffectInitData> create_effect;
 	//消去するエフェクト
 	std::vector<EffectBase*> delete_effect;
+
+	int frame;	//フレーム測定
+	int b_anim;	//ボタンアニメーション
+	std::vector<std::vector<int>> button_image;	//ボタン画像
 public:
 	//初期化処理
 	void Initialize(InGameScene* _ingame);
@@ -96,5 +100,8 @@ public:
 	void Result(int _delay = 0);
 	//画面内に居るか判断(引数は画面外のどこまでを許すか)
 	bool CheckInScreen(ObjectBase* _object, int space)const;
+
+	//ボタン描画
+	void DrawButton(Vector2D _location, int _button)const;
 };
 
