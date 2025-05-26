@@ -4,6 +4,12 @@
 #include "Camera/Camera.h"
 #include "GameSceneUI.h"
 #include "../Object/Base/ShapeCollider.h"
+#include <vector>
+
+//背景自動生成に使う情報
+#define IMAGE_SIZE 64	//画像一つ当たりの大きさ
+#define DEFAULT_BLOCK 11	//基本となるブロックの位置
+#define ACCENT_DEFAULT 15	//アクセントになるブロックの位置
 
 class InGameScene : public SceneBase
 {
@@ -17,6 +23,7 @@ private:
 	int change_result_delay;	//リザルト遷移までの遅延時間
 	bool change_result;			//リザルト遷移処理を開始するか
 
+	int bg_image;	//完成した背景画像を格納する
 public:
 	InGameScene();
 	virtual ~InGameScene();
@@ -98,6 +105,11 @@ public:
 	/// </summary>
 	/// <returns>敵の生成に必要な情報</returns>
 	ObjectData GetEnemyData();
+
+	/// <summary>
+	/// 背景の自動生成
+	/// </summary>
+	void CreateBackGround();
 };
 
 

@@ -4,7 +4,14 @@
 
 Heal::Heal()
 {
-	heal_num = 100;
+	heal_num = 5;
+
+	//âÊëúì«çû
+	ResourceManager* rm = ResourceManager::GetInstance();
+	std::vector<int>tmp;
+	tmp = rm->GetImages("Resource/Images/Enemy1/Enemy1_Walk.png", 24, 5, 5, 96, 96);
+	animation_image.push_back(tmp);
+	image = animation_image[0][0];
 }
 
 Heal::~Heal()
@@ -24,14 +31,12 @@ void Heal::Finalize()
 
 void Heal::Update()
 {
-
+	Animation();
 }
 
 void Heal::Draw()const
 {
 	__super::Draw();
-	//ÉRÉCÉìâº
-	DrawCircleAA(local_location.x + (box_size.x / 2), local_location.y + (box_size.y / 2), (box_size.x / 2), 10, 0xff0000, true);
 }
 
 void Heal::Hit(ObjectBase* hit_object)

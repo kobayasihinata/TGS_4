@@ -7,10 +7,14 @@
 TitleScene::TitleScene()
 {
 	current_num = 0;
+
+	font = CreateFontToHandle("源柔ゴシック", 40, 3, DX_FONTTYPE_ANTIALIASING);
 }
 
 TitleScene::~TitleScene()
 {
+	// フォントハンドルを削除
+	DeleteFontToHandle(font);
 
 }
 
@@ -73,12 +77,13 @@ eSceneType TitleScene::Update(float _delta)
 
 void TitleScene::Draw()const
 {
-	DrawString(10, 10, "Title", GetColor(255, 255, 255));
-
+	DrawString(10, 30, "Titleタイトル", 0xffffff);
+	// フォントを利用して文字を描画
+	DrawStringToHandle(10, 10, "Titleタイトル", GetColor(255, 255, 255), font);
 	int old = GetFontSize();
 
 	SetFontSize(32);
-
+	
 	for (int i = 0; i < ITEM_NUM; i++)
 	{
 		//カーソルと項目の描画
@@ -86,13 +91,13 @@ void TitleScene::Draw()const
 		{
 			DrawCircle(SCREEN_WIDTH / 2 - 30, SCREEN_HEIGHT / 2 + (i * 30)+15, 15, 0x00ff00, true);
 			//項目の描画
-			DrawFormatString(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + (i * 30), 0x00ff00, "%s", item_text[i]);
+			DrawFormatStringToHandle(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + (i * 30), 0x00ff00, font, "%s", item_text[i]);
 		}
 		//項目のみの描画
 		else
 		{
 			//項目の描画
-			DrawFormatString(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + (i * 30), 0xffffff, "%s", item_text[i]);
+			DrawFormatStringToHandle(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + (i * 30), 0xffffff, font, "%s", item_text[i]);
 		}
 	}
 

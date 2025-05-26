@@ -10,6 +10,14 @@ Enemy1::Enemy1()
 	//指定したドロップ量から±1の間でランダムにコインをドロップ
 	drop_coin = ENEMY1_DROPCOIN + (GetRand(2) - 1);
 
+	//レア個体ならコインドロップは2倍、HPは1.5倍、移動速度は＋0.5
+	if (rare_flg)
+	{
+		move_speed += 0.5f;
+		max_hp = hp *= 1.5f;
+		drop_coin *= 2;
+	}
+
 	//画像読込
 	ResourceManager* rm = ResourceManager::GetInstance();
 	std::vector<int>tmp;
@@ -89,6 +97,15 @@ void Enemy1::Update()
 
 			//煙エフェクト生成
 			manager->CreateEffect(elSmoke, this->location, true, 40);
+
+			//レア個体ならアイテム生成
+			if (rare_flg)
+			{
+				manager->CreateObject(
+					eHEAL,
+					this->location,
+					Vector2D{40, 40});
+			}
 		}
 	}
 }

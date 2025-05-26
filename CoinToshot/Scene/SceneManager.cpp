@@ -38,6 +38,10 @@ void SceneManager::Initialize()
 
 	//タイトル画面からシーンを開始する
 	ChangeScene(eSceneType::eTitle);
+
+	// ウィンドウズPCに一時的にフォントデータを読み込む(システム終了まで)
+	// NOTE: .ttf→フォントデータ（トゥルータイプフォントの略）
+	AddFontResourceExA("Resource/Font/GenJyuuGothic-Medium.ttf", FR_PRIVATE, NULL);
 }
 
 /// <summary>
@@ -113,6 +117,9 @@ void SceneManager::Finalize()
 
 	//終了処理成功
 	is_finalize = true;
+
+	// ウィンドウズに一時的に保持していたフォントデータを削除
+	RemoveFontResourceExA("", FR_PRIVATE, NULL);
 }
 
 void SceneManager::Draw()const

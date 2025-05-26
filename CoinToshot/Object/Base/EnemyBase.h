@@ -1,6 +1,7 @@
 #pragma once
 #include "ActorBase.h"
 #include "../../Scene/Camera/Camera.h"
+#include <vector>
 
 class EnemyBase :
 	public ActorBase
@@ -10,6 +11,9 @@ protected:
 	float move_speed;		//移動速度
 	int hit_damage;			//プレイヤーに与えるダメージ量
 
+	bool rare_flg;					//レア個体フラグ
+	std::vector<int> shine_image;	//オーラ画像格納
+	int now_shine_image;			//現在描画オーラ画像
 public:
 
 	EnemyBase()
@@ -20,6 +24,18 @@ public:
 		hit_damage = 0;			
 		drop_coin = 0;	
 		drop_coin_count = 0;
+
+		//レア個体抽選
+		rare_flg = (GetRand(30) == 0) ? true : false;
+
+		if (rare_flg)
+		{
+			//画像読込
+			ResourceManager* rm = ResourceManager::GetInstance();
+			std::vector<int>tmp;
+			shine_image = rm->GetImages("Resource/Images/Effect/yellow_shine.png", 40, 8, 5, 96, 96);
+			now_shine_image = 0;
+		}
 	}
 
 	virtual void Update()override
@@ -37,10 +53,25 @@ public:
 		{
 			hpbar_move = 0;
 		}
+
+		//レア個体ならオーラアニメーションの更新
+		if (rare_flg)
+		{
+			if (++now_shine_image > 39)
+			{
+				now_shine_image = 0;
+			}
+		}
 	}
 
 	virtual void Draw()const override
 	{
+		//レア個体なら、オーラの描画をする
+		if (rare_flg)
+		{
+			DrawRotaGraphF(local_location.x, local_location.y, 1.f, 0, shine_image[now_shine_image], TRUE);
+		}
+
 		__super::Draw();
 
 		//HPゲージ外枠

@@ -63,7 +63,7 @@ void Player::Finalize()
 void Player::Update()
 {
 	//HP同期
-	UserData::player_hp = hp;
+	hp = UserData::player_hp;
 
 	__super::Update();
 
@@ -201,6 +201,7 @@ void Player::Damage(float _value, Vector2D _attack_loc, int _knock_back)
 	if (!damage_flg)
 	{
 		__super::Damage(_value, _attack_loc, _knock_back);
+		UserData::player_hp = hp;
 		damage_flg = true;
 		damage_stop = true;
 		//一定フレーム無敵
@@ -220,8 +221,7 @@ void Player::Death()
 	location = 0;
 
 	//各値リセット
-	hp = DEFAULT_HP;
-	UserData::player_hp = hp;
+	UserData::player_hp = hp = DEFAULT_HP;
 	velocity = 0;
 	damage_flg = false;
 	damage_timer = 0;

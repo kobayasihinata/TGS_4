@@ -46,6 +46,8 @@ void InGameScene::Initialize()
 	objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{100,100},eSLOT/*, 20.f*/ });
 	//objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{ENEMY5_WIDTH,ENEMY5_HEIGHT},eENEMY5/*, 20.f*/ });
 
+	//背景の自動生成
+	CreateBackGround();
 }
 
 void InGameScene::Finalize()
@@ -126,24 +128,26 @@ void InGameScene::Draw()const
 	DrawString(10, 10, "InGame", GetColor(255, 255, 255));
 	DrawString(10, 30, "1 = Title  2 = Result", 0xffffff);
 
+	//背景画像描画
+	DrawGraphF(-STAGE_SIZE - camera->GetCameraLocation().x,- STAGE_SIZE -camera->GetCameraLocation().y, bg_image, true);
 
-	//グリッド表示
-	for (int x = -STAGE_SIZE; x < STAGE_SIZE; x += 100)
-	{
-		DrawLineAA(x - camera->GetCameraLocation().x,
-			-STAGE_SIZE - camera->GetCameraLocation().y,
-			x - camera->GetCameraLocation().x,
-			STAGE_SIZE - camera->GetCameraLocation().y,
-			0x00ff00);
-	}
-	for (int y = -STAGE_SIZE; y < STAGE_SIZE; y += 100)
-	{
-		DrawLineAA(-STAGE_SIZE - camera->GetCameraLocation().x,
-			y - camera->GetCameraLocation().y,
-			STAGE_SIZE - camera->GetCameraLocation().x,
-			y - camera->GetCameraLocation().y,
-			0x00ff00);
-	}
+	//グリッド表示(デバッグ用)
+	//for (int x = -STAGE_SIZE; x < STAGE_SIZE; x += 100)
+	//{
+	//	DrawLineAA(x - camera->GetCameraLocation().x,
+	//		-STAGE_SIZE - camera->GetCameraLocation().y,
+	//		x - camera->GetCameraLocation().x,
+	//		STAGE_SIZE - camera->GetCameraLocation().y,
+	//		0x00ff00);
+	//}
+	//for (int y = -STAGE_SIZE; y < STAGE_SIZE; y += 100)
+	//{
+	//	DrawLineAA(-STAGE_SIZE - camera->GetCameraLocation().x,
+	//		y - camera->GetCameraLocation().y,
+	//		STAGE_SIZE - camera->GetCameraLocation().x,
+	//		y - camera->GetCameraLocation().y,
+	//		0x00ff00);
+	//}
 
 	//オブジェクト描画
 	objects->Draw();
@@ -350,4 +354,53 @@ ObjectData InGameScene::GetEnemyData()
 		break;
 	}
 	return ret;
+}
+
+void InGameScene::CreateBackGround()
+{
+	std::vector<int> background_image;	//背景画像格納
+	std::vector<std::vector<int>> bg_arran;	//背景画像配置
+
+	//画像読込
+	ResourceManager* rm = ResourceManager::GetInstance();
+	background_image = rm->GetImages("Resource/Images/BackGround/terrain_tiles_v2.png", 160, 10, 16, 64, 64);
+
+	//草を敷き詰める
+	std::vector<int> test;
+
+	for (int i = 0; i < STAGE_SIZE * 2; i += IMAGE_SIZE)
+	{
+		for (int j = 0; j < STAGE_SIZE * 2; j += IMAGE_SIZE)
+		{
+			if (GetRand(5) == 0)
+			{
+				test.push_back(background_image[ACCENT_DEFAULT]);
+			}
+			else
+			{
+				test.push_back(background_image[DEFAULT_BLOCK]);
+			}
+		}
+		bg_arran.push_back(test);
+		test.clear();
+	
+	}
+
+	//生成した背景を一つの画像として保存、それ以外の情報は削除
+	bg_image = MakeScreen(STAGE_SIZE * 2, STAGE_SIZE * 2);
+	SetDrawScreen(bg_image);
+	ClearDrawScreen();
+	int y = 0;
+	for (const auto bg1 : bg_arran)
+	{
+		int x = 0;
+		for (const auto bg2 : bg1)
+		{
+			DrawGraphF(x * 64 - camera->GetCameraLocation().x, y * 64 - camera->GetCameraLocation().y, bg2, true);
+			x++;
+		}
+		y++;
+	}
+	SetDrawScreen(DX_SCREEN_BACK);
+
 }

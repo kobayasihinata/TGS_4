@@ -32,6 +32,8 @@ void Coin::Update()
 {
 	Move();
 
+	//Šl“¾–‡”‚É‰ž‚¶‚ÄƒfƒJ‚­‚È‚é
+	radius = 20.f + add_num;
 	//‹z‚¢Šñ‚¹‚Ìƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚½‚çAƒvƒŒƒCƒ„[‚ÉŒü‚¯‚ÄˆÚ“®‚·‚é
 	if (UserData::attraction_flg)
 	{
@@ -45,6 +47,18 @@ void Coin::Draw()const
 	__super::Draw();
 	//ƒRƒCƒ“‰¼
 	DrawCircleAA(local_location.x, local_location.y, radius, 20, 0xffff00, true);
+	DrawCircleAA(local_location.x-1, local_location.y-1, radius/1.5f, 20, 0xaaaa00, true);
+	DrawCircleAA(local_location.x, local_location.y, radius/1.5f, 20, 0xffdd00, true);
+	DrawBoxAA(local_location.x - (radius/6)+1,
+		local_location.y - (radius / 2)+1,
+		local_location.x + (radius / 6)+1,
+		local_location.y + (radius / 2)+1,
+		0xaaaa00, true);
+	DrawBoxAA(local_location.x - (radius / 6), 
+		local_location.y - (radius / 2),
+		local_location.x + (radius / 6),
+		local_location.y + (radius / 2),
+		0xffff00, true);
 #ifdef _DEBUG
 	//Ž©g‚ÌŠl“¾–‡”‚ð•\Ž¦
 	DrawFormatStringF(local_location.x, local_location.y, 0xff0000, "%d", (int)add_num);
@@ -71,6 +85,7 @@ void Coin::Hit(ObjectBase* hit_object)
 	
 	//ƒRƒCƒ““¯Žm‚ªˆø‚«Šñ‚¹‚ç‚ê‚é
 	if (hit_object->GetObjectType() == eCOIN && 
+		UserData::player_hp > 0 &&
 		COIN_FUSION_RANGE < sqrtf(powf(this->location.x - hit_object->GetLocation().x,2) + powf(this->location.y - hit_object->GetLocation().y,2)) &&
 		this->add_num > 0 && 
 		static_cast<Coin*>(hit_object)->add_num > 0)
@@ -81,15 +96,17 @@ void Coin::Hit(ObjectBase* hit_object)
 
 
 	//ƒRƒCƒ“‚ÉG‚ê‚½‚ç‚»‚ÌƒRƒCƒ“‚ðÁ‚µA‚»‚ÌƒRƒCƒ“‚ÌŠl“¾–‡”‚ð‰ÁŽZ‚·‚é
-	//ðŒ‚PA‚Q:velocity‚ª0(ˆÚ“®‚µ‚Ä‚¢‚È‚¢)
+	//ðŒ‚PA‚Q:velocity‚ª0(ˆÚ“®‚µ‚Ä‚¢‚È‚¢) or À•W‚ªŠ®‘S‚Éˆê’v
 	//ðŒ‚R:hit_object‚ªCoin‚Å‚ ‚é
-	//ðŒ‚S:Ž©g‚Æhit_object“ñ“_ŠÔ‚Ì‹——£‚ªŽw’è‚µ‚½’lˆÈ‰º
-	//ðŒ‚T:Ž©g‚ÌƒRƒCƒ“‰ÁŽZ”‚ª0ˆÈã
-	//ðŒ‚U:hit_object(coin)‚Ì‰ÁŽZ”‚ª0ˆÈã
+	//ðŒ‚S:ƒvƒŒƒCƒ„[‚ªŽ€‚ñ‚Å‚¢‚È‚¢
+	//ðŒ‚T:Ž©g‚Æhit_object“ñ“_ŠÔ‚Ì‹——£‚ªŽw’è‚µ‚½’lˆÈ‰º
+	//ðŒ‚U:Ž©g‚ÌƒRƒCƒ“‰ÁŽZ”‚ª0ˆÈã
+	//ðŒ‚V:hit_object(coin)‚Ì‰ÁŽZ”‚ª0ˆÈã
 	if ((((int)velocity.x == 0 && (int)velocity.y == 0)||
 		(location == hit_object->GetLocation()))
 		&&
 		hit_object->GetObjectType() == eCOIN &&
+		UserData::player_hp > 0 &&
 		COIN_FUSION_RANGE > sqrtf(powf(this->location.x - hit_object->GetLocation().x, 2) + powf(this->location.y - hit_object->GetLocation().y, 2)) &&
 		this->add_num > 0 &&
 		static_cast<Coin*>(hit_object)->add_num > 0

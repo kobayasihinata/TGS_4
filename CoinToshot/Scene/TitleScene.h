@@ -21,6 +21,8 @@ class TitleScene : public SceneBase
 {
 private:
 	int current_num;	//選択されている項目
+
+	int font;			//源柔ゴシックのハンドル
 public:
 	TitleScene();
 	virtual ~TitleScene();
