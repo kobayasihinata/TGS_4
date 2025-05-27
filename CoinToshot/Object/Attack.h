@@ -9,6 +9,7 @@ class Attack :
 private:
 	ObjectBase* object;			//攻撃を生成したオブジェクト いなければnullptr
 	float damage;				//攻撃力を格納
+	float angle;				//角度を保存
 	int time;					//存在できる時間
 	int count_up;				//生成されてからの時間測定
 	Vector2D move_velocity;		//移動方向
@@ -16,6 +17,9 @@ private:
 	int hit_max;				//いくつのオブジェクトに当たれるか
 	ObjectBase* old_hit_object;	//ひとつ前に当たったオブジェクトを保存
 	BulletType bullet_type;		//自身の弾種類を格納
+
+	int ripple_color;			//生成する波紋の色
+	int gauss_image;			//ぼかし画像保存
 public:
 	//コンストラクタ(_object = 攻撃を生成したオブジェクト いなければnullptr 
 	// _bullet_data = 発射時に必要な情報)

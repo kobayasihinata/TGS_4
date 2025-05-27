@@ -109,8 +109,6 @@ void Enemy2::Update()
 void Enemy2::Draw()const
 {
 	__super::Draw();
-	//“G2
-	DrawString(local_location.x, local_location.y, "enemy2", 0xffffff);
 }
 
 void Enemy2::Hit(ObjectBase* hit_Object)

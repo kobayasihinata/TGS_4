@@ -87,7 +87,7 @@ void Slot::Update()
 	//７が揃ったらメダルを出す
 	if (CheckBigBonus())
 	{
-		//メダルと同時に攻撃も出して周囲の敵を一掃
+		//メダルと同時に攻撃も出して周囲の敵を一掃したい
 		if (frame % 5 == 0 && drop_coin_count < drop_coin)
 		{
 			Vector2D rand = { (float)(GetRand(40) - 20),(float)(GetRand(40) - 20) };
@@ -98,9 +98,6 @@ void Slot::Update()
 				20.f,
 				rand);
 			drop_coin_count++;
-			//煙エフェクト生成
-			manager->CreateEffect(elSmoke, this->location + rand, true, 20);
-
 		}
 	}
 }

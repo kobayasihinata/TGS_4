@@ -5,9 +5,9 @@ class Ripples :
 	public EffectBase
 {
 private:
-
+	int color;		//•`‰æ‚ÌF
 public:
-	Ripples();
+	Ripples(int _color);
 	~Ripples();
 
 	//‰Šú‰»ˆ—

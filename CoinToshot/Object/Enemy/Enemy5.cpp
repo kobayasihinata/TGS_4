@@ -134,8 +134,6 @@ void Enemy5::Update()
 void Enemy5::Draw()const
 {
 	__super::Draw();
-	//“G3
-	DrawString(local_location.x, local_location.y, "enemy5", 0xffffff);
 
 	for (const auto data : block_data)
 	{

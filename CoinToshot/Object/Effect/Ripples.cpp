@@ -1,9 +1,9 @@
 #include "Ripples.h"
 #include "../ObjectManager.h"
 
-Ripples::Ripples()
+Ripples::Ripples(int _color)
 {
-
+	color = _color;
 }
 
 Ripples::~Ripples()
@@ -37,6 +37,6 @@ void Ripples::Update()
 void Ripples::Draw()const
 {
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, (255 / init_timer) * timer);
-	DrawCircleAA(local_location.x, local_location.y, init_timer - timer, 20, 0xffff00, false);
+	DrawCircleAA(local_location.x, local_location.y, init_timer - timer, 20, color, false);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 }

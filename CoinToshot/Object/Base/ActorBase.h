@@ -90,7 +90,8 @@ public:
 			!hit_object->GetDeathFlg() &&
 			hit_object->GetObjectType() != ObjectList::eATTACK &&
 			hit_object->GetObjectType() != ObjectList::eCOIN &&
-			hit_object->GetObjectType() != ObjectList::eHEAL)
+			hit_object->GetObjectType() != ObjectList::eHEAL &&
+			hit_object->GetObjectType() != ObjectList::eMAGNET)
 		{
 			//“–‚½‚ç‚È‚­‚È‚é‚Ü‚ÅŒJ‚è•Ô‚·
 			while (this->CheckHit(hit_object))

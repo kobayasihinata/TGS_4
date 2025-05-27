@@ -8,7 +8,7 @@ Magnet::Magnet()
 	//‰æ‘œ“Ç
 	ResourceManager* rm = ResourceManager::GetInstance();
 	std::vector<int>tmp;
-	tmp = rm->GetImages("Resource/Images/Item/Heal.png", 7, 5, 2, 32, 41);
+	tmp = rm->GetImages("Resource/Images/Item/Magnet.png", 4, 4, 1, 64, 64);
 	animation_image.push_back(tmp);
 	image = animation_image[0][0];
 

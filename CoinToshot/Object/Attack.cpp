@@ -10,11 +10,21 @@ Attack::Attack(BulletData _bullet_data)
 	count_up = 0;
 	move_velocity.x = _bullet_data.speed * cosf(_bullet_data.b_angle);
 	move_velocity.y = _bullet_data.speed * sinf(_bullet_data.b_angle);
+	angle = _bullet_data.b_angle;
 	hit_count = 0;
 	hit_max = _bullet_data.h_count;
 	old_hit_object = nullptr;
 	bullet_type = _bullet_data.b_type;
 
+	//プレイヤーなら波紋を黄色、敵なら赤にする
+	if (object->GetObjectType() == ePLAYER)
+	{
+		ripple_color = 0xffff00;
+	}
+	else
+	{
+		ripple_color = 0xff0000;
+	}
 	//location.x += ((b_speed + acceleration * 0.08) * cosf(rad));
 	//location.y += ((b_speed + acceleration * 0.08) * sinf(rad));
 }
@@ -27,6 +37,8 @@ Attack::~Attack()
 void Attack::Initialize(ObjectManager* _manager, int _object_type, Vector2D init_location, Vector2D init_size, float init_radius)
 {
 	__super::Initialize(_manager, _object_type, init_location, init_size, init_radius);
+
+	gauss_image = MakeScreen(box_size.x, box_size.y,TRUE);
 }
 
 void Attack::Finalize()
@@ -55,7 +67,7 @@ void Attack::Update()
 	//波紋を生成
 	if (count_up % 5 == 0)
 	{
-		manager->CreateEffect(elRipples, this->location, false, 30);
+		manager->CreateEffect(elRipples, this->location, false, ripple_color,30);
 	}
 	//弾の移動
 	this->location += move_velocity;
@@ -64,16 +76,34 @@ void Attack::Update()
 void Attack::Draw()const
 {
 	__super::Draw();
+
+	SetDrawScreen(gauss_image);
+	ClearDrawScreen();
 	//コイン仮(プレイヤー)
 	if (object->GetObjectType() == ePLAYER)
 	{
-		DrawCircleAA(local_location.x, local_location.y, radius, 20, 0xffaa00, true);
+		DrawCircleAA(radius, radius, radius, 20, 0xeeee00, true);
+		DrawCircleAA(radius - 1, radius - 1, radius / 1.5f, 20, 0x999900, true);
+		DrawCircleAA(radius, radius, radius / 1.5f, 20, 0xeecc00, true);
+		DrawBoxAA(radius - (radius / 6) + 1,
+			radius - (radius / 2) + 1,
+			radius + (radius / 6) + 1,
+			radius + (radius / 2) + 1,
+			0x999900, true);
+		DrawBoxAA(radius - (radius / 6),
+			radius - (radius / 2),
+			radius + (radius / 6),
+			radius + (radius / 2),
+			0xeeee00, true);
 	}
 	//コイン仮(敵)
 	else
 	{
-		DrawCircleAA(local_location.x, local_location.y, radius, 20, 0xff0000, true);
+		DrawCircleAA(0, 0, radius, 20, 0xff0000, true);
 	}
+	SetDrawScreen(DX_SCREEN_BACK);
+
+	DrawRotaGraphF(local_location.x, local_location.y,1.f, angle, gauss_image, true);
 }
 
 void Attack::Hit(ObjectBase* hit_object)

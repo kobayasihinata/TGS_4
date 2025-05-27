@@ -45,7 +45,7 @@ void ObjectManager::Update()
 		create_object.object->Initialize(this, create_object.object_num, create_object.init_location, create_object.init_size,create_object.init_radius);
 		object_list.push_back(create_object.object);
 		//煙エフェクト生成
-		CreateEffect(elSmoke, create_object.init_location, true, 30);
+		CreateEffect(elSmoke, create_object.init_location, true,0x000000, 30);
 	}
 
 	//追加したオブジェクトは消去
@@ -243,12 +243,12 @@ void ObjectManager::DeleteAllObject()
 	}
 }
 
-void ObjectManager::CreateEffect(int object_type, Vector2D init_location, bool _front_flg, int _timer, int _anim_span)
+void ObjectManager::CreateEffect(int object_type, Vector2D init_location, bool _front_flg, int _color, int _timer, int _anim_span)
 {
 	switch (object_type)
 	{
 	case EffectList::elRipples:
-		create_effect.push_back(EffectInitData{ new Ripples(),init_location, _front_flg,_timer, _anim_span});
+		create_effect.push_back(EffectInitData{ new Ripples(_color),init_location, _front_flg,_timer, _anim_span});
 		break;
 	case EffectList::elSmoke:
 		create_effect.push_back(EffectInitData{ new Smoke(),init_location, _front_flg,_timer, _anim_span });

@@ -88,7 +88,7 @@ public:
 	void DeleteAllObject();
 
 	//エフェクトの生成
-	void CreateEffect(int object_type, Vector2D init_location = 0.0f, bool _front_flg = true, int _timer = 60, int _anim_span = 10);
+	void CreateEffect(int object_type, Vector2D init_location = 0.0f, bool _front_flg = true, int _color = 0xffffff,int _timer = 60, int _anim_span = 10);
 	//エフェクトの削除
 	void DeleteEffect(EffectBase* _delete_effect);
 

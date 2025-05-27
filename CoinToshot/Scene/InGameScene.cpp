@@ -402,7 +402,7 @@ void InGameScene::CreateBackGround()
 		int x = 0;
 		for (const auto bg2 : bg1)
 		{
-			DrawGraphF(x * 64 - camera->GetCameraLocation().x, y * 64 - camera->GetCameraLocation().y, bg2, true);
+			DrawGraphF(x * 64, y * 64, bg2, true);
 			x++;
 		}
 		y++;
