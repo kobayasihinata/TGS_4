@@ -50,6 +50,11 @@ void GameSceneUI::Update()
 		}
 	}
 
+	//最大値の更新
+	if (UserData::attraction_timer > max_attraction)max_attraction = UserData::attraction_timer;
+	//ゲージのリセット
+	if (UserData::attraction_timer <= 0)max_attraction = 0;
+
 	//削除したオブジェクトは消去
 	delete_ui_data.clear();
 }
@@ -62,6 +67,26 @@ void GameSceneUI::Draw()const
 
 	//プレイヤー情報描画
 	DrawFormatString(100, 10, 0xffffff, "HP:%d COIN:%d TIME:%d", (int)(UserData::player_hp), UserData::coin, UserData::timer / 60);
+
+	//コイン吸い寄せ処理の描画
+	if (UserData::attraction_timer > 0)
+	{
+		DrawBox((SCREEN_WIDTH / 2) - max_attraction / 20,
+			(SCREEN_HEIGHT / 2) - 20,
+			(SCREEN_WIDTH / 2) + max_attraction / 20,
+			(SCREEN_HEIGHT / 2) - 10,
+			0x000000, true);
+		DrawBoxAA((SCREEN_WIDTH / 2) - max_attraction / 20,
+			(SCREEN_HEIGHT / 2) - 20,
+			(SCREEN_WIDTH / 2) + max_attraction / 20 - ((max_attraction - UserData::attraction_timer)/10),
+			(SCREEN_HEIGHT / 2) - 10,
+			0x00ffff, true);
+		DrawBox((SCREEN_WIDTH / 2) - max_attraction / 20,
+			(SCREEN_HEIGHT / 2) - 20,
+			(SCREEN_WIDTH / 2) + max_attraction / 20,
+			(SCREEN_HEIGHT / 2) - 10,
+			0xffffff, false);
+	}
 
 	int draw_color;
 	//撃てない弾のUIは薄暗くする
@@ -91,9 +116,9 @@ void GameSceneUI::Draw()const
 	DrawFormatString(SCREEN_WIDTH / 2, 80, draw_color, "敵貫通:%d体", pBullet[UserData::bullet_type].h_count);
 
 	//ボタンを押したら画像を変える
-	
 	DrawGraph(SCREEN_WIDTH / 2 - 150, 10, button_image[(int)InputPad::OnButton(L_TRIGGER)][L_TRIGGER], true);
 	DrawGraph(SCREEN_WIDTH / 2 + 110, 10, button_image[(int)InputPad::OnButton(R_TRIGGER)][R_TRIGGER], true);
+
 	//文字大きさ設定
 	SetFontSize(24);
 

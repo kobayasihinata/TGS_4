@@ -44,6 +44,8 @@ void ObjectManager::Update()
 	{
 		create_object.object->Initialize(this, create_object.object_num, create_object.init_location, create_object.init_size,create_object.init_radius);
 		object_list.push_back(create_object.object);
+		//煙エフェクト生成
+		CreateEffect(elSmoke, create_object.init_location, true, 30);
 	}
 
 	//追加したオブジェクトは消去
@@ -207,13 +209,16 @@ void ObjectManager::CreateObject(int object_type, Vector2D init_location, Vector
 		create_object.push_back(ObjectInitData{ new Coin(ingame,init_velocity),object_type,init_location,init_size,init_radius });
 		break;
 	case ObjectList::eHEAL:
-		create_object.push_back(ObjectInitData{ new Heal(),object_type,init_location,init_size,init_radius });
+		create_object.push_back(ObjectInitData{ new Heal(ingame),object_type,init_location,init_size,init_radius });
 		break;
 	case ObjectList::eBLOCK:
 		create_object.push_back(ObjectInitData{ new Block(),object_type,init_location,init_size,init_radius });
 		break;
 	case ObjectList::eSLOT:
 		create_object.push_back(ObjectInitData{ new Slot(ingame),object_type,init_location,init_size,init_radius });
+		break;
+	case ObjectList::eMAGNET:
+		create_object.push_back(ObjectInitData{ new Magnet(),object_type,init_location,init_size,init_radius });
 		break;
 	default:
 		break;
@@ -299,13 +304,13 @@ void ObjectManager::Result(int _delay)
 bool ObjectManager::CheckInScreen(ObjectBase* _object, int space)const
 {
 	//カメラ座標ーゆとりより左側に居たらアウト
-	if (_object->GetLocation().x < camera->GetCameraLocation().x - space)return false;
+	if (_object->GetLocation().x + (_object->GetSize().x / 2) < camera->GetCameraLocation().x - space)return false;
 	//カメラ座標＋スクリーン幅＋ゆとりより右側に居たらアウト
-	if (_object->GetLocation().x > camera->GetCameraLocation().x + SCREEN_WIDTH + space)return false;
+	if (_object->GetLocation().x - (_object->GetSize().x / 2) > camera->GetCameraLocation().x + SCREEN_WIDTH + space)return false;
 	//カメラ座標ーゆとりより上側に居たらアウト
-	if (_object->GetLocation().y < camera->GetCameraLocation().y - space)return false;
+	if (_object->GetLocation().y + (_object->GetSize().y / 2) < camera->GetCameraLocation().y - space)return false;
 	//カメラ座標＋スクリーン高さ＋ゆとりより下側に居たらアウト
-	if (_object->GetLocation().y > camera->GetCameraLocation().y + SCREEN_HEIGHT + space)return false;
+	if (_object->GetLocation().y - (_object->GetSize().y / 2) > camera->GetCameraLocation().y + SCREEN_HEIGHT + space)return false;
 	//画面内
 	return true;
 }

@@ -22,6 +22,7 @@ private:
 	bool damage_flg;			//”í’eŒã–³“G‚©”»’f
 	int damage_timer;			//”í’eŒã–³“GŠÔ‘ª’è
 	bool damage_stop;			//”í’eŒã‚Ì“®‚¯‚È‚¢ó‘Ô”»’f
+
 public:
 
 public:

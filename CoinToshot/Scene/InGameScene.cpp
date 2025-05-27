@@ -43,7 +43,8 @@ void InGameScene::Initialize()
 	//ƒvƒŒƒCƒ„[¶¬
 	objects->CreateObject({ Vector2D{0,0},Vector2D{40,40},ePLAYER });
 
-	objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{100,100},eSLOT/*, 20.f*/ });
+	//objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{100,100},eSLOT/*, 20.f*/ });
+	objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{40,40},eMAGNET/*, 20.f*/ });
 	//objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{ENEMY5_WIDTH,ENEMY5_HEIGHT},eENEMY5/*, 20.f*/ });
 
 	//”wŒi‚ÌŽ©“®¶¬
@@ -117,6 +118,11 @@ eSceneType InGameScene::Update(float _delta)
 	if (input->GetKeyState(KEY_INPUT_2) == eInputState::Pressed)
 	{
 		change_scene = eSceneType::eResult;
+	}
+
+	if (InputPad::OnButton(XINPUT_BUTTON_A))
+	{
+		objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{40,40},eMAGNET});
 	}
 #endif // _DEBUG
 

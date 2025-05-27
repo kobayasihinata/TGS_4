@@ -11,6 +11,7 @@
 #include "Enemy/Enemy5.h"
 #include "Item/Coin.h"
 #include "Item/Heal.h"
+#include "Item/Magnet.h"
 #include "Block.h"
 #include "Slot.h"
 #include "../Utility/UserData.h"

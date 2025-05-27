@@ -34,6 +34,7 @@ void Coin::Update()
 
 	//獲得枚数に応じてデカくなる
 	radius = 20.f + add_num;
+	box_size = radius * 2;
 	//吸い寄せのフラグが立っていたら、プレイヤーに向けて移動する
 	if (UserData::attraction_flg)
 	{

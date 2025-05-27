@@ -75,8 +75,6 @@ void Enemy1::Update()
 				20.f, 
 				rand);
 			drop_coin_count++;
-			//煙エフェクト生成
-			manager->CreateEffect(elSmoke, this->location + rand, true, 20);
 		}
 
 		//死亡演出時間を過ぎたら自身を削除
@@ -95,16 +93,24 @@ void Enemy1::Update()
 					rand);
 			}
 
-			//煙エフェクト生成
-			manager->CreateEffect(elSmoke, this->location, true, 40);
-
 			//レア個体ならアイテム生成
 			if (rare_flg)
 			{
-				manager->CreateObject(
-					eHEAL,
-					this->location,
-					Vector2D{40, 40});
+				//回復か磁石
+				if (GetRand(1) == 0)
+				{
+					manager->CreateObject(
+						eHEAL,
+						this->location,
+						Vector2D{40, 40});
+				}
+				else
+				{
+					manager->CreateObject(
+						eMAGNET,
+						this->location,
+						Vector2D{40, 40});
+				}
 			}
 		}
 	}

@@ -22,6 +22,7 @@
 #define HPBAR_SIZE 50			//HPゲージの幅
 //コインの設定
 #define COIN_FUSION_RANGE 10.f	//コインが融合する範囲
+#define COIN_ATTRACTON_TIMER 600//コイン吸い寄せ時間
 
 //プレイヤーのパラメータ関連
 #define DEFAULT_HP 10			//プレイヤー初期HP

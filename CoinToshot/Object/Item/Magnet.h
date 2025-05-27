@@ -2,23 +2,19 @@
 #include "../Base/ObjectBase.h"
 #include <vector>
 
-class InGameScene;
-
-class Heal :
+class Magnet :
 	public ObjectBase
 {
 private:
-	InGameScene* ingame;		//現在のシーンのポインタを保存
-
-	float heal_num;	//回復量
 
 	std::vector<int> shine_image;	//オーラ画像格納
 	int now_shine_image;			//現在描画オーラ画像
+
 public:
 	//コンストラクタ
-	Heal(InGameScene* _ingame);
+	Magnet();
 	//デストラクタ
-	~Heal();
+	~Magnet();
 	//初期化処理
 	void Initialize(ObjectManager* _manager, int _object_type, Vector2D init_location = Vector2D(0.0f), Vector2D init_size = 40.0f, float init_radius = 0.f)override;
 	//終了時処理

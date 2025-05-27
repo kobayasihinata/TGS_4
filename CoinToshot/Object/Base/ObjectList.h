@@ -13,5 +13,6 @@ static enum ObjectList
 	eBLOCK,
 	eSLOT,
 	eATTACK,
+	eMAGNET,
 	eNULL,
 };

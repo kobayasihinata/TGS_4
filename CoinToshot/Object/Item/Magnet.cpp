@@ -1,14 +1,10 @@
-#include "Heal.h"
+#include "Magnet.h"
 #include "../ObjectManager.h"
 #include "../../Utility/UserData.h"
 #include "../../Scene/InGameScene.h"
 
-Heal::Heal(InGameScene* _ingame)
+Magnet::Magnet()
 {
-	ingame = _ingame;
-	
-	heal_num = 5;
-
 	//‰æ‘œ“Ç
 	ResourceManager* rm = ResourceManager::GetInstance();
 	std::vector<int>tmp;
@@ -21,23 +17,23 @@ Heal::Heal(InGameScene* _ingame)
 	now_shine_image = 0;
 }
 
-Heal::~Heal()
+Magnet::~Magnet()
 {
 
 }
 
-void Heal::Initialize(ObjectManager* _manager, int _object_type, Vector2D init_location, Vector2D init_size, float init_radius)
+void Magnet::Initialize(ObjectManager* _manager, int _object_type, Vector2D init_location, Vector2D init_size, float init_radius)
 {
 	__super::Initialize(_manager, _object_type, init_location, init_size, init_radius);
 	anim_span = 5;
 }
 
-void Heal::Finalize()
+void Magnet::Finalize()
 {
 
 }
 
-void Heal::Update()
+void Magnet::Update()
 {
 	Animation();
 
@@ -48,7 +44,7 @@ void Heal::Update()
 	}
 }
 
-void Heal::Draw()const
+void Magnet::Draw()const
 {
 	//‹P‚«•`‰æ
 	DrawRotaGraphF(local_location.x, local_location.y, 1.f, 0, shine_image[now_shine_image], TRUE);
@@ -56,16 +52,13 @@ void Heal::Draw()const
 	__super::Draw();
 }
 
-void Heal::Hit(ObjectBase* hit_object)
+void Magnet::Hit(ObjectBase* hit_object)
 {
 	//ƒvƒŒƒCƒ„[‚ÉG‚ê‚½‚çƒXƒRƒA‰ÁZ‚µ‚ÄÁ‚¦‚é
 	if (hit_object->GetObjectType() == ePLAYER)
 	{
-		UserData::player_hp += heal_num;
+		UserData::attraction_timer += COIN_ATTRACTON_TIMER;
 		manager->DeleteObject(this);
-
-		std::string s = "HP + " + std::to_string((int)heal_num);
-		ingame->CreatePopUp(this->location, s, heal_num*2, 0x00ff22, 1, 60);
 	}
 }
 

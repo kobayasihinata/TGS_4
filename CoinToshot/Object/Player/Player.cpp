@@ -67,6 +67,14 @@ void Player::Update()
 
 	__super::Update();
 
+	//吸い寄せ処理の時間測定
+	if (--UserData::attraction_timer < 0)
+	{
+		UserData::attraction_timer = 0;
+	}
+	//吸い寄せの時間が１以上ならフラグを立てる
+	UserData::attraction_flg = (UserData::attraction_timer > 0) ? true : false;
+
 	//カメラに座標を渡す
 	camera->player_location = this->location;
 
@@ -120,6 +128,8 @@ void Player::Update()
 	//死亡演出フラグが立っているなら
 	if (death_flg)
 	{
+		//吸い寄せ強制終了
+		UserData::attraction_timer = 0;
 		death_timer--;
 		//死にながらコインをまき散らす
 		if (death_timer % 10 == 0 && drop_coin_count < drop_coin && death_timer >= DEFAULT_DEATH_TIMER * 2)
@@ -161,11 +171,6 @@ void Player::Update()
 	//	manager->CreateEffect(elSmoke, this->location);
 	//}
 	
-	//Aボタンが押されたら吸い寄せ
-	if (InputPad::OnButton(XINPUT_BUTTON_A))
-	{
-		UserData::attraction_flg = !UserData::attraction_flg;
-	}
 #endif // _DEBUG
 
 }
@@ -174,6 +179,15 @@ void Player::Draw()const
 {
 	//フォントサイズ保存
 	int old = GetFontSize();
+
+	//吸い寄せエフェクト
+	if (UserData::attraction_flg)
+	{
+		for (int i = 0; i < 5; i++)
+		{
+			DrawCircleAA(local_location.x, local_location.y, -frame * i % 60, 30, 0x00ffff, false);
+		}
+	}
 
 	if ((!damage_flg || (damage_flg && frame % 3 == 0)) && (!death_flg || death_timer > DEFAULT_DEATH_TIMER * 2))
 	{
