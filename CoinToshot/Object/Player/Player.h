@@ -23,6 +23,9 @@ private:
 	int damage_timer;			//”í’eŒã–³“GŠÔ‘ª’è
 	bool damage_stop;			//”í’eŒã‚Ì“®‚¯‚È‚¢ó‘Ô”»’f
 
+	//‰¹Œ¹
+	int shot_se;				//’e”­ËSE
+	int walk_se;				//ˆÚ“®SE
 public:
 
 public:

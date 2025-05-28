@@ -30,6 +30,9 @@ Enemy3::Enemy3()
 	image = animation_image[0][0];
 
 	shot_once = false;
+
+	//SE読み込み
+	death_se = rm->GetSounds("Resource/Sounds/Enemy/death.mp3");
 }
 
 Enemy3::~Enemy3()
@@ -133,6 +136,10 @@ void Enemy3::Update()
 					20.f,
 					rand);
 			}
+
+			//SE再生
+			PlaySoundMem(death_se, DX_PLAYTYPE_BACK);
+
 			//レア個体ならアイテム生成
 			if (rare_flg)
 			{

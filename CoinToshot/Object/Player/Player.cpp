@@ -50,6 +50,13 @@ void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init
 	image_line = 0;
 
 	image = animation_image[0][0];
+
+	//SE読み込み
+	shot_se = rm->GetSounds("Resource/Sounds/shot.mp3");
+	walk_se = rm->GetSounds("Resource/Sounds/Player/Walk.mp3");
+	//音量調節
+	SetVolumeSoundMem(7500, walk_se);
+	//		PlaySoundMem(shot_se, DX_PLAYTYPE_BACK);
 }
 
 /// <summary>
@@ -119,6 +126,13 @@ void Player::Update()
 	//アニメーション処理
 	Animation();
 
+	//アニメーション位置に応じて足音を鳴らす
+	if (image_line == 1 &&
+		(image_num == 4 || image_num == 10)&&
+		!CheckSoundMem(walk_se))
+	{
+		PlaySoundMem(walk_se, DX_PLAYTYPE_BACK);
+	}
 	//hpが0以下の時死亡処理
 	if (hp <= 0)
 	{
@@ -279,6 +293,7 @@ void Player::Control()
 	{
 		ShotBullet();
 		UserData::coin -= pBullet[UserData::bullet_type].cost;
+		PlaySoundMem(shot_se, DX_PLAYTYPE_BACK);
 	}
 
 	//トリガーで弾の種類を変える

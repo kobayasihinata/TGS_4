@@ -14,6 +14,8 @@ protected:
 	bool rare_flg;					//レア個体フラグ
 	std::vector<int> shine_image;	//オーラ画像格納
 	int now_shine_image;			//現在描画オーラ画像
+
+	int death_se;				//死亡時SE
 public:
 
 	EnemyBase()

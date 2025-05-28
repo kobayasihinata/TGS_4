@@ -11,6 +11,12 @@ Coin::Coin(InGameScene* _ingame, Vector2D _init_velocity)
 	velocity = _init_velocity;
 	add_num = 1;
 	check_flg = false;
+
+	//‰æ‘œ“Ç
+	ResourceManager* rm = ResourceManager::GetInstance();
+	std::vector<int>tmp;
+	//SE“Ç‚İ‚İ
+	get_se = rm->GetSounds("Resource/Sounds/Coin/Get.mp3");
 }
 
 Coin::~Coin()
@@ -135,7 +141,7 @@ void Coin::Hit(ObjectBase* hit_object)
 		ingame->CreatePopUp(this->location, s, GetRand(100), 0xffff00, 1, 60);
 
 		manager->DeleteObject(this);
-
+		PlaySoundMem(get_se, DX_PLAYTYPE_BACK);
 		return;
 	}
 }

@@ -8,7 +8,11 @@ class Coin :
 {
 private:
 	InGameScene* ingame;		//現在のシーンのポインタを保存
-	class Camera* camera;		//カメラポインタ格納(プレイヤーの情報を渡すためだけに取得)
+	class Camera* camera;		//カメラポインタ格納(プレイヤーの情報を受け取るため)
+
+	//音源
+	int get_se;				//コイン獲得SE
+
 public:
 	float add_num;	//コイン追加数
 	bool check_flg;	//コインが合体するかを一度だけ判断する用	

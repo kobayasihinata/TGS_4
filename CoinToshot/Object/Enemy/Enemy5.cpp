@@ -25,6 +25,9 @@ Enemy5::Enemy5()
 	animation_image.push_back(tmp);
 
 	image = animation_image[0][0];
+
+	//SE読み込み
+	death_se = rm->GetSounds("Resource/Sounds/Enemy/death.mp3");
 }
 
 Enemy5::~Enemy5()
@@ -114,6 +117,10 @@ void Enemy5::Update()
 					20.f,
 					rand);
 			}
+
+			//SE再生
+			PlaySoundMem(death_se, DX_PLAYTYPE_BACK);
+
 			//レア個体ならアイテム生成
 			if (rare_flg)
 			{
