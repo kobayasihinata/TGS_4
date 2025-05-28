@@ -23,6 +23,16 @@ Slot::Slot(InGameScene* _ingame)
 	real_location = 0;
 	real_size = { 120.f,100.f };
 	hana_location = 0;
+
+	//“Ç‚İ‚İ
+	ResourceManager* rm = ResourceManager::GetInstance();
+
+	//SE“Ç‚İ‚İ
+	reel_se = rm->GetSounds("Resource/Sounds/Hanahana/reel.mp3");
+	button_se = rm->GetSounds("Resource/Sounds/Hanahana/button.mp3");
+	bonus_se = rm->GetSounds("Resource/Sounds/Hanahana/big.mp3");
+	bonus_se_play_once = false;
+	//		PlaySoundMem(reel_se, DX_PLAYTYPE_BACK);
 }
 
 Slot::~Slot()
@@ -87,6 +97,12 @@ void Slot::Update()
 	//‚V‚ª‘µ‚Á‚½‚çƒƒ_ƒ‹‚ğo‚·
 	if (CheckBigBonus())
 	{
+		if (!bonus_se_play_once)
+		{
+			//SE‚ğÄ¶
+			PlaySoundMem(bonus_se, DX_PLAYTYPE_BACK);
+			bonus_se_play_once = true;
+		}
 		//ƒƒ_ƒ‹‚Æ“¯‚ÉUŒ‚‚ào‚µ‚ÄüˆÍ‚Ì“G‚ğˆê‘|‚µ‚½‚¢
 		if (frame % 5 == 0 && drop_coin_count < drop_coin)
 		{
@@ -116,6 +132,8 @@ void Slot::Draw()const
 		local_location.x + (box_size.x / 2),
 		local_location.y + (box_size.y / 2),
 		0xffffff, false);
+	UserData::DrawStringCenter(local_location, "‚·‚ë‚Á‚Æ",0xffffff);
+
 	//ƒŠ[ƒ‹‚Í‰ñ‚µ‚Ä‚é‚¾‚¯•\¦
 	if (can_stop)
 	{
@@ -208,6 +226,8 @@ void Slot::Hit(ObjectBase* hit_object)
 	{
 		can_stop = true;
 		bet_once = false;
+		//SE‚ğÄ¶
+		PlaySoundMem(reel_se, DX_PLAYTYPE_BACK);
 	}
 
 	//“G‚ªG‚ê‚½‚ç’e‚©‚ê‚é
@@ -255,6 +275,8 @@ void Slot::AutoPlay()
 				{
 					reel[0] = now_reel[0];
 				}
+				//SE‚ğÄ¶
+				PlaySoundMem(button_se, DX_PLAYTYPE_BACK);
 			}
 		if (reel_wait >= (REEL_WAIT / 4) * 2 && reel[1] == -1)
 			{
@@ -267,6 +289,8 @@ void Slot::AutoPlay()
 				{
 					reel[1] = now_reel[1];
 				}
+				//SE‚ğÄ¶
+				PlaySoundMem(button_se, DX_PLAYTYPE_BACK);
 			}
 		if (reel_wait >= (REEL_WAIT / 4) * 3 && reel[2] == -1)
 			{
@@ -279,6 +303,8 @@ void Slot::AutoPlay()
 				{
 					reel[2] = now_reel[2];
 				}
+				//SE‚ğÄ¶
+				PlaySoundMem(button_se, DX_PLAYTYPE_BACK);
 			}
 	}
 
@@ -349,6 +375,8 @@ void Slot::BonusStop()
 						}
 					}
 				}
+				//SE‚ğÄ¶
+				PlaySoundMem(button_se, DX_PLAYTYPE_BACK);
 			}
 		if (CheckButton(XINPUT_BUTTON_Y) && InputPad::OnButton(XINPUT_BUTTON_Y) && reel[1] == -1)
 			{
@@ -366,6 +394,8 @@ void Slot::BonusStop()
 						}
 					}
 				}
+				//SE‚ğÄ¶
+				PlaySoundMem(button_se, DX_PLAYTYPE_BACK);
 			}
 		if (CheckButton(XINPUT_BUTTON_B) && InputPad::OnButton(XINPUT_BUTTON_B) && reel[2] == -1)
 			{
@@ -383,6 +413,8 @@ void Slot::BonusStop()
 						}
 					}
 				}
+				//SE‚ğÄ¶
+				PlaySoundMem(button_se, DX_PLAYTYPE_BACK);
 			}
 	}
 

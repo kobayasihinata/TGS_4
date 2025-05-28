@@ -74,20 +74,20 @@ void GameSceneUI::Draw()const
 	//ƒRƒCƒ“‹z‚¢Šñ‚¹ˆ—‚Ì•`‰æ
 	if (UserData::attraction_timer > 0)
 	{
-		DrawBox((SCREEN_WIDTH / 2) - max_attraction / 20,
-			(SCREEN_HEIGHT / 2) - 20,
-			(SCREEN_WIDTH / 2) + max_attraction / 20,
-			(SCREEN_HEIGHT / 2) - 10,
+		DrawBox(camera->player_location.x - camera->GetCameraLocation().x - max_attraction / 20,
+			camera->player_location.y - camera->GetCameraLocation().y - 20,
+			camera->player_location.x - camera->GetCameraLocation().x + max_attraction / 20,
+			camera->player_location.y - camera->GetCameraLocation().y- 10,
 			0x000000, true);
-		DrawBoxAA((SCREEN_WIDTH / 2) - max_attraction / 20,
-			(SCREEN_HEIGHT / 2) - 20,
-			(SCREEN_WIDTH / 2) + max_attraction / 20 - ((max_attraction - UserData::attraction_timer)/10),
-			(SCREEN_HEIGHT / 2) - 10,
+		DrawBoxAA(camera->player_location.x - camera->GetCameraLocation().x - max_attraction / 20,
+			camera->player_location.y - camera->GetCameraLocation().y - 20,
+			camera->player_location.x - camera->GetCameraLocation().x + max_attraction / 20 - ((max_attraction - UserData::attraction_timer)/10),
+			camera->player_location.y - camera->GetCameraLocation().y - 10,
 			0x00ffff, true);
-		DrawBox((SCREEN_WIDTH / 2) - max_attraction / 20,
-			(SCREEN_HEIGHT / 2) - 20,
-			(SCREEN_WIDTH / 2) + max_attraction / 20,
-			(SCREEN_HEIGHT / 2) - 10,
+		DrawBox(camera->player_location.x - camera->GetCameraLocation().x - max_attraction / 20,
+			camera->player_location.y - camera->GetCameraLocation().y - 20,
+			camera->player_location.x - camera->GetCameraLocation().x + max_attraction / 20,
+			camera->player_location.y - camera->GetCameraLocation().y - 10,
 			0xffffff, false);
 	}
 

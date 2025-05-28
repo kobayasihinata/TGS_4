@@ -44,7 +44,7 @@ void InGameScene::Initialize()
 	//プレイヤー生成
 	objects->CreateObject({ Vector2D{0,0},Vector2D{40,40},ePLAYER });
 
-	//objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{100,100},eSLOT/*, 20.f*/ });
+	objects->CreateObject({ Vector2D{(float)GetRand(STAGE_SIZE*2-100)-STAGE_SIZE,(float)GetRand(STAGE_SIZE * 2 - 100) - STAGE_SIZE},Vector2D{100,100},eSLOT/*, 20.f*/ });
 	objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{40,40},eMAGNET/*, 20.f*/ });
 	//objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{ENEMY5_WIDTH,ENEMY5_HEIGHT},eENEMY5/*, 20.f*/ });
 
@@ -143,6 +143,7 @@ eSceneType InGameScene::Update(float _delta)
 
 void InGameScene::Draw()const
 {
+	int old = GetFontSize();
 	DrawString(10, 10, "InGame", GetColor(255, 255, 255));
 	DrawString(10, 30, "1 = Title  2 = Result", 0xffffff);
 
@@ -178,12 +179,14 @@ void InGameScene::Draw()const
 	{
 		if (UserData::is_clear)
 		{
+			SetFontSize(32);
 			DrawBox((SCREEN_WIDTH/2) - 200, (SCREEN_HEIGHT/2) - 50, (SCREEN_WIDTH / 2) + 200, (SCREEN_HEIGHT / 2) + 50, 0x000000, true);
 			DrawBox((SCREEN_WIDTH / 2) - 200, (SCREEN_HEIGHT / 2) - 50, (SCREEN_WIDTH / 2) + 200, (SCREEN_HEIGHT / 2) + 50, 0xffffff, false);
 			DrawString((SCREEN_WIDTH / 2) - 150, (SCREEN_HEIGHT / 2) - 30, "GameClear!", 0xffffff);
 		}
 		else
 		{
+			SetFontSize(32);
 			DrawBox((SCREEN_WIDTH / 2) - 200, (SCREEN_HEIGHT / 2) - 50, (SCREEN_WIDTH / 2) + 200, (SCREEN_HEIGHT / 2) + 50, 0x000000, true);
 			DrawBox((SCREEN_WIDTH / 2) - 200, (SCREEN_HEIGHT / 2 )- 50, (SCREEN_WIDTH / 2) + 200, (SCREEN_HEIGHT / 2 )+ 50, 0xffffff, false);
 			DrawString((SCREEN_WIDTH / 2) - 150, (SCREEN_HEIGHT / 2) - 30, "GameOver...", 0xaaaaaa);
@@ -198,6 +201,8 @@ void InGameScene::Draw()const
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 		UserData::DrawStringCenter({ SCREEN_WIDTH / 2,SCREEN_HEIGHT / 2 }, "ポーズ中", 0xffffff);
 	}
+
+	SetFontSize(old);
 }
 
 eSceneType InGameScene::GetNowSceneType()const

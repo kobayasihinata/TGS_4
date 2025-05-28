@@ -38,6 +38,11 @@ private:
 	Vector2D real_location;	//リール描画位置
 	Vector2D real_size;		//リール描画箱大きさ
 	Vector2D hana_location;	//華描画位置
+
+	int reel_se;			//リール回転音SE
+	int button_se;			//ボタン停止SE
+	int bonus_se;			//ボーナスSE
+	bool bonus_se_play_once;//ボーナスSEを一回だけ再生
 public:
 	//コンストラクタ
 	Slot(InGameScene* _ingame);
