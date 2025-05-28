@@ -22,18 +22,18 @@ static PlayerBullet pBullet[BULLET_NUM]
 {
 	//name    cos   dam  spe   rad   h_c  life num space
 	{"í èÌíe",  1,	 1.f, 10.f, 20.f,   1, 120,1,    0},
-	{"ã≠âªíe", 10,   7.f, 15.f, 30.f,   5, 180,1,    0},
-	{"ç≈ã≠íe", 50,  50.f, 25.f, 40.f, 100, 360,1,    0},
 	{"ägéUíe",  5,   2.f, 10.f, 20.f,   1,  30,5, 0.2f},
+	{"ã≠âªíe", 10,   7.f, 15.f, 30.f,   5, 180,1,    0},
 	{"îöî≠íe", 10,   3.f, 10.f, 30.f,  10,  20,1,	 0},
+	{"ç≈ã≠íe", 50,  50.f, 25.f, 40.f, 100, 360,1,    0},
 };
 
 //ÉfÅ[É^Ç∆ìØÇ∂èáî‘
 static enum BulletType {
 	bNormal=0,
-	bStrong,
-	bStrongest,
 	bShotgun,
-	bExplosion
+	bStrong,
+	bExplosion,
+	bStrongest,
 
 };
