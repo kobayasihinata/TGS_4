@@ -24,6 +24,8 @@ private:
 	bool change_result;			//ƒŠƒUƒ‹ƒg‘JˆÚˆ—‚ğŠJn‚·‚é‚©
 
 	int bg_image;	//Š®¬‚µ‚½”wŒi‰æ‘œ‚ğŠi”[‚·‚é
+
+	bool pause_flg;		//ˆê’â~”»’f
 public:
 	InGameScene();
 	virtual ~InGameScene();

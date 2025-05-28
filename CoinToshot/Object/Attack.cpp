@@ -54,7 +54,7 @@ void Attack::Update()
 		//UŒ‚‚ÌÁ‹
 		manager->DeleteObject(this);
 
-		//U’eˆ—
+		//”š”­’eˆ—
 		if (bullet_type == BulletType::bExplosion)
 		{
 			for (float i = 0; i < 6.28; i+=0.53f)
@@ -62,6 +62,9 @@ void Attack::Update()
 				manager->CreateAttack(GetBulletData(i));
 			}
 		}
+
+		//Á–ÅƒGƒtƒFƒNƒg
+		manager->CreateEffect(elRipples, this->location, true, ripple_color, 45);
 	}
 
 	//”g–ä‚ğ¶¬
@@ -99,7 +102,19 @@ void Attack::Draw()const
 	//ƒRƒCƒ“‰¼(“G)
 	else
 	{
-		DrawCircleAA(0, 0, radius, 20, 0xff0000, true);
+		DrawCircleAA(radius, radius, radius, 20, 0xff0000, true);
+		DrawCircleAA(radius - 1, radius - 1, radius / 1.5f, 20, 0xaa0000, true);
+		DrawCircleAA(radius, radius, radius / 1.5f, 20, 0xff0000, true);
+		DrawBoxAA(radius - (radius / 6) + 1,
+			radius - (radius / 2) + 1,
+			radius + (radius / 6) + 1,
+			radius + (radius / 2) + 1,
+			0xaa0000, true);
+		DrawBoxAA(radius - (radius / 6),
+			radius - (radius / 2),
+			radius + (radius / 6),
+			radius + (radius / 2),
+			0xff0000, true);
 	}
 	SetDrawScreen(DX_SCREEN_BACK);
 

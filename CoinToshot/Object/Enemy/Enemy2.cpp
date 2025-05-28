@@ -9,7 +9,13 @@ Enemy2::Enemy2()
 	hit_damage = ENEMY2_DAMAGE;
 	//指定したドロップ量から±1の間でランダムにコインをドロップ
 	drop_coin = ENEMY2_DROPCOIN + (GetRand(2) - 1);
-
+	//レア個体ならコインドロップは2倍、HPは1.5倍、移動速度は＋0.5
+	if (rare_flg)
+	{
+		move_speed += 0.5f;
+		max_hp = hp *= 1.5f;
+		drop_coin *= 2;
+	}
 	//画像読込
 	ResourceManager* rm = ResourceManager::GetInstance();
 	std::vector<int>tmp;

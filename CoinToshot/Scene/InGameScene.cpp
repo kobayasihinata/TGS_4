@@ -29,6 +29,7 @@ void InGameScene::Initialize()
 
 	change_result_delay = -1;//0になったらリザルト遷移
 	change_result = false;
+	pause_flg = false;
 
 	camera = Camera::Get();
 
@@ -63,69 +64,80 @@ void InGameScene::Finalize()
 eSceneType InGameScene::Update(float _delta)
 {
 
-	change_scene = __super::Update(_delta);
-
-	//時間停止フラグが立っていたらオブジェクトの動きはすべて止める
-	if (!UserData::is_gamestop)
+	//一時停止フラグ切り替え
+	if (InputPad::OnButton(XINPUT_BUTTON_START))
 	{
-		//制限時間減少
-		UserData::timer--;
 
-		//カメラ更新
-		camera->Update();
-
-		//UI更新
-		ui->Update();
-
-		//アイテム生成
-		SpawnItem();
-
-		//敵生成
-		SpawnEnemy();
-
-		//オブジェクト更新
-		objects->Update();
+		pause_flg = !pause_flg;
 	}
 
-
-	//入力機能の取得
-	InputKey* input = InputKey::Get();
-
-	//時間切れで終了（勝利扱い）
-	if (UserData::timer <= 0 && !change_result)
+	//一時停止フラグが立っていたら更新しない
+	if (!pause_flg)
 	{
-		UserData::is_clear = true;
-		UserData::is_gamestop = true;
-		change_result = true;
-		change_result_delay = 120;
-	}
+		change_scene = __super::Update(_delta);
 
-	//リザルト遷移前の演出
-	if (change_result && --change_result_delay <= 0)
-	{
-		change_scene = eSceneType::eResult;
-	}
+		//時間停止フラグが立っていたらオブジェクトの動きはすべて止める
+		if (!UserData::is_gamestop)
+		{
+			//制限時間減少
+			UserData::timer--;
+
+			//カメラ更新
+			camera->Update();
+
+			//UI更新
+			ui->Update();
+
+			//アイテム生成
+			SpawnItem();
+
+			//敵生成
+			SpawnEnemy();
+
+			//オブジェクト更新
+			objects->Update();
+		}
+
+
+		//入力機能の取得
+		InputKey* input = InputKey::Get();
+
+		//時間切れで終了（勝利扱い）
+		if (UserData::timer <= 0 && !change_result)
+		{
+			UserData::is_clear = true;
+			UserData::is_gamestop = true;
+			change_result = true;
+			change_result_delay = 120;
+		}
+
+		//リザルト遷移前の演出
+		if (change_result && --change_result_delay <= 0)
+		{
+			change_scene = eSceneType::eResult;
+		}
 
 
 #ifdef _DEBUG
-	//1キーでタイトル画面に遷移する
-	if (input->GetKeyState(KEY_INPUT_1) == eInputState::Pressed)
-	{
-		change_result_delay = 20;
-	}
+		//1キーでタイトル画面に遷移する
+		if (input->GetKeyState(KEY_INPUT_1) == eInputState::Pressed)
+		{
+			change_result_delay = 20;
+		}
 
-	//2キーでリザルト画面に遷移する
-	if (input->GetKeyState(KEY_INPUT_2) == eInputState::Pressed)
-	{
-		change_scene = eSceneType::eResult;
-	}
+		//2キーでリザルト画面に遷移する
+		if (input->GetKeyState(KEY_INPUT_2) == eInputState::Pressed)
+		{
+			change_scene = eSceneType::eResult;
+		}
 
-	if (InputPad::OnButton(XINPUT_BUTTON_A))
-	{
-		objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{40,40},eMAGNET});
-	}
+		if (InputPad::OnButton(XINPUT_BUTTON_A))
+		{
+			objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{40,40},eMAGNET });
+		}
 #endif // _DEBUG
 
+	}
 	return change_scene;
 }
 
@@ -176,6 +188,15 @@ void InGameScene::Draw()const
 			DrawBox((SCREEN_WIDTH / 2) - 200, (SCREEN_HEIGHT / 2 )- 50, (SCREEN_WIDTH / 2) + 200, (SCREEN_HEIGHT / 2 )+ 50, 0xffffff, false);
 			DrawString((SCREEN_WIDTH / 2) - 150, (SCREEN_HEIGHT / 2) - 30, "GameOver...", 0xaaaaaa);
 		}
+	}
+
+	//一時停止フラグが立っていたら、ポーズ画面の描画
+	if (pause_flg)
+	{
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
+		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, true);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+		UserData::DrawStringCenter({ SCREEN_WIDTH / 2,SCREEN_HEIGHT / 2 }, "ポーズ中", 0xffffff);
 	}
 }
 
@@ -284,11 +305,11 @@ ObjectList InGameScene::GetRandEnemy()
 	//それ以降は全ての敵を均等に
 	else
 	{
-		return GetEnemy(eENEMY1, 20, eENEMY2, 20, eENEMY3, 20, eENEMY4, 20, eENEMY5, 20);
+		return GetEnemy(eENEMY1, 20, eENEMY2, 30, eENEMY3, 20, eENEMY4, 10, eENEMY5, 20);
 	}
 
 	//何もなければ敵1をスポーンさせる
-	return eENEMY2;
+	return eENEMY1;
 }
 
 ObjectList InGameScene::GetEnemy(ObjectList _list1, int _prob1,

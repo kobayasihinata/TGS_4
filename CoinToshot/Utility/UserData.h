@@ -46,5 +46,7 @@ public:
 	//データを書き込む
 	static void WriteRankingData();
 
+	//指定した位置を中心に文字を描画する
+	static void DrawStringCenter(Vector2D _loc, const char* _text,int _color, int _font = 0);
 };
 

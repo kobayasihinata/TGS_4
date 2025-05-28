@@ -12,7 +12,13 @@ Enemy4::Enemy4(InGameScene* _ingame)
 	hit_damage = ENEMY4_DAMAGE;
 	//指定したドロップ量から±1の間でランダムにコインをドロップ
 	drop_coin = ENEMY4_DROPCOIN + (GetRand(2) - 1);
-
+	//レア個体ならコインドロップは2倍、HPは1.5倍、移動速度は＋0.5
+	if (rare_flg)
+	{
+		move_speed += 0.5f;
+		max_hp = hp *= 1.5f;
+		drop_coin *= 2;
+	}
 	coin_num = 0;	//持っているコイン
 	steal_flg = false;	//コインを盗んだか
 

@@ -22,7 +22,10 @@ class TitleScene : public SceneBase
 private:
 	int current_num;	//選択されている項目
 
-	int font;			//源柔ゴシックのハンドル
+	int title_font;			//タイトルのハンドル
+	int menu_font;			//メニュー項目のハンドル
+	int bg_image;		//背景画像格納
+
 public:
 	TitleScene();
 	virtual ~TitleScene();
@@ -43,5 +46,8 @@ public:
 
 	//現在のシーンタイプ(オーバーライド必須)
 	virtual eSceneType GetNowSceneType()const override;
+
+	//背景画像生成
+	int CreateBackGround();
 };
 

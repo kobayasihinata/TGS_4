@@ -53,3 +53,16 @@ void UserData::WriteRankingData()
 		}
 	}
 }
+
+void UserData::DrawStringCenter(Vector2D _loc, const char* _text, int _color, int _font)
+{
+	//フォント指定があればフォント用の描画
+	if (_font != 0)
+	{
+		DrawStringFToHandle(_loc.x - GetDrawStringWidthToHandle(_text, strlen(_text),_font)/2, _loc.y, _text, _color, _font);
+	}
+	else
+	{
+		DrawStringF(_loc.x - GetDrawStringWidth(_text, strlen(_text))/2, _loc.y, _text, _color);
+	}
+}
