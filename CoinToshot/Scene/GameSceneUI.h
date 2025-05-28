@@ -30,8 +30,9 @@ struct UIData
 class GameSceneUI
 {
 private:
-	int frame;		//フレーム計測
+	int frame;			//フレーム計測
 	int max_attraction;	//吸い寄せバー表示用
+	int ui_font;		//フォントハンドル格納
 
 	//ポップアップ表示用
 	std::vector<UIData> ui_data;

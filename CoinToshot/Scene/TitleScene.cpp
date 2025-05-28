@@ -4,6 +4,7 @@
 #include "DxLib.h"
 #include "../Utility/common.h"
 #include "../Utility/UserData.h"
+#include "../Utility/ResourceManager.h"
 #include <vector>
 
 TitleScene::TitleScene()
@@ -13,6 +14,11 @@ TitleScene::TitleScene()
 	menu_font = CreateFontToHandle("源柔ゴシック", 40, 3, DX_FONTTYPE_ANTIALIASING);
 	title_font = CreateFontToHandle("源柔ゴシック", 80, 3, DX_FONTTYPE_ANTIALIASING);
 	bg_image = CreateBackGround();
+
+	//SE読み込み
+	ResourceManager* rm = ResourceManager::GetInstance();
+	cursor_se = rm->GetSounds("Resource/Sounds/cursor.mp3");
+	enter_se = rm->GetSounds("Resource/Sounds/enter.mp3");
 }
 
 TitleScene::~TitleScene()
@@ -38,6 +44,7 @@ eSceneType TitleScene::Update(float _delta)
 		{
 			current_num = 0;
 		}
+		PlaySoundMem(cursor_se, DX_PLAYTYPE_BACK);
 	}
 	//上入力で項目上移動
 	if (InputPad::OnButton(XINPUT_BUTTON_DPAD_UP) || InputPad::OnButton(L_STICK_UP))
@@ -46,10 +53,12 @@ eSceneType TitleScene::Update(float _delta)
 		{
 			current_num = ITEM_NUM-1;
 		}
+		PlaySoundMem(cursor_se, DX_PLAYTYPE_BACK);
 	}
 	//Aボタンで決定
 	if (InputPad::OnButton(XINPUT_BUTTON_A))
 	{
+		PlaySoundMem(enter_se, DX_PLAYTYPE_BACK);
 		switch (current_num)
 		{
 		case TitleItem::tGameMain:
@@ -64,6 +73,7 @@ eSceneType TitleScene::Update(float _delta)
 		default:
 			break;
 		}
+
 	}
 
 #ifdef _DEBUG

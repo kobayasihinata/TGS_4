@@ -18,6 +18,7 @@ void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init
 	k_input = InputKey::Get();
 
 	shot_rad = 0.f;	
+	old_shot_rad = 0.f;
 
 	inv_flg = 0;				
 	inv_timer = 0;		
@@ -54,9 +55,10 @@ void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init
 	//SE読み込み
 	shot_se = rm->GetSounds("Resource/Sounds/shot.mp3");
 	walk_se = rm->GetSounds("Resource/Sounds/Player/Walk.mp3");
+	cursor_se = rm->GetSounds("Resource/Sounds/cursor.mp3");
 	//音量調節
 	SetVolumeSoundMem(7500, walk_se);
-	//		PlaySoundMem(shot_se, DX_PLAYTYPE_BACK);
+	//		PlaySoundMem(cursor_se, DX_PLAYTYPE_BACK);
 }
 
 /// <summary>
@@ -284,8 +286,15 @@ void Player::Control()
 	//右スティックの傾きが一定以上なら角度を変更する
 	if (fabsf(InputPad::TipRStick(STICKL_X)) > 0.3f || fabsf(InputPad::TipRStick(STICKL_Y)) > 0.3f)
 	{
+		//前の傾きを保存する
+		old_shot_rad = shot_rad;
 		//右スティックの傾きで発射角度を決める (-1.5f = ずれ調整)
 		shot_rad = atan2f(InputPad::TipRStick(STICKL_X), InputPad::TipRStick(STICKL_Y)) - 1.5f;
+		//角度が一定以上変更されていたらSEを鳴らす
+		if (fabsf(old_shot_rad - shot_rad) > 0.01f && frame % 4==0)
+		{
+			PlaySoundMem(cursor_se, DX_PLAYTYPE_BACK);
+		}
 	}
 
 	//コインが一枚以上なら、１消費で弾を発射する

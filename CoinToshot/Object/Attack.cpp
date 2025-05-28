@@ -25,8 +25,11 @@ Attack::Attack(BulletData _bullet_data)
 	{
 		ripple_color = 0xff0000;
 	}
-	//location.x += ((b_speed + acceleration * 0.08) * cosf(rad));
-	//location.y += ((b_speed + acceleration * 0.08) * sinf(rad));
+
+	//画像読込
+	ResourceManager* rm = ResourceManager::GetInstance();
+	//SE読み込み
+	shot_se = rm->GetSounds("Resource/Sounds/shot.mp3");
 }
 
 Attack::~Attack()
@@ -61,6 +64,7 @@ void Attack::Update()
 			{
 				manager->CreateAttack(GetBulletData(i));
 			}
+			PlaySoundMem(shot_se, DX_PLAYTYPE_BACK);
 		}
 
 		//消滅エフェクト

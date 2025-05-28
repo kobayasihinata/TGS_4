@@ -20,6 +20,8 @@ private:
 
 	int ripple_color;			//生成する波紋の色
 	int gauss_image;			//ぼかし画像保存
+	//音源
+	int shot_se;				//弾発射SE
 public:
 	//コンストラクタ(_object = 攻撃を生成したオブジェクト いなければnullptr 
 	// _bullet_data = 発射時に必要な情報)

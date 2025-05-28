@@ -18,6 +18,8 @@ protected:
 
 	int drop_coin;			//ドロップするコインの量
 	int drop_coin_count;	//ドロップするコインの計測
+
+	int damage_se;			//ダメージ音
 public:
 	Vector2D velocity = { 0.0f,0.0f };
 
@@ -33,6 +35,11 @@ public:
 		last_velocity = 0.f;				
 		move_velocity = 0.f;
 		drop_coin_count = 0;
+
+		//SE読込
+		ResourceManager* rm = ResourceManager::GetInstance();
+		//SE読み込み
+		damage_se = rm->GetSounds("Resource/Sounds/damage.mp3");
 	}
 
 	virtual void Update()override
@@ -119,6 +126,9 @@ public:
 			}
 			//減少アニメーション
 			hpbar_move += _value * (HPBAR_SIZE / max_hp);
+
+			//ダメージSE
+			PlaySoundMem(damage_se, DX_PLAYTYPE_BACK);
 
 			//ノックバック処理
 

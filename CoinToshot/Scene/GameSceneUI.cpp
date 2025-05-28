@@ -7,6 +7,8 @@
 void GameSceneUI::Initialize()
 {
 	frame = 0;
+	ui_font = CreateFontToHandle("Œ¹_ƒSƒVƒbƒN", 30, 3, DX_FONTTYPE_ANTIALIASING);
+
 	//‰æ‘œ“Ç
 	ResourceManager* rm = ResourceManager::GetInstance();
 	std::vector<int>tmp;
@@ -68,6 +70,7 @@ void GameSceneUI::Draw()const
 	//ƒvƒŒƒCƒ„[î•ñ•`‰æ
 	DrawFormatString(100, 10, 0xffffff, "HP:%d COIN:%d TIME:%d", (int)(UserData::player_hp), UserData::coin, UserData::timer / 60);
 
+	DrawFormatStringToHandle(SCREEN_WIDTH - GetDrawFormatStringWidthToHandle(ui_font,"Coin~%d",UserData::coin)-10, 10, 0x000000, ui_font, "Coin~%d", UserData::coin);
 	//ƒRƒCƒ“‹z‚¢Šñ‚¹ˆ—‚Ì•`‰æ
 	if (UserData::attraction_timer > 0)
 	{

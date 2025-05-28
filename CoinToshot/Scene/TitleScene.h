@@ -26,6 +26,8 @@ private:
 	int menu_font;			//メニュー項目のハンドル
 	int bg_image;		//背景画像格納
 
+	int cursor_se;				//カーソルSE
+	int enter_se;				//決定SE
 public:
 	TitleScene();
 	virtual ~TitleScene();

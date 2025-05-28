@@ -15,6 +15,7 @@ private:
 
 	//コイン発射関連
 	float shot_rad;				//発射角度
+	float old_shot_rad;			//１フレーム前の発射角度
 
 	//無敵処理関連
 	bool inv_flg;				//無敵か判断
@@ -26,6 +27,7 @@ private:
 	//音源
 	int shot_se;				//弾発射SE
 	int walk_se;				//移動SE
+	int cursor_se;				//照準SE
 public:
 
 public:

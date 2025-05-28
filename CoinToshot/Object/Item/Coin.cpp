@@ -12,10 +12,9 @@ Coin::Coin(InGameScene* _ingame, Vector2D _init_velocity)
 	add_num = 1;
 	check_flg = false;
 
-	//‰æ‘œ“Ç
-	ResourceManager* rm = ResourceManager::GetInstance();
-	std::vector<int>tmp;
 	//SE“Ç‚İ‚İ
+	ResourceManager* rm = ResourceManager::GetInstance();
+
 	get_se = rm->GetSounds("Resource/Sounds/Coin/Get.mp3");
 }
 
