@@ -9,6 +9,7 @@ private:
 	//攻撃発射関連
 	float shot_rad;				//発射角度
 	bool shot_once;				//一回だけ撃つ
+	int shot_span;				//発射間隔
 public:
 	//コンストラクタ
 	Enemy3();

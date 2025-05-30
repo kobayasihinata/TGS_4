@@ -44,16 +44,22 @@ void InGameScene::Initialize()
 	//プレイヤー生成
 	objects->CreateObject({ Vector2D{0,0},Vector2D{40,40},ePLAYER });
 
-	objects->CreateObject({ Vector2D{(float)GetRand(STAGE_SIZE*2-100)-STAGE_SIZE,(float)GetRand(STAGE_SIZE * 2 - 100) - STAGE_SIZE},Vector2D{100,100},eSLOT/*, 20.f*/ });
-	objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{40,40},eMAGNET/*, 20.f*/ });
+	objects->CreateObject({ Vector2D{(float)GetRand(STAGE_SIZE * 2 - 400) - (STAGE_SIZE - 200),(float)GetRand(STAGE_SIZE * 2 - 400) - (STAGE_SIZE - 200)},Vector2D{100,100},eSLOT});
+	//objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{40,40},eMAGNET/*, 20.f*/ });
 	//objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{ENEMY5_WIDTH,ENEMY5_HEIGHT},eENEMY5/*, 20.f*/ });
 
 	//背景の自動生成
 	CreateBackGround();
+
+	ResourceManager* rm = ResourceManager::GetInstance();
+	//BGM読み込み
+	gamemain_bgm = rm->GetSounds("Resource/Sounds/BGM/Rail_train (2).mp3");
+	PlaySoundMem(gamemain_bgm, DX_PLAYTYPE_LOOP, false);
 }
 
 void InGameScene::Finalize()
 {
+	StopSoundMem(gamemain_bgm);
 	//オブジェクト管理クラス終了時処理
 	objects->Finalize();
 
@@ -74,6 +80,10 @@ eSceneType InGameScene::Update(float _delta)
 	//一時停止フラグが立っていたら更新しない
 	if (!pause_flg)
 	{
+		if (!CheckSoundMem(gamemain_bgm))
+		{
+			PlaySoundMem(gamemain_bgm, DX_PLAYTYPE_LOOP, false);
+		}
 		change_scene = __super::Update(_delta);
 
 		//時間停止フラグが立っていたらオブジェクトの動きはすべて止める
@@ -137,6 +147,10 @@ eSceneType InGameScene::Update(float _delta)
 		}
 #endif // _DEBUG
 
+	}
+	else
+	{
+		StopSoundMem(gamemain_bgm);
 	}
 	return change_scene;
 }

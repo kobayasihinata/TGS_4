@@ -8,14 +8,15 @@ Enemy3::Enemy3()
 	move_speed = ENEMY3_SPEED;
 	max_hp = hp = ENEMY3_HP;
 	hit_damage = ENEMY3_DAMAGE;
+	shot_span = ENEMY3_ATTACK_SPAN;
 	//指定したドロップ量から±1の間でランダムにコインをドロップ
 	drop_coin = ENEMY3_DROPCOIN + (GetRand(2) - 1);
-	//レア個体ならコインドロップは2倍、HPは1.5倍、移動速度は＋0.5
+	//レア個体ならコインドロップは2倍、HPは1.5倍、弾発射速度5倍
 	if (rare_flg)
 	{
-		move_speed += 0.5f;
 		max_hp = hp *= 1.5f;
 		drop_coin *= 2;
+		shot_span /= 5;
 	}
 	//画像読込
 	ResourceManager* rm = ResourceManager::GetInstance();
@@ -30,7 +31,7 @@ Enemy3::Enemy3()
 	image = animation_image[0][0];
 
 	shot_once = false;
-
+	
 	//SE読み込み
 	death_se = rm->GetSounds("Resource/Sounds/Enemy/death.mp3");
 }
@@ -90,7 +91,7 @@ void Enemy3::Update()
 		shot_once = true;
 	}
 	//指定の周期毎にアニメーションを投擲に変える
-	if (!death_flg && frame % ENEMY3_ATTACK_SPAN == 0)
+	if (!death_flg && frame % shot_span == 0)
 	{
 		//投擲アニメーション開始
 		image_line = 1;

@@ -9,12 +9,11 @@ Enemy5::Enemy5()
 	hit_damage = ENEMY5_DAMAGE;
 	//指定したドロップ量から±1の間でランダムにコインをドロップ
 	drop_coin = ENEMY5_DROPCOIN + (GetRand(2) - 1);
-	//レア個体ならコインドロップは2倍、HPは1.5倍、移動速度は＋0.5
+	//レア個体ならコインドロップは3倍、HPは4倍
 	if (rare_flg)
 	{
-		move_speed += 0.5f;
-		max_hp = hp *= 1.5f;
-		drop_coin *= 2;
+		max_hp = hp *= 4;
+		drop_coin *= 3;
 	}
 	//画像読込
 	ResourceManager* rm = ResourceManager::GetInstance();

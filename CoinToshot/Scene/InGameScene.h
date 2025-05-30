@@ -26,6 +26,8 @@ private:
 	int bg_image;	//Š®¬‚µ‚½”wŒi‰æ‘œ‚ğŠi”[‚·‚é
 
 	bool pause_flg;		//ˆê’â~”»’f
+
+	int gamemain_bgm;	//BGMŠi”[
 public:
 	InGameScene();
 	virtual ~InGameScene();

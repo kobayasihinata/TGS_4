@@ -2,7 +2,7 @@
 #include "Base/ObjectBase.h"
 
 #define REEL_NUM 9		//リールの要素数
-#define PEKA 50			//光る確率 〇分の１
+#define PEKA 2			//光る確率 〇分の１
 #define REEL_WAIT 120	//待ち時間
 #define BIG_BONUS 240	//ドロップコイン量
 
@@ -32,6 +32,7 @@ private:
 	int timer;		//フレーム測定
 	int now_reel[3];	//今指しているリール
 
+	int bonus_wait_count;	//ボーナス払い出し開始前測定
 	int drop_coin;			//ドロップするコインの量
 	int drop_coin_count;	//ドロップするコインの計測
 

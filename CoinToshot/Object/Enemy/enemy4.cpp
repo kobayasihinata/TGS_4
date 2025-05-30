@@ -12,11 +12,10 @@ Enemy4::Enemy4(InGameScene* _ingame)
 	hit_damage = ENEMY4_DAMAGE;
 	//指定したドロップ量から±1の間でランダムにコインをドロップ
 	drop_coin = ENEMY4_DROPCOIN + (GetRand(2) - 1);
-	//レア個体ならコインドロップは2倍、HPは1.5倍、移動速度は＋0.5
+	//レア個体ならコインドロップは2倍、移動速度は＋10
 	if (rare_flg)
 	{
-		move_speed += 0.5f;
-		max_hp = hp *= 1.5f;
+		move_speed += 6;
 		drop_coin *= 2;
 	}
 	coin_num = 0;	//持っているコイン
@@ -165,7 +164,7 @@ void Enemy4::Draw()const
 void Enemy4::Hit(ObjectBase* hit_object)
 {
 	//プレイヤーに当たったらコインを奪い、コインを奪ったフラグを立てる
-	if (!steal_flg && hit_object->GetObjectType() == ePLAYER)
+	if (!death_flg && !steal_flg && hit_object->GetObjectType() == ePLAYER)
 	{
 		//コイン量が盗む量より多ければ規定量盗む
 		if (UserData::coin > ENEMY4_STEAL)
@@ -180,7 +179,7 @@ void Enemy4::Hit(ObjectBase* hit_object)
 			UserData::coin = 0;
 		}
 		drop_coin += coin_num * 2;
-		move_speed = ENEMY4_ESCAPE_SPEED;
+		move_speed = rare_flg ? ENEMY4_ESCAPE_SPEED : ENEMY4_ESCAPE_SPEED * 2;
 		steal_flg = true;
 
 		std::string s = "-" + std::to_string(coin_num);

@@ -71,7 +71,7 @@ public:
 		//レア個体なら、オーラの描画をする
 		if (rare_flg)
 		{
-			DrawRotaGraphF(local_location.x, local_location.y, 1.f, 0, shine_image[now_shine_image], TRUE);
+			DrawRotaGraphF(local_location.x, local_location.y, box_size.x/40, 0, shine_image[now_shine_image], TRUE);
 		}
 
 		__super::Draw();

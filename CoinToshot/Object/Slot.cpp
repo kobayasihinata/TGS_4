@@ -10,9 +10,10 @@ Slot::Slot(InGameScene* _ingame)
 	peka_flg = false;
 	can_stop = false;
 	bet_once = false;
-	timer = 0;
 	reel_wait = 0;
 	stop_reel_num = 0;
+	timer = 0;
+	bonus_wait_count = 0;
 	drop_coin = BIG_BONUS;
 	drop_coin_count = 0;
 	for (int i = 0; i < 3; i++)
@@ -104,7 +105,7 @@ void Slot::Update()
 			bonus_se_play_once = true;
 		}
 		//ƒƒ_ƒ‹‚Æ“¯Žž‚ÉUŒ‚‚ào‚µ‚ÄŽüˆÍ‚Ì“G‚ðˆê‘|‚µ‚½‚¢
-		if (frame % 5 == 0 && drop_coin_count < drop_coin)
+		if (++bonus_wait_count > 60 && frame % 5 == 0 && drop_coin_count < drop_coin)
 		{
 			Vector2D rand = { (float)(GetRand(40) - 20),(float)(GetRand(40) - 20) };
 			manager->CreateObject(
@@ -365,13 +366,13 @@ void Slot::BonusStop()
 				reel[0] = now_reel[0];
 				if (!CheckBigBonus())
 				{
-					reel[0] += 1;
+					reel[0] -= 1;
 					if (!CheckBigBonus())
 					{
-						reel[0] += 1;
+						reel[0] -= 1;
 						if (!CheckBigBonus())
 						{
-							reel[0] -= 2;
+							reel[0] += 2;
 						}
 					}
 				}
@@ -384,13 +385,13 @@ void Slot::BonusStop()
 				reel[1] = now_reel[1];
 				if (!CheckBigBonus())
 				{
-					reel[1] += 1;
+					reel[1] -= 1;
 					if (!CheckBigBonus())
 					{
-						reel[1] += 1;
+						reel[1] -= 1;
 						if (!CheckBigBonus())
 						{
-							reel[1] -= 2;
+							reel[1] += 2;
 						}
 					}
 				}
@@ -403,13 +404,13 @@ void Slot::BonusStop()
 				reel[2] = now_reel[2];
 				if (!CheckBigBonus())
 				{
-					reel[2] += 1;
+					reel[2] -= 1;
 					if (!CheckBigBonus())
 					{
-						reel[2] += 1;
+						reel[2] -= 1;
 						if (!CheckBigBonus())
 						{
-							reel[2] -= 2;
+							reel[2] += 2;
 						}
 					}
 				}
@@ -443,6 +444,8 @@ void Slot::BonusStop()
 			}
 			reel_wait = 0;
 			drop_coin_count = 0;
+			bonus_se_play_once = 0;
+			bonus_wait_count = 0;
 			for (int i = 0; i < 3; i++)
 			{
 				reel[i] = -1;
