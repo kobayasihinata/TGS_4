@@ -73,11 +73,24 @@ void SceneManager::Update()
 		if (input->GetMouseState(MOUSE_INPUT_RIGHT) == eInputState::Pressed)
 		{
 			UserData::variable_change = !UserData::variable_change;
+			UserData::variable_loc = { (float)input->GetMouseCursor().x,(float)input->GetMouseCursor().y };
 		}
 		//変数変更処理
 		if (UserData::variable_change)
 		{
+			if (input->GetMouseState(MOUSE_INPUT_LEFT) == eInputState::Held)
+			{
+				UserData::variable = (int)UserData::variable_loc.y - input->GetMouseCursor().y;
+			}
 
+			if (input->GetKeyState(KEY_INPUT_UP) == eInputState::Pressed)
+			{
+				UserData::variable++;
+			}
+			if (input->GetKeyState(KEY_INPUT_DOWN) == eInputState::Pressed)
+			{
+				UserData::variable--;
+			}
 		}
 
 		//デバッグ表示の更新
@@ -144,6 +157,13 @@ void SceneManager::Draw()const
 
 	//デバッグ表示の描画
 	DebugInfomation::Draw();
+
+	//変数変更処理
+	if (UserData::variable_change)
+	{
+		UserData::DrawVariable();
+	}
+
 
 	//裏画面の内容を表画面に反映する
 	ScreenFlip();

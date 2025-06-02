@@ -253,6 +253,9 @@ void ObjectManager::CreateEffect(int object_type, Vector2D init_location, bool _
 	case EffectList::elSmoke:
 		create_effect.push_back(EffectInitData{ new Smoke(),init_location, _front_flg,_timer, _anim_span });
 		break;
+	case EffectList::elShine:
+		create_effect.push_back(EffectInitData{ new Shine(_color),init_location, _front_flg,_timer, _anim_span });
+		break;
 	default:
 		break;
 	}

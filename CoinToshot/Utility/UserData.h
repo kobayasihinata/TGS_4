@@ -43,7 +43,7 @@ public:
 	//デバッグ用
 	static int variable;			//起動中に好きに変更できる値
 	static bool variable_change;	//値変更中か
-
+	static Vector2D variable_loc;	//調整表示用座標
 public:
 	//ランキングデータを読み込む
 	static void ReadRankingData();
@@ -56,5 +56,8 @@ public:
 
 	//コイン描画
 	static void DrawCoin(Vector2D _loc, float _radius, int _r = 255, int _g = 255, int _b = 0, int _a = 255);
+
+	//可変の変数描画
+	static void DrawVariable();
 };
 

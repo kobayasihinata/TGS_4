@@ -22,6 +22,7 @@
 #include "Base/EffectBase.h"
 #include "Effect/Ripples.h"
 #include "Effect/Smoke.h"
+#include "Effect/Shine.h"
 #include "Base/EffectList.h"
 
 class InGameScene;

@@ -19,6 +19,7 @@ int UserData::attraction_timer = 0;
 
 int UserData::variable = 0;
 bool UserData::variable_change = 0;
+Vector2D UserData::variable_loc = 0;
 
 void UserData::ReadRankingData()
 {
@@ -100,4 +101,15 @@ void UserData::DrawCoin(Vector2D _loc, float _radius,int _r, int _g, int _b, int
 	{
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 	}
+}
+
+void UserData::DrawVariable()
+{
+	DrawBoxAA(variable_loc.x,
+		variable_loc.y,
+		variable_loc.x + 10,
+		variable_loc.y - variable,
+		0x00ff00, TRUE);
+	DrawFormatStringF(variable_loc.x-10, variable_loc.y, 0x000000, "%d", variable);
+	DrawFormatStringF(variable_loc.x-11, variable_loc.y-1, 0xffffff, "%d", variable);
 }

@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Object\Effect\Ripples.cpp" />
+    <ClCompile Include="Object\Effect\Shine.cpp" />
     <ClCompile Include="Object\Effect\Smoke.cpp" />
     <ClCompile Include="Object\Item\Magnet.cpp" />
     <ClCompile Include="Object\Slot.cpp" />
@@ -178,6 +179,7 @@
     <ClInclude Include="Object\Base\EffectBase.h" />
     <ClInclude Include="Object\Base\EffectList.h" />
     <ClInclude Include="Object\Effect\Ripples.h" />
+    <ClInclude Include="Object\Effect\Shine.h" />
     <ClInclude Include="Object\Effect\Smoke.h" />
     <ClInclude Include="Object\Item\Magnet.h" />
     <ClInclude Include="Object\Player\PlayerBullet.h" />
