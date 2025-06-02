@@ -17,6 +17,9 @@ int UserData::bullet_type = 0;
 bool UserData::attraction_flg = false;
 int UserData::attraction_timer = 0;
 
+int UserData::variable = 0;
+bool UserData::variable_change = 0;
+
 void UserData::ReadRankingData()
 {
 	const char* a = "Resource/Data/CTs_RankingData.txt";

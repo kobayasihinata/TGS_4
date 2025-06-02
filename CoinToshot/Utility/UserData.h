@@ -39,6 +39,11 @@ public:
 	static int bullet_type;			//選択中の弾の種類
 	static bool attraction_flg;		//コイン吸い寄せ
 	static int attraction_timer;	//コイン吸い寄せ時間測定
+
+	//デバッグ用
+	static int variable;			//起動中に好きに変更できる値
+	static bool variable_change;	//値変更中か
+
 public:
 	//ランキングデータを読み込む
 	static void ReadRankingData();

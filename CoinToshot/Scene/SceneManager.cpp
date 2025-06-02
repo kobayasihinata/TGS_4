@@ -6,6 +6,7 @@
 #include "Factory/SceneFactory.h"
 #include "../Utility/DebugInformation.h"
 #include "../Utility/FpsController.h"
+#include "../Utility/UserData.h"
 
 SceneManager::SceneManager() : current_scene(nullptr), is_finalize(false)
 {}
@@ -67,6 +68,17 @@ void SceneManager::Update()
 		//入力機能の更新
 		input->Update();
 		InputPad::UpdateKey();
+
+		//デバッグ用変数の更新
+		if (input->GetMouseState(MOUSE_INPUT_RIGHT) == eInputState::Pressed)
+		{
+			UserData::variable_change = !UserData::variable_change;
+		}
+		//変数変更処理
+		if (UserData::variable_change)
+		{
+
+		}
 
 		//デバッグ表示の更新
 		DebugInfomation::Update();

@@ -113,7 +113,8 @@ void TitleScene::Draw()const
 		//ÉJÅ[É\ÉãÇ∆çÄñ⁄ÇÃï`âÊ
 		if (current_num == i)
 		{
-			DrawCircle(SCREEN_WIDTH / 2 - 30, SCREEN_HEIGHT / 2 + (i * 30)+15, 15, 0x00ff00, true);
+			UserData::DrawCoin({ (float)SCREEN_WIDTH / 2 - 30, (float)SCREEN_HEIGHT / 2 + (i * 30) + 15 }, 15);
+			//	DrawCircle(SCREEN_WIDTH / 2 - 30, SCREEN_HEIGHT / 2 + (i * 30)+15, 15, 0x00ff00, true);
 			//çÄñ⁄ÇÃï`âÊ
 			DrawFormatStringToHandle(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + (i * 30), 0x00ff00, menu_font, "%s", item_text[i]);
 		}
