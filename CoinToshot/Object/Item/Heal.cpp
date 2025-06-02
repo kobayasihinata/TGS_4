@@ -19,6 +19,8 @@ Heal::Heal(InGameScene* _ingame)
 
 	shine_image = rm->GetImages("Resource/Images/Effect/green_shine.png", 40, 8, 5, 96, 96);
 	now_shine_image = 0;
+
+	heal_se = rm->GetSounds("Resource/Sounds/Player/Heal.mp3");
 }
 
 Heal::~Heal()
@@ -66,6 +68,7 @@ void Heal::Hit(ObjectBase* hit_object)
 
 		std::string s = "HP + " + std::to_string((int)heal_num);
 		ingame->CreatePopUp(this->location, s, heal_num*2, 0x00ff22, 1, 60);
+		PlaySoundMem(heal_se,DX_PLAYTYPE_BACK);
 	}
 }
 

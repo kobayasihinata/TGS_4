@@ -56,6 +56,8 @@ void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init
 	shot_se = rm->GetSounds("Resource/Sounds/shot.mp3");
 	walk_se = rm->GetSounds("Resource/Sounds/Player/Walk.mp3");
 	cursor_se = rm->GetSounds("Resource/Sounds/cursor.mp3");
+	not_shoot_se = rm->GetSounds("Resource/Sounds/Player/CannotShoot.mp3");
+
 	//音量調節
 	SetVolumeSoundMem(7500, walk_se);
 	//		PlaySoundMem(cursor_se, DX_PLAYTYPE_BACK);
@@ -298,11 +300,19 @@ void Player::Control()
 	}
 
 	//コインが一枚以上なら、１消費で弾を発射する
-	if (UserData::coin >= pBullet[UserData::bullet_type].cost && (InputPad::OnButton(XINPUT_BUTTON_LEFT_SHOULDER) || InputPad::OnButton(XINPUT_BUTTON_RIGHT_SHOULDER)))
+	if (InputPad::OnButton(XINPUT_BUTTON_LEFT_SHOULDER) || InputPad::OnButton(XINPUT_BUTTON_RIGHT_SHOULDER))
 	{
-		ShotBullet();
-		UserData::coin -= pBullet[UserData::bullet_type].cost;
-		PlaySoundMem(shot_se, DX_PLAYTYPE_BACK);
+		if (UserData::coin >= pBullet[UserData::bullet_type].cost)
+		{
+			ShotBullet();
+			UserData::coin -= pBullet[UserData::bullet_type].cost;
+			PlaySoundMem(shot_se, DX_PLAYTYPE_BACK);
+		}
+		//発射失敗SE
+		else
+		{
+			PlaySoundMem(not_shoot_se, DX_PLAYTYPE_BACK);
+		}
 	}
 
 	//トリガーで弾の種類を変える

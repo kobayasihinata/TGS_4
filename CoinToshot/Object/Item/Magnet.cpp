@@ -15,6 +15,8 @@ Magnet::Magnet()
 
 	shine_image = rm->GetImages("Resource/Images/Effect/green_shine.png", 40, 8, 5, 96, 96);
 	now_shine_image = 0;
+
+	magnet_se = rm->GetSounds("Resource/Sounds/Player/Magnet.mp3");
 }
 
 Magnet::~Magnet()
@@ -59,6 +61,7 @@ void Magnet::Hit(ObjectBase* hit_object)
 	{
 		UserData::attraction_timer += COIN_ATTRACTON_TIMER;
 		manager->DeleteObject(this);
+		PlaySoundMem(magnet_se, DX_PLAYTYPE_BACK);
 	}
 }
 

@@ -10,6 +10,7 @@ private:
 	std::vector<int> shine_image;	//オーラ画像格納
 	int now_shine_image;			//現在描画オーラ画像
 
+	int magnet_se;					//取得時SE
 public:
 	//コンストラクタ
 	Magnet();

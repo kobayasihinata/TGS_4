@@ -10,6 +10,9 @@ private:
 	InGameScene* ingame;		//現在のシーンのポインタを保存
 	class Camera* camera;		//カメラポインタ格納(プレイヤーの情報を受け取るため)
 
+	int color_r;
+	int color_g;
+	int color_b;
 	//音源
 	int get_se;				//コイン獲得SE
 

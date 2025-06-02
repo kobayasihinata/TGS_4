@@ -48,5 +48,8 @@ public:
 
 	//指定した位置を中心に文字を描画する
 	static void DrawStringCenter(Vector2D _loc, const char* _text,int _color, int _font = 0);
+
+	//コイン描画
+	static void DrawCoin(Vector2D _loc, float _radius, int _r = 255, int _g = 255, int _b = 0, int _a = 255);
 };
 

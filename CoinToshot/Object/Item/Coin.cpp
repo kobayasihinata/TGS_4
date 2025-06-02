@@ -12,6 +12,9 @@ Coin::Coin(InGameScene* _ingame, Vector2D _init_velocity)
 	add_num = 1;
 	check_flg = false;
 
+	color_r = GetRand(255);
+	color_g = GetRand(255);
+	color_b = GetRand(255);
 	//SE読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
 
@@ -51,20 +54,8 @@ void Coin::Update()
 void Coin::Draw()const
 {
 	__super::Draw();
-	//コイン仮
-	DrawCircleAA(local_location.x, local_location.y, radius, 20, 0xffff00, true);
-	DrawCircleAA(local_location.x-1, local_location.y-1, radius/1.5f, 20, 0xaaaa00, true);
-	DrawCircleAA(local_location.x, local_location.y, radius/1.5f, 20, 0xffdd00, true);
-	DrawBoxAA(local_location.x - (radius/6)+1,
-		local_location.y - (radius / 2)+1,
-		local_location.x + (radius / 6)+1,
-		local_location.y + (radius / 2)+1,
-		0xaaaa00, true);
-	DrawBoxAA(local_location.x - (radius / 6), 
-		local_location.y - (radius / 2),
-		local_location.x + (radius / 6),
-		local_location.y + (radius / 2),
-		0xffff00, true);
+
+	UserData::DrawCoin(local_location, radius, color_r, color_g, color_b);
 #ifdef _DEBUG
 	//自身の獲得枚数を表示
 	DrawFormatStringF(local_location.x, local_location.y, 0xff0000, "%d", (int)add_num);

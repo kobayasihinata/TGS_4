@@ -14,6 +14,8 @@ private:
 
 	std::vector<int> shine_image;	//オーラ画像格納
 	int now_shine_image;			//現在描画オーラ画像
+
+	int heal_se;					//回復SE
 public:
 	//コンストラクタ
 	Heal(InGameScene* _ingame);

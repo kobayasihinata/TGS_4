@@ -28,6 +28,7 @@ private:
 	int shot_se;				//’e”­ËSE
 	int walk_se;				//ˆÚ“®SE
 	int cursor_se;				//Æ€SE
+	int not_shoot_se;			//”­Ë¸”sSE
 public:
 
 public:
