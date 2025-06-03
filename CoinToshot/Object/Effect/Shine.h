@@ -5,7 +5,12 @@ class Shine :
 	public EffectBase
 {
 private:
-	int color;	//エフェクト色
+	int color;				//エフェクト色
+	int size;				//大きさ
+	float angle;			//回転用
+	float move_angle;		//回転用移動値保存
+	Vector2D random_move;	//ランダムな方向に移動する
+
 public:
 	Shine(int _color);
 	~Shine();

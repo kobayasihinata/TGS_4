@@ -2,12 +2,17 @@
 #include "GameSceneUI.h"
 #include "Camera/Camera.h"
 #include "../Utility/ResourceManager.h"
+#include "../Utility/DebugInformation.h"
 #include "../Object/Player/PlayerBullet.h"
 
 void GameSceneUI::Initialize()
 {
 	frame = 0;
 	ui_font = CreateFontToHandle("源柔ゴシック", 30, 3, DX_FONTTYPE_ANTIALIASING);
+	bullet_image = MakeScreen(200, 150, TRUE);
+	old_bullet_type = UserData::bullet_type;
+	bullet_change_timer = 0;
+	change_anim_move = 200.f / PLATER_BULLET_CHANGE_CD;
 
 	//画像読込
 	ResourceManager* rm = ResourceManager::GetInstance();
@@ -57,6 +62,18 @@ void GameSceneUI::Update()
 	//ゲージのリセット
 	if (UserData::attraction_timer <= 0)max_attraction = 0;
 
+	//弾の種類が変わっているなら、アニメーションする
+	if (old_bullet_type != UserData::bullet_type)
+	{
+		//アニメーション終了条件
+		if (++bullet_change_timer >= PLATER_BULLET_CHANGE_CD)
+		{
+			old_bullet_type = UserData::bullet_type;
+			bullet_change_timer = 0;
+		}
+	}
+	CreateBulletTypeImage();
+
 	//削除したオブジェクトは消去
 	delete_ui_data.clear();
 }
@@ -94,45 +111,26 @@ void GameSceneUI::Draw()const
 			0xffffff, false);
 	}
 
-	int draw_color;
-	//撃てない弾のUIは薄暗くする
-	if (pBullet[UserData::bullet_type].cost <= UserData::coin)
-	{
-		draw_color = 0xffffff;
-	}
-	else
-	{
-		draw_color = 0xaaaaaa;
-		//撃てない旨を伝える
-		if (frame % 30 >= 15)
-		{
-			DrawString(SCREEN_WIDTH / 2 - GetDrawFormatStringWidth("コイン不足！") / 2, 120, "コイン不足！", 0xff0000);
-		}
-	}
-
-	//弾の種類描画
-	DrawBox(SCREEN_WIDTH / 2 - 100, 0, SCREEN_WIDTH / 2 + 100, 100, 0x000000, true);
-	DrawBox(SCREEN_WIDTH / 2 - 100, 0, SCREEN_WIDTH / 2 + 100, 100, draw_color, false);
-
-	SetFontSize(32);
-	DrawFormatString(SCREEN_WIDTH / 2 - GetDrawFormatStringWidth(pBullet[UserData::bullet_type].name) / 2, 20, draw_color, "%s", pBullet[UserData::bullet_type].name);
-
-	SetFontSize(16);
-	DrawFormatString(SCREEN_WIDTH / 2 - 90, 80, draw_color, "消費:%d枚", pBullet[UserData::bullet_type].cost);
-	DrawFormatString(SCREEN_WIDTH / 2, 80, draw_color, "敵貫通:%d体", pBullet[UserData::bullet_type].h_count);
-
 	//ボタンを押したら画像を変える
-	DrawGraph(SCREEN_WIDTH / 2 - 150, 10, button_image[(int)InputPad::OnButton(L_TRIGGER)][L_TRIGGER], true);
-	DrawGraph(SCREEN_WIDTH / 2 + 110, 10, button_image[(int)InputPad::OnButton(R_TRIGGER)][R_TRIGGER], true);
+	DrawGraph(SCREEN_WIDTH / 2 - 150, 10, button_image[(int)InputPad::OnPressed(L_TRIGGER)][L_TRIGGER], true);
+	DrawGraph(SCREEN_WIDTH / 2 + 110, 10, button_image[(int)InputPad::OnPressed(R_TRIGGER)][R_TRIGGER], true);
 
-	//文字大きさ設定
-	SetFontSize(24);
+	//プレイヤーが弾種類UIと被ったら透過する
+	if (camera->player_location.x - camera->GetCameraLocation().x > (SCREEN_WIDTH / 2) - 100 &&
+		camera->player_location.x - camera->GetCameraLocation().x < (SCREEN_WIDTH / 2) + 100 &&
+		camera->player_location.y - camera->GetCameraLocation().y < 140)
+	{
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 125);
+	}
+	//弾の種類描画
+	DrawRotaGraph(SCREEN_WIDTH / 2, 75, 1.0f, 0, bullet_image, TRUE);
+
 
 	//ui_dataの描画
 	for (const auto ui_data : ui_data)
 	{
 		//文字透過設定
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 - (255 / ui_data.life_span)*ui_data.life_count);
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 - (255 / ui_data.life_span) * ui_data.life_count);
 		DrawFormatStringF(ui_data.location.x - camera->GetCameraLocation().x + 1.f,
 			ui_data.location.y - camera->GetCameraLocation().y - (ui_data.life_count * ui_data.move_speed) + 1.f,
 			0x000000,
@@ -144,8 +142,9 @@ void GameSceneUI::Draw()const
 			ui_data.text_color,
 			"%s",
 			ui_data.text.c_str()
-			);
+		);
 	}
+
 	//文字透過リセット
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
@@ -164,4 +163,60 @@ void GameSceneUI::SetUIData(Vector2D _location, string _text, int _font_size, in
 	data.text_color = _text_color;
 
 	ui_data.push_back(data);
+}
+
+void GameSceneUI::CreateBulletTypeImage()
+{
+	SetDrawScreen(bullet_image);
+	ClearDrawScreen();
+
+	int draw_color;
+	//撃てない弾のUIは薄暗くする
+	if (pBullet[UserData::bullet_type].cost <= UserData::coin)
+	{
+		draw_color = 0xffffff;
+	}
+	else
+	{
+		draw_color = 0xaaaaaa;
+		//撃てない旨を伝える
+		if (frame % 30 >= 15)
+		{
+			DrawString(100 - GetDrawFormatStringWidth("コイン不足！") / 2, 120, "コイン不足！", 0xff0000);
+		}
+	}
+
+	//弾変更が有れば変更前と変更後の箱を描画
+	if (old_bullet_type != UserData::bullet_type)
+	{
+		DrawBullet({ change_anim_move * bullet_change_timer-200, 0 }, UserData::bullet_type);
+		DrawBullet({ change_anim_move * bullet_change_timer, 0 }, old_bullet_type);
+	}
+	//変更が無いなら通常の描画
+	else
+	{
+		DrawBullet({ 0, 0 }, UserData::bullet_type);
+	}
+
+	//文字大きさ設定
+	SetFontSize(24);
+
+	SetDrawScreen(DX_SCREEN_BACK);
+}
+
+void GameSceneUI::DrawBullet(Vector2D _loc, int _type)const
+{
+	//撃てない弾のUIは薄暗くする
+	int draw_color = pBullet[UserData::bullet_type].cost <= UserData::coin ? 0xffffff: 0xaaaaaa;
+
+	//弾の種類描画
+	DrawBox(_loc.x, _loc.y, _loc.x + 200, _loc.y + 100, 0x000000, true);
+	DrawBox(_loc.x, _loc.y, _loc.x + 200, _loc.y + 100, draw_color, false);
+
+	SetFontSize(32);
+	DrawFormatString(_loc.x + 100 - GetDrawFormatStringWidth(pBullet[_type].name) / 2, _loc.y + 20, draw_color, "%s", pBullet[_type].name);
+
+	SetFontSize(16);
+	DrawFormatString(_loc.x + 10, _loc.y + 80, draw_color, "消費:%d枚", pBullet[_type].cost);
+	DrawFormatString(_loc.x + 100, _loc.y + 80, draw_color, "敵貫通:%d体", pBullet[_type].h_count);
 }

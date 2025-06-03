@@ -17,6 +17,8 @@ void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init
 	camera = Camera::Get();
 	k_input = InputKey::Get();
 
+	bullet_change_cd = 0;
+
 	shot_rad = 0.f;	
 	old_shot_rad = 0.f;
 
@@ -96,6 +98,11 @@ void Player::Update()
 		Control();
 	}
 
+	//弾種類変更クールダウン測定
+	if (bullet_change_cd > 0)
+	{
+		bullet_change_cd--;
+	}
 	//少しでも移動していたら表示アニメーションを変える
 	if (fabsf(velocity.x) > 0.3f || fabsf(velocity.y) > 0.3f)
 	{
@@ -315,20 +322,25 @@ void Player::Control()
 		}
 	}
 
-	//トリガーで弾の種類を変える
-	if (InputPad::OnButton(L_TRIGGER))
+	//クールダウンが終わっていたら弾を変更出来る
+	if (bullet_change_cd <= 0)
 	{
-		if (--UserData::bullet_type < 0)
+		//トリガーで弾の種類を変える
+		if (InputPad::OnPressed(L_TRIGGER))
 		{
-			UserData::bullet_type = BULLET_NUM - 1;
+			if (--UserData::bullet_type < 0)
+			{
+				UserData::bullet_type = BULLET_NUM - 1;
+			}
+			bullet_change_cd = PLATER_BULLET_CHANGE_CD;
 		}
-	}
-	//トリガーで弾の種類を変える
-	if (InputPad::OnButton(R_TRIGGER))
-	{
-		if (++UserData::bullet_type > BULLET_NUM - 1)
+		if (InputPad::OnPressed(R_TRIGGER))
 		{
-			UserData::bullet_type = 0;
+			if (++UserData::bullet_type > BULLET_NUM - 1)
+			{
+				UserData::bullet_type = 0;
+			}
+			bullet_change_cd = PLATER_BULLET_CHANGE_CD;
 		}
 	}
 

@@ -30,15 +30,22 @@ struct UIData
 class GameSceneUI
 {
 private:
-	int frame;			//フレーム計測
-	int max_attraction;	//吸い寄せバー表示用
-	int ui_font;		//フォントハンドル格納
+	int frame;				//フレーム計測
+	int max_attraction;		//吸い寄せバー表示用
+	int ui_font;			//フォントハンドル格納
+
+	int bullet_image;		//弾種類表示
+	int old_bullet_type;	//弾種類変更用
+	int bullet_change_timer;//弾変更アニメーション時間測定
+	float change_anim_move;	//アニメーションの移動量格納
 
 	//ポップアップ表示用
 	std::vector<UIData> ui_data;
 	std::vector<UIData> delete_ui_data;
 
+	//ボタン画像格納
 	std::vector<std::vector<int>> button_image;
+
 public:
 	//初期化
 	void Initialize();
@@ -49,4 +56,10 @@ public:
 
 	//文字生成
 	void SetUIData(Vector2D _location, string _text,int _font_size, int _text_color, float _move, int _life_span);
+
+	//弾種類表示
+	void CreateBulletTypeImage();
+
+	//弾情報描画
+	void DrawBullet(Vector2D _loc, int _type)const;
 };

@@ -25,13 +25,14 @@
 #define COIN_ATTRACTON_TIMER 600//コイン吸い寄せ時間
 
 //プレイヤーのパラメータ関連
-#define DEFAULT_HP 10			//プレイヤー初期HP
-#define DEFAULT_LIFE 0			//プレイヤー初期残機
-#define PLAYER_WIDTH 40			//プレイヤー幅
-#define PLAYER_HEIGHT 40		//プレイヤー高さ
-#define PLAYER_SPEED 4.f		//プレイヤー移動速度
-#define PLAYER_DAMAGE_CD 120	//プレイヤー被弾後無敵時間（フレーム単位）
-#define PLAYER_DAMAGE_STOP 30	//プレイヤー被弾後移動不能時間（フレーム単位）
+#define DEFAULT_HP 10				//プレイヤー初期HP
+#define DEFAULT_LIFE 0				//プレイヤー初期残機
+#define PLAYER_WIDTH 40				//プレイヤー幅
+#define PLAYER_HEIGHT 40			//プレイヤー高さ
+#define PLAYER_SPEED 4.f			//プレイヤー移動速度
+#define PLAYER_DAMAGE_CD 120		//プレイヤー被弾後無敵時間（フレーム単位）
+#define PLAYER_DAMAGE_STOP 30		//プレイヤー被弾後移動不能時間（フレーム単位）
+#define PLATER_BULLET_CHANGE_CD 30	//プレイヤー弾種類変更可能間隔
 
 //敵のパラメータ関連
 #define ENEMY1_HP 2				//敵１HP
