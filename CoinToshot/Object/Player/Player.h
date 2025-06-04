@@ -36,6 +36,7 @@ private:
 	int walk_se;				//ˆÚ“®SE
 	int cursor_se;				//Æ€SE
 	int not_shoot_se;			//”­Ë¸”sSE
+	int death_se;				//€–SSE
 public:
 
 public:

@@ -65,6 +65,7 @@ void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init
 	walk_se = rm->GetSounds("Resource/Sounds/Player/Walk.mp3");
 	cursor_se = rm->GetSounds("Resource/Sounds/cursor.mp3");
 	not_shoot_se = rm->GetSounds("Resource/Sounds/Player/CannotShoot.mp3");
+	death_se = rm->GetSounds("Resource/Sounds/explsion_big.mp3");
 
 	//âπó í≤êﬂ
 	SetVolumeSoundMem(7500, walk_se);

@@ -256,6 +256,9 @@ void ObjectManager::CreateEffect(int object_type, Vector2D init_location, bool _
 	case EffectList::elShine:
 		create_effect.push_back(EffectInitData{ new Shine(_color),init_location, _front_flg,_timer, _anim_span });
 		break;
+	case EffectList::elExplosion:
+		create_effect.push_back(EffectInitData{ new Explosion(),init_location, _front_flg,_timer, _anim_span });
+		break;
 	default:
 		break;
 	}

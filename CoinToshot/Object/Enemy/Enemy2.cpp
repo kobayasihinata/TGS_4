@@ -91,7 +91,8 @@ void Enemy2::Update()
 					20.f,
 					rand);
 			}
-
+			//エフェクト
+			manager->CreateEffect(elExplosion, this->location);
 			//SE再生
 			PlaySoundMem(death_se, DX_PLAYTYPE_BACK);
 
