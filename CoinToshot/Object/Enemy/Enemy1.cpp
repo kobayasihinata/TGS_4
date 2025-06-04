@@ -41,7 +41,7 @@ Enemy1::~Enemy1()
 void Enemy1::Initialize(ObjectManager* _manager, int _object_type, Vector2D init_location, Vector2D init_size, float init_radius)
 {
 	__super::Initialize(_manager, _object_type, init_location, init_size, init_radius);
-	anim_span = 2;
+	anim_span = rare_flg ? 1 : 2;
 }
 
 void Enemy1::Finalize()

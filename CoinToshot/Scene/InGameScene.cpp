@@ -54,7 +54,7 @@ void InGameScene::Initialize()
 	ResourceManager* rm = ResourceManager::GetInstance();
 	//BGM“Ç‚Ýž‚Ý
 	gamemain_bgm = rm->GetSounds("Resource/Sounds/BGM/Rail_train (2).mp3");
-	PlaySoundMem(gamemain_bgm, DX_PLAYTYPE_LOOP, false);
+	PlaySoundMem(gamemain_bgm, DX_PLAYTYPE_LOOP, true);
 }
 
 void InGameScene::Finalize()

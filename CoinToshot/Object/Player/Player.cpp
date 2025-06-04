@@ -419,7 +419,7 @@ void Player::ShotBullet()
 
 void Player::DrawBulletOrbit()const
 {
-	DrawRotaGraph(local_location.x+45*sinf(shot_rad + 1.6f), local_location.y-45*cosf(shot_rad + 1.6f), 1.0f, shot_rad + 1.5f, arrow_image, TRUE);
+	DrawRotaGraph(local_location.x+40*sinf(shot_rad + 1.5f), local_location.y-40*cosf(shot_rad + 1.5f), 1.0f, shot_rad + 1.5f, arrow_image, TRUE);
 }
 
 void Player::CreateArrowImage()const
@@ -442,5 +442,6 @@ void Player::CreateArrowImage()const
 	}
 	//•¶Žš“§‰ßƒŠƒZƒbƒg
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+	DrawBox(0, 0, 100, 100, 0xffffff, false);
 	SetDrawScreen(DX_SCREEN_BACK);
 }

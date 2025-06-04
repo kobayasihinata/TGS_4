@@ -12,9 +12,9 @@ Coin::Coin(InGameScene* _ingame, Vector2D _init_velocity)
 	add_num = 1;
 	check_flg = false;
 
-	color_r = GetRand(255);
-	color_g = GetRand(255);
-	color_b = GetRand(255);
+	color_r = 255;
+	color_g = 255;
+	color_b = 0;
 	//SE“Ç‚Ýž‚Ý
 	ResourceManager* rm = ResourceManager::GetInstance();
 
@@ -51,7 +51,7 @@ void Coin::Update()
 	}
 	if (++frame % 30 == 0)
 	{
-		manager->CreateEffect(elShine, { location.x+GetRand((int)radius)-(radius/2),location.y + GetRand((int)radius) - (radius / 2) }, TRUE, GetColor(GetRand(255), GetRand(255), GetRand(255)));
+		manager->CreateEffect(elShine, { location.x+GetRand((int)radius)-(radius/2),location.y + GetRand((int)radius) - (radius / 2) }, TRUE, 0xffff00);
 	}
 }
 
@@ -132,7 +132,7 @@ void Coin::Hit(ObjectBase* hit_object)
 	{
 		UserData::coin += add_num;
 		std::string s = "+" + std::to_string((int)add_num);
-		ingame->CreatePopUp(this->location, s);
+		ingame->CreatePopUp(this->location, s,0xffff33);
 
 		manager->DeleteObject(this);
 		PlaySoundMem(get_se, DX_PLAYTYPE_BACK);

@@ -89,36 +89,12 @@ void Attack::Draw()const
 	//コイン仮(プレイヤー)
 	if (object->GetObjectType() == ePLAYER)
 	{
-		DrawCircleAA(radius, radius, radius, 20, 0xeeee00, true);
-		DrawCircleAA(radius - 1, radius - 1, radius / 1.5f, 20, 0x999900, true);
-		DrawCircleAA(radius, radius, radius / 1.5f, 20, 0xeecc00, true);
-		DrawBoxAA(radius - (radius / 6) + 1,
-			radius - (radius / 2) + 1,
-			radius + (radius / 6) + 1,
-			radius + (radius / 2) + 1,
-			0x999900, true);
-		DrawBoxAA(radius - (radius / 6),
-			radius - (radius / 2),
-			radius + (radius / 6),
-			radius + (radius / 2),
-			0xeeee00, true);
+		UserData::DrawCoin({ radius,radius }, radius);
 	}
 	//コイン仮(敵)
 	else
 	{
-		DrawCircleAA(radius, radius, radius, 20, 0xff0000, true);
-		DrawCircleAA(radius - 1, radius - 1, radius / 1.5f, 20, 0xaa0000, true);
-		DrawCircleAA(radius, radius, radius / 1.5f, 20, 0xff0000, true);
-		DrawBoxAA(radius - (radius / 6) + 1,
-			radius - (radius / 2) + 1,
-			radius + (radius / 6) + 1,
-			radius + (radius / 2) + 1,
-			0xaa0000, true);
-		DrawBoxAA(radius - (radius / 6),
-			radius - (radius / 2),
-			radius + (radius / 6),
-			radius + (radius / 2),
-			0xff0000, true);
+		UserData::DrawCoin({ radius,radius }, radius,255,0,0);
 	}
 	SetDrawScreen(DX_SCREEN_BACK);
 
