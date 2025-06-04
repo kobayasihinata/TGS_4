@@ -71,7 +71,7 @@ void UserData::DrawStringCenter(Vector2D _loc, const char* _text, int _color, in
 	}
 }
 
-void UserData::DrawCoin(Vector2D _loc, float _radius,int _r, int _g, int _b, int _a)
+void UserData::DrawCoin(Vector2D _loc, float _radius,int _r, int _g, int _b)
 {
 	//F‚Ì•ªŠ„
 	
@@ -79,10 +79,6 @@ void UserData::DrawCoin(Vector2D _loc, float _radius,int _r, int _g, int _b, int
 	int shadow_color = GetColor(_r > 80 ? _r - 80 : 0, _g > 80 ? _g - 80 : 0, _b);
 	int sub_color = GetColor(_r, _g > 32 ? _g - 32 : 0, _b);
 
-	if (_a <= 255)
-	{
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, _a);
-	}
 	DrawCircleAA(_loc.x, _loc.y, _radius, 20, main_color, true);
 	DrawCircleAA(_loc.x - 1, _loc.y - 1, _radius / 1.5f, 20, shadow_color, true);
 	DrawCircleAA(_loc.x, _loc.y, _radius / 1.5f, 20, sub_color, true);
@@ -97,10 +93,6 @@ void UserData::DrawCoin(Vector2D _loc, float _radius,int _r, int _g, int _b, int
 		_loc.y + (_radius / 2),
 		main_color, true);
 
-	if (_a <= 255)
-	{
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
-	}
 }
 
 void UserData::DrawVariable()

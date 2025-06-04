@@ -109,7 +109,7 @@ private:
 	/// <summary>
 	/// ƒvƒŒƒCƒ„[‚Ì‹O“¹–îˆó•`‰æ
 	/// </summary>
-	void CreateArrowImage();
+	void CreateArrowImage()const;
 };
 
 

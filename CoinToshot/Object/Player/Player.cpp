@@ -41,6 +41,8 @@ void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init
 	//HP同期
 	max_hp = hp = UserData::player_hp;
 
+	//画像生成
+	CreateArrowImage();
 	//画像読込
 	ResourceManager* rm = ResourceManager::GetInstance();
 	std::vector<int>tmp;
@@ -70,6 +72,7 @@ void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init
 	//音量調節
 	SetVolumeSoundMem(7500, walk_se);
 	//		PlaySoundMem(cursor_se, DX_PLAYTYPE_BACK);
+
 }
 
 /// <summary>
@@ -143,6 +146,7 @@ void Player::Update()
 
 	//アニメーション処理
 	Animation();
+	CreateArrowImage();
 
 	//アニメーション位置に応じて足音を鳴らす
 	if (image_line == 1 &&
@@ -174,6 +178,10 @@ void Player::Update()
 				20.f,
 				rand);
 			drop_coin_count++;
+			//死亡SE再生
+			PlaySoundMem(death_se, DX_PLAYTYPE_BACK);
+			//爆発エフェクト
+			manager->CreateEffect(elExplosion, { location.x + (GetRand(100) - 50),location.y + (GetRand(100) - 50) });
 		}
 
 		//死亡演出時間を過ぎたら自身を削除
@@ -190,6 +198,8 @@ void Player::Update()
 					20.f,
 					rand);
 			}
+			//死亡SE再生
+			PlaySoundMem(death_se, DX_PLAYTYPE_BACK);
 		}
 		if (death_timer <= 0)
 		{
@@ -221,16 +231,13 @@ void Player::Draw()const
 		}
 	}
 
+	//弾の軌道描画
+	DrawBulletOrbit();
+
 	if ((!damage_flg || (damage_flg && frame % 3 == 0)) && (!death_flg || death_timer > DEFAULT_DEATH_TIMER * 2))
 	{
 		__super::Draw();
 	}
-	//DebugInfomation::Add("hp", UserData::player_hp);
-	DebugInfomation::Add("rad", shot_rad);
-
-	//弾の軌道描画
-	DrawBulletOrbit();
-
 
 	//フォント大きさ元通り
 	SetFontSize(old);
@@ -257,7 +264,6 @@ void Player::Damage(float _value, Vector2D _attack_loc, int _knock_back)
 
 void Player::Death()
 {
-
 	//ゲームオーバーに設定
 	UserData::is_clear = false;
 	//リザルト遷移
@@ -305,7 +311,7 @@ void Player::Control()
 		//前の傾きを保存する
 		old_shot_rad = shot_rad;
 		//右スティックの傾きで発射角度を決める (-1.5f = ずれ調整)
-		shot_rad = atan2f(InputPad::TipRStick(STICKL_X), InputPad::TipRStick(STICKL_Y)) - 1.5f;
+		shot_rad = atan2f(InputPad::TipRStick(STICKL_X), InputPad::TipRStick(STICKL_Y)) - 1.55f;
 		//角度が一定以上変更されていたらSEを鳴らす
 		if (fabsf(old_shot_rad - shot_rad) > 0.01f && frame % 4==0)
 		{
@@ -413,16 +419,28 @@ void Player::ShotBullet()
 
 void Player::DrawBulletOrbit()const
 {
-	//発射角度描画
-	DrawLineAA(local_location.x,
-		local_location.y,
-		local_location.x + (cosf(shot_rad) * 60),
-		local_location.y + (sinf(shot_rad) * 60),
-		0xff0000,
-		TRUE);
+	DrawRotaGraph(local_location.x+45*sinf(shot_rad + 1.6f), local_location.y-45*cosf(shot_rad + 1.6f), 1.0f, shot_rad + 1.5f, arrow_image, TRUE);
 }
 
-void Player::CreateArrowImage()
+void Player::CreateArrowImage()const
 {
-
+	SetDrawScreen(arrow_image);
+	ClearDrawScreen();
+	for (int i = 1; i < 5; i++)
+	{
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (i * 200) - ((frame % 20)*10));
+		DrawQuadrangleAA(50, (i * 20) - (frame % 20),
+			25, 25 + (i * 20) - (frame % 20),
+			30, 30 + (i * 20) - (frame % 20),
+			50, 10 + (i * 20) - (frame % 20),
+			0xff0000, TRUE);
+		DrawQuadrangleAA(50, (i * 20) - (frame % 20),
+			75, 25 + (i * 20) - (frame % 20),
+			70, 30 + (i * 20) - (frame % 20),
+			50, 10 + (i * 20) - (frame % 20),
+			0xff0000, TRUE);
+	}
+	//文字透過リセット
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+	SetDrawScreen(DX_SCREEN_BACK);
 }

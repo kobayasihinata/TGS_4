@@ -84,8 +84,17 @@ void GameSceneUI::Draw()const
 	//カメラ座標取得
 	Camera* camera = Camera::Get();
 
+	//プレイヤーが弾種類UIと被ったら透過する
+	if (camera->player_location.x - camera->GetCameraLocation().x > SCREEN_WIDTH - 350 &&
+		camera->player_location.y - camera->GetCameraLocation().y < 100)
+	{
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
+	}
 	//プレイヤー情報描画
 	DrawPlayerUI();
+
+	//文字透過リセット
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
 	//コイン吸い寄せ処理の描画
 	if (UserData::attraction_timer > 0)

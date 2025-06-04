@@ -55,7 +55,7 @@ public:
 	static void DrawStringCenter(Vector2D _loc, const char* _text,int _color, int _font = 0);
 
 	//ƒRƒCƒ“•`‰æ
-	static void DrawCoin(Vector2D _loc, float _radius, int _r = 255, int _g = 255, int _b = 0, int _a = 255);
+	static void DrawCoin(Vector2D _loc, float _radius, int _r = 255, int _g = 255, int _b = 0);
 
 	//‰Â•Ï‚Ì•Ï”•`‰æ
 	static void DrawVariable();
