@@ -5,16 +5,20 @@
 #include "../../Scene/Camera/Camera.h"
 #include "../Base/BulletData.h"
 
+class InGameScene;
+
 class Player :
 	public ActorBase
 {
 private:
+	InGameScene* ingame;		//現在のシーンのポインタを保存
 
 	InputKey* k_input;			//入力機能の取得(キーボード)
 	class Camera* camera;		//カメラポインタ格納(プレイヤーの情報を渡すためだけに取得)
 
 	//弾変更
 	int bullet_change_cd;		//弾種類変更クールダウン測定
+	int arrow_image;			//矢印画像作成
 
 	//コイン発射関連
 	float shot_rad;				//発射角度
@@ -35,7 +39,7 @@ private:
 public:
 
 public:
-	Player() = default;					//コンストラクタ
+	Player(InGameScene* _ingame);					//コンストラクタ
 	~Player() = default;					//デフォルトのデストラクタを使用
 
 public:
@@ -100,6 +104,11 @@ private:
 	/// プレイヤーの弾の軌道を描画
 	/// </summary>
 	void DrawBulletOrbit()const;
+
+	/// <summary>
+	/// プレイヤーの軌道矢印描画
+	/// </summary>
+	void CreateArrowImage();
 };
 
 

@@ -143,7 +143,7 @@ eSceneType InGameScene::Update(float _delta)
 
 		if (InputPad::OnButton(XINPUT_BUTTON_A))
 		{
-			objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{40,40},eMAGNET });
+			objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{40,40},eHEAL });
 		}
 #endif // _DEBUG
 
@@ -263,9 +263,9 @@ void InGameScene::SpawnEnemy()
 	}
 }
 
-void InGameScene::CreatePopUp(Vector2D _location, string _text, int _font_size, int _text_color, float _move, int _life_span)
+void InGameScene::CreatePopUp(Vector2D _location, string _text, int _text_color, float _move, int _life_span, int _font_size)
 {
-	ui->SetUIData(_location, _text, _font_size,_text_color, _move, _life_span);
+	ui->SetUIData(_location, _text, _text_color, _move, _life_span, _font_size);
 }
 
 Vector2D InGameScene::GetRandLoc()

@@ -41,8 +41,11 @@ void SceneManager::Initialize()
 	ChangeScene(eSceneType::eTitle);
 
 	// ウィンドウズPCに一時的にフォントデータを読み込む(システム終了まで)
-	// NOTE: .ttf→フォントデータ（トゥルータイプフォントの略）
-	AddFontResourceExA("Resource/Font/GenJyuuGothic-Medium.ttf", FR_PRIVATE, NULL);
+	if (AddFontResourceExA("Resource/Font/YDWbananaslipplus.otf", FR_PRIVATE, NULL)==0)
+	{
+		throw("フォントの読み込みに失敗しました");
+	}
+	ChangeFont("YDW バナナスリップplus plus");
 }
 
 /// <summary>

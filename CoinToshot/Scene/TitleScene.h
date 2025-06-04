@@ -22,8 +22,6 @@ class TitleScene : public SceneBase
 private:
 	int current_num;	//選択されている項目
 
-	int title_font;			//タイトルのハンドル
-	int menu_font;			//メニュー項目のハンドル
 	int bg_image;		//背景画像格納
 
 	int cursor_se;				//カーソルSE

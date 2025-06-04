@@ -183,7 +183,7 @@ void Enemy4::Hit(ObjectBase* hit_object)
 		steal_flg = true;
 
 		std::string s = "-" + std::to_string(coin_num);
-		ingame->CreatePopUp(this->location, s, GetRand(100), 0xff0000, -1, 60);
+		ingame->CreatePopUp(this->location, s, 0xff0000, -1);
 	}
 }
 

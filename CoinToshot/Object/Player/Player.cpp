@@ -6,9 +6,15 @@
 #include "../../Utility/common.h"
 #include "PlayerBullet.h"
 #include "../Base/EffectList.h"
+#include "../../Scene/InGameScene.h"
 
 #include <cmath>
 #define _USE_MATH_DEFINES
+
+Player::Player(InGameScene* _ingame)
+{
+	ingame = _ingame;
+}
 
 void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init_location, Vector2D init_size, float init_radius)
 {
@@ -18,7 +24,7 @@ void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init
 	k_input = InputKey::Get();
 
 	bullet_change_cd = 0;
-
+	arrow_image = MakeScreen(100, 100, TRUE);
 	shot_rad = 0.f;	
 	old_shot_rad = 0.f;
 
@@ -314,6 +320,8 @@ void Player::Control()
 			ShotBullet();
 			UserData::coin -= pBullet[UserData::bullet_type].cost;
 			PlaySoundMem(shot_se, DX_PLAYTYPE_BACK);
+			std::string s = "-" + std::to_string(pBullet[UserData::bullet_type].cost);
+			ingame->CreatePopUp(this->location, s, 0xff0000, -1);
 		}
 		//”­ŽËŽ¸”sSE
 		else
@@ -411,4 +419,9 @@ void Player::DrawBulletOrbit()const
 		local_location.y + (sinf(shot_rad) * 60),
 		0xff0000,
 		TRUE);
+}
+
+void Player::CreateArrowImage()
+{
+
 }

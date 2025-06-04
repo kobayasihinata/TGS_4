@@ -10,9 +10,6 @@
 TitleScene::TitleScene()
 {
 	current_num = 0;
-
-	menu_font = CreateFontToHandle("源柔ゴシック", 40, 3, DX_FONTTYPE_ANTIALIASING);
-	title_font = CreateFontToHandle("源柔ゴシック", 80, 3, DX_FONTTYPE_ANTIALIASING);
 	bg_image = CreateBackGround();
 
 	//SE読み込み
@@ -23,9 +20,6 @@ TitleScene::TitleScene()
 
 TitleScene::~TitleScene()
 {
-	// フォントハンドルを削除
-	DeleteFontToHandle(menu_font);
-	DeleteFontToHandle(title_font);
 
 }
 
@@ -98,14 +92,17 @@ eSceneType TitleScene::Update(float _delta)
 
 void TitleScene::Draw()const
 {
+	int old = GetFontSize();
+
 	//背景画像描画
 	DrawGraph(0, 0, bg_image, TRUE);
 
+	SetFontSize(96);
 	// フォントを利用して文字を描画
-	UserData::DrawStringCenter({ SCREEN_WIDTH / 2 +1,51 }, "CoinToshot", 0x000000, title_font);
-	UserData::DrawStringCenter({ SCREEN_WIDTH / 2,50 }, "CoinToshot", 0xffff00, title_font);
-	int old = GetFontSize();
+	UserData::DrawStringCenter({ SCREEN_WIDTH / 2 +1,51 }, "CoinToshot", 0x000000);
+	UserData::DrawStringCenter({ SCREEN_WIDTH / 2,50 }, "CoinToshot", 0xffff00);
 
+	int size = 48;
 	SetFontSize(32);
 	
 	for (int i = 0; i < ITEM_NUM; i++)
@@ -113,16 +110,16 @@ void TitleScene::Draw()const
 		//カーソルと項目の描画
 		if (current_num == i)
 		{
-			UserData::DrawCoin({ (float)SCREEN_WIDTH / 2 - 30, (float)SCREEN_HEIGHT / 2 + (i * 30) + 15 }, 15);
+			UserData::DrawCoin({ (float)SCREEN_WIDTH / 2 - 30, (float)SCREEN_HEIGHT / 2 + (i * size) + 15 }, 15);
 			//	DrawCircle(SCREEN_WIDTH / 2 - 30, SCREEN_HEIGHT / 2 + (i * 30)+15, 15, 0x00ff00, true);
 			//項目の描画
-			DrawFormatStringToHandle(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + (i * 30), 0x00ff00, menu_font, "%s", item_text[i]);
+			DrawFormatString(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + (i * size), 0x00ff00, "%s", item_text[i]);
 		}
 		//項目のみの描画
 		else
 		{
 			//項目の描画
-			DrawFormatStringToHandle(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + (i * 30), 0xffffff, menu_font, "%s", item_text[i]);
+			DrawFormatString(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + (i * size), 0xffffff, "%s", item_text[i]);
 		}
 	}
 

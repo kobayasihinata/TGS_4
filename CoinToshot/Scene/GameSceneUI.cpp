@@ -8,11 +8,11 @@
 void GameSceneUI::Initialize()
 {
 	frame = 0;
-	ui_font = CreateFontToHandle("源柔ゴシック", 30, 3, DX_FONTTYPE_ANTIALIASING);
 	bullet_image = MakeScreen(200, 150, TRUE);
 	old_bullet_type = UserData::bullet_type;
 	bullet_change_timer = 0;
 	change_anim_move = 200.f / PLATER_BULLET_CHANGE_CD;
+	player_ui_loc = { SCREEN_WIDTH - 350,0 };
 
 	//画像読込
 	ResourceManager* rm = ResourceManager::GetInstance();
@@ -85,11 +85,7 @@ void GameSceneUI::Draw()const
 	Camera* camera = Camera::Get();
 
 	//プレイヤー情報描画
-	DrawFormatString(100, 10, 0xffffff, "HP:%d COIN:%d TIME:%d", (int)(UserData::player_hp), UserData::coin, UserData::timer / 60);
-
-	UserData::DrawCoin({ (float)SCREEN_WIDTH - GetDrawFormatStringWidthToHandle(ui_font, "×%d", UserData::coin) - 30, 30
-		}, 25);
-	DrawFormatStringToHandle(SCREEN_WIDTH - GetDrawFormatStringWidthToHandle(ui_font,"×%d",UserData::coin)-10, 10, 0x000000, ui_font, "×%d", UserData::coin);
+	DrawPlayerUI();
 
 	//コイン吸い寄せ処理の描画
 	if (UserData::attraction_timer > 0)
@@ -125,10 +121,13 @@ void GameSceneUI::Draw()const
 	//弾の種類描画
 	DrawRotaGraph(SCREEN_WIDTH / 2, 75, 1.0f, 0, bullet_image, TRUE);
 
+	SetFontSize(24);
 
 	//ui_dataの描画
 	for (const auto ui_data : ui_data)
 	{
+		//フォントサイズ変更
+		//SetFontSize(ui_data.font_size);
 		//文字透過設定
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 - (255 / ui_data.life_span) * ui_data.life_count);
 		DrawFormatStringF(ui_data.location.x - camera->GetCameraLocation().x + 1.f,
@@ -151,7 +150,7 @@ void GameSceneUI::Draw()const
 	SetFontSize(old);
 }
 
-void GameSceneUI::SetUIData(Vector2D _location, string _text, int _font_size, int _text_color, float _move, int _life_span)
+void GameSceneUI::SetUIData(Vector2D _location, string _text, int _text_color, float _move, int _life_span, int _font_size)
 {
 	UIData data;
 	data.font_size = _font_size;
@@ -165,7 +164,7 @@ void GameSceneUI::SetUIData(Vector2D _location, string _text, int _font_size, in
 	ui_data.push_back(data);
 }
 
-void GameSceneUI::CreateBulletTypeImage()
+void GameSceneUI::CreateBulletTypeImage()const
 {
 	SetDrawScreen(bullet_image);
 	ClearDrawScreen();
@@ -189,8 +188,19 @@ void GameSceneUI::CreateBulletTypeImage()
 	//弾変更が有れば変更前と変更後の箱を描画
 	if (old_bullet_type != UserData::bullet_type)
 	{
-		DrawBullet({ change_anim_move * bullet_change_timer-200, 0 }, UserData::bullet_type);
-		DrawBullet({ change_anim_move * bullet_change_timer, 0 }, old_bullet_type);
+		//変更前と変更後を比べて、右にアニメーションするか左にアニメーションするか判断
+		if (CheckMoveDirection(UserData::bullet_type, old_bullet_type))
+		{
+			//右移動
+			DrawBullet({ change_anim_move * bullet_change_timer - 200, 0 }, UserData::bullet_type);
+			DrawBullet({ change_anim_move * bullet_change_timer, 0 }, old_bullet_type);
+		}
+		else
+		{
+			//左移動
+			DrawBullet({ change_anim_move * -bullet_change_timer, 0 }, old_bullet_type);
+			DrawBullet({ (change_anim_move * -bullet_change_timer) + 200, 0 }, UserData::bullet_type);
+		} 
 	}
 	//変更が無いなら通常の描画
 	else
@@ -207,16 +217,52 @@ void GameSceneUI::CreateBulletTypeImage()
 void GameSceneUI::DrawBullet(Vector2D _loc, int _type)const
 {
 	//撃てない弾のUIは薄暗くする
-	int draw_color = pBullet[UserData::bullet_type].cost <= UserData::coin ? 0xffffff: 0xaaaaaa;
+	int draw_color = pBullet[UserData::bullet_type].cost <= UserData::coin ? 0xffffcc : 0xaaaa55;
 
 	//弾の種類描画
-	DrawBox(_loc.x, _loc.y, _loc.x + 200, _loc.y + 100, 0x000000, true);
+	DrawBox(_loc.x, _loc.y, _loc.x + 200, _loc.y + 100, 0x777722, true);
 	DrawBox(_loc.x, _loc.y, _loc.x + 200, _loc.y + 100, draw_color, false);
 
-	SetFontSize(32);
-	DrawFormatString(_loc.x + 100 - GetDrawFormatStringWidth(pBullet[_type].name) / 2, _loc.y + 20, draw_color, "%s", pBullet[_type].name);
+	SetFontSize(60);
+	DrawFormatString(_loc.x + 100 - GetDrawFormatStringWidth(pBullet[_type].name) / 2, _loc.y, draw_color, "%s", pBullet[_type].name);
 
-	SetFontSize(16);
-	DrawFormatString(_loc.x + 10, _loc.y + 80, draw_color, "消費:%d枚", pBullet[_type].cost);
-	DrawFormatString(_loc.x + 100, _loc.y + 80, draw_color, "敵貫通:%d体", pBullet[_type].h_count);
+	SetFontSize(20);
+	UserData::DrawCoin({ _loc.x + 20, _loc.y + 80 }, 15);
+	DrawFormatString(_loc.x + 35, _loc.y + 70, draw_color, " - %d", pBullet[_type].cost);
+	DrawFormatString(_loc.x + 90, _loc.y + 70, draw_color, "power:%d", (int)pBullet[_type].damage);
+}
+
+void GameSceneUI::DrawPlayerUI()const
+{
+	int width = GetDrawFormatStringWidth("HP:%d %d %d", (int)(UserData::player_hp), (int)(UserData::timer / 60), UserData::coin);
+	DrawQuadrangle(player_ui_loc.x - width+170, player_ui_loc.y,
+		player_ui_loc.x + 420, player_ui_loc.y,
+		player_ui_loc.x + 370, player_ui_loc.y + 65,
+		player_ui_loc.x - width +190, player_ui_loc.y + 65,
+		0x333300, TRUE);
+	DrawQuadrangle(player_ui_loc.x - width +180, player_ui_loc.y, 
+		player_ui_loc.x + 400, player_ui_loc.y,
+		player_ui_loc.x + 350, player_ui_loc.y + 70,
+		player_ui_loc.x - width +200, player_ui_loc.y + 70,
+		0x666600, TRUE);
+	DrawFormatString(player_ui_loc.x - width +200, player_ui_loc.y+15, 0xffffff, "HP:%d", (int)(UserData::player_hp));
+	DrawFormatString(player_ui_loc.x - GetDrawFormatStringWidth("TIME:%d %d", (int)(UserData::timer/60), UserData::coin)+280, player_ui_loc.y+15, 0xffffff, "TIME:%d", (int)(UserData::timer/60));
+	UserData::DrawCoin({ player_ui_loc.x - GetDrawFormatStringWidth("×%d", UserData::coin) + 320, player_ui_loc.y + 30 }, 20);
+	DrawFormatString(player_ui_loc.x - GetDrawFormatStringWidth("×%d", UserData::coin) + 340, player_ui_loc.y + 15, 0xffffff, "×%d", UserData::coin);
+
+
+}
+
+bool GameSceneUI::CheckMoveDirection(int _now, int _old)const
+{
+	//右端から左端へ移動する時の判断
+	if (_now == 0 && _old == BULLET_NUM - 1)return false;
+	//左端から右端へ移動する時の判断
+	if (_now == BULLET_NUM - 1 && _old == 0)return true;
+	//現在の項目が前の項目より小さいなら右
+	if (_now < _old)return true;
+	//現在の項目が前の項目より大きいなら左
+	if (_now > _old) return false;
+	//どれでもないなら
+	return -1;
 }

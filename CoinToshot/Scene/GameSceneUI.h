@@ -32,12 +32,13 @@ class GameSceneUI
 private:
 	int frame;				//フレーム計測
 	int max_attraction;		//吸い寄せバー表示用
-	int ui_font;			//フォントハンドル格納
 
 	int bullet_image;		//弾種類表示
 	int old_bullet_type;	//弾種類変更用
 	int bullet_change_timer;//弾変更アニメーション時間測定
 	float change_anim_move;	//アニメーションの移動量格納
+
+	Vector2D player_ui_loc;	//プレイヤー情報位置
 
 	//ポップアップ表示用
 	std::vector<UIData> ui_data;
@@ -55,11 +56,17 @@ public:
 	void Draw()const;
 
 	//文字生成
-	void SetUIData(Vector2D _location, string _text,int _font_size, int _text_color, float _move, int _life_span);
+	void SetUIData(Vector2D _location, string _text, int _text_color, float _move, int _life_span, int _font_size);
 
 	//弾種類表示
-	void CreateBulletTypeImage();
+	void CreateBulletTypeImage()const;
 
 	//弾情報描画
 	void DrawBullet(Vector2D _loc, int _type)const;
+
+	//プレイヤー情報描画
+	void DrawPlayerUI()const;
+
+	//弾種類の移動が右か左か判断 true=右
+	bool CheckMoveDirection(int _now, int _old)const;
 };

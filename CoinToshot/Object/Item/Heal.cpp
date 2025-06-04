@@ -67,7 +67,7 @@ void Heal::Hit(ObjectBase* hit_object)
 		manager->DeleteObject(this);
 
 		std::string s = "HP + " + std::to_string((int)heal_num);
-		ingame->CreatePopUp(this->location, s, heal_num*2, 0x00ff22, 1, 60);
+		ingame->CreatePopUp(this->location, s,0x00ff22);
 		PlaySoundMem(heal_se,DX_PLAYTYPE_BACK);
 	}
 }

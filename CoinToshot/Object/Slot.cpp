@@ -71,13 +71,13 @@ void Slot::Update()
 			{
 				UserData::coin -= 1;
 				//コイン消費ポップアップ
-				ingame->CreatePopUp(this->location, "-1", GetRand(100), 0xff0000, -1, 60);
+				ingame->CreatePopUp(this->location, "-1", 0xff0000, -1);
 			}
 			else
 			{
 				UserData::coin -= 3;
 				//コイン消費ポップアップ
-				ingame->CreatePopUp(this->location, "-3", GetRand(100), 0xff0000, -1, 60);
+				ingame->CreatePopUp(this->location, "-3", 0xff0000, -1);
 			}
 
 			bet_once = true;

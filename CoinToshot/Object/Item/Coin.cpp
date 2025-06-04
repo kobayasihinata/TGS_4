@@ -132,7 +132,7 @@ void Coin::Hit(ObjectBase* hit_object)
 	{
 		UserData::coin += add_num;
 		std::string s = "+" + std::to_string((int)add_num);
-		ingame->CreatePopUp(this->location, s, GetRand(100), 0xffff00, 1, 60);
+		ingame->CreatePopUp(this->location, s);
 
 		manager->DeleteObject(this);
 		PlaySoundMem(get_se, DX_PLAYTYPE_BACK);
