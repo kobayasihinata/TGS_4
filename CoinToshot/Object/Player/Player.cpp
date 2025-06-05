@@ -419,7 +419,7 @@ void Player::ShotBullet()
 
 void Player::DrawBulletOrbit()const
 {
-	DrawRotaGraph(local_location.x+40*sinf(shot_rad + 1.5f), local_location.y-40*cosf(shot_rad + 1.5f), 1.0f, shot_rad + 1.5f, arrow_image, TRUE);
+	DrawRotaGraph(local_location.x+40*sinf(shot_rad+1.5f), local_location.y-40*cosf(shot_rad+ 1.5f), 1.0f, shot_rad + 1.55f, arrow_image, TRUE);
 }
 
 void Player::CreateArrowImage()const

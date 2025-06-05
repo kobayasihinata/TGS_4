@@ -128,6 +128,17 @@ public:
 		}
 
 	}
+
+	void Move()override
+	{
+		//減速の実行
+		velocity.x -= velocity.x / 10;
+		velocity.y -= velocity.y / 10;
+		//移動前の座標格納
+		old_location = location;
+		//移動の実行
+		location += velocity;
+	}
 	//プレイヤーに向かって移動する
 	void MovetoPlayer()
 	{

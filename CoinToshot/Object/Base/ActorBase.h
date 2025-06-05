@@ -149,7 +149,7 @@ public:
 	}
 
 	//ˆÚ“®ˆ—
-	void Move()
+	virtual void Move()
 	{
 		//Œ¸‘¬‚ÌÀs
 		velocity.x -= velocity.x / 10;

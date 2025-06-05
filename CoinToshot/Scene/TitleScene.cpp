@@ -5,10 +5,15 @@
 #include "../Utility/common.h"
 #include "../Utility/UserData.h"
 #include "../Utility/ResourceManager.h"
+#include "../Utility/DebugInformation.h"
+
 #include <vector>
 
 TitleScene::TitleScene()
 {
+	start_anim_flg = true;
+	start_anim_timer = 0;
+
 	current_num = 0;
 	bg_image = CreateBackGround();
 
@@ -31,44 +36,59 @@ void TitleScene::Initialize()
 
 eSceneType TitleScene::Update(float _delta)
 {
-	//下入力で項目下移動
-	if (InputPad::OnButton(XINPUT_BUTTON_DPAD_DOWN) || InputPad::OnButton(L_STICK_DOWN))
+	
+	//アニメーション中なら操作不可
+	if (!start_anim_flg)
 	{
-		if (++current_num >= ITEM_NUM)
+		//下入力で項目下移動
+		if (InputPad::OnButton(XINPUT_BUTTON_DPAD_DOWN) || InputPad::OnButton(L_STICK_DOWN))
 		{
-			current_num = 0;
+			if (++current_num >= ITEM_NUM)
+			{
+				current_num = 0;
+			}
+			PlaySoundMem(cursor_se, DX_PLAYTYPE_BACK);
 		}
-		PlaySoundMem(cursor_se, DX_PLAYTYPE_BACK);
-	}
-	//上入力で項目上移動
-	if (InputPad::OnButton(XINPUT_BUTTON_DPAD_UP) || InputPad::OnButton(L_STICK_UP))
-	{
-		if (--current_num < 0)
+		//上入力で項目上移動
+		if (InputPad::OnButton(XINPUT_BUTTON_DPAD_UP) || InputPad::OnButton(L_STICK_UP))
 		{
-			current_num = ITEM_NUM-1;
+			if (--current_num < 0)
+			{
+				current_num = ITEM_NUM - 1;
+			}
+			PlaySoundMem(cursor_se, DX_PLAYTYPE_BACK);
 		}
-		PlaySoundMem(cursor_se, DX_PLAYTYPE_BACK);
-	}
-	//Aボタンで決定
-	if (InputPad::OnButton(XINPUT_BUTTON_A))
-	{
-		PlaySoundMem(enter_se, DX_PLAYTYPE_BACK);
-		switch (current_num)
+		//Aボタンで決定
+		if (InputPad::OnButton(XINPUT_BUTTON_A))
 		{
-		case TitleItem::tGameMain:
-			return eSceneType::eInGame;
-			break;
-		case TitleItem::tRanking:
-			return eSceneType::eRanking;
-			break;
-		case TitleItem::tEnd:
-			return eSceneType::eEnd;
-			break;
-		default:
-			break;
-		}
+			PlaySoundMem(enter_se, DX_PLAYTYPE_BACK);
+			switch (current_num)
+			{
+			case TitleItem::tGameMain:
+				return eSceneType::eInGame;
+				break;
+			case TitleItem::tRanking:
+				return eSceneType::eRanking;
+				break;
+			case TitleItem::tEnd:
+				return eSceneType::eEnd;
+				break;
+			default:
+				break;
+			}
 
+		}
 	}
+	//アニメーション中の処理
+	else
+	{
+		//一定時間経ったらアニメーション終了
+		if (++start_anim_timer > START_ANIM || InputPad::OnButton(XINPUT_BUTTON_A))
+		{
+			start_anim_flg = false;
+		}
+	}
+	
 
 #ifdef _DEBUG
 
@@ -123,6 +143,12 @@ void TitleScene::Draw()const
 		}
 	}
 
+	if (start_anim_flg)
+	{
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 - ((255.f / START_ANIM) * start_anim_timer));
+		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, true);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+	}
 	SetFontSize(old);
 }
 

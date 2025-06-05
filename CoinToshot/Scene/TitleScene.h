@@ -3,6 +3,7 @@
 #include "SceneBase.h"
 
 #define ITEM_NUM 3	//タイトルの項目数
+#define START_ANIM 180  //アニメーション時間
 
 enum TitleItem
 {
@@ -20,9 +21,12 @@ static char item_text[ITEM_NUM][256] =
 class TitleScene : public SceneBase
 {
 private:
-	int current_num;	//選択されている項目
+	bool start_anim_flg;	//タイトル遷移時アニメーション
+	int start_anim_timer;	//タイトル遷移時アニメーション測定
 
-	int bg_image;		//背景画像格納
+	int current_num;		//選択されている項目
+
+	int bg_image;			//背景画像格納
 
 	int cursor_se;				//カーソルSE
 	int enter_se;				//決定SE

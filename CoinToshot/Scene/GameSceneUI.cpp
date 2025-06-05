@@ -256,10 +256,26 @@ void GameSceneUI::DrawPlayerUI()const
 		0x666600, TRUE);
 	DrawFormatString(player_ui_loc.x - width +200, player_ui_loc.y+15, 0xffffff, "HP:%d", (int)(UserData::player_hp));
 	DrawFormatString(player_ui_loc.x - GetDrawFormatStringWidth("TIME:%d %d", (int)(UserData::timer/60), UserData::coin)+280, player_ui_loc.y+15, 0xffffff, "TIME:%d", (int)(UserData::timer/60));
-	UserData::DrawCoin({ player_ui_loc.x - GetDrawFormatStringWidth("Å~%d", UserData::coin) + 320, player_ui_loc.y + 30 }, 20);
-	DrawFormatString(player_ui_loc.x - GetDrawFormatStringWidth("Å~%d", UserData::coin) + 340, player_ui_loc.y + 15, 0xffffff, "Å~%d", UserData::coin);
-
-
+	//êVãLò^Ç»ÇÁ
+	if (UserData::ranking_data[9].coin < UserData::coin)
+	{
+		UserData::DrawCoin({ player_ui_loc.x - GetDrawFormatStringWidth("Å~%d", UserData::coin) + 320, player_ui_loc.y + 30 }, 20);
+		if (frame % 30 > 15)
+		{
+			DrawFormatString(player_ui_loc.x - GetDrawFormatStringWidth("Å~%d", UserData::coin) + 340, player_ui_loc.y + 15, 0xff0000, "Å~%d", UserData::coin);
+			DrawString(player_ui_loc.x - GetDrawFormatStringWidth("Å~%d", UserData::coin) + 330, player_ui_loc.y + 40, "êVãLò^ÅI",0xff0000);
+		}
+		else
+		{
+			DrawFormatString(player_ui_loc.x - GetDrawFormatStringWidth("Å~%d", UserData::coin) + 340, player_ui_loc.y + 15, 0xffffff, "Å~%d", UserData::coin);
+			DrawString(player_ui_loc.x - GetDrawFormatStringWidth("Å~%d", UserData::coin) + 330, player_ui_loc.y + 40, "êVãLò^ÅI", 0xffffff);
+		}
+	}
+	else
+	{
+		UserData::DrawCoin({ player_ui_loc.x - GetDrawFormatStringWidth("Å~%d", UserData::coin) + 320, player_ui_loc.y + 30 }, 20);
+		DrawFormatString(player_ui_loc.x - GetDrawFormatStringWidth("Å~%d", UserData::coin) + 340, player_ui_loc.y + 15, 0xffffff, "Å~%d", UserData::coin);
+	}
 }
 
 bool GameSceneUI::CheckMoveDirection(int _now, int _old)const
