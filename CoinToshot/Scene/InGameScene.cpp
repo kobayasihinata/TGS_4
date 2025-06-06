@@ -26,10 +26,18 @@ void InGameScene::Initialize()
 	UserData::player_hp = DEFAULT_HP;
 	UserData::coin = 20;
 	UserData::is_gamestop = false;
-
+	UserData::attraction_flg = false;
+	UserData::attraction_timer = 0;
+	UserData::bullet_type = 0;
+	UserData::invincible = 0;
+	UserData::is_clear = false;
+	
 	change_result_delay = -1;//0になったらリザルト遷移
 	change_result = false;
 	pause_flg = false;
+	update_once = false;
+	start_anim_flg = true;
+	start_anim_timer = 0;
 
 	camera = Camera::Get();
 
@@ -45,7 +53,7 @@ void InGameScene::Initialize()
 	objects->CreateObject({ Vector2D{0,0},Vector2D{40,40},ePLAYER });
 
 	objects->CreateObject({ Vector2D{(float)GetRand(STAGE_SIZE * 2 - 400) - (STAGE_SIZE - 200),(float)GetRand(STAGE_SIZE * 2 - 400) - (STAGE_SIZE - 200)},Vector2D{100,100},eSLOT});
-	objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{40,40},eMAGNET/*, 20.f*/ });
+	objects->CreateObject({ Vector2D{ 100, 0 },Vector2D{40,40},eCOIN, 20.f });
 	//objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{ENEMY5_WIDTH,ENEMY5_HEIGHT},eENEMY5/*, 20.f*/ });
 
 	//背景の自動生成
@@ -54,7 +62,6 @@ void InGameScene::Initialize()
 	ResourceManager* rm = ResourceManager::GetInstance();
 	//BGM読み込み
 	gamemain_bgm = rm->GetSounds("Resource/Sounds/BGM/Rail_train (2).mp3");
-	PlaySoundMem(gamemain_bgm, DX_PLAYTYPE_LOOP, true);
 }
 
 void InGameScene::Finalize()
@@ -69,22 +76,20 @@ void InGameScene::Finalize()
 
 eSceneType InGameScene::Update(float _delta)
 {
-
+	change_scene = __super::Update(_delta);
 	//一時停止フラグ切り替え
 	if (InputPad::OnButton(XINPUT_BUTTON_START))
 	{
-
 		pause_flg = !pause_flg;
 	}
 
-	//一時停止フラグが立っていたら更新しない
-	if (!pause_flg)
+	//一時停止フラグか遷移時アニメーションフラグが立っていたら更新しない
+	if ((!pause_flg && !start_anim_flg)|| !update_once)
 	{
-		if (!CheckSoundMem(gamemain_bgm))
+		if (!CheckSoundMem(gamemain_bgm) && update_once)
 		{
 			PlaySoundMem(gamemain_bgm, DX_PLAYTYPE_LOOP, false);
 		}
-		change_scene = __super::Update(_delta);
 
 		//時間停止フラグが立っていたらオブジェクトの動きはすべて止める
 		if (!UserData::is_gamestop)
@@ -150,8 +155,23 @@ eSceneType InGameScene::Update(float _delta)
 	}
 	else
 	{
-		StopSoundMem(gamemain_bgm);
+		//BGMを止める
+		if (CheckSoundMem(gamemain_bgm))
+		{
+			StopSoundMem(gamemain_bgm);
+		}
+		//遷移アニメーションフラグが立っているなら時間測定
+		if (start_anim_flg)
+		{
+			if (++start_anim_timer > G_START_ANIM_TIME)
+			{
+				start_anim_flg = false;
+			}
+		}
 	}
+
+	//遷移時一回だけ更新
+	update_once = true;
 	return change_scene;
 }
 
@@ -216,6 +236,21 @@ void InGameScene::Draw()const
 		UserData::DrawStringCenter({ SCREEN_WIDTH / 2,SCREEN_HEIGHT / 2 }, "ポーズ中", 0xffffff);
 	}
 
+	//遷移時アニメーションフラグが立っていたら、アニメーション処理
+	if (start_anim_flg)
+	{
+		int coin_size = 900 - start_anim_timer * (900 / G_START_ANIM_TIME);
+		if (coin_size > 20)
+		{
+			UserData::DrawCoin({ SCREEN_WIDTH / 2 + 100, SCREEN_HEIGHT / 2 }, coin_size);
+		}
+		else
+		{
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, coin_size * 10);
+			UserData::DrawCoin({ SCREEN_WIDTH / 2 + 100, SCREEN_HEIGHT / 2 }, 80 - coin_size*2,255,255,255);
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+		}
+	}
 	SetFontSize(old);
 }
 

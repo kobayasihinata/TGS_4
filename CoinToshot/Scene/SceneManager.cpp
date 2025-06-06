@@ -46,6 +46,9 @@ void SceneManager::Initialize()
 		throw("フォントの読み込みに失敗しました");
 	}
 	ChangeFont("YDW バナナスリップplus plus");
+
+	//ボタン画像読み込み
+	UserData::LoadButtonImage();
 }
 
 /// <summary>
@@ -71,6 +74,9 @@ void SceneManager::Update()
 		//入力機能の更新
 		input->Update();
 		InputPad::UpdateKey();
+
+		//ボタンアニメーション更新
+		UserData::Update();
 
 		//デバッグ用変数の更新
 		if (input->GetMouseState(MOUSE_INPUT_RIGHT) == eInputState::Pressed)

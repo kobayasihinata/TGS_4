@@ -11,6 +11,9 @@
 #define DEFAULT_BLOCK 11	//基本となるブロックの位置
 #define ACCENT_DEFAULT 15	//アクセントになるブロックの位置
 
+//遷移時アニメーション
+#define G_START_ANIM_TIME 180
+
 class InGameScene : public SceneBase
 {
 private:
@@ -24,6 +27,10 @@ private:
 	bool change_result;			//リザルト遷移処理を開始するか
 
 	int bg_image;	//完成した背景画像を格納する
+
+	bool update_once;		//遷移時アニメーション用描画の為に一回だけ更新
+	bool start_anim_flg;	//遷移時アニメーション
+	int start_anim_timer;	//遷移時アニメーション測定
 
 	bool pause_flg;		//一時停止判断
 

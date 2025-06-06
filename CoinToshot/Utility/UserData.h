@@ -24,7 +24,9 @@ struct ObjectData
 };
 class UserData
 {
-
+private:
+	static int frame;			//フレーム測定
+	static int now_button;		//ボタンアニメーション用
 public:
 
 	static RankingData ranking_data[RANKING_DATA];	//ランキングデータ格納
@@ -39,17 +41,27 @@ public:
 	static int bullet_type;			//選択中の弾の種類
 	static bool attraction_flg;		//コイン吸い寄せ
 	static int attraction_timer;	//コイン吸い寄せ時間測定
+	static std::vector<std::vector<int>> button_image;//ボタン画像格納
 
 	//デバッグ用
 	static int variable;			//起動中に好きに変更できる値
 	static bool variable_change;	//値変更中か
 	static Vector2D variable_loc;	//調整表示用座標
 public:
+	//ボタン画像を読み込む
+	static void LoadButtonImage();
+
+	//ボタンアニメーション用更新
+	static void Update();
+
 	//ランキングデータを読み込む
 	static void ReadRankingData();
 
 	//データを書き込む
 	static void WriteRankingData();
+
+	//ボタン画像を描画
+	static void DrawButtonImage(Vector2D _loc, int _button,int _size);
 
 	//指定した位置を中心に文字を描画する
 	static void DrawStringCenter(Vector2D _loc, const char* _text,int _color, int _font = 0);

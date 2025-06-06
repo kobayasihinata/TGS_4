@@ -20,7 +20,7 @@ TitleScene::TitleScene()
 	//SE読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
 	cursor_se = rm->GetSounds("Resource/Sounds/cursor.mp3");
-	enter_se = rm->GetSounds("Resource/Sounds/enter.mp3");
+	enter_se = rm->GetSounds("Resource/Sounds/Coin/Get.mp3");
 }
 
 TitleScene::~TitleScene()
@@ -41,7 +41,7 @@ eSceneType TitleScene::Update(float _delta)
 	if (!start_anim_flg)
 	{
 		//下入力で項目下移動
-		if (InputPad::OnButton(XINPUT_BUTTON_DPAD_DOWN) || InputPad::OnButton(L_STICK_DOWN))
+		if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_DOWN) || InputPad::GetPressedButton(L_STICK_DOWN))
 		{
 			if (++current_num >= ITEM_NUM)
 			{
@@ -50,7 +50,7 @@ eSceneType TitleScene::Update(float _delta)
 			PlaySoundMem(cursor_se, DX_PLAYTYPE_BACK);
 		}
 		//上入力で項目上移動
-		if (InputPad::OnButton(XINPUT_BUTTON_DPAD_UP) || InputPad::OnButton(L_STICK_UP))
+		if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_UP) || InputPad::GetPressedButton(L_STICK_UP))
 		{
 			if (--current_num < 0)
 			{
@@ -117,23 +117,25 @@ void TitleScene::Draw()const
 	//背景画像描画
 	DrawGraph(0, 0, bg_image, TRUE);
 
+	//タイトル文字
+	SetFontSize(98);
+	UserData::DrawStringCenter({ SCREEN_WIDTH / 2,50 }, "CoinToshot", 0x000000);
 	SetFontSize(96);
-	// フォントを利用して文字を描画
-	UserData::DrawStringCenter({ SCREEN_WIDTH / 2 +1,51 }, "CoinToshot", 0x000000);
-	UserData::DrawStringCenter({ SCREEN_WIDTH / 2,50 }, "CoinToshot", 0xffff00);
+	UserData::DrawStringCenter({ SCREEN_WIDTH / 2,50 }, "CoinToshot", 0xdddd00);
 
 	int size = 48;
-	SetFontSize(32);
+	SetFontSize(size);
 	
 	for (int i = 0; i < ITEM_NUM; i++)
 	{
+		DrawFormatString(SCREEN_WIDTH / 2 + 2, SCREEN_HEIGHT / 2 + (i * size) + 2, 0xbbbb00, "%s", item_text[i]);
 		//カーソルと項目の描画
 		if (current_num == i)
 		{
-			UserData::DrawCoin({ (float)SCREEN_WIDTH / 2 - 30, (float)SCREEN_HEIGHT / 2 + (i * size) + 15 }, 15);
+			UserData::DrawCoin({ (float)SCREEN_WIDTH / 2 - 30, (float)SCREEN_HEIGHT / 2 + (i * size) + size/2 }, 20,227+abs(((int)frame%56 - 28)),200 );
 			//	DrawCircle(SCREEN_WIDTH / 2 - 30, SCREEN_HEIGHT / 2 + (i * 30)+15, 15, 0x00ff00, true);
 			//項目の描画
-			DrawFormatString(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + (i * size), 0x00ff00, "%s", item_text[i]);
+			DrawFormatString(SCREEN_WIDTH / 2-1, SCREEN_HEIGHT / 2 + (i * size)-1, 0x00ff00, "%s", item_text[i]);
 		}
 		//項目のみの描画
 		else
@@ -143,6 +145,17 @@ void TitleScene::Draw()const
 		}
 	}
 
+	SetFontSize(32);
+
+	//操作説明の描画
+	Vector2D _loc = { 500,600 };
+	UserData::DrawButtonImage(_loc, L_STICK_UP, 50);
+	UserData::DrawButtonImage({ _loc.x+40,_loc.y }, L_STICK_DOWN, 50);
+	UserData::DrawButtonImage({ _loc.x+80,_loc.y }, XINPUT_BUTTON_DPAD_UP, 50);
+	UserData::DrawButtonImage({ _loc.x+120,_loc.y }, XINPUT_BUTTON_DPAD_DOWN, 50);
+	DrawStringF(_loc.x + 140, _loc.y-20, "=カーソル移動", 0x000000);
+	UserData::DrawButtonImage({ _loc.x + 120,_loc.y + 60 }, XINPUT_BUTTON_A, 50);
+	DrawStringF(_loc.x + 140, _loc.y + 40, "=決定", 0x000000);
 	if (start_anim_flg)
 	{
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 - ((255.f / START_ANIM) * start_anim_timer));
@@ -169,17 +182,7 @@ int TitleScene::CreateBackGround()
 	//生成した背景を一つの画像として保存、それ以外の情報は削除
 	SetDrawScreen(ret);
 	ClearDrawScreen();
-
-	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0xbbbb00, true);
-	//for (int i = 0; i < 50; i++)
-	//{
-	//	DrawQuadrangle(GetRand(SCREEN_WIDTH * 2) - SCREEN_WIDTH / 2, GetRand(SCREEN_HEIGHT * 2) - SCREEN_HEIGHT / 2,
-	//				   GetRand(SCREEN_WIDTH * 2) - SCREEN_WIDTH / 2, GetRand(SCREEN_HEIGHT * 2) - SCREEN_HEIGHT / 2,
-	//				   GetRand(SCREEN_WIDTH * 2) - SCREEN_WIDTH / 2, GetRand(SCREEN_HEIGHT * 2) - SCREEN_HEIGHT / 2,
-	//				   GetRand(SCREEN_WIDTH * 2) - SCREEN_WIDTH / 2, GetRand(SCREEN_HEIGHT * 2) - SCREEN_HEIGHT / 2,
-	//				   GetColor(GetRand(55) + 200, GetRand(55) + 200, GetRand(100)),
-	//				   true);
-	//}
+	UserData::DrawCoin({ SCREEN_WIDTH / 2 + 100, SCREEN_HEIGHT / 2 }, 900);
 	SetDrawScreen(DX_SCREEN_BACK);
 
 	return ret;

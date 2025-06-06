@@ -4,7 +4,12 @@
 #include <string>
 #include "../Object/Base/ObjectList.h"
 #include "common.h"
+#include "../Utility/ResourceManager.h"
+//private
+int UserData::frame = 0;			//フレーム測定
+int UserData::now_button = 0;		//ボタンアニメーション用
 
+//public
 RankingData UserData::ranking_data[RANKING_DATA]{ 0 };	//ランキングデータ格納
 
 float UserData::player_hp = DEFAULT_HP;			
@@ -16,10 +21,38 @@ int UserData::invincible = 0;
 int UserData::bullet_type = 0;
 bool UserData::attraction_flg = false;
 int UserData::attraction_timer = 0;
+std::vector<std::vector<int>> UserData::button_image;
 
 int UserData::variable = 0;
 bool UserData::variable_change = 0;
 Vector2D UserData::variable_loc = 0;
+
+void UserData::LoadButtonImage()
+{
+	//画像読込
+	ResourceManager* rm = ResourceManager::GetInstance();
+	std::vector<int>tmp;
+	tmp = rm->GetImages("Resource/Images/UI/button1.png", 26, 7, 4, 40, 40);
+	button_image.push_back(tmp);
+	tmp = rm->GetImages("Resource/Images/UI/button2.png", 26, 7, 4, 40, 40);
+	button_image.push_back(tmp);
+
+	//各変数初期化
+	frame = 0;
+	now_button = 0;
+}
+
+void UserData::Update()
+{
+	if (++frame > 30)
+	{
+		if (++now_button >= button_image.size())
+		{
+			now_button = 0;
+		}
+		frame = 0;
+	}
+}
 
 void UserData::ReadRankingData()
 {
@@ -56,6 +89,11 @@ void UserData::WriteRankingData()
 			file << ranking_data[i].coin << "\n";
 		}
 	}
+}
+
+void UserData::DrawButtonImage(Vector2D _loc, int _button,int _size)
+{
+	DrawRotaGraphF(_loc.x, _loc.y, (float)_size/50, 0, button_image[now_button][_button], TRUE);
 }
 
 void UserData::DrawStringCenter(Vector2D _loc, const char* _text, int _color, int _font)
