@@ -1,5 +1,6 @@
 #pragma once
 #include "../Utility/UserData.h"
+#include "Tutorial.h"
 #include <vector>
 #include <string>
 using namespace std;
@@ -32,6 +33,8 @@ class GameSceneUI
 private:
 	int frame;				//フレーム計測
 	int max_attraction;		//吸い寄せバー表示用
+
+	class Tutorial* tutorial;	//チュートリアル格納
 
 	int bullet_image;		//弾種類表示
 	int old_bullet_type;	//弾種類変更用

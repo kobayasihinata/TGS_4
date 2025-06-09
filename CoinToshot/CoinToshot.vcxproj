@@ -165,6 +165,7 @@
     <ClCompile Include="Scene\Camera\Camera.cpp" />
     <ClCompile Include="Scene\TitleScene.cpp" />
     <ClCompile Include="Object\Base\ShapeCollider.cpp" />
+    <ClCompile Include="Scene\Tutorial.cpp" />
     <ClCompile Include="Utility\DebugInformation.cpp" />
     <ClCompile Include="Utility\FpsController.cpp" />
     <ClCompile Include="Utility\InputKey.cpp" />
@@ -210,6 +211,8 @@
     <ClInclude Include="Scene\Camera\Camera.h" />
     <ClInclude Include="Scene\TitleScene.h" />
     <ClInclude Include="Object\Base\ShapeCollider.h" />
+    <ClInclude Include="Scene\Tutorial.h" />
+    <ClInclude Include="Scene\TutoType.h" />
     <ClInclude Include="Utility\common.h" />
     <ClInclude Include="Utility\DebugInformation.h" />
     <ClInclude Include="Utility\FpsController.h" />

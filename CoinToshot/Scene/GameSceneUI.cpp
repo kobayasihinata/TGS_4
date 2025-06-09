@@ -7,6 +7,8 @@
 
 void GameSceneUI::Initialize()
 {
+	tutorial = Tutorial::Get();
+
 	frame = 0;
 	bullet_image = MakeScreen(200, 150, TRUE);
 	old_bullet_type = UserData::bullet_type;
@@ -76,6 +78,19 @@ void GameSceneUI::Update()
 
 	//削除したオブジェクトは消去
 	delete_ui_data.clear();
+
+	//入力機能の取得
+	InputKey* input = InputKey::Get();
+
+	//デバッグ用
+	if (input->GetKeyState(KEY_INPUT_4) == eInputState::Pressed)
+	{
+		tutorial->StartTutoRequest(TutoType::tAttack);
+	}
+	if (input->GetKeyState(KEY_INPUT_5) == eInputState::Pressed)
+	{
+		tutorial->StartTutoRequest(TutoType::tBulletChange);
+	}
 }
 
 void GameSceneUI::Draw()const

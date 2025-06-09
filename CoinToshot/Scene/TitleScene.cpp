@@ -101,11 +101,6 @@ eSceneType TitleScene::Update(float _delta)
 		return eSceneType::eInGame;
 	}
 
-	//2ƒL[‚Å”wŒi¶¬‚µ’¼‚µ
-	if (input->GetKeyState(KEY_INPUT_2) == eInputState::Pressed)
-	{
-		bg_image = CreateBackGround();
-	}
 #endif // _DEBUG
 	return __super::Update(_delta);
 }

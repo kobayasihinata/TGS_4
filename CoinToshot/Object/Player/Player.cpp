@@ -442,6 +442,6 @@ void Player::CreateArrowImage()const
 	}
 	//•¶Žš“§‰ßƒŠƒZƒbƒg
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
-	DrawBox(0, 0, 100, 100, 0xffffff, false);
+
 	SetDrawScreen(DX_SCREEN_BACK);
 }

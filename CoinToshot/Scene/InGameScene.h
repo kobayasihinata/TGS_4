@@ -2,6 +2,7 @@
 #include "SceneBase.h"
 #include "../Object/ObjectManager.h"
 #include "Camera/Camera.h"
+#include "Tutorial.h"
 #include "GameSceneUI.h"
 #include "../Object/Base/ShapeCollider.h"
 #include <vector>
@@ -18,6 +19,7 @@ class InGameScene : public SceneBase
 {
 private:
 	class Camera* camera;		//カメラ格納
+	class Tutorial* tutorial;	//チュートリアル格納
 	ObjectManager* objects;		//オブジェクト管理クラス
 	GameSceneUI* ui;			//ゲームメインUI
 	eSceneType change_scene;	//遷移先

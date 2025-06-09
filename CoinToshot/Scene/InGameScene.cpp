@@ -40,6 +40,8 @@ void InGameScene::Initialize()
 	start_anim_timer = 0;
 
 	camera = Camera::Get();
+	tutorial = Tutorial::Get();
+	tutorial->Initialize();
 
 	//オブジェクト管理クラス生成
 	objects = new ObjectManager();
@@ -77,6 +79,10 @@ void InGameScene::Finalize()
 eSceneType InGameScene::Update(float _delta)
 {
 	change_scene = __super::Update(_delta);
+
+	//チュートリアル更新
+	tutorial->Update();
+
 	//一時停止フラグ切り替え
 	if (InputPad::OnButton(XINPUT_BUTTON_START))
 	{
@@ -91,8 +97,8 @@ eSceneType InGameScene::Update(float _delta)
 			PlaySoundMem(gamemain_bgm, DX_PLAYTYPE_LOOP, false);
 		}
 
-		//時間停止フラグが立っていたらオブジェクトの動きはすべて止める
-		if (!UserData::is_gamestop)
+		//いずれかの時間停止フラグが立っていたらオブジェクトの動きはすべて止める
+		if (!UserData::is_gamestop && !tutorial->GetTutoStopFlg())
 		{
 			//制限時間減少
 			UserData::timer--;
@@ -114,9 +120,6 @@ eSceneType InGameScene::Update(float _delta)
 		}
 
 
-		//入力機能の取得
-		InputKey* input = InputKey::Get();
-
 		//時間切れで終了（勝利扱い）
 		if (UserData::timer <= 0 && !change_result)
 		{
@@ -134,16 +137,22 @@ eSceneType InGameScene::Update(float _delta)
 
 
 #ifdef _DEBUG
-		//1キーでタイトル画面に遷移する
+
+		//入力機能の取得
+		InputKey* input = InputKey::Get();
+
+		//デバッグ用
 		if (input->GetKeyState(KEY_INPUT_1) == eInputState::Pressed)
 		{
-			change_result_delay = 20;
+			tutorial->StartTutoRequest(TutoType::tRule);
 		}
-
-		//2キーでリザルト画面に遷移する
 		if (input->GetKeyState(KEY_INPUT_2) == eInputState::Pressed)
 		{
-			change_scene = eSceneType::eResult;
+			tutorial->StartTutoRequest(TutoType::tMove);
+		}
+		if (input->GetKeyState(KEY_INPUT_3) == eInputState::Pressed)
+		{
+			tutorial->StartTutoRequest(TutoType::tAim);
 		}
 
 		if (InputPad::OnButton(XINPUT_BUTTON_A))
@@ -184,24 +193,6 @@ void InGameScene::Draw()const
 	//背景画像描画
 	DrawGraphF(-STAGE_SIZE - camera->GetCameraLocation().x,- STAGE_SIZE -camera->GetCameraLocation().y, bg_image, true);
 
-	//グリッド表示(デバッグ用)
-	//for (int x = -STAGE_SIZE; x < STAGE_SIZE; x += 100)
-	//{
-	//	DrawLineAA(x - camera->GetCameraLocation().x,
-	//		-STAGE_SIZE - camera->GetCameraLocation().y,
-	//		x - camera->GetCameraLocation().x,
-	//		STAGE_SIZE - camera->GetCameraLocation().y,
-	//		0x00ff00);
-	//}
-	//for (int y = -STAGE_SIZE; y < STAGE_SIZE; y += 100)
-	//{
-	//	DrawLineAA(-STAGE_SIZE - camera->GetCameraLocation().x,
-	//		y - camera->GetCameraLocation().y,
-	//		STAGE_SIZE - camera->GetCameraLocation().x,
-	//		y - camera->GetCameraLocation().y,
-	//		0x00ff00);
-	//}
-
 	//オブジェクト描画
 	objects->Draw();
 
@@ -236,6 +227,11 @@ void InGameScene::Draw()const
 		UserData::DrawStringCenter({ SCREEN_WIDTH / 2,SCREEN_HEIGHT / 2 }, "ポーズ中", 0xffffff);
 	}
 
+	//チュートリアルフラグが立っていたら、チュートリアル描画
+	if (tutorial->GetTutorialFlg())
+	{
+		tutorial->Draw();
+	}
 	//遷移時アニメーションフラグが立っていたら、アニメーション処理
 	if (start_anim_flg)
 	{
