@@ -11,7 +11,6 @@ class Player :
 	public ActorBase
 {
 private:
-	InGameScene* ingame;		//現在のシーンのポインタを保存
 
 	InputKey* k_input;			//入力機能の取得(キーボード)
 	class Camera* camera;		//カメラポインタ格納(プレイヤーの情報を渡すためだけに取得)
@@ -38,12 +37,22 @@ private:
 	int not_shoot_se;			//発射失敗SE
 	int death_se;				//死亡SE
 public:
+	static InGameScene* ingame;		//現在のシーンのポインタを保存
 
-public:
-	Player(InGameScene* _ingame);					//コンストラクタ
-	~Player() = default;					//デフォルトのデストラクタを使用
+private:
+	//コンストラクタをprivateにすることで、
+//自クラスのメンバ関数でインスタンスを生成できないようにする
+	Player() = default;
 
+	//コピーガード
+	//クラス外でインスタンスを生成して渡すことができないようにする
+	Player(Player& v) = default;
+	Player& operator = (const Player& v) = delete;
+	~Player() = default;
 public:
+
+	//インスタンスを取得する処理
+	static Player* Get(InGameScene* _ingame);
 
 	/// <summary>
 	/// 初期化処理

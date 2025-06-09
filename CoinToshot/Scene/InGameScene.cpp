@@ -40,6 +40,7 @@ void InGameScene::Initialize()
 	start_anim_timer = 0;
 
 	camera = Camera::Get();
+	camera->player_location = 0;
 	tutorial = Tutorial::Get();
 	tutorial->Initialize();
 
@@ -226,7 +227,7 @@ void InGameScene::Draw()const
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 		UserData::DrawStringCenter({ SCREEN_WIDTH / 2,SCREEN_HEIGHT / 2 }, "ポーズ中", 0xffffff);
 	}
-
+	tutorial->Draw();
 	//チュートリアルフラグが立っていたら、チュートリアル描画
 	if (tutorial->GetTutorialFlg())
 	{

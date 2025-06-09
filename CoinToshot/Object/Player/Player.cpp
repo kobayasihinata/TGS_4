@@ -11,9 +11,14 @@
 #include <cmath>
 #define _USE_MATH_DEFINES
 
-Player::Player(InGameScene* _ingame)
+InGameScene* Player::ingame;		//現在のシーンのポインタを保存
+
+Player* Player::Get(InGameScene* _ingame)
 {
 	ingame = _ingame;
+	static Player instance;
+	//自分自身のポインタを返却する
+	return &instance;
 }
 
 void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init_location, Vector2D init_size, float init_radius)
@@ -27,7 +32,7 @@ void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init
 	arrow_image = MakeScreen(100, 100, TRUE);
 	shot_rad = 0.f;	
 	old_shot_rad = 0.f;
-
+	
 	inv_flg = 0;				
 	inv_timer = 0;		
 	damage_flg = false;

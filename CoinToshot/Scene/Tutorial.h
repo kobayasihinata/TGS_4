@@ -4,7 +4,8 @@
 #include "TutoType.h"
 #include "Dxlib.h"
 
-#define FADE_TIME 20	//チュートリアルテキストのフェードイン、アウトにかかるフレーム数
+#define FADE_TIME	 20	//チュートリアルテキストのフェードイン、アウトにかかるフレーム数
+#define TEXT_BOX	 32		//ひとつずつの画像大きさ
 
 class Tutorial
 {
@@ -17,7 +18,8 @@ private:
 	int timer;			//チュートリアル実行時間測定
 	float text_alpha;	//フェードイン、アウトの制御
 
-	int text_box[3];		//テキストボックス 辺、角、内側で３種類格納
+	int text_box[3];	//テキストボックス 辺、角、内側で３種類格納
+	int generate_text_box;	//生成したテキストボックスを格納する場所
 public:
 
 
@@ -53,6 +55,9 @@ public:
 	//チュートリアル開始リクエストを送る
 	bool StartTutoRequest(TutoType _type);
 
+	//チュートリアル毎の初期化
+	void InitTuto(TutoType _type);
+
 
 	//ルール説明描画
 	void DrawRule()const;
@@ -61,5 +66,5 @@ public:
 	void CreateTextBox()const;
 
 	//パーツからテキストボックスを生成
-	void DrawTextBox(Vector2D _loc, Vector2D _size)const;
+	void GenerateTextBox(Vector2D _loc, Vector2D _size)const;
 };

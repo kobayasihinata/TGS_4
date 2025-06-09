@@ -188,7 +188,7 @@ void ObjectManager::CreateObject(int object_type, Vector2D init_location, Vector
 	switch (object_type)
 	{
 	case ObjectList::ePLAYER:
-		create_object.push_back(ObjectInitData{ new Player(ingame),object_type,init_location,init_size,init_radius });
+		create_object.push_back(ObjectInitData{Player::Get(ingame) ,object_type,init_location,init_size,init_radius});
 		break;
 	case ObjectList::eENEMY1:
 		create_object.push_back(ObjectInitData{ new Enemy1(),object_type,init_location,init_size,init_radius });
