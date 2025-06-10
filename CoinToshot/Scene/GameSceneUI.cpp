@@ -15,14 +15,9 @@ void GameSceneUI::Initialize()
 	bullet_change_timer = 0;
 	change_anim_move = 200.f / PLATER_BULLET_CHANGE_CD;
 	player_ui_loc = { SCREEN_WIDTH - 350,0 };
+	now_coin_num = 0;
+	old_coin_num = 0;
 
-	//画像読込
-	ResourceManager* rm = ResourceManager::GetInstance();
-	std::vector<int>tmp;
-	tmp = rm->GetImages("Resource/Images/UI/button1.png", 26, 7, 4, 40, 40);
-	button_image.push_back(tmp);
-	tmp = rm->GetImages("Resource/Images/UI/button2.png", 26, 7, 4, 40, 40);
-	button_image.push_back(tmp);
 }
 
 void GameSceneUI::Update()
@@ -79,18 +74,9 @@ void GameSceneUI::Update()
 	//削除したオブジェクトは消去
 	delete_ui_data.clear();
 
-	//入力機能の取得
-	InputKey* input = InputKey::Get();
-
-	//デバッグ用
-	if (input->GetKeyState(KEY_INPUT_4) == eInputState::Pressed)
-	{
-		tutorial->StartTutoRequest(TutoType::tAttack);
-	}
-	if (input->GetKeyState(KEY_INPUT_5) == eInputState::Pressed)
-	{
-		tutorial->StartTutoRequest(TutoType::tBulletChange);
-	}
+	//１フレーム前のコイン枚数を格納
+	old_coin_num = now_coin_num;
+	now_coin_num = UserData::coin;
 }
 
 void GameSceneUI::Draw()const
@@ -132,8 +118,8 @@ void GameSceneUI::Draw()const
 	}
 
 	//ボタンを押したら画像を変える
-	DrawGraph(SCREEN_WIDTH / 2 - 150, 10, button_image[(int)InputPad::OnPressed(L_TRIGGER)][L_TRIGGER], true);
-	DrawGraph(SCREEN_WIDTH / 2 + 110, 10, button_image[(int)InputPad::OnPressed(R_TRIGGER)][R_TRIGGER], true);
+	DrawGraph(SCREEN_WIDTH / 2 - 150, 10, UserData::button_image[(int)InputPad::OnPressed(L_TRIGGER)][L_TRIGGER], true);
+	DrawGraph(SCREEN_WIDTH / 2 + 110, 10, UserData::button_image[(int)InputPad::OnPressed(R_TRIGGER)][R_TRIGGER], true);
 
 	//プレイヤーが弾種類UIと被ったら透過する
 	if (camera->player_location.x - camera->GetCameraLocation().x > (SCREEN_WIDTH / 2) - 100 &&
@@ -258,6 +244,9 @@ void GameSceneUI::DrawBullet(Vector2D _loc, int _type)const
 
 void GameSceneUI::DrawPlayerUI()const
 {
+	int old = GetFontSize();
+
+	SetFontSize(24);
 	int width = GetDrawFormatStringWidth("HP:%d %d %d", (int)(UserData::player_hp), (int)(UserData::timer / 60), UserData::coin);
 	DrawQuadrangle(player_ui_loc.x - width+170, player_ui_loc.y,
 		player_ui_loc.x + 420, player_ui_loc.y,
@@ -271,26 +260,39 @@ void GameSceneUI::DrawPlayerUI()const
 		0x666600, TRUE);
 	DrawFormatString(player_ui_loc.x - width +200, player_ui_loc.y+15, 0xffffff, "HP:%d", (int)(UserData::player_hp));
 	DrawFormatString(player_ui_loc.x - GetDrawFormatStringWidth("TIME:%d %d", (int)(UserData::timer/60), UserData::coin)+280, player_ui_loc.y+15, 0xffffff, "TIME:%d", (int)(UserData::timer/60));
-	//新記録なら
-	if (UserData::ranking_data[9].coin < UserData::coin)
+	
+	int coin_text_color = 0xffffff;
+	//コイン加算時のアニメーション
+	if (now_coin_num != old_coin_num)
 	{
-		UserData::DrawCoin({ player_ui_loc.x - GetDrawFormatStringWidth("×%d", UserData::coin) + 320, player_ui_loc.y + 30 }, 20);
-		if (frame % 30 > 15)
-		{
-			DrawFormatString(player_ui_loc.x - GetDrawFormatStringWidth("×%d", UserData::coin) + 340, player_ui_loc.y + 15, 0xff0000, "×%d", UserData::coin);
-			DrawString(player_ui_loc.x - GetDrawFormatStringWidth("×%d", UserData::coin) + 330, player_ui_loc.y + 40, "新記録！",0xff0000);
-		}
-		else
-		{
-			DrawFormatString(player_ui_loc.x - GetDrawFormatStringWidth("×%d", UserData::coin) + 340, player_ui_loc.y + 15, 0xffffff, "×%d", UserData::coin);
-			DrawString(player_ui_loc.x - GetDrawFormatStringWidth("×%d", UserData::coin) + 330, player_ui_loc.y + 40, "新記録！", 0xffffff);
-		}
+		//コインが減ったか増えたかでフォントの大きさと色を変える
+		SetFontSize(GetFontSize() + (now_coin_num > old_coin_num ? 2 : -2));
+		coin_text_color = now_coin_num > old_coin_num ? 0xffff00 : 0xff0000;
 	}
 	else
 	{
-		UserData::DrawCoin({ player_ui_loc.x - GetDrawFormatStringWidth("×%d", UserData::coin) + 320, player_ui_loc.y + 30 }, 20);
-		DrawFormatString(player_ui_loc.x - GetDrawFormatStringWidth("×%d", UserData::coin) + 340, player_ui_loc.y + 15, 0xffffff, "×%d", UserData::coin);
+		if (GetFontSize() != 24)
+		{
+			SetFontSize(24);
+		}
 	}
+	//新記録なら
+	if (UserData::ranking_data[9].coin < UserData::coin)
+	{
+		DrawString(SCREEN_WIDTH - GetDrawStringWidth("新記録！", strlen("新記録！")),
+			player_ui_loc.y + 40, 
+			"新記録！", 
+			frame % 30 > 15 ?0xff0000: 0xffffff);
+	}
+	UserData::DrawCoin({ player_ui_loc.x - GetDrawFormatStringWidth("×%d", UserData::coin) + 320, 
+		player_ui_loc.y + 30 }, 
+		20);
+	DrawFormatString(player_ui_loc.x - GetDrawFormatStringWidth("×%d", UserData::coin) + 340, 
+		player_ui_loc.y + 15, 
+		coin_text_color,
+		"×%d", 
+		UserData::coin);
+	SetFontSize(old);
 }
 
 bool GameSceneUI::CheckMoveDirection(int _now, int _old)const

@@ -55,9 +55,9 @@ void InGameScene::Initialize()
 	//プレイヤー生成
 	objects->CreateObject({ Vector2D{0,0},Vector2D{40,40},ePLAYER });
 
-	objects->CreateObject({ Vector2D{(float)GetRand(STAGE_SIZE * 2 - 400) - (STAGE_SIZE - 200),(float)GetRand(STAGE_SIZE * 2 - 400) - (STAGE_SIZE - 200)},Vector2D{100,100},eSLOT});
+	objects->CreateObject({ Vector2D{(float)(GetRand(1)* 2000 - 1000),(float)(GetRand(1)* 2000 - 1000)},Vector2D{100,100},eSLOT});
 	objects->CreateObject({ Vector2D{ 100, 0 },Vector2D{40,40},eCOIN, 20.f });
-	//objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{ENEMY5_WIDTH,ENEMY5_HEIGHT},eENEMY5/*, 20.f*/ });
+	objects->CreateObject({ GetRandLoc(), Vector2D{ENEMY1_WIDTH,ENEMY1_HEIGHT}, eENEMY1 });
 
 	//背景の自動生成
 	CreateBackGround();
@@ -65,6 +65,7 @@ void InGameScene::Initialize()
 	ResourceManager* rm = ResourceManager::GetInstance();
 	//BGM読み込み
 	gamemain_bgm = rm->GetSounds("Resource/Sounds/BGM/Rail_train (2).mp3");
+
 }
 
 void InGameScene::Finalize()
@@ -101,8 +102,8 @@ eSceneType InGameScene::Update(float _delta)
 		//いずれかの時間停止フラグが立っていたらオブジェクトの動きはすべて止める
 		if (!UserData::is_gamestop && !tutorial->GetTutoStopFlg())
 		{
-			//制限時間減少
-			UserData::timer--;
+			//一定時間立ったら移動チュートリアルをリクエスト
+			if (frame > 120)tutorial->StartTutoRequest(TutoType::tMove);
 
 			//カメラ更新
 			camera->Update();
@@ -110,11 +111,16 @@ eSceneType InGameScene::Update(float _delta)
 			//UI更新
 			ui->Update();
 
-			//アイテム生成
-			SpawnItem();
-
-			//敵生成
-			SpawnEnemy();
+			//チュートリアルが終わっていないとタイマーが動かず、敵とコインが湧かないようにする
+			if (tutorial->GetIsEndTutorial(TutoType::tAttack))
+			{
+				//アイテム生成
+				SpawnItem();
+				//制限時間減少
+				UserData::timer--;
+				//敵生成
+				SpawnEnemy();
+			}
 
 			//オブジェクト更新
 			objects->Update();
@@ -145,11 +151,10 @@ eSceneType InGameScene::Update(float _delta)
 		//デバッグ用
 		if (input->GetKeyState(KEY_INPUT_1) == eInputState::Pressed)
 		{
-			tutorial->StartTutoRequest(TutoType::tRule);
 		}
 		if (input->GetKeyState(KEY_INPUT_2) == eInputState::Pressed)
 		{
-			tutorial->StartTutoRequest(TutoType::tMove);
+		
 		}
 		if (input->GetKeyState(KEY_INPUT_3) == eInputState::Pressed)
 		{
@@ -170,14 +175,21 @@ eSceneType InGameScene::Update(float _delta)
 		{
 			StopSoundMem(gamemain_bgm);
 		}
+		//遷移アニメーション早送り
+		if (InputPad::OnPressed(XINPUT_BUTTON_A))
+		{
+			start_anim_timer++;
+		}
 		//遷移アニメーションフラグが立っているなら時間測定
 		if (start_anim_flg)
 		{
 			if (++start_anim_timer > G_START_ANIM_TIME)
 			{
 				start_anim_flg = false;
+				tutorial->StartTutoRequest(TutoType::tRule);
 			}
 		}
+
 	}
 
 	//遷移時一回だけ更新
@@ -283,6 +295,10 @@ void InGameScene::SpawnItem()
 	{
 		objects->CreateObject({ Vector2D{(float)(GetRand(100)),(float)(GetRand(100))},Vector2D{40,40},eCOIN, 20.f});
 		//objects->CreateObject({ Vector2D{-100,-100},Vector2D{30,30},eENEMY1,/* 20.f */ });
+	}
+	if ((int)frame % 10 == 0)
+	{
+		objects->CreateEffect(elShine, { (float)(GetRand(100)),(float)(GetRand(100)) }, TRUE, 0xffff00);
 	}
 }
 
@@ -478,6 +494,14 @@ void InGameScene::CreateBackGround()
 			x++;
 		}
 		y++;
+	}
+	//コインが生成されるエリアを緑地にする
+	for (int y = 0; y < 3; y++)
+	{
+		for (int x = 0; x < 3; x++)
+		{
+			DrawGraph(1950 + x * 64, 1950 + y * 64, background_image[40 + x + (y * 10)], TRUE);
+		}
 	}
 	SetDrawScreen(DX_SCREEN_BACK);
 

@@ -42,13 +42,12 @@ private:
 	float change_anim_move;	//アニメーションの移動量格納
 
 	Vector2D player_ui_loc;	//プレイヤー情報位置
+	int now_coin_num;		//現在のコイン枚数
+	int old_coin_num;		//１フレーム前のコイン枚数
 
 	//ポップアップ表示用
 	std::vector<UIData> ui_data;
 	std::vector<UIData> delete_ui_data;
-
-	//ボタン画像格納
-	std::vector<std::vector<int>> button_image;
 
 public:
 	//初期化

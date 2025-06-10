@@ -4,6 +4,8 @@
 
 Enemy1::Enemy1()
 {
+	tutorial = Tutorial::Get();
+
 	move_speed = ENEMY1_SPEED;
 	max_hp = hp = ENEMY1_HP;
 	hit_damage = ENEMY1_DAMAGE;
@@ -58,7 +60,12 @@ void Enemy1::Update()
 
 	//アニメーション
 	Animation();
-
+	
+	//プレイヤーと自身の距離が一定範囲で、照準チュートリアルが終わっていないなら、リクエストする
+	if (sqrtf(powf(location.x - camera->player_location.x, 2) + powf(location.y - camera->player_location.y, 2)) < 400)
+	{
+		tutorial->StartTutoRequest(TutoType::tAim);
+	}
 	//死亡演出フラグが立っているなら
 	if (death_flg)
 	{

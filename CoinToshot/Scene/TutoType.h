@@ -1,6 +1,6 @@
 #pragma once
 
-enum TutoType
+static enum TutoType
 {
 	tRule=0,		//ルール説明
 	tMove,			//移動方法説明
@@ -11,3 +11,5 @@ enum TutoType
 	tSlot,			//スロット説明
 	tNone			//チュートリアルをしていない時用
 };
+
+#define TUTO_NUM 8

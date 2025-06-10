@@ -2,6 +2,7 @@
 #include "../Utility/common.h"
 #include "../Utility/Vector2D.h"
 #include "TutoType.h"
+#include "../Utility/InputPad.h"
 #include "Dxlib.h"
 
 #define FADE_TIME	 20	//チュートリアルテキストのフェードイン、アウトにかかるフレーム数
@@ -17,9 +18,15 @@ private:
 
 	int timer;			//チュートリアル実行時間測定
 	float text_alpha;	//フェードイン、アウトの制御
-
+	int stick_anim;		//スティックを回すアニメーション用
+	int l_stick[4] = { L_STICK_UP,L_STICK_RIGHT,L_STICK_DOWN,L_STICK_LEFT };//表示順
+	int r_stick[4] = { R_STICK_UP,R_STICK_RIGHT,R_STICK_DOWN,R_STICK_LEFT };//表示順
 	int text_box[3];	//テキストボックス 辺、角、内側で３種類格納
 	int generate_text_box;	//生成したテキストボックスを格納する場所
+	Vector2D text_box_loc;		//テキストボックス表示位置
+	Vector2D text_box_size;		//テキストボックス大きさ
+
+	bool tuto_executed_flg[TUTO_NUM];	//チュートリアルを既に行ったか判断
 public:
 
 
@@ -52,19 +59,43 @@ public:
 	//オブジェクト停止状態か取得
 	bool GetTutoStopFlg()const { return tuto_stop_flg; }
 
-	//チュートリアル開始リクエストを送る
-	bool StartTutoRequest(TutoType _type);
+	//指定したチュートリアルが終わっているか取得
+	bool GetIsEndTutorial(TutoType _type)const { return tuto_executed_flg[_type]; }
+
+	//チュートリアル開始リクエストを送る _loc=チュートリアルを呼び出したい座標
+	bool StartTutoRequest(TutoType _type,Vector2D _loc = 0);
 
 	//チュートリアル毎の初期化
-	void InitTuto(TutoType _type);
+	void InitTuto(TutoType _type, Vector2D _loc);
 
-
-	//ルール説明描画
-	void DrawRule()const;
 
 	//テキスト表示用箱生成
 	void CreateTextBox()const;
 
 	//パーツからテキストボックスを生成
-	void GenerateTextBox(Vector2D _loc, Vector2D _size)const;
+	void GenerateTextBox(Vector2D _size)const;
+
+
+	//時間経過で終了するタイプのチュートリアルの基礎更新
+	void UpdateTimeTuto();
+	//特定のアクションで終了するタイプのチュートリアルの基礎更新
+	void UpdatePracticeTuto();
+
+	//ルール説明描画
+	void DrawRule()const;
+
+	//移動説明更新
+	void UpdateMove();
+	//移動説明描画
+	void DrawMove()const;
+
+	//照準説明更新
+	void UpdateAim();
+	//照準説明描画
+	void DrawAim()const;
+
+	//攻撃説明更新
+	void UpdateAttack();
+	//攻撃説明描画
+	void DrawAttack()const;
 };

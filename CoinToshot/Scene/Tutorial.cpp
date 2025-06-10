@@ -16,11 +16,19 @@ void Tutorial::Initialize()
 	now_tuto = TutoType::tNone;	
 	timer = 0;					
 	text_alpha = 0;		
+	stick_anim = 0;
+	text_box_loc = 0;
+	text_box_size = 0;
 
 	for (int i = 0; i < 3; i++)
 	{
 		text_box[i] = MakeScreen(32, 32, TRUE);
 	}
+	for (int i = 0; i < TUTO_NUM; i++)
+	{
+		tuto_executed_flg[i] = false;
+	}
+
 	CreateTextBox();
 	generate_text_box = MakeScreen(SCREEN_WIDTH, SCREEN_HEIGHT, TRUE);
 }
@@ -34,13 +42,22 @@ void Tutorial::Update()
 	switch (now_tuto)
 	{
 	case TutoType::tRule:
-		tuto_stop_flg = true;
+
+		//一定時間で終わるタイプのチュートリアルはこの更新//
+		UpdateTimeTuto();
+
 		break;
 	case TutoType::tMove:
+
+		UpdateMove();
+		UpdateTimeTuto();
 		break;
 	case TutoType::tAim:
+		//プレイヤーの行動など、時間以外で終わるチュートリアルなら別途処理
+		UpdateAim();
 		break;
 	case TutoType::tAttack:
+		UpdateAttack();
 		break;
 	case TutoType::tBulletChange:
 		break;
@@ -51,39 +68,13 @@ void Tutorial::Update()
 	default:
 		break;
 	}
-
-	//チュートリアルが終わったらフラグを下げる
-	if (--timer <= 0)
-	{
-		tutorial_flg = false;
-		tuto_stop_flg = false;
-		now_tuto = TutoType::tNone;
-		timer = 0;
-	}
-
-	if (tutorial_flg)
-	{
-		//フェード演出
-		if (timer > FADE_TIME && text_alpha < 255)
-		{
-			text_alpha += 255.f / FADE_TIME;
-		}
-		if (timer <= FADE_TIME)
-		{
-			text_alpha -= 255.f / FADE_TIME;
-		}
-	}
-	else
-	{
-		text_alpha = 0;
-	}
 }
 
 void Tutorial::Draw()const
 {
+	int old = GetFontSize();
 	DrawFormatString(100, 80, 0x00ff00, "%d", timer);
 
-	GenerateTextBox({ 200,200 }, { (float)UserData::variable, (float)UserData::variable });
 	//実行中のチュートリアルに応じて、処理をする
 	switch (now_tuto)
 	{
@@ -91,13 +82,13 @@ void Tutorial::Draw()const
 		DrawRule();
 		break;
 	case TutoType::tMove:
-		DrawString(100, 100, "操作説明", 0x00ff00);
+		DrawMove();
 		break;
 	case TutoType::tAim:
-		DrawString(100, 100, "エイム説明", 0x00ff00);
+		DrawAim();
 		break;
 	case TutoType::tAttack:
-		DrawString(100, 100, "攻撃説明", 0x00ff00);
+		DrawAttack();
 		break;
 	case TutoType::tBulletChange:
 		DrawString(100, 100, "弾変更説明", 0x00ff00);
@@ -111,12 +102,14 @@ void Tutorial::Draw()const
 	default:
 		break;
 	}
+
+	SetFontSize(old);
 }
 
-bool Tutorial::StartTutoRequest(TutoType _type)
+bool Tutorial::StartTutoRequest(TutoType _type, Vector2D _loc)
 {
-	//他のチュートリアルが実行中ならリクエストは却下
-	if (tutorial_flg)
+	//他のチュートリアルが実行中　もしくは既に一回行ったチュートリアルならリクエストは却下
+	if (tutorial_flg || tuto_executed_flg[_type])
 	{
 		return false;
 	}
@@ -124,24 +117,36 @@ bool Tutorial::StartTutoRequest(TutoType _type)
 	else
 	{
 		now_tuto = _type;
-		timer = 60;
-		InitTuto(_type);
+		InitTuto(_type,_loc);
 	}
 }
 
-void Tutorial::InitTuto(TutoType _type)
+void Tutorial::InitTuto(TutoType _type,Vector2D _loc)
 {
 	switch (now_tuto)
 	{
 	case TutoType::tRule:
 		//テキスト量に合った大きさの箱画像を生成
-		GenerateTextBox({ 200,200 }, { 200, 100 });
+		text_box_loc = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 100 };
+		text_box_size = { 300, 100 };
+		GenerateTextBox(text_box_size);
+		//表示中にゲームを停止状態に
+		tuto_stop_flg = true;
+		timer = 240;
 		break;
 	case TutoType::tMove:
-		//テキスト量に合った大きさの箱画像を生成
-		GenerateTextBox({ 200,200 }, { 300, 250 });
+		text_box_loc = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 100 };
+		text_box_size = { 300, 100 };
+		timer = 240;
 		break;
 	case TutoType::tAim:
+		//テキスト量に合った大きさの箱画像を生成
+		text_box_loc = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 100 };
+		text_box_size = { 300, 100 };
+		GenerateTextBox(text_box_size);
+		//表示中にゲームを停止状態に
+		tuto_stop_flg = true;
+		timer = 180;
 		break;
 	case TutoType::tAttack:
 		break;
@@ -154,15 +159,6 @@ void Tutorial::InitTuto(TutoType _type)
 	default:
 		break;
 	}
-}
-
-void Tutorial::DrawRule()const
-{
-
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha);
-	DrawGraph(200, 100, generate_text_box, TRUE);
-	DrawString(100, 100, "ルール説明", 0x00ff00);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 }
 
 void Tutorial::CreateTextBox()const
@@ -202,7 +198,7 @@ void Tutorial::CreateTextBox()const
 	SetDrawScreen(DX_SCREEN_BACK);
 }
 
-void Tutorial::GenerateTextBox(Vector2D _loc, Vector2D _size)const
+void Tutorial::GenerateTextBox(Vector2D _size)const
 {
 	Vector2D size = { _size.x > 37 ? _size.x : 37,_size.y > 37 ? _size.y : 37 };
 
@@ -239,9 +235,143 @@ void Tutorial::GenerateTextBox(Vector2D _loc, Vector2D _size)const
 	//y軸
 	for (int i = 0; i < size.y - (TEXT_BOX * 2); i += TEXT_BOX)
 	{
-		DrawRotaGraphF(+(TEXT_BOX / 2), (TEXT_BOX * 1.5) + i, 1.0f, 1.5f * 3.14f, text_box[1], TRUE);
-		DrawRotaGraphF(+size.x - (TEXT_BOX / 2), (TEXT_BOX * 1.5) + i, 1.0f, 0.5f * 3.14f, text_box[1], TRUE);
+		DrawRotaGraphF((TEXT_BOX / 2), (TEXT_BOX * 1.5) + i, 1.0f, 1.5f * 3.14f, text_box[1], TRUE);
+		DrawRotaGraphF(size.x - (TEXT_BOX / 2), (TEXT_BOX * 1.5) + i, 1.0f, 0.5f * 3.14f, text_box[1], TRUE);
 	}
 
 	SetDrawScreen(DX_SCREEN_BACK);
+}
+
+void Tutorial::UpdateTimeTuto()
+{
+	//チュートリアルが終わったらフラグを下げる
+	if (--timer <= 0)
+	{
+		tutorial_flg = false;
+		tuto_stop_flg = false;
+		tuto_executed_flg[(int)now_tuto > 7 ? 7 : (int)now_tuto] = true;
+		now_tuto = TutoType::tNone;
+		timer = 0;
+	}
+
+	if (tutorial_flg)
+	{
+		//フェード演出
+		if (timer > FADE_TIME && text_alpha < 255)
+		{
+			text_alpha += 255.f / FADE_TIME;
+		}
+		if (timer <= FADE_TIME)
+		{
+			text_alpha -= 255.f / FADE_TIME;
+		}
+	}
+	else
+	{
+		text_alpha = 0;
+	}
+}
+
+void Tutorial::UpdatePracticeTuto()
+{
+
+}
+
+void Tutorial::DrawRule()const
+{
+	SetFontSize(24);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha);
+	DrawGraph(text_box_loc.x - text_box_size.x / 2, text_box_loc.y - text_box_size.y / 2, generate_text_box, TRUE);
+	UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y - 50 }, "ルール説明", 0xffffff);
+	SetFontSize(32);
+	DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 20, "ひたすらコインを稼げ！", 0xeeeeee);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+}
+
+void Tutorial::UpdateMove()
+{
+	//スティックを回すアニメーション
+	if (timer % 10 == 0)
+	{
+		if (++stick_anim > 3)
+		{
+			stick_anim = 0;
+		}
+	}
+}
+void Tutorial::DrawMove()const
+{
+	SetFontSize(24);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha);
+	UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y - 50 }, "左スティック：移動", 0xffffff);
+	DrawRotaGraphF(text_box_loc.x, text_box_loc.y + 50, 1.f, 0, UserData::button_image[1][l_stick[stick_anim]], TRUE);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+}
+
+void Tutorial::UpdateAim()
+{
+	if (tutorial_flg)
+	{
+		//フェード演出
+		if (--timer > FADE_TIME && text_alpha < 255)
+		{
+			text_alpha += 255.f / FADE_TIME;
+		}
+		if (timer <= FADE_TIME)
+		{
+			text_alpha -= 255.f / FADE_TIME;
+		}
+	}
+	else
+	{
+		text_alpha = 0;
+	}
+	//タイマーがマイナスに達したら実践開始
+	if (timer < 0)
+	{
+		if (tuto_stop_flg == true)
+		{
+			tuto_stop_flg = false;
+		}
+		//とりあえずで数秒したら照準チュートリアルを終了して攻撃チュートリアル
+		if (timer < -180)
+		{
+			///////チュートリアル終了時はこの処理
+			tutorial_flg = false;
+			tuto_stop_flg = false;
+			tuto_executed_flg[(int)now_tuto > 7 ? 7 : (int)now_tuto] = true;
+			now_tuto = TutoType::tNone;
+			timer = 0;
+			///////
+			StartTutoRequest(TutoType::tAttack);
+		}
+	}
+}
+void Tutorial::DrawAim()const
+{
+	//説明のテキストボックス
+	if (timer > 0)
+	{
+		SetFontSize(24);
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha);
+		DrawGraph(text_box_loc.x - text_box_size.x / 2, text_box_loc.y - text_box_size.y / 2, generate_text_box, TRUE);
+		SetFontSize(32);
+		DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 20, "敵に照準を合わせよう", 0xffffff);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+	}
+	//実践のターゲット
+	else
+	{
+		UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y - 50 }, "右スティック：照準", 0xffffff);
+		DrawRotaGraphF(text_box_loc.x, text_box_loc.y + 50, 1.f, 0, UserData::button_image[1][r_stick[stick_anim]], TRUE);
+	}
+}
+
+void Tutorial::UpdateAttack()
+{
+
+}
+void Tutorial::DrawAttack()const
+{
+
 }

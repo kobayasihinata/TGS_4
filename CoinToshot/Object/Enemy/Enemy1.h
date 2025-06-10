@@ -1,10 +1,12 @@
 #pragma once
 #include "../Base/EnemyBase.h"
+#include "../../Scene/Tutorial.h"
+
 class Enemy1 :
 	public EnemyBase
 {
 private:
-
+	class Tutorial* tutorial;	//チュートリアル格納
 public:
 	//コンストラクタ
 	Enemy1();
