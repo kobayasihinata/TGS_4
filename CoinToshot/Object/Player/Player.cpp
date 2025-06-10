@@ -27,6 +27,7 @@ void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init
 
 	camera = Camera::Get();
 	k_input = InputKey::Get();
+	tutorial = Tutorial::Get();
 
 	bullet_change_cd = 0;
 	arrow_image = MakeScreen(100, 100, TRUE);
@@ -236,8 +237,12 @@ void Player::Draw()const
 		}
 	}
 
-	//弾の軌道描画
-	DrawBulletOrbit();
+	//照準チュートリアル中か完了済みなら表示
+	if (tutorial->GetTutoNowEnd(TutoType::tAim))
+	{
+		//弾の軌道描画
+		DrawBulletOrbit();
+	}
 
 	if ((!damage_flg || (damage_flg && frame % 3 == 0)) && (!death_flg || death_timer > DEFAULT_DEATH_TIMER * 2))
 	{
@@ -310,8 +315,9 @@ void Player::Control()
 		}
 	}
 
-	//右スティックの傾きが一定以上なら角度を変更する
-	if (fabsf(InputPad::TipRStick(STICKL_X)) > 0.3f || fabsf(InputPad::TipRStick(STICKL_Y)) > 0.3f)
+	//照準チュートリアルが完了している　もしくは照準チュートリアル中なら右スティックの傾きが一定以上なら角度を変更する
+	if (tutorial->GetTutoNowEnd(TutoType::tAim)&&
+		(fabsf(InputPad::TipRStick(STICKL_X)) > 0.3f || fabsf(InputPad::TipRStick(STICKL_Y)) > 0.3f))
 	{
 		//前の傾きを保存する
 		old_shot_rad = shot_rad;
@@ -324,8 +330,9 @@ void Player::Control()
 		}
 	}
 
-	//コインが一枚以上なら、１消費で弾を発射する
-	if (InputPad::OnButton(XINPUT_BUTTON_LEFT_SHOULDER) || InputPad::OnButton(XINPUT_BUTTON_RIGHT_SHOULDER))
+	//攻撃チュートリアルが完了している　もしくは攻撃チュートリアル中ならコイン消費で弾を発射する
+	if (tutorial->GetTutoNowEnd(TutoType::tAttack)&&
+		(InputPad::OnButton(XINPUT_BUTTON_LEFT_SHOULDER) || InputPad::OnButton(XINPUT_BUTTON_RIGHT_SHOULDER)))
 	{
 		if (UserData::coin >= pBullet[UserData::bullet_type].cost)
 		{

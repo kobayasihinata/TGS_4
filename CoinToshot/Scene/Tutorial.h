@@ -19,6 +19,8 @@ private:
 	int timer;			//チュートリアル実行時間測定
 	float text_alpha;	//フェードイン、アウトの制御
 	int stick_anim;		//スティックを回すアニメーション用
+	int button_anim;		//ボタンアニメーション用
+
 	int l_stick[4] = { L_STICK_UP,L_STICK_RIGHT,L_STICK_DOWN,L_STICK_LEFT };//表示順
 	int r_stick[4] = { R_STICK_UP,R_STICK_RIGHT,R_STICK_DOWN,R_STICK_LEFT };//表示順
 	int text_box[3];	//テキストボックス 辺、角、内側で３種類格納
@@ -55,12 +57,16 @@ public:
 
 	//チュートリアル中か取得
 	bool GetTutorialFlg()const { return tutorial_flg; }
-
+	//現在のチュートリアルを取得
+	TutoType GetNowTutorial()const { return now_tuto; }
 	//オブジェクト停止状態か取得
 	bool GetTutoStopFlg()const { return tuto_stop_flg; }
-
 	//指定したチュートリアルが終わっているか取得
 	bool GetIsEndTutorial(TutoType _type)const { return tuto_executed_flg[_type]; }
+	//指定したチュートリアルが終わっている、または現在そのチュートリアル中か取得
+	bool GetTutoNowEnd(TutoType _type)const {
+		return GetIsEndTutorial(_type) || GetNowTutorial() == _type;
+	}
 
 	//チュートリアル開始リクエストを送る _loc=チュートリアルを呼び出したい座標
 	bool StartTutoRequest(TutoType _type,Vector2D _loc = 0);

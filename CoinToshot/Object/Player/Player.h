@@ -4,6 +4,7 @@
 #include "../Base/ActorBase.h"
 #include "../../Scene/Camera/Camera.h"
 #include "../Base/BulletData.h"
+#include "../../Scene/Tutorial.h"
 
 class InGameScene;
 
@@ -14,7 +15,7 @@ private:
 
 	InputKey* k_input;			//入力機能の取得(キーボード)
 	class Camera* camera;		//カメラポインタ格納(プレイヤーの情報を渡すためだけに取得)
-
+	class Tutorial* tutorial;	//チュートリアル格納
 	//弾変更
 	int bullet_change_cd;		//弾種類変更クールダウン測定
 	int arrow_image;			//矢印画像作成

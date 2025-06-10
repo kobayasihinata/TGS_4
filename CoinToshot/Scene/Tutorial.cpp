@@ -17,6 +17,7 @@ void Tutorial::Initialize()
 	timer = 0;					
 	text_alpha = 0;		
 	stick_anim = 0;
+	button_anim = 0;
 	text_box_loc = 0;
 	text_box_size = 0;
 
@@ -58,6 +59,7 @@ void Tutorial::Update()
 		break;
 	case TutoType::tAttack:
 		UpdateAttack();
+		UpdateTimeTuto();
 		break;
 	case TutoType::tBulletChange:
 		break;
@@ -149,6 +151,9 @@ void Tutorial::InitTuto(TutoType _type,Vector2D _loc)
 		timer = 180;
 		break;
 	case TutoType::tAttack:
+		text_box_loc = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 100 };
+		text_box_size = { 300, 100 };
+		timer = 180;
 		break;
 	case TutoType::tBulletChange:
 		break;
@@ -310,6 +315,14 @@ void Tutorial::DrawMove()const
 
 void Tutorial::UpdateAim()
 {
+	//スティックを回すアニメーション
+	if (timer % 10 == 0)
+	{
+		if (++stick_anim > 3)
+		{
+			stick_anim = 0;
+		}
+	}
 	if (tutorial_flg)
 	{
 		//フェード演出
@@ -342,6 +355,7 @@ void Tutorial::UpdateAim()
 			tuto_executed_flg[(int)now_tuto > 7 ? 7 : (int)now_tuto] = true;
 			now_tuto = TutoType::tNone;
 			timer = 0;
+			text_alpha = 0;
 			///////
 			StartTutoRequest(TutoType::tAttack);
 		}
@@ -369,9 +383,21 @@ void Tutorial::DrawAim()const
 
 void Tutorial::UpdateAttack()
 {
-
+	//スティックを回すアニメーション
+	if (timer % 10 == 0)
+	{
+		if (++button_anim > 1)
+		{
+			button_anim = 0;
+		}
+	}
 }
 void Tutorial::DrawAttack()const
 {
-
+	SetFontSize(24);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha);
+	UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y - 50 }, "左 or 右トリガー：攻撃", 0xffffff);
+	DrawRotaGraphF(text_box_loc.x-40, text_box_loc.y + 50, 1.f, 0, UserData::button_image[button_anim][XINPUT_BUTTON_LEFT_SHOULDER], TRUE);
+	DrawRotaGraphF(text_box_loc.x+40, text_box_loc.y + 50, 1.f, 0, UserData::button_image[button_anim][XINPUT_BUTTON_RIGHT_SHOULDER], TRUE);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 }
