@@ -31,7 +31,8 @@ void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init
 
 	bullet_change_cd = 0;
 	arrow_image = MakeScreen(100, 100, TRUE);
-	shot_rad = 0.f;	
+	aim_once_flg = false;
+	shot_rad = 123456.f;	//ありえない値を入れておく
 	old_shot_rad = 0.f;
 	
 	inv_flg = 0;				
@@ -132,6 +133,31 @@ void Player::Update()
 	//移動処理
 	Move();
 
+	//チュートリアルが終わっていないなら、カメラの外に出ることはできない
+	if (!tutorial->GetBasicTuto())
+	{
+		//カメラの外に居たら前の座標に戻す
+		//左端
+		if (location.x - (box_size.x / 2) <= camera->GetCameraLocation().x)
+		{
+			location.x = camera->GetCameraLocation().x + (box_size.x / 2);
+		}
+		//右端
+		if (location.x + (box_size.x / 2) > camera->GetCameraLocation().x + SCREEN_WIDTH)
+		{
+			location.x = camera->GetCameraLocation().x + SCREEN_WIDTH - (box_size.x / 2);
+		}
+		//上端
+		if (location.y - (box_size.y / 2) <= camera->GetCameraLocation().y)
+		{
+			location.y = camera->GetCameraLocation().y + (box_size.y / 2);
+		}
+		//下端
+		if (location.y + (box_size.y / 2) > camera->GetCameraLocation().y + SCREEN_HEIGHT)
+		{
+			location.y = camera->GetCameraLocation().y + SCREEN_HEIGHT - (box_size.y / 2);
+		}
+	}
 	//ダメージ後無敵を測定する
 	if (damage_flg && --damage_timer <= 0)
 	{
@@ -237,8 +263,8 @@ void Player::Draw()const
 		}
 	}
 
-	//照準チュートリアル中か完了済みなら表示
-	if (tutorial->GetTutoNowEnd(TutoType::tAim))
+	//カーソルを動かせる状態なら表示
+	if (aim_once_flg)
 	{
 		//弾の軌道描画
 		DrawBulletOrbit();
@@ -319,10 +345,13 @@ void Player::Control()
 	if (tutorial->GetTutoNowEnd(TutoType::tAim)&&
 		(fabsf(InputPad::TipRStick(STICKL_X)) > 0.3f || fabsf(InputPad::TipRStick(STICKL_Y)) > 0.3f))
 	{
+		//カーソルを動かした事を格納する
+		if (!aim_once_flg)aim_once_flg = true;
 		//前の傾きを保存する
 		old_shot_rad = shot_rad;
-		//右スティックの傾きで発射角度を決める (-1.5f = ずれ調整)
-		shot_rad = atan2f(InputPad::TipRStick(STICKL_X), InputPad::TipRStick(STICKL_Y)) - 1.55f;
+		//右スティックの傾きで発射角度を決める (-1.55f = ずれ調整)
+		tutorial->player_aim_rad = shot_rad = atan2f(InputPad::TipRStick(STICKL_X), InputPad::TipRStick(STICKL_Y)) - 1.55f;
+		
 		//角度が一定以上変更されていたらSEを鳴らす
 		if (fabsf(old_shot_rad - shot_rad) > 0.01f && frame % 4==0)
 		{

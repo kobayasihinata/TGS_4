@@ -35,7 +35,7 @@ private:
 	int start_anim_timer;	//遷移時アニメーション測定
 
 	bool pause_flg;		//一時停止判断
-
+	bool coin_spawn_once;	//最低保証コインのスポーン
 	int gamemain_bgm;	//BGM格納
 public:
 	InGameScene();

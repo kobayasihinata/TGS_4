@@ -64,7 +64,7 @@ void Enemy1::Update()
 	//プレイヤーと自身の距離が一定範囲で、照準チュートリアルが終わっていないなら、リクエストする
 	if (sqrtf(powf(location.x - camera->player_location.x, 2) + powf(location.y - camera->player_location.y, 2)) < 400)
 	{
-		tutorial->StartTutoRequest(TutoType::tAim);
+		tutorial->StartTutoRequest(TutoType::tAim,this);
 	}
 	//死亡演出フラグが立っているなら
 	if (death_flg)

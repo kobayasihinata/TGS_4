@@ -2,7 +2,9 @@
 #include "../Utility/common.h"
 #include "../Utility/Vector2D.h"
 #include "TutoType.h"
+#include "Camera/Camera.h"
 #include "../Utility/InputPad.h"
+#include "../Object/Base/ObjectBase.h"
 #include "Dxlib.h"
 
 #define FADE_TIME	 20	//チュートリアルテキストのフェードイン、アウトにかかるフレーム数
@@ -11,15 +13,25 @@
 class Tutorial
 {
 private:
+	class Camera* camera;		//カメラポインタ格納(プレイヤーの情報を渡すためだけに取得)
+
 	bool tutorial_flg;	//チュートリアル中か判断
 	bool tuto_stop_flg;	//チュートリアルの為に、オブジェクトを止める必要があるか
 
 	TutoType now_tuto;	//現在実行中のチュートリアルを格納
+	ObjectBase* tuto_object;	//チュートリアルを呼び出したオブジェクトを保存
 
 	int timer;			//チュートリアル実行時間測定
 	float text_alpha;	//フェードイン、アウトの制御
 	int stick_anim;		//スティックを回すアニメーション用
-	int button_anim;		//ボタンアニメーション用
+	int button_anim;	//ボタンアニメーション用
+	int aim_timer;		//照準チュートリアル用　敵に照準が合っている時間測定
+	int aim_success_flg;		//照準成功
+	int aim_success_timer;		//照準成功時間測定
+	int attack_sequence;		//攻撃チュートリアル手順
+	Vector2D enemy_loc;			//敵座標保管
+	int attack_success_timer;	//攻撃成功時間測定
+	int tuto_end_timer;			//攻撃成功後テキスト時間測定
 
 	int l_stick[4] = { L_STICK_UP,L_STICK_RIGHT,L_STICK_DOWN,L_STICK_LEFT };//表示順
 	int r_stick[4] = { R_STICK_UP,R_STICK_RIGHT,R_STICK_DOWN,R_STICK_LEFT };//表示順
@@ -30,8 +42,7 @@ private:
 
 	bool tuto_executed_flg[TUTO_NUM];	//チュートリアルを既に行ったか判断
 public:
-
-
+	float player_aim_rad;		//現在の照準位置
 private:
 	//コンストラクタをprivateにすることで、
 //自クラスのメンバ関数でインスタンスを生成できないようにする
@@ -67,13 +78,26 @@ public:
 	bool GetTutoNowEnd(TutoType _type)const {
 		return GetIsEndTutorial(_type) || GetNowTutorial() == _type;
 	}
+	//基本チュートリアルが終わっているか取得
+	bool GetBasicTuto()const
+	{
+		return (tuto_executed_flg[TutoType::tRule] &&
+			tuto_executed_flg[TutoType::tMove] &&
+			tuto_executed_flg[TutoType::tAim] &&
+			tuto_executed_flg[TutoType::tAttack]);
+	}
 
-	//チュートリアル開始リクエストを送る _loc=チュートリアルを呼び出したい座標
-	bool StartTutoRequest(TutoType _type,Vector2D _loc = 0);
+	//チュートリアル開始リクエストを送る _obj=チュートリアルを呼び出したオブジェクト
+	bool StartTutoRequest(TutoType _type, ObjectBase* _obj = NULL);
 
 	//チュートリアル毎の初期化
-	void InitTuto(TutoType _type, Vector2D _loc);
+	void InitTuto(TutoType _type);
 
+	//チュートリアル終了処理
+	void TutoEnd();
+
+	//照準が敵に合っているか判断
+	bool CheckAim();
 
 	//テキスト表示用箱生成
 	void CreateTextBox()const;
@@ -84,8 +108,6 @@ public:
 
 	//時間経過で終了するタイプのチュートリアルの基礎更新
 	void UpdateTimeTuto();
-	//特定のアクションで終了するタイプのチュートリアルの基礎更新
-	void UpdatePracticeTuto();
 
 	//ルール説明描画
 	void DrawRule()const;

@@ -3,7 +3,6 @@
 
 Camera* Camera::Get()
 {
-
 	static Camera instance;
 	//自分自身のポインタを返却する
 	return &instance;
@@ -11,11 +10,21 @@ Camera* Camera::Get()
 
 void Camera::Update()
 {
-	DebugInfomation::Add("camera_location.x", camera_location.x);
-	DebugInfomation::Add("camera_location.y", camera_location.y);
-	//カメラ座標更新
-	camera_location.x = player_location.x - (SCREEN_WIDTH / 2);
-	camera_location.y = player_location.y - (SCREEN_HEIGHT / 2);
+	if (tutorial == nullptr)
+	{
+		tutorial = Tutorial::Get();
+	}
+	//チュートリアルが終わっていないならカメラは固定
+	if (tutorial != nullptr && tutorial->GetBasicTuto())
+	{
+		//カメラ座標更新
+		camera_location.x -= (camera_location.x - (player_location.x - (SCREEN_WIDTH / 2))) / 10;
+		camera_location.y -= (camera_location.y - (player_location.y - (SCREEN_HEIGHT / 2))) / 10;
+	}
+	else
+	{
+		camera_location = { -SCREEN_WIDTH / 2 + 48, -SCREEN_HEIGHT / 2 + 32 };
+	}
 
 	//カメラX座標が画面左端以下なら
 	if (camera_location.x <= -STAGE_SIZE)

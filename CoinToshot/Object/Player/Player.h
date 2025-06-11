@@ -16,11 +16,14 @@ private:
 	InputKey* k_input;			//入力機能の取得(キーボード)
 	class Camera* camera;		//カメラポインタ格納(プレイヤーの情報を渡すためだけに取得)
 	class Tutorial* tutorial;	//チュートリアル格納
+
+
 	//弾変更
 	int bullet_change_cd;		//弾種類変更クールダウン測定
 	int arrow_image;			//矢印画像作成
 
 	//コイン発射関連
+	bool aim_once_flg;			//一回でもカーソルを動かしたか判断
 	float shot_rad;				//発射角度
 	float old_shot_rad;			//１フレーム前の発射角度
 

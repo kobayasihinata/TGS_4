@@ -35,6 +35,7 @@ void InGameScene::Initialize()
 	change_result_delay = -1;//0になったらリザルト遷移
 	change_result = false;
 	pause_flg = false;
+	coin_spawn_once = false;
 	update_once = false;
 	start_anim_flg = true;
 	start_anim_timer = 0;
@@ -56,7 +57,7 @@ void InGameScene::Initialize()
 	objects->CreateObject({ Vector2D{0,0},Vector2D{40,40},ePLAYER });
 
 	objects->CreateObject({ Vector2D{(float)(GetRand(1)* 2000 - 1000),(float)(GetRand(1)* 2000 - 1000)},Vector2D{100,100},eSLOT});
-	objects->CreateObject({ Vector2D{ 100, 0 },Vector2D{40,40},eCOIN, 20.f });
+	objects->CreateObject({ Vector2D{ 140, 30 },Vector2D{40,40},eCOIN, 20.f });
 
 	objects->CreateObject({ {1000,0}, Vector2D{ ENEMY1_WIDTH,ENEMY1_HEIGHT }, eENEMY1});
 
@@ -87,7 +88,7 @@ eSceneType InGameScene::Update(float _delta)
 	tutorial->Update();
 
 	//一時停止フラグ切り替え
-	if (InputPad::OnButton(XINPUT_BUTTON_START))
+	if (InputPad::OnButton(XINPUT_BUTTON_START) && !tutorial->GetTutorialFlg())
 	{
 		pause_flg = !pause_flg;
 	}
@@ -123,6 +124,19 @@ eSceneType InGameScene::Update(float _delta)
 				SpawnEnemy();
 			}
 
+			//攻撃チュートリアル中にコインが０枚になったら１枚生成
+			if (tutorial->GetNowTutorial() == TutoType::tAttack && UserData::coin <= 0)
+			{
+				if (!coin_spawn_once)
+				{
+					objects->CreateObject({ Vector2D{ 140, 30 },Vector2D{40,40},eCOIN, 20.f });
+					coin_spawn_once = true;
+				}
+			}
+			else
+			{
+				coin_spawn_once = false;
+			}
 			//オブジェクト更新
 			objects->Update();
 		}
@@ -260,6 +274,12 @@ void InGameScene::Draw()const
 			UserData::DrawCoin({ SCREEN_WIDTH / 2 + 100, SCREEN_HEIGHT / 2 }, 80 - coin_size*2,255,255,255);
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 		}
+	}
+
+	//最低保証コインが出た時のメッセージ
+	if (coin_spawn_once)
+	{
+		DrawString((SCREEN_WIDTH/2)+100, (SCREEN_HEIGHT/2)+20, "あきらめないで！", (int)frame % 30 > 15 ? 0xcccc00 : 0xffff00);
 	}
 	SetFontSize(old);
 }
