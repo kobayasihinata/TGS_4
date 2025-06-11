@@ -40,9 +40,16 @@ private:
 	Vector2D text_box_loc;		//テキストボックス表示位置
 	Vector2D text_box_size;		//テキストボックス大きさ
 
+	bool ex_anim_flg;			//アニメーションをするか
+	int ex_anim_timer;			//アニメーション用
+	int now_image;				//アニメーション用
+	std::vector<int> ex_anim;	//爆発アニメーション
+	int ex_se;					//爆発音
+
 	bool tuto_executed_flg[TUTO_NUM];	//チュートリアルを既に行ったか判断
 public:
-	float player_aim_rad;		//現在の照準位置
+	bool tuto_flg = false;			//既にチュートリアルを受けたことがあったら真
+	float player_aim_rad = 0.f;		//現在の照準位置
 private:
 	//コンストラクタをprivateにすることで、
 //自クラスのメンバ関数でインスタンスを生成できないようにする
@@ -126,4 +133,9 @@ public:
 	void UpdateAttack();
 	//攻撃説明描画
 	void DrawAttack()const;
+
+	//弾変更説明更新
+	void UpdateBulletChange();
+	//弾変更説明描画
+	void DrawBulletChange()const;
 };

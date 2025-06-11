@@ -41,6 +41,8 @@ public:
 	static int bullet_type;			//選択中の弾の種類
 	static bool attraction_flg;		//コイン吸い寄せ
 	static int attraction_timer;	//コイン吸い寄せ時間測定
+	static bool can_bullet_change_flg;	//弾種類変更可能か
+
 	static std::vector<std::vector<int>> button_image;//ボタン画像格納
 
 	//デバッグ用

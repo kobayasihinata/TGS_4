@@ -11,6 +11,7 @@ void GameSceneUI::Initialize()
 
 	frame = 0;
 	bullet_image = MakeScreen(200, 150, TRUE);
+	lock_image = MakeScreen(40, 50, TRUE);
 	old_bullet_type = UserData::bullet_type;
 	bullet_change_timer = 0;
 	change_anim_move = 200.f / PLATER_BULLET_CHANGE_CD;
@@ -18,6 +19,8 @@ void GameSceneUI::Initialize()
 	now_coin_num = 0;
 	old_coin_num = 0;
 
+	//ロックの画像生成
+	CreateLockImage();
 }
 
 void GameSceneUI::Update()
@@ -117,9 +120,18 @@ void GameSceneUI::Draw()const
 			0xffffff, false);
 	}
 
+	Vector2D button_lt = { SCREEN_WIDTH / 2 - 130, 30 };
+	Vector2D button_rt = { SCREEN_WIDTH / 2 + 130, 30 };
 	//ボタンを押したら画像を変える
-	DrawGraph(SCREEN_WIDTH / 2 - 150, 10, UserData::button_image[(int)InputPad::OnPressed(L_TRIGGER)][L_TRIGGER], true);
-	DrawGraph(SCREEN_WIDTH / 2 + 110, 10, UserData::button_image[(int)InputPad::OnPressed(R_TRIGGER)][R_TRIGGER], true);
+	DrawRotaGraphF(button_lt.x, button_lt.y, 1.f,0,UserData::button_image[(int)InputPad::OnPressed(L_TRIGGER)][L_TRIGGER], true);
+	DrawRotaGraphF(button_rt.x, button_rt.y, 1.f,0,UserData::button_image[(int)InputPad::OnPressed(R_TRIGGER)][R_TRIGGER], true);
+
+	//弾種類を変えられない状態なら、ボタンの上に×を描画
+	if (!UserData::can_bullet_change_flg)
+	{
+		DrawRotaGraphF(button_lt.x, button_lt.y, 1.f, 0, lock_image, TRUE);
+		DrawRotaGraphF(button_rt.x, button_rt.y, 1.f, 0, lock_image, TRUE);
+	}
 
 	//プレイヤーが弾種類UIと被ったら透過する
 	if (camera->player_location.x - camera->GetCameraLocation().x > (SCREEN_WIDTH / 2) - 100 &&
@@ -221,6 +233,21 @@ void GameSceneUI::CreateBulletTypeImage()const
 	//文字大きさ設定
 	SetFontSize(24);
 
+	SetDrawScreen(DX_SCREEN_BACK);
+}
+
+void GameSceneUI::CreateLockImage()const
+{
+	SetDrawScreen(lock_image);
+	ClearDrawScreen();
+	
+	DrawBox(0, 25, 40, 50, 0xff0000, TRUE);
+	DrawCircle(20, 25, 17, 0xff0000, FALSE);
+	DrawCircle(20, 25, 16, 0xff0000, FALSE);
+	DrawCircle(20, 25, 15, 0xff0000, FALSE);
+
+	DrawCircle(20, 35, 5, 0x000000, TRUE);
+	DrawBox(17, 35, 23, 45, 0x000000, TRUE);
 	SetDrawScreen(DX_SCREEN_BACK);
 }
 

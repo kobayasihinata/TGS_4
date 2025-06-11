@@ -105,6 +105,13 @@ void Player::Update()
 	//吸い寄せの時間が１以上ならフラグを立てる
 	UserData::attraction_flg = (UserData::attraction_timer > 0) ? true : false;
 
+	//コインが100を超えた時、弾種類変更可能フラグを立て、弾変更チュートリアルをリクエスト
+	if (!UserData::can_bullet_change_flg && UserData::coin >= 50)
+	{
+		UserData::can_bullet_change_flg = true;
+		tutorial->StartTutoRequest(TutoType::tBulletChange);
+	}
+	
 	//カメラに座標を渡す
 	camera->player_location = this->location;
 
@@ -378,8 +385,8 @@ void Player::Control()
 		}
 	}
 
-	//クールダウンが終わっていたら弾を変更出来る
-	if (bullet_change_cd <= 0)
+	//弾種類変更が可能＆クールダウンが終わっていたら弾を変更出来る
+	if (UserData::can_bullet_change_flg && bullet_change_cd <= 0)
 	{
 		//トリガーで弾の種類を変える
 		if (InputPad::OnPressed(L_TRIGGER))

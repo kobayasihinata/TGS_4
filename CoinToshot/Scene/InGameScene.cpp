@@ -31,7 +31,8 @@ void InGameScene::Initialize()
 	UserData::bullet_type = 0;
 	UserData::invincible = 0;
 	UserData::is_clear = false;
-	
+	UserData::can_bullet_change_flg = false;
+
 	change_result_delay = -1;//0になったらリザルト遷移
 	change_result = false;
 	pause_flg = false;
@@ -43,7 +44,11 @@ void InGameScene::Initialize()
 	camera = Camera::Get();
 	camera->player_location = 0;
 	tutorial = Tutorial::Get();
-	tutorial->Initialize();
+	//チュートリアルを受けたことが無いなら初期化
+	if (!tutorial->tuto_flg)
+	{
+		tutorial->Initialize();
+	}
 
 	//オブジェクト管理クラス生成
 	objects = new ObjectManager();
@@ -54,12 +59,12 @@ void InGameScene::Initialize()
 	ui->Initialize();
 
 	//プレイヤー生成
-	objects->CreateObject({ Vector2D{0,0},Vector2D{40,40},ePLAYER });
+	objects->CreateObject({ Vector2D{48,32},Vector2D{40,40},ePLAYER });
 
 	objects->CreateObject({ Vector2D{(float)(GetRand(1)* 2000 - 1000),(float)(GetRand(1)* 2000 - 1000)},Vector2D{100,100},eSLOT});
 	objects->CreateObject({ Vector2D{ 140, 30 },Vector2D{40,40},eCOIN, 20.f });
 
-	objects->CreateObject({ {1000,0}, Vector2D{ ENEMY1_WIDTH,ENEMY1_HEIGHT }, eENEMY1});
+	objects->CreateObject({ {950,0}, Vector2D{ ENEMY1_WIDTH,ENEMY1_HEIGHT }, eENEMY1});
 
 	//背景の自動生成
 	CreateBackGround();
@@ -67,11 +72,18 @@ void InGameScene::Initialize()
 	ResourceManager* rm = ResourceManager::GetInstance();
 	//BGM読み込み
 	gamemain_bgm = rm->GetSounds("Resource/Sounds/BGM/Rail_train (2).mp3");
-
+	//BGMを初めから再生するための処理
+	PlaySoundMem(gamemain_bgm, DX_PLAYTYPE_BACK, TRUE);
+	StopSoundMem(gamemain_bgm);
 }
 
 void InGameScene::Finalize()
 {
+	//チュートリアルを受けた事があると判断
+	tutorial->tuto_flg = true;
+	//カメラを初期位置に戻しておく
+	camera->Update({ -SCREEN_WIDTH / 2 + 48, -SCREEN_HEIGHT / 2 + 32 });
+
 	StopSoundMem(gamemain_bgm);
 	//オブジェクト管理クラス終了時処理
 	objects->Finalize();

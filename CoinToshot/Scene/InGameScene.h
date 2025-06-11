@@ -28,15 +28,15 @@ private:
 	int change_result_delay;	//ƒŠƒUƒ‹ƒg‘JˆÚ‚Ü‚Å‚Ì’x‰„ŠÔ
 	bool change_result;			//ƒŠƒUƒ‹ƒg‘JˆÚˆ—‚ğŠJn‚·‚é‚©
 
-	int bg_image;	//Š®¬‚µ‚½”wŒi‰æ‘œ‚ğŠi”[‚·‚é
+	int bg_image;			//Š®¬‚µ‚½”wŒi‰æ‘œ‚ğŠi”[‚·‚é
 
 	bool update_once;		//‘JˆÚƒAƒjƒ[ƒVƒ‡ƒ“—p•`‰æ‚Ìˆ×‚Éˆê‰ñ‚¾‚¯XV
 	bool start_anim_flg;	//‘JˆÚƒAƒjƒ[ƒVƒ‡ƒ“
 	int start_anim_timer;	//‘JˆÚƒAƒjƒ[ƒVƒ‡ƒ“‘ª’è
 
-	bool pause_flg;		//ˆê’â~”»’f
+	bool pause_flg;			//ˆê’â~”»’f
 	bool coin_spawn_once;	//Å’á•ÛØƒRƒCƒ“‚ÌƒXƒ|[ƒ“
-	int gamemain_bgm;	//BGMŠi”[
+	int gamemain_bgm;		//BGMŠi”[
 public:
 	InGameScene();
 	virtual ~InGameScene();

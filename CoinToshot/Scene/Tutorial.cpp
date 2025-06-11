@@ -41,6 +41,13 @@ void Tutorial::Initialize()
 
 	CreateTextBox();
 	generate_text_box = MakeScreen(SCREEN_WIDTH, SCREEN_HEIGHT, TRUE);
+
+	ex_anim_timer = 0;
+	now_image = 0;
+
+	ResourceManager* rm = ResourceManager::GetInstance();
+	ex_anim = rm->GetImages("Resource/Images/Effect/E_PuffAndStar.png", 60, 10, 6, 108, 116);
+	ex_se = rm->GetSounds("Resource/Sounds/explsion_big.mp3");
 }
 
 void Tutorial::Update()
@@ -70,6 +77,8 @@ void Tutorial::Update()
 		UpdateAttack();
 		break;
 	case TutoType::tBulletChange:
+		UpdateBulletChange();
+		UpdateTimeTuto();
 		break;
 	case TutoType::tEnemyBullet:
 		break;
@@ -101,7 +110,7 @@ void Tutorial::Draw()const
 		DrawAttack();
 		break;
 	case TutoType::tBulletChange:
-		DrawString(100, 100, "弾変更説明", 0x00ff00);
+		DrawBulletChange();
 		break;
 	case TutoType::tEnemyBullet:
 		DrawString(100, 100, "敵攻撃説明", 0x00ff00);
@@ -158,16 +167,23 @@ void Tutorial::InitTuto(TutoType _type)
 		GenerateTextBox(text_box_size);
 		//表示中にゲームを停止状態に
 		tuto_stop_flg = true;
-		timer = 180;
+		timer = 18;
 		break;
 	case TutoType::tAttack:
 		text_box_loc = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 100 };
 		text_box_size = { 250, 100 };
 		GenerateTextBox(text_box_size);
 		tuto_stop_flg = true;
-		timer = 180;
+		timer = 18;
 		break;
 	case TutoType::tBulletChange:
+		text_box_loc = { SCREEN_WIDTH / 2, 150 };
+		text_box_size = { 250, 100 };
+		GenerateTextBox(text_box_size);
+		tuto_stop_flg = true;
+		ex_anim_flg = true;
+		timer = 240;
+		PlaySoundMem(ex_se, DX_PLAYTYPE_BACK);
 		break;
 	case TutoType::tEnemyBullet:
 		break;
@@ -455,7 +471,7 @@ void Tutorial::DrawAim()const
 				tuto_object->GetLocalLocation().x + 30,
 				tuto_object->GetLocalLocation().y - 40,
 				0xffffff, FALSE);
-			DrawString(tuto_object->GetLocalLocation().x - 30, tuto_object->GetLocalLocation().y - 70, "nice!", aim_success_timer % 30 > 15 ? 0xaaaa00 : 0xffaa00);
+			DrawString(tuto_object->GetLocalLocation().x - 30, tuto_object->GetLocalLocation().y - 70, "nice!", aim_success_timer % 30 > 15 ? 0xaaaa00 : 0xffff00);
 		}
 	}
 }
@@ -568,5 +584,40 @@ void Tutorial::DrawAttack()const
 		DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 20, "撃って倒して稼げ！", 0xffffff);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 		break;
+	}
+}
+
+
+void Tutorial::UpdateBulletChange()
+{
+	if (ex_anim_flg && ++ex_anim_timer % 2 == 0)
+	{
+		if (now_image < ex_anim.size() - 1)
+		{
+			now_image++;
+		}
+		else
+		{
+			//アニメーション終了
+			ex_anim_flg = false;
+		}
+	}
+}
+void Tutorial::DrawBulletChange()const
+{
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha);
+	DrawGraph(text_box_loc.x - text_box_size.x / 2, text_box_loc.y - text_box_size.y / 2, generate_text_box, TRUE);
+	SetFontSize(24);
+	DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 40, "弾の変更をアンロック！", 0xffffff);
+	DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 20, "状況に応じて使い分けよう", 0xffffff);
+	SetFontSize(18);
+	UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y + 30 }, "左右トリガーで変更", 0xffffff);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+
+	//爆発アニメーション
+	if (ex_anim_flg)
+	{
+		DrawRotaGraphF(SCREEN_WIDTH / 2 - 130, 30, 1.f, 0, ex_anim[now_image], TRUE);
+		DrawRotaGraphF(SCREEN_WIDTH / 2 + 130, 30, 1.f, 0, ex_anim[now_image], TRUE);
 	}
 }

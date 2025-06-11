@@ -45,6 +45,8 @@ private:
 	int now_coin_num;		//現在のコイン枚数
 	int old_coin_num;		//１フレーム前のコイン枚数
 
+	int lock_image;			//"ロックされている"用画像
+
 	//ポップアップ表示用
 	std::vector<UIData> ui_data;
 	std::vector<UIData> delete_ui_data;
@@ -62,6 +64,9 @@ public:
 
 	//弾種類表示
 	void CreateBulletTypeImage()const;
+
+	//ロック画像生成
+	void CreateLockImage()const;
 
 	//弾情報描画
 	void DrawBullet(Vector2D _loc, int _type)const;
