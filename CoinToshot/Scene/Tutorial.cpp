@@ -36,7 +36,7 @@ void Tutorial::Initialize()
 	}
 	for (int i = 0; i < TUTO_NUM; i++)
 	{
-		tuto_executed_flg[i] = false;
+		tuto_executed_flg[i] = true;
 	}
 
 	CreateTextBox();
@@ -153,12 +153,12 @@ void Tutorial::InitTuto(TutoType _type)
 		GenerateTextBox(text_box_size);
 		//表示中にゲームを停止状態に
 		tuto_stop_flg = true;
-		timer = 24;
+		timer = 240;
 		break;
 	case TutoType::tMove:
 		text_box_loc = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 100 };
 		text_box_size = { 300, 100 };
-		timer = 24;
+		timer = 240;
 		break;
 	case TutoType::tAim:
 		//テキスト量に合った大きさの箱画像を生成
@@ -167,14 +167,14 @@ void Tutorial::InitTuto(TutoType _type)
 		GenerateTextBox(text_box_size);
 		//表示中にゲームを停止状態に
 		tuto_stop_flg = true;
-		timer = 18;
+		timer = 180;
 		break;
 	case TutoType::tAttack:
 		text_box_loc = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 100 };
 		text_box_size = { 250, 100 };
 		GenerateTextBox(text_box_size);
 		tuto_stop_flg = true;
-		timer = 18;
+		timer = 180;
 		break;
 	case TutoType::tBulletChange:
 		text_box_loc = { SCREEN_WIDTH / 2, 150 };
@@ -334,6 +334,8 @@ void Tutorial::UpdateTimeTuto()
 void Tutorial::DrawRule()const
 {
 	SetFontSize(24);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha - 150);
+	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, TRUE);
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha);
 	DrawGraph(text_box_loc.x - text_box_size.x / 2, text_box_loc.y - text_box_size.y / 2, generate_text_box, TRUE);
 	UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y - 50 }, "ルール説明", 0xffffff);
@@ -431,6 +433,8 @@ void Tutorial::DrawAim()const
 	if (timer > 0)
 	{
 		SetFontSize(24);
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha - 150);
+		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, TRUE);
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha);
 		DrawGraph(text_box_loc.x - text_box_size.x / 2, text_box_loc.y - text_box_size.y / 2, generate_text_box, TRUE);
 		SetFontSize(32);
@@ -558,12 +562,14 @@ void Tutorial::DrawAttack()const
 	switch (attack_sequence)
 	{
 	case 0: //説明テキスト表示中
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha - 150);
+		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, TRUE);
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha);
 		DrawGraph(text_box_loc.x - text_box_size.x / 2, text_box_loc.y - text_box_size.y / 2, generate_text_box, TRUE);
 		
 		SetFontSize(32);
 		DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 50, "コインを飛ばして", 0xffffff);
-		DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 20, "   敵を攻撃！", timer % 30 > 15 ? 0xffffff : 0xff0000);
+		DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 20, "敵を攻撃！", timer % 30 > 15 ? 0xffffff : 0xff0000);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 		break;
 	case 1:	//実践
@@ -576,6 +582,8 @@ void Tutorial::DrawAttack()const
 		DrawString(enemy_loc.x - camera->GetCameraLocation().x - 25, enemy_loc.y - camera->GetCameraLocation().y - 70, "nice!", attack_success_timer % 30 > 15 ? 0xaaaa00 : 0xff4400);
 		break;
 	case 3: //基本操作説明完了
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha - 150);
+		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, TRUE);
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha);
 		DrawGraph(text_box_loc.x - text_box_size.x / 2, text_box_loc.y - text_box_size.y / 2, generate_text_box, TRUE);
 		

@@ -160,7 +160,7 @@ eSceneType InGameScene::Update(float _delta)
 			UserData::is_clear = true;
 			UserData::is_gamestop = true;
 			change_result = true;
-			change_result_delay = 120;
+			change_result_delay = G_END_ANIM_TIME;
 		}
 
 		//リザルト遷移前の演出
@@ -244,6 +244,10 @@ void InGameScene::Draw()const
 	{
 		if (UserData::is_clear)
 		{
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 - ((255 / G_END_ANIM_TIME) * change_result_delay));
+			DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0xffffaa, true);
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+
 			SetFontSize(32);
 			DrawBox((SCREEN_WIDTH/2) - 200, (SCREEN_HEIGHT/2) - 50, (SCREEN_WIDTH / 2) + 200, (SCREEN_HEIGHT / 2) + 50, 0x000000, true);
 			DrawBox((SCREEN_WIDTH / 2) - 200, (SCREEN_HEIGHT / 2) - 50, (SCREEN_WIDTH / 2) + 200, (SCREEN_HEIGHT / 2) + 50, 0xffffff, false);
@@ -251,6 +255,10 @@ void InGameScene::Draw()const
 		}
 		else
 		{
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 - ((255 / G_END_ANIM_TIME) * change_result_delay));
+			DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, true);
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+
 			SetFontSize(32);
 			DrawBox((SCREEN_WIDTH / 2) - 200, (SCREEN_HEIGHT / 2) - 50, (SCREEN_WIDTH / 2) + 200, (SCREEN_HEIGHT / 2) + 50, 0x000000, true);
 			DrawBox((SCREEN_WIDTH / 2) - 200, (SCREEN_HEIGHT / 2 )- 50, (SCREEN_WIDTH / 2) + 200, (SCREEN_HEIGHT / 2 )+ 50, 0xffffff, false);
@@ -266,7 +274,6 @@ void InGameScene::Draw()const
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 		UserData::DrawStringCenter({ SCREEN_WIDTH / 2,SCREEN_HEIGHT / 2 }, "ポーズ中", 0xffffff);
 	}
-	tutorial->Draw();
 	//チュートリアルフラグが立っていたら、チュートリアル描画
 	if (tutorial->GetTutorialFlg())
 	{
@@ -291,7 +298,7 @@ void InGameScene::Draw()const
 	//最低保証コインが出た時のメッセージ
 	if (coin_spawn_once)
 	{
-		DrawString((SCREEN_WIDTH/2)+100, (SCREEN_HEIGHT/2)+20, "あきらめないで！", (int)frame % 30 > 15 ? 0xcccc00 : 0xffff00);
+		DrawString((SCREEN_WIDTH / 2) + 100, (SCREEN_HEIGHT / 2) + 20, "あきらめないで！", (int)frame % 30 > 15 ? 0xcccc00 : 0xffff00);
 	}
 	SetFontSize(old);
 }

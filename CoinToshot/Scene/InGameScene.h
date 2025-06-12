@@ -14,6 +14,7 @@
 
 //遷移時アニメーション
 #define G_START_ANIM_TIME 180
+#define G_END_ANIM_TIME 180
 
 class InGameScene : public SceneBase
 {

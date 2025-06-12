@@ -35,8 +35,8 @@ private:
 
 	int l_stick[4] = { L_STICK_UP,L_STICK_RIGHT,L_STICK_DOWN,L_STICK_LEFT };//表示順
 	int r_stick[4] = { R_STICK_UP,R_STICK_RIGHT,R_STICK_DOWN,R_STICK_LEFT };//表示順
-	int text_box[3];	//テキストボックス 辺、角、内側で３種類格納
-	int generate_text_box;	//生成したテキストボックスを格納する場所
+	int text_box[3];			//テキストボックス 辺、角、内側で３種類格納
+	int generate_text_box;		//生成したテキストボックスを格納する場所
 	Vector2D text_box_loc;		//テキストボックス表示位置
 	Vector2D text_box_size;		//テキストボックス大きさ
 
