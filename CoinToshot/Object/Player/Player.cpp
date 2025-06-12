@@ -77,7 +77,7 @@ void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init
 	death_se = rm->GetSounds("Resource/Sounds/explsion_big.mp3");
 
 	//‰¹—Ê’²ß
-	SetVolumeSoundMem(7500, walk_se);
+	SetVolumeSoundMem(9500, walk_se);
 	//		PlaySoundMem(cursor_se, DX_PLAYTYPE_BACK);
 
 }
@@ -203,6 +203,8 @@ void Player::Update()
 	//€–S‰‰oƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚é‚È‚ç
 	if (death_flg)
 	{
+		//€–S’†
+		UserData::is_dead = true;
 		//‹z‚¢Šñ‚¹‹­§I—¹
 		UserData::attraction_timer = 0;
 		death_timer--;

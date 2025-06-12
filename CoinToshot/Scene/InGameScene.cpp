@@ -22,8 +22,8 @@ void InGameScene::Initialize()
 	__super::Initialize();
 
 	//各数字リセット
-	UserData::timer = DEFAULT_TIMELIMIT;
-	UserData::player_hp = DEFAULT_HP;
+	UserData::timer = 600;
+	UserData::player_hp = 1;
 	UserData::coin = 20;
 	UserData::is_gamestop = false;
 	UserData::attraction_flg = false;
@@ -71,7 +71,7 @@ void InGameScene::Initialize()
 
 	ResourceManager* rm = ResourceManager::GetInstance();
 	//BGM読み込み
-	gamemain_bgm = rm->GetSounds("Resource/Sounds/BGM/Rail_train (2).mp3");
+	gamemain_bgm = rm->GetSounds("Resource/Sounds/BGM/Rail_train.mp3");
 	//BGMを初めから再生するための処理
 	PlaySoundMem(gamemain_bgm, DX_PLAYTYPE_BACK, TRUE);
 	StopSoundMem(gamemain_bgm);
@@ -131,7 +131,7 @@ eSceneType InGameScene::Update(float _delta)
 				//アイテム生成
 				SpawnItem();
 				//制限時間減少
-				UserData::timer--;
+				if(!UserData::is_dead)UserData::timer--;
 				//敵生成
 				SpawnEnemy();
 			}
@@ -245,10 +245,10 @@ void InGameScene::Draw()const
 		if (UserData::is_clear)
 		{
 			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 - ((255 / G_END_ANIM_TIME) * change_result_delay));
-			DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0xffffaa, true);
+			DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0xffffff, true);
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
-			SetFontSize(32);
+			SetFontSize(48);
 			DrawBox((SCREEN_WIDTH/2) - 200, (SCREEN_HEIGHT/2) - 50, (SCREEN_WIDTH / 2) + 200, (SCREEN_HEIGHT / 2) + 50, 0x000000, true);
 			DrawBox((SCREEN_WIDTH / 2) - 200, (SCREEN_HEIGHT / 2) - 50, (SCREEN_WIDTH / 2) + 200, (SCREEN_HEIGHT / 2) + 50, 0xffffff, false);
 			DrawString((SCREEN_WIDTH / 2) - 150, (SCREEN_HEIGHT / 2) - 30, "GameClear!", 0xffffff);
@@ -259,7 +259,7 @@ void InGameScene::Draw()const
 			DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, true);
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
-			SetFontSize(32);
+			SetFontSize(48);
 			DrawBox((SCREEN_WIDTH / 2) - 200, (SCREEN_HEIGHT / 2) - 50, (SCREEN_WIDTH / 2) + 200, (SCREEN_HEIGHT / 2) + 50, 0x000000, true);
 			DrawBox((SCREEN_WIDTH / 2) - 200, (SCREEN_HEIGHT / 2 )- 50, (SCREEN_WIDTH / 2) + 200, (SCREEN_HEIGHT / 2 )+ 50, 0xffffff, false);
 			DrawString((SCREEN_WIDTH / 2) - 150, (SCREEN_HEIGHT / 2) - 30, "GameOver...", 0xaaaaaa);

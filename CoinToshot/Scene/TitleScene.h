@@ -28,6 +28,7 @@ private:
 
 	int bg_image;			//”wŒi‰æ‘œŠi”[
 
+	int title_bgm;				//ƒ^ƒCƒgƒ‹BGM
 	int cursor_se;				//ƒJ[ƒ\ƒ‹SE
 	int enter_se;				//Œˆ’èSE
 public:

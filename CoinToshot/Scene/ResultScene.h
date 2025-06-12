@@ -30,6 +30,8 @@ private:
 	int current_y;	//カーソルY位置
 	string name;	//名前格納
 
+	int result_bgm;				//リザルトBGM
+
 public:
 	ResultScene();
 	virtual ~ResultScene();

@@ -21,6 +21,13 @@ TitleScene::TitleScene()
 	ResourceManager* rm = ResourceManager::GetInstance();
 	cursor_se = rm->GetSounds("Resource/Sounds/cursor.mp3");
 	enter_se = rm->GetSounds("Resource/Sounds/Coin/Get.mp3");
+	//BGM“Ç‚Ýž‚Ý
+	title_bgm = rm->GetSounds("Resource/Sounds/BGM/Colorful_Cheerful_Jelly_Beans_2.mp3");
+	SetVolumeSoundMem(8000, title_bgm);
+	if (!CheckSoundMem(title_bgm))
+	{
+		PlaySoundMem(title_bgm, DX_PLAYTYPE_BACK);
+	}
 }
 
 TitleScene::~TitleScene()
@@ -65,6 +72,7 @@ eSceneType TitleScene::Update(float _delta)
 			switch (current_num)
 			{
 			case TitleItem::tGameMain:
+				StopSoundMem(title_bgm);
 				return eSceneType::eInGame;
 				break;
 			case TitleItem::tRanking:

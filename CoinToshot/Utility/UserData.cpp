@@ -15,7 +15,8 @@ RankingData UserData::ranking_data[RANKING_DATA]{ 0 };	//ランキングデータ格納
 float UserData::player_hp = DEFAULT_HP;			
 int UserData::coin = 10;						
 int UserData::timer = DEFAULT_TIMELIMIT;		
-bool UserData::is_clear = true;					
+bool UserData::is_clear = false;
+bool UserData::is_dead = false;
 bool UserData::is_gamestop = false;				
 int UserData::invincible = 0;					
 int UserData::bullet_type = 0;

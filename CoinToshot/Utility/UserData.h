@@ -36,6 +36,7 @@ public:
 	static int coin;				//スコア
 	static int timer;				//残り時間
 	static bool is_clear;			//false=ゲームオーバー true=ゲームクリア
+	static bool is_dead;			//プレイヤーが死亡演出中か
 	static bool is_gamestop;		//false=ゲーム中 true=ゲーム終了
 	static int invincible;			//この数値が０以上なら、その時間だけプレイヤーを無敵にして、0に戻す
 	static int bullet_type;			//選択中の弾の種類

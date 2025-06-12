@@ -3,6 +3,7 @@
 #include "../Utility/InputPad.h"
 #include "DxLib.h"
 #include "../Utility/UserData.h"
+#include "../Utility/ResourceManager.h"
 
 ResultScene::ResultScene()
 {
@@ -10,11 +11,20 @@ ResultScene::ResultScene()
 
 	current_x = 0;
 	current_y = 0;
+
+	//BGM“Ç‚Ýž‚Ý
+	ResourceManager* rm = ResourceManager::GetInstance();
+	result_bgm = rm->GetSounds("Resource/Sounds/BGM/Sweet_smelling_flower.mp3");
+	SetVolumeSoundMem(8000, result_bgm);
+	if (!CheckSoundMem(result_bgm))
+	{
+		PlaySoundMem(result_bgm, DX_PLAYTYPE_BACK);
+	}
 }
 
 ResultScene::~ResultScene()
 {
-
+	StopSoundMem(result_bgm);
 }
 
 void ResultScene::Initialize()
