@@ -36,18 +36,13 @@ void Tutorial::Initialize()
 	}
 	for (int i = 0; i < TUTO_NUM; i++)
 	{
-		tuto_executed_flg[i] = true;
+		tuto_executed_flg[i] = false;
 	}
 
 	CreateTextBox();
 	generate_text_box = MakeScreen(SCREEN_WIDTH, SCREEN_HEIGHT, TRUE);
 
-	ex_anim_timer = 0;
-	now_image = 0;
 
-	ResourceManager* rm = ResourceManager::GetInstance();
-	ex_anim = rm->GetImages("Resource/Images/Effect/E_PuffAndStar.png", 60, 10, 6, 108, 116);
-	ex_se = rm->GetSounds("Resource/Sounds/explsion_big.mp3");
 }
 
 void Tutorial::Update()
@@ -92,7 +87,6 @@ void Tutorial::Update()
 void Tutorial::Draw()const
 {
 	int old = GetFontSize();
-	DrawFormatString(100, 80, 0x00ff00, "%d", timer);
 
 	//実行中のチュートリアルに応じて、処理をする
 	switch (now_tuto)
@@ -181,9 +175,7 @@ void Tutorial::InitTuto(TutoType _type)
 		text_box_size = { 250, 100 };
 		GenerateTextBox(text_box_size);
 		tuto_stop_flg = true;
-		ex_anim_flg = true;
 		timer = 240;
-		PlaySoundMem(ex_se, DX_PLAYTYPE_BACK);
 		break;
 	case TutoType::tEnemyBullet:
 		break;
@@ -598,18 +590,7 @@ void Tutorial::DrawAttack()const
 
 void Tutorial::UpdateBulletChange()
 {
-	if (ex_anim_flg && ++ex_anim_timer % 2 == 0)
-	{
-		if (now_image < ex_anim.size() - 1)
-		{
-			now_image++;
-		}
-		else
-		{
-			//アニメーション終了
-			ex_anim_flg = false;
-		}
-	}
+
 }
 void Tutorial::DrawBulletChange()const
 {
@@ -621,11 +602,4 @@ void Tutorial::DrawBulletChange()const
 	SetFontSize(18);
 	UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y + 30 }, "左右トリガーで変更", 0xffffff);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
-
-	//爆発アニメーション
-	if (ex_anim_flg)
-	{
-		DrawRotaGraphF(SCREEN_WIDTH / 2 - 130, 30, 1.f, 0, ex_anim[now_image], TRUE);
-		DrawRotaGraphF(SCREEN_WIDTH / 2 + 130, 30, 1.f, 0, ex_anim[now_image], TRUE);
-	}
 }

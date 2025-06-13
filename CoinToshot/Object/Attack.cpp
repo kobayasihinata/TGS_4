@@ -16,7 +16,7 @@ Attack::Attack(BulletData _bullet_data)
 	old_hit_object = nullptr;
 	bullet_type = _bullet_data.b_type;
 
-	//プレイヤーなら波紋を黄色、敵なら赤にする
+	//プレイヤー攻撃なら波紋を黄色、敵なら赤にする
 	if (object->GetObjectType() == ePLAYER)
 	{
 		ripple_color = 0xffff00;
@@ -103,7 +103,7 @@ void Attack::Draw()const
 
 void Attack::Hit(ObjectBase* hit_object)
 {
-	//当たったオブジェクトがひとつ前の同じものならスキップ
+	//当たったオブジェクトがひとつ前と同じものならスキップ
 	if (old_hit_object == hit_object)
 	{
 		return;

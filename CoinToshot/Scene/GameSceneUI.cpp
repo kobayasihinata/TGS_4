@@ -18,9 +18,20 @@ void GameSceneUI::Initialize()
 	player_ui_loc = { SCREEN_WIDTH - 350,0 };
 	now_coin_num = 0;
 	old_coin_num = 0;
-
+	con_spawn = 1;
 	//ロックの画像生成
 	CreateLockImage();
+
+	//紙吹雪の画像生成
+	CreateConfettiImage();
+
+	ex_anim_once =false;
+	ex_se_once = false;
+	ex_anim_timer = 0;
+	now_image = 0;
+	ResourceManager* rm = ResourceManager::GetInstance();
+	ex_anim = rm->GetImages("Resource/Images/Effect/E_PuffAndStar.png", 60, 10, 6, 108, 116);
+	ex_se = rm->GetSounds("Resource/Sounds/explsion_big.mp3");
 }
 
 void GameSceneUI::Update()
@@ -57,6 +68,58 @@ void GameSceneUI::Update()
 		}
 	}
 
+	//フラグが立っているなら、紙吹雪を生成
+	if (confetti_flg)
+	{
+		if (frame % con_spawn == 0)
+		{
+			confetti_data.push_back(GetConfettiData());
+			con_spawn = GetRand(5) + 1;
+		}
+	}
+
+	//紙吹雪更新
+	for (auto& con_data : confetti_data)
+	{
+		//角度と目標角度の差
+		float difference = (con_data.move_radian - con_data.radian);
+		con_data.radian += difference / 20;
+		//角度の調整が完了していたら、新しい目的地を設定する
+		if (fabsf(difference) <= 0.05f)
+		{
+			con_data.move_radian = ((float)GetRand(100) / 100) + 1.f;
+		}
+		//移動角度に応じてvelocity変更
+		con_data.velocity.x = con_data.speed * cosf(con_data.radian);
+		con_data.velocity.y = con_data.speed * sinf(con_data.radian);
+
+		//移動
+		con_data.location += con_data.velocity;
+
+		//画面外に出たら消す
+		if (con_data.location.y > SCREEN_HEIGHT + 30)
+		{
+			delete_confetti_data.push_back(con_data);
+		}
+	}
+
+	//配列から削除する処理
+	for (const auto& delete_data : delete_confetti_data)
+	{
+		for (auto it = confetti_data.begin(); it != confetti_data.end();)
+		{
+			if (*it == delete_data)
+			{
+				it = confetti_data.erase(it);
+				break;
+			}
+			else
+			{
+				++it;
+			}
+		}
+	}
+
 	//最大値の更新
 	if (UserData::attraction_timer > max_attraction)max_attraction = UserData::attraction_timer;
 	//ゲージのリセット
@@ -72,10 +135,30 @@ void GameSceneUI::Update()
 			bullet_change_timer = 0;
 		}
 	}
+
+	if (UserData::can_bullet_change_flg && !ex_se_once)
+	{
+		PlaySoundMem(ex_se, DX_PLAYTYPE_BACK);
+		ex_se_once = true;
+	}
+	//爆発アニメーション
+	if (!ex_anim_once && UserData::can_bullet_change_flg && ++ex_anim_timer % 2 == 0)
+	{
+		if (now_image < ex_anim.size() - 1)
+		{
+			now_image++;
+		}
+		else
+		{
+			//アニメーション終了
+			ex_anim_once = true;
+		}
+	}
 	CreateBulletTypeImage();
 
 	//削除したオブジェクトは消去
 	delete_ui_data.clear();
+	delete_confetti_data.clear();
 
 	//１フレーム前のコイン枚数を格納
 	old_coin_num = now_coin_num;
@@ -133,6 +216,13 @@ void GameSceneUI::Draw()const
 		DrawRotaGraphF(button_rt.x, button_rt.y, 1.f, 0, lock_image, TRUE);
 	}
 
+	//爆発アニメーション
+	if (!ex_anim_once && UserData::can_bullet_change_flg)
+	{
+		DrawRotaGraphF(SCREEN_WIDTH / 2 - 130, 30, 1.f, 0, ex_anim[now_image], TRUE);
+		DrawRotaGraphF(SCREEN_WIDTH / 2 + 130, 30, 1.f, 0, ex_anim[now_image], TRUE);
+	}
+
 	//プレイヤーが弾種類UIと被ったら透過する
 	if (camera->player_location.x - camera->GetCameraLocation().x > (SCREEN_WIDTH / 2) - 100 &&
 		camera->player_location.x - camera->GetCameraLocation().x < (SCREEN_WIDTH / 2) + 100 &&
@@ -169,6 +259,12 @@ void GameSceneUI::Draw()const
 	//文字透過リセット
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
+	//紙吹雪の描画
+	for (const auto con_data : confetti_data)
+	{
+		DrawRotaGraphF(con_data.location.x, con_data.location.y, 1.f, con_data.radian, con_data.image, TRUE);
+	}
+
 	SetFontSize(old);
 }
 
@@ -184,6 +280,18 @@ void GameSceneUI::SetUIData(Vector2D _location, string _text, int _text_color, f
 	data.text_color = _text_color;
 
 	ui_data.push_back(data);
+}
+
+ConfettiData GameSceneUI::GetConfettiData()const
+{
+	ConfettiData ret;
+	ret.location.x = GetRand(SCREEN_WIDTH + 200) - 100;
+	ret.location.y = -20;
+	ret.image = confetti_image[GetRand(7)];
+	ret.radian = ((float)GetRand(100) / 100) + 1.f;
+	ret.move_radian = ((float)GetRand(100) / 100) + 1.f;
+	ret.speed = ((float)GetRand(500) / 100) + 2;
+	return ret;
 }
 
 void GameSceneUI::CreateBulletTypeImage()const
@@ -251,6 +359,21 @@ void GameSceneUI::CreateLockImage()const
 	SetDrawScreen(DX_SCREEN_BACK);
 }
 
+void GameSceneUI::CreateConfettiImage()
+{
+	//色格納
+	int color[8] = { 0xff0000,0xffaa00,0xffff00,0xaaff00,0x00ff00,0x00ffff,0x0000ff,0xff00ff };
+	for (int i = 0; i < 8; i++)
+	{
+		confetti_image[i] = MakeScreen(16, 16, FALSE);
+		SetDrawScreen(confetti_image[i]);
+		ClearDrawScreen();
+
+		DrawBox(0, 0, 16, 16, color[i], TRUE);
+	}
+	SetDrawScreen(DX_SCREEN_BACK);
+}
+
 void GameSceneUI::DrawBullet(Vector2D _loc, int _type)const
 {
 	//撃てない弾のUIは薄暗くする
@@ -274,7 +397,7 @@ void GameSceneUI::DrawPlayerUI()const
 	int old = GetFontSize();
 
 	SetFontSize(24);
-	int width = GetDrawFormatStringWidth("HP:%d %d %d", (int)(UserData::player_hp), (int)(UserData::timer / 60), UserData::coin);
+	int width = GetDrawFormatStringWidth("HP:%d %d %d", (int)(UserData::player_hp)+1, (int)(UserData::timer / 60), UserData::coin);
 	DrawQuadrangle(player_ui_loc.x - width+170, player_ui_loc.y,
 		player_ui_loc.x + 420, player_ui_loc.y,
 		player_ui_loc.x + 370, player_ui_loc.y + 65,
@@ -320,6 +443,15 @@ void GameSceneUI::DrawPlayerUI()const
 		"×%d", 
 		UserData::coin);
 	SetFontSize(old);
+
+	//残り時間１０秒以下なら、カウントダウンを描画する
+	if (UserData::timer < 600 && UserData::timer > 0)
+	{
+		SetFontSize(90 - (UserData::timer % 60 * 1.5f));
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 - ((UserData::timer % 60) * 6));
+		DrawFormatString(SCREEN_WIDTH / 2 - GetDrawFormatStringWidth("%d", UserData::timer / 60) / 2, SCREEN_HEIGHT / 2 - GetFontSize() / 2 - 100, GetColor(255,(UserData::timer/3),0), "%d", (UserData::timer / 60));
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+	}
 }
 
 bool GameSceneUI::CheckMoveDirection(int _now, int _old)const

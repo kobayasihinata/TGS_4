@@ -44,14 +44,16 @@ eSceneType RankingScene::Update(float _delta)
 
 void RankingScene::Draw()const
 {
+	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x999900, TRUE);
+	SetFontSize(24);
 	DrawString(10, 10, "Ranking", GetColor(255, 255, 255));
 	DrawString(10, 30, "Pad:A = Title", GetColor(255, 255, 255));
 
 	for (int i = 0; i < 10; i++)
 	{
 		DrawFormatString(180, 200 + i * 40, 0xffffff, "no.%d",   UserData::ranking_data[i].num);
-		DrawFormatString(240, 200 + i * 40, 0xffffff, "name:%s", UserData::ranking_data[i].name.c_str());
-		DrawFormatString(380, 200 + i * 40, 0xffffff, "coin:%d", UserData::ranking_data[i].coin);
+		DrawFormatString(260, 200 + i * 40, 0xffffff, "name:%s", UserData::ranking_data[i].name.c_str());
+		DrawFormatString(450, 200 + i * 40, 0xffffff, "coin:%d", UserData::ranking_data[i].coin);
 	}
 }
 

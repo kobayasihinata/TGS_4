@@ -26,7 +26,6 @@
 
 //プレイヤーのパラメータ関連
 #define DEFAULT_HP 10				//プレイヤー初期HP
-#define DEFAULT_LIFE 0				//プレイヤー初期残機
 #define PLAYER_WIDTH 40				//プレイヤー幅
 #define PLAYER_HEIGHT 40			//プレイヤー高さ
 #define PLAYER_SPEED 4.f			//プレイヤー移動速度

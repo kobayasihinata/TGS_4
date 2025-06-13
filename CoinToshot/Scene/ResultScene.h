@@ -6,6 +6,12 @@ using namespace std;
 #define KEY_WIDTH 10	//名前入力キーボード横要素数
 #define KEY_HEIGHT 4	//名前入力キーボード縦要素数
 
+#define START_ANIM_TIME 180		//遷移演出時間	
+#define RESULT_ANIM_TIME 300	//リザルト表示演出時間
+#define BONUS_ANIM_TIME 300		//ボーナス点数加算演出時間
+
+#define SKIP_TIME 30		//残り何フレームまでスキップ出来るか
+
 //入力できる文字たちとその配置
 static char key[KEY_HEIGHT][KEY_WIDTH]{
 	{'0','1','2','3','4','5','6','7','8','9',},
@@ -17,6 +23,8 @@ static char key[KEY_HEIGHT][KEY_WIDTH]{
 enum DispScene
 {
 	dIsClear = 0,
+	dDispResult,
+	dBoundPoint,
 	dEnterName,
 };
 
@@ -25,13 +33,28 @@ class ResultScene : public SceneBase
 private:
 	int now_disp;		//表示している画面
 
+
+	int start_anim_timer;	//遷移演出時間測定
+	int result_anim_timer;	//リザルト表示演出時間測定
+	int bonus_anim_timer;	//ボーナス点数加算演出時間測定
+
+	int add_anim_num;		//加算アニメーション用1フレーム辺りの加算枚数
+	int add_anim_coin;		//加算アニメーション用コイン枚数
+
+	bool add_coin_once;		//ボーナス加算を一回だけ行う
+
 	//名前入力関連
-	int current_x;	//カーソルX位置
-	int current_y;	//カーソルY位置
-	string name;	//名前格納
+	int current_x;		//カーソルX位置
+	int current_y;		//カーソルY位置
+	string name;		//名前格納
 
-	int result_bgm;				//リザルトBGM
+	bool disp_se_once;	//項目表示SE再生
 
+	int result_bgm;		//リザルトBGM
+
+	int button_se;		//ボタンSE
+	int disp_se;		//項目表示SE
+	int coin_se;		//コイン加算SE
 public:
 	ResultScene();
 	virtual ~ResultScene();

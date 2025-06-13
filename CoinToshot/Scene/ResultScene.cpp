@@ -7,14 +7,27 @@
 
 ResultScene::ResultScene()
 {
-	now_disp = 0;
+	now_disp = DispScene::dIsClear;
+
+	start_anim_timer= 0;
+	result_anim_timer = 0;
+	bonus_anim_timer = 0;
+	add_anim_num = ((int)UserData::player_hp * 10 + (int)((DEFAULT_TIMELIMIT - UserData::timer) / 60)) / (BONUS_ANIM_TIME / 5);
+	add_anim_coin = UserData::coin;
+	add_coin_once = false;
+	disp_se_once = true;
 
 	current_x = 0;
 	current_y = 0;
 
+
 	//BGM読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
 	result_bgm = rm->GetSounds("Resource/Sounds/BGM/Sweet_smelling_flower.mp3");
+	button_se = rm->GetSounds("Resource/Sounds/enter.mp3");
+	//クリアかゲームオーバーかでSEを変える
+	disp_se = UserData::is_clear ? rm->GetSounds("Resource/Sounds/Coin/Get.mp3"): rm->GetSounds("Resource/Sounds/bishi.wav");
+	coin_se = rm->GetSounds("Resource/Sounds/Coin/Get.mp3");
 	SetVolumeSoundMem(8000, result_bgm);
 	if (!CheckSoundMem(result_bgm))
 	{
@@ -34,22 +47,111 @@ void ResultScene::Initialize()
 
 eSceneType ResultScene::Update(float _delta)
 {
+	if (!disp_se_once)
+	{
+		PlaySoundMem(disp_se, DX_PLAYTYPE_BACK);
+		disp_se_once = true;
+	}
 	switch (now_disp)
 	{
-	case DispScene::dIsClear:
+	case DispScene::dIsClear:	//ゲームクリアかオーバーか表示
+		start_anim_timer++;
+		//一定時間経過後、Aボタンを押したとき
+		if (InputPad::OnButton(XINPUT_BUTTON_A))
+		{
+			//演出が終了していたらボーナス加算演出開始
+			if (start_anim_timer > START_ANIM_TIME)
+			{
+				now_disp = DispScene::dDispResult;
+				PlaySoundMem(button_se, DX_PLAYTYPE_BACK);
+			}
+			//終了していなければ演出スキップ
+			else
+			{
+				//スキップは演出終了の15フレーム前まで
+				start_anim_timer = start_anim_timer >= START_ANIM_TIME - SKIP_TIME ? start_anim_timer : START_ANIM_TIME - SKIP_TIME;
+			}
+		}
+		break;
+	case DispScene::dDispResult://結果を表示
+		result_anim_timer++;
+		//タイマーで結果を順番に表示
+		if (result_anim_timer == RESULT_ANIM_TIME / 5 ||
+			result_anim_timer == (RESULT_ANIM_TIME / 5) * 2 ||
+			result_anim_timer == (RESULT_ANIM_TIME / 5) * 3)
+		{
+			//SE再生
+			disp_se_once = false;
+		}
 		//Aボタンを押したとき
 		if (InputPad::OnButton(XINPUT_BUTTON_A))
 		{
-			//ランキング最下位のスコアを上回っていたら
-			if (UserData::coin > UserData::ranking_data[9].coin)
+			//演出が終了していたらボーナス加算演出開始
+			if (result_anim_timer > RESULT_ANIM_TIME)
 			{
-				//名前入力に遷移
-				now_disp = DispScene::dEnterName;
+				now_disp = DispScene::dBoundPoint;
+				PlaySoundMem(button_se, DX_PLAYTYPE_BACK);
 			}
-			//ランク外ならランキング表示シーンに飛ぶ
+			//終了していなければ演出スキップ
 			else
 			{
-				return eSceneType::eRanking;
+				//スキップは演出終了の15フレーム前まで
+				result_anim_timer = result_anim_timer >= RESULT_ANIM_TIME - SKIP_TIME ? result_anim_timer : RESULT_ANIM_TIME - SKIP_TIME;
+			}
+		}
+		break;
+	case DispScene::dBoundPoint://点数加算を表示
+		bonus_anim_timer++;
+		if (bonus_anim_timer ==  BONUS_ANIM_TIME / 5 ||
+			bonus_anim_timer == (BONUS_ANIM_TIME / 5) * 2 ||
+			bonus_anim_timer == (BONUS_ANIM_TIME / 5) * 3)
+		{
+			//SE再生
+			disp_se_once = false;
+		}
+		if (bonus_anim_timer > (BONUS_ANIM_TIME / 5) * 4)
+		{
+			if (!add_coin_once)
+			{
+				UserData::coin += (int)UserData::player_hp * 10 + (int)((DEFAULT_TIMELIMIT - UserData::timer) / 60);
+				add_coin_once = true;
+			}
+			//加算演出
+			if (bonus_anim_timer < BONUS_ANIM_TIME - SKIP_TIME)
+			{
+				add_anim_coin += add_anim_num;
+				if (bonus_anim_timer % 3 == 0)
+				{
+					PlaySoundMem(coin_se, DX_PLAYTYPE_BACK);
+				}
+			}
+
+		}
+		//Aボタンを押したとき
+		if (InputPad::OnButton(XINPUT_BUTTON_A))
+		{
+			//演出が終了していたら遷移
+			if (bonus_anim_timer > BONUS_ANIM_TIME)
+			{
+				PlaySoundMem(button_se, DX_PLAYTYPE_BACK);
+				//ランキング最下位のスコアを上回っていたら
+				if (UserData::coin > UserData::ranking_data[9].coin)
+				{
+					//名前入力に遷移
+					now_disp = DispScene::dEnterName;
+				}
+				//ランク外ならランキング表示シーンに飛ぶ
+				else
+				{
+					return eSceneType::eRanking;
+				}
+
+			}
+			//終了していなければ演出スキップ
+			else
+			{
+				//スキップは演出終了の一定フレーム前まで
+				bonus_anim_timer = bonus_anim_timer >= BONUS_ANIM_TIME - SKIP_TIME ? bonus_anim_timer : BONUS_ANIM_TIME - SKIP_TIME;
 			}
 		}
 		break;
@@ -77,21 +179,138 @@ eSceneType ResultScene::Update(float _delta)
 
 void ResultScene::Draw()const
 {
+	int bg_color, text_color1, text_color2, text_color3;
 	DrawString(10, 10, "Result", GetColor(255, 255, 255));
 
 	switch (now_disp)
 	{
 	case DispScene::dIsClear:
-		DrawString(10, 30, "Pad:A = Next", GetColor(255, 255, 255));
-		//クリアかクリアじゃないか表示
 		if (UserData::is_clear)
 		{
-			DrawString(100, 10, "Clear", GetColor(255, 255, 255));
+			DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0xffffff, TRUE);
+
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, start_anim_timer * (255 / (START_ANIM_TIME / 2)));
+			DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0xffffbb, TRUE);
+			SetFontSize(64);
+			UserData::DrawStringCenter({ SCREEN_WIDTH / 2 -1,SCREEN_HEIGHT / 2 - 51 }, "Congratulations...!", 0x000000);
+			UserData::DrawStringCenter({ SCREEN_WIDTH / 2 +1,SCREEN_HEIGHT / 2 - 49 }, "Congratulations...!", 0x000000);
+			UserData::DrawStringCenter({ SCREEN_WIDTH / 2   ,SCREEN_HEIGHT / 2 - 50 }, "Congratulations...!", 0xffff00);
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 		}
 		else
 		{
-			DrawString(100, 10, "GameOver", GetColor(255, 255, 255));
+			DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, TRUE);
 
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, start_anim_timer * (255 / (START_ANIM_TIME / 2)));
+			DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x999900, TRUE);
+			SetFontSize(64);
+			UserData::DrawStringCenter({ SCREEN_WIDTH / 2 - 1,SCREEN_HEIGHT / 2 - 51 }, "Nice try!", 0xffffff);
+			UserData::DrawStringCenter({ SCREEN_WIDTH / 2 + 1,SCREEN_HEIGHT / 2 - 49 }, "Nice try!", 0xffffff);
+			UserData::DrawStringCenter({ SCREEN_WIDTH / 2   ,SCREEN_HEIGHT / 2 - 50 },  "Nice try!", 0xbbbb00);
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+		}
+
+		if (start_anim_timer > START_ANIM_TIME)
+		{
+			UserData::DrawButtonImage({ SCREEN_WIDTH / 2,SCREEN_HEIGHT - 30 }, XINPUT_BUTTON_A, 60);
+		}
+
+		break;
+	case DispScene::dDispResult:
+		if (UserData::is_clear)
+		{
+			bg_color = 0xffffbb;
+			text_color1 = 0x888800;
+			text_color2 = 0xaaaa00;
+			text_color3 = 0xffbb00;
+		}
+		else
+		{
+			bg_color = 0x555500;
+			text_color1 = 0xaaaa00;
+			text_color2 = 0xbbbb00;
+			text_color3 = 0xaa6600;
+		}
+
+		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, bg_color, TRUE);
+		SetFontSize(64);
+		UserData::DrawStringCenter({ SCREEN_WIDTH / 2,50 }, "Result", result_anim_timer % 120 > 60 ? text_color1 : text_color2);
+		SetFontSize(36);
+		//タイマーで結果を順番に表示
+		if (result_anim_timer > RESULT_ANIM_TIME / 5)
+		{
+			DrawString(SCREEN_WIDTH / 2 - 120, 250, "Time:", text_color1);
+			DrawFormatString(SCREEN_WIDTH / 2 + 100 - GetDrawFormatStringWidth("%d", (int)((DEFAULT_TIMELIMIT - UserData::timer) / 60)), 250, text_color1, "%d", (int)((DEFAULT_TIMELIMIT - UserData::timer) / 60));
+			if(DEFAULT_TIMELIMIT - UserData::timer == DEFAULT_TIMELIMIT)DrawString(SCREEN_WIDTH / 2 + 130, 250, "← MAX!!", result_anim_timer % 30 > 15 ? text_color1 : text_color3);
+		}
+		if (result_anim_timer > (RESULT_ANIM_TIME / 5) * 2)
+		{
+			DrawString(SCREEN_WIDTH / 2 - 80, 310, "HP:", text_color1);
+			DrawFormatString(SCREEN_WIDTH / 2 + 100 - GetDrawFormatStringWidth("%d", (int)UserData::player_hp), 310, text_color1, "%d", (int)UserData::player_hp);
+		}
+		if (result_anim_timer > (RESULT_ANIM_TIME / 5) * 3)
+		{
+			UserData::DrawCoin({ SCREEN_WIDTH / 2 - 75, 395 }, 20);
+			DrawString(SCREEN_WIDTH / 2 - 35, 370, ":", text_color1);
+			DrawFormatString(SCREEN_WIDTH / 2 + 100 - GetDrawFormatStringWidth("%d", UserData::coin), 370, text_color1, "%d", UserData::coin);
+		}
+
+		if (result_anim_timer > RESULT_ANIM_TIME)
+		{
+			UserData::DrawButtonImage({ SCREEN_WIDTH / 2,SCREEN_HEIGHT - 30 }, XINPUT_BUTTON_A, 60);
+		}
+		break;
+	case DispScene::dBoundPoint:
+		if (UserData::is_clear)
+		{
+			bg_color = 0xffffbb;
+			text_color1 = 0x888800;
+			text_color2 = 0xaaaa00;
+			text_color3 = 0xffbb00;
+		}
+		else
+		{
+			bg_color = 0x555500;
+			text_color1 = 0x999900;
+			text_color2 = 0x666600;
+			text_color3 = 0x995500;
+		}
+
+		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, bg_color, TRUE);
+		SetFontSize(64);
+		UserData::DrawStringCenter({ SCREEN_WIDTH / 2,50 }, "Bonus!!", bonus_anim_timer % 30 > 15 ? text_color1 : text_color3);
+		SetFontSize(36);			
+
+		DrawString(SCREEN_WIDTH / 2 - 120, 250, "Time:", text_color1);
+		DrawFormatString(SCREEN_WIDTH / 2 + 100 - GetDrawFormatStringWidth("%d", (int)((DEFAULT_TIMELIMIT - UserData::timer) / 60)), 250, text_color1, "%d", (int)((DEFAULT_TIMELIMIT - UserData::timer) / 60));
+
+		DrawString(SCREEN_WIDTH / 2 - 80, 310, "HP:", text_color1);
+		DrawFormatString(SCREEN_WIDTH / 2 + 100 - GetDrawFormatStringWidth("%d", (int)UserData::player_hp), 310, text_color1, "%d", (int)UserData::player_hp);
+
+		UserData::DrawCoin({ SCREEN_WIDTH / 2 - 75, 395 }, 20);
+		DrawString(SCREEN_WIDTH / 2 - 35, 370, ":", text_color1);
+		DrawFormatString(SCREEN_WIDTH / 2 + 100 - GetDrawFormatStringWidth("%d", bonus_anim_timer >= BONUS_ANIM_TIME - SKIP_TIME ? UserData::coin : add_anim_coin), 370, text_color1, "%d", bonus_anim_timer >= BONUS_ANIM_TIME - SKIP_TIME ? UserData::coin : add_anim_coin);
+
+		//ボーナス加算描画
+		if (bonus_anim_timer > BONUS_ANIM_TIME / 5)
+		{
+			DrawFormatString(SCREEN_WIDTH / 2 + 130, 250, 0xffbb00, "=    ×%d", (int)((DEFAULT_TIMELIMIT - UserData::timer) / 60));
+			UserData::DrawCoin({ SCREEN_WIDTH / 2 + 175, 270 }, 20);
+		}
+		if (bonus_anim_timer > (BONUS_ANIM_TIME / 5)*2)
+		{
+			DrawFormatString(SCREEN_WIDTH / 2 + 130, 310, 0xffbb00, "=    ×%d", (int)UserData::player_hp * 10);
+			UserData::DrawCoin({ SCREEN_WIDTH / 2 + 175, 330 }, 20);
+		}
+		if (bonus_anim_timer > (BONUS_ANIM_TIME / 5) * 3)
+		{
+			SetFontSize(48);
+			DrawFormatString(SCREEN_WIDTH / 2 + 130, 365, bonus_anim_timer % 30 > 15 ? 0xffbb00 : 0xff0000, "+    ×%d", (int)UserData::player_hp * 10 + (int)((DEFAULT_TIMELIMIT - UserData::timer) / 60));
+			UserData::DrawCoin({ SCREEN_WIDTH / 2 + 200, 390 }, 30);
+		}
+		if (bonus_anim_timer > BONUS_ANIM_TIME)
+		{
+			UserData::DrawButtonImage({ SCREEN_WIDTH / 2,SCREEN_HEIGHT - 30 }, XINPUT_BUTTON_A, 60);
 		}
 		break;
 	case DispScene::dEnterName:
@@ -188,10 +407,14 @@ eSceneType ResultScene::EnterName()
 
 void ResultScene::EnterNameDraw()const 
 {
+	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x999900, TRUE);
+	SetFontSize(24);
 	DrawString(10, 30, "Pad:START = Enter",  GetColor(255, 255, 255));
-	DrawString(10, 50, "Pad:A	  = Add",    GetColor(255, 255, 255));
-	DrawString(10, 70, "Pad:B	  = Delete", GetColor(255, 255, 255));
+	DrawString(10, 60, "Pad:A	  = Add",    GetColor(255, 255, 255));
+	DrawString(10, 90, "Pad:B	  = Delete", GetColor(255, 255, 255));
 
+
+	SetFontSize(32);
 	//文字の描画
 	for (int y = 0; y < KEY_HEIGHT; y++)
 	{
@@ -200,11 +423,11 @@ void ResultScene::EnterNameDraw()const
 			//選択されている項目の色を変える
 			if (current_x == x && current_y == y)
 			{
-				DrawFormatStringF(200 + x * 40, 200 + y * 40, 0xff0000, "%c", key[y][x]);
+				DrawFormatString(200 + x * 40, 200 + y * 40, 0xff0000, "%c", key[y][x]);
 			}
 			else
 			{
-				DrawFormatStringF(200 + x * 40, 200 + y * 40, 0x00ff00, "%c", key[y][x]);
+				DrawFormatString(200 + x * 40, 200 + y * 40, 0x00ff00, "%c", key[y][x]);
 			}
 		}
 	}

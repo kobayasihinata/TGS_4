@@ -318,7 +318,6 @@ void Player::Death()
 	location = 0;
 
 	//各値リセット
-	UserData::player_hp = hp = DEFAULT_HP;
 	velocity = 0;
 	damage_flg = false;
 	damage_timer = 0;

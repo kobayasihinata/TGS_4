@@ -22,8 +22,8 @@ void InGameScene::Initialize()
 	__super::Initialize();
 
 	//各数字リセット
-	UserData::timer = 600;
-	UserData::player_hp = 1;
+	UserData::timer = DEFAULT_TIMELIMIT;
+	UserData::player_hp = DEFAULT_HP;
 	UserData::coin = 20;
 	UserData::is_gamestop = false;
 	UserData::attraction_flg = false;
@@ -32,6 +32,7 @@ void InGameScene::Initialize()
 	UserData::invincible = 0;
 	UserData::is_clear = false;
 	UserData::can_bullet_change_flg = false;
+	UserData::is_dead = false;
 
 	change_result_delay = -1;//0になったらリザルト遷移
 	change_result = false;
@@ -122,8 +123,6 @@ eSceneType InGameScene::Update(float _delta)
 			//カメラ更新
 			camera->Update();
 
-			//UI更新
-			ui->Update();
 
 			//チュートリアルが終わっていないとタイマーが動かず、敵とコインが湧かないようにする
 			if (tutorial->GetIsEndTutorial(TutoType::tAttack))
@@ -153,11 +152,14 @@ eSceneType InGameScene::Update(float _delta)
 			objects->Update();
 		}
 
+		//UI更新
+		ui->Update();
 
 		//時間切れで終了（勝利扱い）
 		if (UserData::timer <= 0 && !change_result)
 		{
 			UserData::is_clear = true;
+			ui->confetti_flg = true;
 			UserData::is_gamestop = true;
 			change_result = true;
 			change_result_delay = G_END_ANIM_TIME;
@@ -244,7 +246,7 @@ void InGameScene::Draw()const
 	{
 		if (UserData::is_clear)
 		{
-			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 - ((255 / G_END_ANIM_TIME) * change_result_delay));
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, change_result_delay < 25 ? 255 - (change_result_delay * 10) : 0);
 			DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0xffffff, true);
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
