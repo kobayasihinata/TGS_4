@@ -75,6 +75,7 @@ void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init
 	cursor_se = rm->GetSounds("Resource/Sounds/cursor.mp3");
 	not_shoot_se = rm->GetSounds("Resource/Sounds/Player/CannotShoot.mp3");
 	death_se = rm->GetSounds("Resource/Sounds/explsion_big.mp3");
+	bullet_change_se = rm->GetSounds("Resource/Sounds/メッセージ表示音2.mp3");
 
 	//音量調節
 	SetVolumeSoundMem(9500, walk_se);
@@ -397,14 +398,29 @@ void Player::Control()
 				UserData::bullet_type = BULLET_NUM - 1;
 			}
 			bullet_change_cd = PLATER_BULLET_CHANGE_CD;
+			if (!CheckSoundMem(bullet_change_se))
+			{
+				PlaySoundMem(bullet_change_se, DX_PLAYTYPE_BACK);
+			}
 		}
-		if (InputPad::OnPressed(R_TRIGGER))
+		else if (InputPad::OnPressed(R_TRIGGER))
 		{
 			if (++UserData::bullet_type > BULLET_NUM - 1)
 			{
 				UserData::bullet_type = 0;
 			}
 			bullet_change_cd = PLATER_BULLET_CHANGE_CD;
+			if (!CheckSoundMem(bullet_change_se))
+			{
+				PlaySoundMem(bullet_change_se, DX_PLAYTYPE_BACK);
+			}
+		}
+		else
+		{
+			if (CheckSoundMem(bullet_change_se))
+			{
+				StopSoundMem(bullet_change_se);
+			}
 		}
 	}
 

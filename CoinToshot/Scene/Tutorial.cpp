@@ -42,7 +42,8 @@ void Tutorial::Initialize()
 	CreateTextBox();
 	generate_text_box = MakeScreen(SCREEN_WIDTH, SCREEN_HEIGHT, TRUE);
 
-
+	ResourceManager* rm = ResourceManager::GetInstance();
+	charge_se = rm->GetSounds("Resource/Sounds/charge.mp3");
 }
 
 void Tutorial::Update()
@@ -398,11 +399,19 @@ void Tutorial::UpdateAim()
 				aim_success_flg = true;
 				aim_timer = 0;
 			}
+			if (!CheckSoundMem(charge_se))
+			{
+				PlaySoundMem(charge_se, DX_PLAYTYPE_BACK);
+			}
 		}
 		//照準がずれたらリセット
 		else
 		{
 			aim_timer = 0;
+			if (CheckSoundMem(charge_se))
+			{
+				StopSoundMem(charge_se);
+			}
 		}
 		//照準を成功させたら演出
 		if (aim_success_flg)
@@ -451,8 +460,8 @@ void Tutorial::DrawAim()const
 				tuto_object->GetLocalLocation().x       + 30,
 				tuto_object->GetLocalLocation().y       - 40,
 				0xffffff, FALSE);
-			DrawFormatString(tuto_object->GetLocalLocation().x + 1, tuto_object->GetLocalLocation().y - 59, 0x000000, "%d", 3 - (aim_timer / 30));
-			DrawFormatString(tuto_object->GetLocalLocation().x, tuto_object->GetLocalLocation().y - 60, 0xffff00, "%d", 3 - (aim_timer / 30));
+			DrawFormatString(tuto_object->GetLocalLocation().x + 1, tuto_object->GetLocalLocation().y - 49, 0x000000, "%d", 3 - (aim_timer / 30));
+			DrawFormatString(tuto_object->GetLocalLocation().x, tuto_object->GetLocalLocation().y - 50, 0xff0000, "%d", 3 - (aim_timer / 30));
 		}
 		//照準合わせ成功描画
 		if (aim_success_flg)

@@ -41,6 +41,7 @@ private:
 	int cursor_se;				//照準SE
 	int not_shoot_se;			//発射失敗SE
 	int death_se;				//死亡SE
+	int bullet_change_se;		//弾変更SE
 public:
 	static InGameScene* ingame;		//現在のシーンのポインタを保存
 

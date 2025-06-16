@@ -24,7 +24,6 @@ void InGameScene::Initialize()
 	//各数字リセット
 	UserData::timer = DEFAULT_TIMELIMIT;
 	UserData::player_hp = DEFAULT_HP;
-	UserData::coin = 20;
 	UserData::is_gamestop = false;
 	UserData::attraction_flg = false;
 	UserData::attraction_timer = 0;
@@ -36,12 +35,14 @@ void InGameScene::Initialize()
 
 	change_result_delay = -1;//0になったらリザルト遷移
 	change_result = false;
+	tuto_coin_count = 0;
 	pause_flg = false;
 	coin_spawn_once = false;
 	update_once = false;
 	start_anim_flg = true;
 	start_anim_timer = 0;
-
+	tuto_heal_once = false;
+	tuto_heal_timer = 0;
 	camera = Camera::Get();
 	camera->player_location = 0;
 	tutorial = Tutorial::Get();
@@ -50,6 +51,9 @@ void InGameScene::Initialize()
 	{
 		tutorial->Initialize();
 	}
+
+	//チュートリアルが完了していないなら初期コインは0枚、しているなら20枚
+	UserData::coin = tutorial->GetBasicTuto() ? 20 : 0;
 
 	//オブジェクト管理クラス生成
 	objects = new ObjectManager();
@@ -63,7 +67,7 @@ void InGameScene::Initialize()
 	objects->CreateObject({ Vector2D{48,32},Vector2D{40,40},ePLAYER });
 
 	objects->CreateObject({ Vector2D{(float)(GetRand(1)* 2000 - 1000),(float)(GetRand(1)* 2000 - 1000)},Vector2D{100,100},eSLOT});
-	objects->CreateObject({ Vector2D{ 140, 30 },Vector2D{40,40},eCOIN, 20.f });
+	objects->CreateObject({ Vector2D{ 250, 30 },Vector2D{40,40},eCOIN, 20.f });
 
 	objects->CreateObject({ {950,0}, Vector2D{ ENEMY1_WIDTH,ENEMY1_HEIGHT }, eENEMY1});
 
@@ -82,6 +86,11 @@ void InGameScene::Finalize()
 {
 	//チュートリアルを受けた事があると判断
 	tutorial->tuto_flg = true;
+	//万が一チュートリアル中にゲームが終了した場合は、チュートリアル履歴をリセット
+	if (tutorial->GetNowTutorial() == TutoType::tAim || tutorial->GetNowTutorial() == TutoType::tAttack)
+	{
+		tutorial->tuto_flg = false;
+	}
 	//カメラを初期位置に戻しておく
 	camera->Update({ -SCREEN_WIDTH / 2 + 48, -SCREEN_HEIGHT / 2 + 32 });
 
@@ -123,6 +132,15 @@ eSceneType InGameScene::Update(float _delta)
 			//カメラ更新
 			camera->Update();
 
+			//移動チュートリアルが終わっていたらコイン投げ入れ
+			if (!tutorial->tuto_flg && tutorial->GetIsEndTutorial(TutoType::tMove) && (int)frame % 10 == 0 && tuto_coin_count++ < 20)
+			{
+				Vector2D rand = GetRandLoc();
+				Vector2D camera_center = { camera->GetCameraLocation().x + (SCREEN_WIDTH / 2),camera->GetCameraLocation().y + (SCREEN_HEIGHT / 2) };
+				Vector2D rand_velocity = { ((camera_center.x - rand.x) + (GetRand(SCREEN_WIDTH - 200) - (SCREEN_WIDTH - 200) / 2)) / 10,
+										   ((camera_center.y - rand.y) + (GetRand(SCREEN_HEIGHT - 200) - (SCREEN_HEIGHT - 200) / 2)) / 10 };
+				objects->CreateObject(eCOIN, rand, { 40,40 }, 20.f, rand_velocity);
+			}
 
 			//チュートリアルが終わっていないとタイマーが動かず、敵とコインが湧かないようにする
 			if (tutorial->GetIsEndTutorial(TutoType::tAttack))
@@ -148,6 +166,31 @@ eSceneType InGameScene::Update(float _delta)
 			{
 				coin_spawn_once = false;
 			}
+
+			//照準チュートリアルと攻撃チュートリアル中はHPが5以下になったら画面外から回復アイテムを投げつけられる
+			if (tutorial->GetNowTutorial() == TutoType::tAim || tutorial->GetNowTutorial() == TutoType::tAttack)
+			{
+				if (UserData::player_hp <= 5)
+				{
+					if (!tuto_heal_once && ++tuto_heal_timer > 15)
+					{
+						//回復アイテム生成
+						Vector2D rand = GetRandLoc();
+						Vector2D rand_velocity = { (camera->player_location.x - rand.x)/7  ,
+												   (camera->player_location.y - rand.y)/7 };
+						objects->CreateObject(eHEAL, rand, { 40,40 }, 20.f, rand_velocity);
+						tuto_heal_once = true;
+						tuto_heal_timer = 0;
+					}
+				}
+				//HPが回復したらリセット
+				else
+				{
+					tuto_heal_once = false;
+				}
+				
+			}
+
 			//オブジェクト更新
 			objects->Update();
 		}
@@ -335,7 +378,7 @@ void InGameScene::SpawnItem()
 
 	if ((int)frame % 60 == 0)
 	{
-		objects->CreateObject({ Vector2D{(float)(GetRand(100)),(float)(GetRand(100))},Vector2D{40,40},eCOIN, 20.f});
+		objects->CreateObject({ Vector2D{(float)(GetRand(100)),(float)(GetRand(100))},Vector2D{40,40},eCOIN, 20.f });
 		//objects->CreateObject({ Vector2D{-100,-100},Vector2D{30,30},eENEMY1,/* 20.f */ });
 	}
 	if ((int)frame % 10 == 0)
@@ -343,11 +386,10 @@ void InGameScene::SpawnItem()
 		objects->CreateEffect(elShine, { (float)(GetRand(100)),(float)(GetRand(100)) }, TRUE, 0xffff00);
 	}
 }
-
 void InGameScene::SpawnEnemy()
 {
 	//画面外からランダムに一定周期でスポーン
-	if ((int)frame % 90 == 0)
+	if ((int)frame % (120 -((DEFAULT_TIMELIMIT - UserData::timer)/300)) == 0)
 	{
 		objects->CreateObject(GetEnemyData());
 	}
@@ -366,14 +408,14 @@ Vector2D InGameScene::GetRandLoc()
 	if ((bool)GetRand(1))
 	{
 		//左右の端
-		ret.x = (float)(camera->player_location.x - SCREEN_WIDTH + (SCREEN_WIDTH * 2 * GetRand(1)));
-		ret.y = (float)(camera->player_location.y - SCREEN_HEIGHT + GetRand(SCREEN_HEIGHT*2));
+		ret.x = (float)(camera->GetCameraLocation().x - (SCREEN_WIDTH/2) + (SCREEN_WIDTH * 2 * GetRand(1)));
+		ret.y = (float)(camera->GetCameraLocation().y - (SCREEN_HEIGHT/2) + GetRand(SCREEN_HEIGHT*2));
 	}
 	else
 	{
 		//上下の端
-		ret.x = (float)(camera->player_location.x - SCREEN_WIDTH + GetRand(SCREEN_WIDTH*2));
-		ret.y = (float)(camera->player_location.y - SCREEN_HEIGHT + (SCREEN_HEIGHT * 2 * GetRand(1)));
+		ret.x = (float)(camera->GetCameraLocation().x - (SCREEN_WIDTH/2) + GetRand(SCREEN_WIDTH*2));
+		ret.y = (float)(camera->GetCameraLocation().y - (SCREEN_HEIGHT/2) + (SCREEN_HEIGHT * 2 * GetRand(1)));
 	}
 	return ret;
 }
@@ -381,43 +423,43 @@ Vector2D InGameScene::GetRandLoc()
 ObjectList InGameScene::GetRandEnemy()
 {
 	int coin = UserData::coin;
-	//コインが0～99ならenemy1をスポーン
+	//コインが0～49ならenemy1をスポーン
 	if (coin < 50)
 	{
 		return GetEnemy(eENEMY1, 100);
 	}
-	//コインが100～199ならenemy1と2をランダムでスポーン
+	//コインが50～100ならenemy1と2をランダムでスポーン
 	if (coin < 100)
 	{
 		return GetEnemy(eENEMY1, 50, eENEMY2, 50);
 	}
-	//コインが200～299ならenemy2をスポーン
-	if (coin < 150)
+	//コインが100～199ならenemy2をスポーン
+	if (coin < 200)
 	{
 		return GetEnemy(eENEMY2, 100);
 	}
-	//コインが300～399ならenemy2と3をスポーン
-	if (coin < 200)
+	//コインが200～299ならenemy2と3をスポーン
+	if (coin < 300)
 	{
 		return GetEnemy(eENEMY2, 50, eENEMY3, 50);
 	}
-	//コインが400～499ならenemy2と4をスポーン
-	if (coin < 250)
+	//コインが300～399ならenemy2と4をスポーン
+	if (coin < 400)
 	{
 		return GetEnemy(eENEMY2, 90, eENEMY4, 10);
 	}
-	//コインが500～599ならenemy2と5をスポーン
-	if (coin < 300)
+	//コインが400～499ならenemy2と5をスポーン
+	if (coin < 500)
 	{
 		return GetEnemy(eENEMY2, 80, eENEMY5, 20);
 	}
 	//それ以降は全ての敵を均等に
 	else
 	{
-		return GetEnemy(eENEMY1, 20, eENEMY2, 30, eENEMY3, 20, eENEMY4, 10, eENEMY5, 20);
+		return GetEnemy(eENEMY1, 30, eENEMY2, 30, eENEMY3, 15, eENEMY4, 10, eENEMY5, 15);
 	}
 
-	//何もなければ敵1をスポーンさせる
+	//どれにも当てはまらないなら、敵1をスポーンさせる
 	return eENEMY1;
 }
 

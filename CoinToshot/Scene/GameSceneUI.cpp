@@ -32,6 +32,7 @@ void GameSceneUI::Initialize()
 	ResourceManager* rm = ResourceManager::GetInstance();
 	ex_anim = rm->GetImages("Resource/Images/Effect/E_PuffAndStar.png", 60, 10, 6, 108, 116);
 	ex_se = rm->GetSounds("Resource/Sounds/explsion_big.mp3");
+	lock_se = rm->GetSounds("Resource/Sounds/lock.mp3");
 }
 
 void GameSceneUI::Update()
@@ -136,6 +137,7 @@ void GameSceneUI::Update()
 		}
 	}
 
+	//爆発音再生
 	if (UserData::can_bullet_change_flg && !ex_se_once)
 	{
 		PlaySoundMem(ex_se, DX_PLAYTYPE_BACK);
@@ -154,6 +156,16 @@ void GameSceneUI::Update()
 			ex_anim_once = true;
 		}
 	}
+
+	//弾種類変更解禁前にトリガーを入力した時のロック演出
+	if (!UserData::can_bullet_change_flg &&
+		(InputPad::OnButton(L_TRIGGER) || InputPad::OnButton(R_TRIGGER)))
+	{
+		PlaySoundMem(lock_se, DX_PLAYTYPE_BACK);
+	}
+	
+
+	//弾種類見た目生成
 	CreateBulletTypeImage();
 
 	//削除したオブジェクトは消去
@@ -212,6 +224,14 @@ void GameSceneUI::Draw()const
 	//弾種類を変えられない状態なら、ボタンの上に×を描画
 	if (!UserData::can_bullet_change_flg)
 	{
+		if (InputPad::OnButton(L_TRIGGER))
+		{
+			button_lt.x += 5;
+		}
+		if (InputPad::OnButton(R_TRIGGER))
+		{
+			button_rt.x += 5;
+		}
 		DrawRotaGraphF(button_lt.x, button_lt.y, 1.f, 0, lock_image, TRUE);
 		DrawRotaGraphF(button_rt.x, button_rt.y, 1.f, 0, lock_image, TRUE);
 	}

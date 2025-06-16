@@ -209,7 +209,7 @@ void ObjectManager::CreateObject(int object_type, Vector2D init_location, Vector
 		create_object.push_back(ObjectInitData{ new Coin(ingame,init_velocity),object_type,init_location,init_size,init_radius });
 		break;
 	case ObjectList::eHEAL:
-		create_object.push_back(ObjectInitData{ new Heal(ingame),object_type,init_location,init_size,init_radius });
+		create_object.push_back(ObjectInitData{ new Heal(ingame,init_velocity),object_type,init_location,init_size,init_radius });
 		break;
 	case ObjectList::eBLOCK:
 		create_object.push_back(ObjectInitData{ new Block(),object_type,init_location,init_size,init_radius });

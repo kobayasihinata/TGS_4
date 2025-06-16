@@ -77,6 +77,7 @@ private:
 	int now_image;				//アニメーション用
 	std::vector<int> ex_anim;	//爆発アニメーション
 	int ex_se;					//爆発音
+	int lock_se;				//使用不可SE
 
 	//ポップアップ表示用
 	std::vector<UIData> ui_data;

@@ -28,16 +28,18 @@ private:
 	ShapeCollider* test;
 	int change_result_delay;	//リザルト遷移までの遅延時間
 	bool change_result;			//リザルト遷移処理を開始するか
+	int tuto_coin_count;		//チュートリアル時に指定の枚数コインを発生させる
+	bool tuto_heal_once;		//チュートリアル時回復アイテム生成
+	int tuto_heal_timer;		//チュートリアル時回復アイテム生成タイミング
+	int bg_image;				//完成した背景画像を格納する
 
-	int bg_image;			//完成した背景画像を格納する
+	bool update_once;			//遷移時アニメーション用描画の為に一回だけ更新
+	bool start_anim_flg;		//遷移時アニメーション
+	int start_anim_timer;		//遷移時アニメーション測定
 
-	bool update_once;		//遷移時アニメーション用描画の為に一回だけ更新
-	bool start_anim_flg;	//遷移時アニメーション
-	int start_anim_timer;	//遷移時アニメーション測定
-
-	bool pause_flg;			//一時停止判断
-	bool coin_spawn_once;	//最低保証コインのスポーン
-	int gamemain_bgm;		//BGM格納
+	bool pause_flg;				//一時停止判断
+	bool coin_spawn_once;		//最低保証コインのスポーン
+	int gamemain_bgm;			//BGM格納
 public:
 	InGameScene();
 	virtual ~InGameScene();

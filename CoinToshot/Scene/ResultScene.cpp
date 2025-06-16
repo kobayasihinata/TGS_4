@@ -25,6 +25,8 @@ ResultScene::ResultScene()
 	ResourceManager* rm = ResourceManager::GetInstance();
 	result_bgm = rm->GetSounds("Resource/Sounds/BGM/Sweet_smelling_flower.mp3");
 	button_se = rm->GetSounds("Resource/Sounds/enter.mp3");
+	cursor_se = rm->GetSounds("Resource/Sounds/cursor.mp3");
+	erase_se = rm->GetSounds("Resource/Sounds/explosion.wav");
 	//クリアかゲームオーバーかでSEを変える
 	disp_se = UserData::is_clear ? rm->GetSounds("Resource/Sounds/Coin/Get.mp3"): rm->GetSounds("Resource/Sounds/bishi.wav");
 	coin_se = rm->GetSounds("Resource/Sounds/Coin/Get.mp3");
@@ -89,7 +91,7 @@ eSceneType ResultScene::Update(float _delta)
 			//演出が終了していたらボーナス加算演出開始
 			if (result_anim_timer > RESULT_ANIM_TIME)
 			{
-				now_disp = DispScene::dBoundPoint;
+				now_disp = DispScene::dBonusPoint;
 				PlaySoundMem(button_se, DX_PLAYTYPE_BACK);
 			}
 			//終了していなければ演出スキップ
@@ -100,7 +102,7 @@ eSceneType ResultScene::Update(float _delta)
 			}
 		}
 		break;
-	case DispScene::dBoundPoint://点数加算を表示
+	case DispScene::dBonusPoint://点数加算を表示
 		bonus_anim_timer++;
 		if (bonus_anim_timer ==  BONUS_ANIM_TIME / 5 ||
 			bonus_anim_timer == (BONUS_ANIM_TIME / 5) * 2 ||
@@ -260,7 +262,7 @@ void ResultScene::Draw()const
 			UserData::DrawButtonImage({ SCREEN_WIDTH / 2,SCREEN_HEIGHT - 30 }, XINPUT_BUTTON_A, 60);
 		}
 		break;
-	case DispScene::dBoundPoint:
+	case DispScene::dBonusPoint:
 		if (UserData::is_clear)
 		{
 			bg_color = 0xffffbb;
@@ -334,6 +336,7 @@ eSceneType ResultScene::GetNowSceneType()const
 
 eSceneType ResultScene::EnterName()
 {
+
 	//十字キーか左スティックで項目の移動
 	if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_LEFT) || InputPad::GetPressedButton(L_STICK_LEFT))
 	{
@@ -345,6 +348,7 @@ eSceneType ResultScene::EnterName()
 				current_x = KEY_WIDTH - 1;
 			}
 		} while (key[current_y][current_x] == ' ');
+		PlaySoundMem(cursor_se, DX_PLAYTYPE_BACK);
 	}
 	if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_RIGHT) || InputPad::GetPressedButton(L_STICK_RIGHT))
 	{
@@ -356,6 +360,7 @@ eSceneType ResultScene::EnterName()
 				current_x = 0;
 			}
 		} while (key[current_y][current_x] == ' ');
+		PlaySoundMem(cursor_se, DX_PLAYTYPE_BACK);
 	}
 	if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_UP) || InputPad::GetPressedButton(L_STICK_UP))
 	{
@@ -367,6 +372,7 @@ eSceneType ResultScene::EnterName()
 				current_y = KEY_HEIGHT - 1;
 			}
 		} while (key[current_y][current_x] == ' ');
+		PlaySoundMem(cursor_se, DX_PLAYTYPE_BACK);
 	}
 	if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_DOWN) || InputPad::GetPressedButton(L_STICK_DOWN))
 	{
@@ -378,18 +384,21 @@ eSceneType ResultScene::EnterName()
 				current_y = 0;
 			}
 		} while (key[current_y][current_x] == ' ');
+		PlaySoundMem(cursor_se, DX_PLAYTYPE_BACK);
 	}
 
 	//Aボタンを押して文字の追加(現在の入力が10文字未満なら)
 	if (name.size() < 10 && InputPad::OnButton(XINPUT_BUTTON_A))
 	{
 		name.push_back(key[current_y][current_x]);
+		PlaySoundMem(button_se, DX_PLAYTYPE_BACK);
 	}
 
 	//Bボタンを押して一文字消す(現在の入力が0文字より大きいなら)
 	if (name.size() > 0 && InputPad::OnButton(XINPUT_BUTTON_B))
 	{
 		name.erase(name.end()-1);
+		PlaySoundMem(erase_se, DX_PLAYTYPE_BACK);
 	}
 
 	//STARTボタンで入力終了(一文字以上入力されているなら)
@@ -399,9 +408,13 @@ eSceneType ResultScene::EnterName()
 		UserData::ranking_data[9].coin = UserData::coin;
 		SortRanking();
 		UserData::WriteRankingData();
+		PlaySoundMem(button_se, DX_PLAYTYPE_BACK);
 		return eSceneType::eRanking;
 	}
-
+	if (++frame > 3600)
+	{
+		frame = 0;
+	}
 	return GetNowSceneType();
 }
 
@@ -409,10 +422,17 @@ void ResultScene::EnterNameDraw()const
 {
 	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x999900, TRUE);
 	SetFontSize(24);
-	DrawString(10, 30, "Pad:START = Enter",  GetColor(255, 255, 255));
-	DrawString(10, 60, "Pad:A	  = Add",    GetColor(255, 255, 255));
-	DrawString(10, 90, "Pad:B	  = Delete", GetColor(255, 255, 255));
 
+	DrawString(SCREEN_WIDTH / 2+1, 401, ":入力",  0x000000);
+	DrawString(SCREEN_WIDTH / 2,   400, ":入力",  0xffff00);
+	DrawString(SCREEN_WIDTH / 2+1, 441, ":一字消す",0x000000);
+	DrawString(SCREEN_WIDTH / 2, 440, ":一字消す",0xffff00);
+	DrawString(SCREEN_WIDTH / 2+1, 481, ":確定",    0x000000);
+	DrawString(SCREEN_WIDTH / 2, 480, ":確定",    0xffff00);
+
+	UserData::DrawButtonImage({ SCREEN_WIDTH / 2 - 40, 400 }, XINPUT_BUTTON_A, 50);
+	UserData::DrawButtonImage({ SCREEN_WIDTH / 2 - 40, 440 }, XINPUT_BUTTON_B, 50);
+	UserData::DrawButtonImage({ SCREEN_WIDTH / 2 - 40, 480 }, XINPUT_BUTTON_START, 50);
 
 	SetFontSize(32);
 	//文字の描画
@@ -423,16 +443,20 @@ void ResultScene::EnterNameDraw()const
 			//選択されている項目の色を変える
 			if (current_x == x && current_y == y)
 			{
-				DrawFormatString(200 + x * 40, 200 + y * 40, 0xff0000, "%c", key[y][x]);
+				DrawFormatString(401 + x * 40, 201 + y * 40, 0x000000, "%c", key[y][x]);
+				DrawFormatString(400 + x * 40, 200 + y * 40, 0xff9900, "%c", key[y][x]);
 			}
 			else
 			{
-				DrawFormatString(200 + x * 40, 200 + y * 40, 0x00ff00, "%c", key[y][x]);
+				DrawFormatString(401 + x * 40, 201 + y * 40, 0x000000, "%c", key[y][x]);
+				DrawFormatString(400 + x * 40, 200 + y * 40, 0xffff88, "%c", key[y][x]);
 			}
 		}
 	}
 	//現在の入力
-	DrawFormatString(SCREEN_WIDTH / 2, 50, 0x00ff00, "name:%s", name.c_str());
+	DrawFormatString(SCREEN_WIDTH / 2+1, 51, 0x000000, "name:%s", name.c_str());
+	DrawFormatString(SCREEN_WIDTH / 2, 50, 0xffff00, "name:%s", name.c_str());
+	if ((int)frame % 30 > 15)DrawLine(SCREEN_WIDTH / 2, 82, SCREEN_WIDTH / 2 + 300, 82, 0xffff00);
 }
 
 void ResultScene::SortRanking()

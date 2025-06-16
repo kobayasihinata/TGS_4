@@ -24,7 +24,7 @@ enum DispScene
 {
 	dIsClear = 0,
 	dDispResult,
-	dBoundPoint,
+	dBonusPoint,
 	dEnterName,
 };
 
@@ -51,8 +51,9 @@ private:
 	bool disp_se_once;	//項目表示SE再生
 
 	int result_bgm;		//リザルトBGM
-
 	int button_se;		//ボタンSE
+	int erase_se;		//文字削除SE
+	int cursor_se;		//カーソルSE
 	int disp_se;		//項目表示SE
 	int coin_se;		//コイン加算SE
 public:

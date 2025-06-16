@@ -44,7 +44,9 @@ private:
 	int ex_anim_timer;			//アニメーション用
 	int now_image;				//アニメーション用
 	std::vector<int> ex_anim;	//爆発アニメーション
+
 	int ex_se;					//爆発音
+	int charge_se;				//エイム合わせSE
 
 	bool tuto_executed_flg[TUTO_NUM];	//チュートリアルを既に行ったか判断
 public:

@@ -1,11 +1,11 @@
 #pragma once
-#include "../Base/ObjectBase.h"
+#include "../Base/ActorBase.h"
 #include <vector>
 
 class InGameScene;
 
 class Heal :
-	public ObjectBase
+	public ActorBase
 {
 private:
 	InGameScene* ingame;		//現在のシーンのポインタを保存
@@ -18,7 +18,7 @@ private:
 	int heal_se;					//回復SE
 public:
 	//コンストラクタ
-	Heal(InGameScene* _ingame);
+	Heal(InGameScene* _ingame, Vector2D _init_velocity);
 	//デストラクタ
 	~Heal();
 	//初期化処理

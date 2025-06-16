@@ -3,10 +3,10 @@
 #include "../../Utility/UserData.h"
 #include "../../Scene/InGameScene.h"
 
-Heal::Heal(InGameScene* _ingame)
+Heal::Heal(InGameScene* _ingame, Vector2D _init_velocity)
 {
 	ingame = _ingame;
-	
+	velocity = _init_velocity;
 	heal_num = 5;
 
 	//画像読込
@@ -41,6 +41,8 @@ void Heal::Finalize()
 
 void Heal::Update()
 {
+	Move();
+
 	Animation();
 
 	//輝きアニメーション更新
