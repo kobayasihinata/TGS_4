@@ -36,7 +36,7 @@ void Tutorial::Initialize()
 	}
 	for (int i = 0; i < TUTO_NUM; i++)
 	{
-		tuto_executed_flg[i] = false;
+		tuto_executed_flg[i] = true;
 	}
 
 	CreateTextBox();
@@ -607,8 +607,8 @@ void Tutorial::DrawBulletChange()const
 	DrawGraph(text_box_loc.x - text_box_size.x / 2, text_box_loc.y - text_box_size.y / 2, generate_text_box, TRUE);
 	SetFontSize(24);
 	DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 40, "弾の変更をアンロック！", 0xffffff);
-	DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 20, "状況に応じて使い分けよう", 0xffffff);
-	SetFontSize(18);
-	UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y + 30 }, "左右トリガーで変更", 0xffffff);
+	DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 20, "どれも高級で強力", 0xffffff);
+	SetFontSize(20);
+	UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y + 10 }, "左右トリガーで変更", 0xffffff);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 }

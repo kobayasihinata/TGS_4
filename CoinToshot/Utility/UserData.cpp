@@ -11,6 +11,7 @@ int UserData::now_button = 0;		//ボタンアニメーション用
 
 //public
 RankingData UserData::ranking_data[RANKING_DATA]{ 0 };	//ランキングデータ格納
+RankingData UserData::my_ranking_data{ -1,"ありえない",-1 };	//ありえない値を入れておく
 
 float UserData::player_hp = DEFAULT_HP;			
 int UserData::coin = 10;						

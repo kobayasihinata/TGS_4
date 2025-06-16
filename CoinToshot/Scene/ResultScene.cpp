@@ -20,6 +20,8 @@ ResultScene::ResultScene()
 	current_x = 0;
 	current_y = 0;
 
+	//自身のデータをリセットしておく
+	UserData::my_ranking_data = { -1,"ありえない",-1 };
 
 	//BGM読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
@@ -404,8 +406,9 @@ eSceneType ResultScene::EnterName()
 	//STARTボタンで入力終了(一文字以上入力されているなら)
 	if (name.size() > 0 && InputPad::OnButton(XINPUT_BUTTON_START))
 	{
-		UserData::ranking_data[9].name = name.c_str();
-		UserData::ranking_data[9].coin = UserData::coin;
+		UserData::my_ranking_data.name = name.c_str();
+		UserData::my_ranking_data.coin = UserData::coin;
+		UserData::ranking_data[9] = UserData::my_ranking_data;
 		SortRanking();
 		UserData::WriteRankingData();
 		PlaySoundMem(button_se, DX_PLAYTYPE_BACK);
@@ -456,7 +459,7 @@ void ResultScene::EnterNameDraw()const
 	//現在の入力
 	DrawFormatString(SCREEN_WIDTH / 2+1, 51, 0x000000, "name:%s", name.c_str());
 	DrawFormatString(SCREEN_WIDTH / 2, 50, 0xffff00, "name:%s", name.c_str());
-	if ((int)frame % 30 > 15)DrawLine(SCREEN_WIDTH / 2, 82, SCREEN_WIDTH / 2 + 300, 82, 0xffff00);
+	if ((int)frame % 30 > 15)DrawLine(SCREEN_WIDTH / 2+50, 82, SCREEN_WIDTH / 2 + 350, 82, 0xffff00);
 }
 
 void ResultScene::SortRanking()
@@ -486,6 +489,16 @@ void ResultScene::SortRanking()
 			if (UserData::ranking_data[i].coin > UserData::ranking_data[j].coin) {
 				UserData::ranking_data[j].num++;
 			}
+		}
+	}
+	for (int i = 0; i < RANKING_DATA; i++)
+	{
+		//自身の順位保存
+		if (UserData::my_ranking_data.name == UserData::ranking_data[i].name &&
+			UserData::my_ranking_data.coin == UserData::ranking_data[i].coin)
+		{
+			UserData::my_ranking_data.num = i+1;
+			break;
 		}
 	}
 }

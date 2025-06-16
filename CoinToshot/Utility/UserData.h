@@ -30,6 +30,7 @@ private:
 public:
 
 	static RankingData ranking_data[RANKING_DATA];	//ランキングデータ格納
+	static RankingData my_ranking_data;				//前回プレイのデータ
 
 	//UIに表示する必要がある or 保持しておいた方が良い可能性があるプレイヤー情報はここで管理
 	static float player_hp;			//体力
