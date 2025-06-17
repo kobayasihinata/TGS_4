@@ -36,7 +36,7 @@ void Tutorial::Initialize()
 	}
 	for (int i = 0; i < TUTO_NUM; i++)
 	{
-		tuto_executed_flg[i] = true;
+		tuto_executed_flg[i] = DEBUG_SKIP;
 	}
 
 	CreateTextBox();
@@ -589,8 +589,7 @@ void Tutorial::DrawAttack()const
 		DrawGraph(text_box_loc.x - text_box_size.x / 2, text_box_loc.y - text_box_size.y / 2, generate_text_box, TRUE);
 		
 		SetFontSize(32);
-		DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 50, "Šî–{‘€ì‚ÍˆÈãI", 0xffffff);
-		DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 20, "Œ‚‚Á‚Ä“|‚µ‚Ä‰Ò‚°I", 0xffffff);
+		DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 50, "Œ‚‚Á‚Ä“|‚µ‚Ä‰Ò‚°I", 0xffffff);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 		break;
 	}

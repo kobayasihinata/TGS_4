@@ -14,7 +14,7 @@
 
 //遷移時アニメーション
 #define G_START_ANIM_TIME 180
-#define G_END_ANIM_TIME 240
+#define G_END_ANIM_TIME 300
 
 class InGameScene : public SceneBase
 {
@@ -39,7 +39,11 @@ private:
 
 	bool pause_flg;				//一時停止判断
 	bool coin_spawn_once;		//最低保証コインのスポーン
+
 	int gamemain_bgm;			//BGM格納
+	int game_clear_se;			//ゲームクリア効果音
+	int game_over_se;			//ゲームオーバー効果音
+	int clap_se;				//拍手効果音
 public:
 	InGameScene();
 	virtual ~InGameScene();

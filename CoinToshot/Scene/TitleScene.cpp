@@ -26,13 +26,13 @@ TitleScene::TitleScene()
 	SetVolumeSoundMem(8000, title_bgm);
 	if (!CheckSoundMem(title_bgm))
 	{
-		PlaySoundMem(title_bgm, DX_PLAYTYPE_BACK);
+		PlaySoundMem(title_bgm, DX_PLAYTYPE_LOOP);
 	}
 }
 
 TitleScene::~TitleScene()
 {
-
+	StopSoundMem(title_bgm);
 }
 
 void TitleScene::Initialize()
@@ -72,7 +72,7 @@ eSceneType TitleScene::Update(float _delta)
 			switch (current_num)
 			{
 			case TitleItem::tGameMain:
-				StopSoundMem(title_bgm);
+
 				return eSceneType::eInGame;
 				break;
 			case TitleItem::tRanking:

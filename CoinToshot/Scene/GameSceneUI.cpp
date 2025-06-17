@@ -450,7 +450,7 @@ void GameSceneUI::DrawPlayerUI()const
 	if (UserData::ranking_data[9].coin < UserData::coin)
 	{
 		DrawString(SCREEN_WIDTH - GetDrawStringWidth("新記録！", strlen("新記録！")),
-			player_ui_loc.y + 40, 
+			player_ui_loc.y + 60, 
 			"新記録！", 
 			frame % 30 > 15 ?0xff0000: 0xffffff);
 	}

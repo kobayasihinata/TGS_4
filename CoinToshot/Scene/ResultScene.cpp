@@ -17,6 +17,8 @@ ResultScene::ResultScene()
 	add_coin_once = false;
 	disp_se_once = true;
 
+	name_string_loc = { 500,70 };
+	key_box_loc = { 400,200 };
 	current_x = 0;
 	current_y = 0;
 
@@ -35,7 +37,7 @@ ResultScene::ResultScene()
 	SetVolumeSoundMem(8000, result_bgm);
 	if (!CheckSoundMem(result_bgm))
 	{
-		PlaySoundMem(result_bgm, DX_PLAYTYPE_BACK);
+		PlaySoundMem(result_bgm, DX_PLAYTYPE_LOOP);
 	}
 }
 
@@ -338,7 +340,6 @@ eSceneType ResultScene::GetNowSceneType()const
 
 eSceneType ResultScene::EnterName()
 {
-
 	//十字キーか左スティックで項目の移動
 	if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_LEFT) || InputPad::GetPressedButton(L_STICK_LEFT))
 	{
@@ -389,16 +390,25 @@ eSceneType ResultScene::EnterName()
 		PlaySoundMem(cursor_se, DX_PLAYTYPE_BACK);
 	}
 
-	//Aボタンを押して文字の追加(現在の入力が10文字未満なら)
-	if (name.size() < 10 && InputPad::OnButton(XINPUT_BUTTON_A))
+	//Aボタンを押して文字の追加(現在の入力と画面内の文字の合計が10文字未満なら)
+	if (InputPad::OnButton(XINPUT_BUTTON_A))
 	{
-		name.push_back(key[current_y][current_x]);
 		PlaySoundMem(button_se, DX_PLAYTYPE_BACK);
+		CreateMoveString(key[current_y][current_x], { key_box_loc.x + (current_x * 40),key_box_loc.y + (current_y * 40) }, { name_string_loc.x + 150,name_string_loc.y + 25 }, { 400,50 }, true);
 	}
 
 	//Bボタンを押して一文字消す(現在の入力が0文字より大きいなら)
 	if (name.size() > 0 && InputPad::OnButton(XINPUT_BUTTON_B))
 	{
+		//現在のテキスト幅を計算
+		int size = 0;
+		char t;
+		for (auto text : name)
+		{
+			size += GetDrawFormatStringWidth("%c", text);
+			t = text;
+		}
+		CreateMoveString(t, { name_string_loc.x + 80 + size,name_string_loc.y }, { SCREEN_WIDTH/2,SCREEN_HEIGHT }, {SCREEN_WIDTH,100},false, { (float)GetRand(10) - 5,-5 });
 		name.erase(name.end()-1);
 		PlaySoundMem(erase_se, DX_PLAYTYPE_BACK);
 	}
@@ -414,6 +424,52 @@ eSceneType ResultScene::EnterName()
 		PlaySoundMem(button_se, DX_PLAYTYPE_BACK);
 		return eSceneType::eRanking;
 	}
+
+
+	for (auto& string_data : string_data)
+	{
+		string_data = MoveString(string_data);
+
+		//目的地にたどり着いたら消す&名前入力
+		if (string_data.velocity.y > 0.f &&
+			string_data.goal_location.x - string_data.goal_size.x/2 <= string_data.location.x &&
+			string_data.goal_location.x + string_data.goal_size.x / 2 >= string_data.location.x &&
+			string_data.goal_location.y - string_data.goal_size.y / 2 <= string_data.location.y &&
+			string_data.goal_location.y + string_data.goal_size.y / 2 >= string_data.location.y
+			)
+		{
+			if(name.size() < 10)delete_string_data.push_back(string_data);
+			if(string_data.is_add && name.size() < 10)name.push_back(string_data.text);
+		}
+		//画面外に出ても消す
+		if (string_data.location.x <-50 ||
+			string_data.location.x > SCREEN_WIDTH + 50 ||
+			string_data.location.y > SCREEN_HEIGHT + 50)
+		{
+			delete_string_data.push_back(string_data);
+		}
+	}
+
+	//オブジェクト配列から削除する処理
+	for (const auto& delete_data : delete_string_data)
+	{
+		for (auto it = string_data.begin(); it != string_data.end();)
+		{
+			if (*it == delete_data)
+			{
+				it = string_data.erase(it);
+				break;
+			}
+			else
+			{
+				++it;
+			}
+		}
+	}
+
+	delete_string_data.clear();
+
+
 	if (++frame > 3600)
 	{
 		frame = 0;
@@ -433,8 +489,8 @@ void ResultScene::EnterNameDraw()const
 	DrawString(SCREEN_WIDTH / 2+1, 481, ":確定",    0x000000);
 	DrawString(SCREEN_WIDTH / 2, 480, ":確定",    0xffff00);
 
-	UserData::DrawButtonImage({ SCREEN_WIDTH / 2 - 40, 400 }, XINPUT_BUTTON_A, 50);
-	UserData::DrawButtonImage({ SCREEN_WIDTH / 2 - 40, 440 }, XINPUT_BUTTON_B, 50);
+	UserData::DrawButtonImage({ SCREEN_WIDTH / 2 - 40, 420 }, XINPUT_BUTTON_A, 50);
+	UserData::DrawButtonImage({ SCREEN_WIDTH / 2 - 40, 460 }, XINPUT_BUTTON_B, 50);
 	UserData::DrawButtonImage({ SCREEN_WIDTH / 2 - 40, 480 }, XINPUT_BUTTON_START, 50);
 
 	SetFontSize(32);
@@ -446,20 +502,38 @@ void ResultScene::EnterNameDraw()const
 			//選択されている項目の色を変える
 			if (current_x == x && current_y == y)
 			{
-				DrawFormatString(401 + x * 40, 201 + y * 40, 0x000000, "%c", key[y][x]);
-				DrawFormatString(400 + x * 40, 200 + y * 40, 0xff9900, "%c", key[y][x]);
+				DrawFormatString(key_box_loc.x+1 + x * 40, key_box_loc.y+1 + y * 40, 0x000000, "%c", key[y][x]);
+				DrawFormatString(key_box_loc.x + x * 40, key_box_loc.y + y * 40, 0xff9900, "%c", key[y][x]);
 			}
 			else
 			{
-				DrawFormatString(401 + x * 40, 201 + y * 40, 0x000000, "%c", key[y][x]);
-				DrawFormatString(400 + x * 40, 200 + y * 40, 0xffff88, "%c", key[y][x]);
+				DrawFormatString(key_box_loc.x+1 + x * 40, key_box_loc.y + 1 + y * 40, 0x000000, "%c", key[y][x]);
+				DrawFormatString(key_box_loc.x + x * 40, key_box_loc.y + y * 40, 0xffff88, "%c", key[y][x]);
 			}
 		}
 	}
 	//現在の入力
-	DrawFormatString(SCREEN_WIDTH / 2+1, 51, 0x000000, "name:%s", name.c_str());
-	DrawFormatString(SCREEN_WIDTH / 2, 50, 0xffff00, "name:%s", name.c_str());
-	if ((int)frame % 30 > 15)DrawLine(SCREEN_WIDTH / 2+50, 82, SCREEN_WIDTH / 2 + 350, 82, 0xffff00);
+	DrawFormatString(name_string_loc.x+1, name_string_loc.y+1, 0x000000, "name:%s", name.c_str());
+	DrawFormatString(name_string_loc.x, name_string_loc.y, 0xffff00, "name:%s", name.c_str());
+	if ((int)frame % 30 > 15)DrawLine(name_string_loc.x + 100, name_string_loc.y + GetFontSize(), name_string_loc.x + 400, name_string_loc.y + GetFontSize(), 0xffff00);
+
+	SetFontSize(32);
+	//ui_dataの描画
+	for (const auto string_data : string_data)
+	{
+		DrawFormatStringF(string_data.location.x+1,
+			string_data.location.y+1,
+			0x000000,
+			"%c",
+			string_data.text
+		);
+		DrawFormatStringF(string_data.location.x,
+			string_data.location.y,
+			0xff9900,
+			"%c",
+			string_data.text
+		);
+	}
 }
 
 void ResultScene::SortRanking()
@@ -501,4 +575,33 @@ void ResultScene::SortRanking()
 			break;
 		}
 	}
+}
+
+StringData ResultScene::MoveString(StringData _data)
+{
+	StringData ret = _data;
+	//X軸の減速
+	if (ret.velocity.x > 0.f)ret.velocity.x -= DECELERATION;
+	if (ret.velocity.x < 0.f)ret.velocity.x += DECELERATION;
+	if (fabsf(ret.velocity.x) <= DECELERATION)ret.velocity.x = 0.f;
+
+	//重力
+	ret.velocity.y += GRAVITY;
+	ret.location += ret.velocity;
+
+	return ret;
+}
+
+void ResultScene::CreateMoveString(const char _c, Vector2D _loc, Vector2D _goal_loc, Vector2D _goal_size, bool _is_add, Vector2D _velocity)
+{
+	StringData data;
+	data.text = _c;
+	data.location = _loc;
+	data.goal_location = _goal_loc;
+	data.goal_size = _goal_size;
+	data.velocity = _velocity == 0.f ? Vector2D{(data.goal_location.x - data.location.x) / 20,(data.goal_location.y - data.location.y) / 10 -5 } : _velocity;
+	data.speed = 1.f;
+	data.angle = 0.f;
+	data.is_add = _is_add;
+	string_data.push_back(data);
 }

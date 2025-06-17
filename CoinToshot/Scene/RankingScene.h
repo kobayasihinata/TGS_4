@@ -1,10 +1,23 @@
 #pragma once
 #include "SceneBase.h"
 
+static int rank_color[10]
+{
+	0xffff00,
+	0xdddd00,
+	0xbbbb00,
+	0x666600,
+	0x666600,
+	0x666600,
+	0x666600,
+	0x666600,
+	0x666600,
+	0x666600,
+};
 class RankingScene : public SceneBase
 {
 private:
-
+	int ranking_bgm;	
 public:
 	RankingScene();
 	virtual ~RankingScene();

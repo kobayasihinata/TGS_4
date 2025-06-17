@@ -22,8 +22,8 @@ void InGameScene::Initialize()
 	__super::Initialize();
 
 	//各数字リセット
-	UserData::timer = DEFAULT_TIMELIMIT;
-	UserData::player_hp = DEFAULT_HP;
+	UserData::timer = DEBUG_PLAYER ? 600 : DEFAULT_TIMELIMIT;
+	UserData::player_hp = DEBUG_PLAYER ? 1 : DEFAULT_HP;
 	UserData::is_gamestop = false;
 	UserData::attraction_flg = false;
 	UserData::attraction_timer = 0;
@@ -77,8 +77,12 @@ void InGameScene::Initialize()
 	ResourceManager* rm = ResourceManager::GetInstance();
 	//BGM読み込み
 	gamemain_bgm = rm->GetSounds("Resource/Sounds/BGM/Rail_train.mp3");
+	game_clear_se = rm->GetSounds("Resource/Sounds/Direction/victory.mp3");
+	game_over_se = rm->GetSounds("Resource/Sounds/Direction/deden.mp3");
+	clap_se = rm->GetSounds("Resource/Sounds/Direction/大勢で拍手.mp3");
+
 	//BGMを初めから再生するための処理
-	PlaySoundMem(gamemain_bgm, DX_PLAYTYPE_BACK, TRUE);
+	PlaySoundMem(gamemain_bgm, DX_PLAYTYPE_LOOP, TRUE);
 	StopSoundMem(gamemain_bgm);
 }
 
@@ -203,9 +207,7 @@ eSceneType InGameScene::Update(float _delta)
 		{
 			UserData::is_clear = true;
 			ui->confetti_flg = true;
-			UserData::is_gamestop = true;
-			change_result = true;
-			change_result_delay = G_END_ANIM_TIME;
+			ChangeResult(G_END_ANIM_TIME);
 		}
 
 		//リザルト遷移前の演出
@@ -369,6 +371,21 @@ void InGameScene::ChangeResult(int _delay)
 		change_result = true;
 		//リザルト遷移までの時間設定
 		change_result_delay = _delay;
+		//ゲームクリアかゲームオーバーのSEを再生
+		if (UserData::is_clear)
+		{
+			if (!CheckSoundMem(game_clear_se))
+			{
+				PlaySoundMem(game_clear_se, DX_PLAYTYPE_BACK);
+			}
+		}
+		else
+		{
+			if (!CheckSoundMem(game_over_se))
+			{
+				PlaySoundMem(game_over_se, DX_PLAYTYPE_BACK);
+			}
+		}
 	}
 }
 
