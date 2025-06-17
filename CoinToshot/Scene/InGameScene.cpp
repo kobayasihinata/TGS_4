@@ -80,7 +80,7 @@ void InGameScene::Initialize()
 	game_clear_se = rm->GetSounds("Resource/Sounds/Direction/victory.mp3");
 	game_over_se = rm->GetSounds("Resource/Sounds/Direction/deden.mp3");
 	clap_se = rm->GetSounds("Resource/Sounds/Direction/大勢で拍手.mp3");
-
+	SetVolumeSoundMem(9000, game_clear_se);
 	//BGMを初めから再生するための処理
 	PlaySoundMem(gamemain_bgm, DX_PLAYTYPE_LOOP, TRUE);
 	StopSoundMem(gamemain_bgm);
@@ -122,7 +122,7 @@ eSceneType InGameScene::Update(float _delta)
 	//一時停止フラグか遷移時アニメーションフラグが立っていたら更新しない
 	if ((!pause_flg && !start_anim_flg)|| !update_once)
 	{
-		if (!CheckSoundMem(gamemain_bgm) && update_once)
+		if (!CheckSoundMem(gamemain_bgm) && update_once && !UserData::is_gamestop)
 		{
 			PlaySoundMem(gamemain_bgm, DX_PLAYTYPE_LOOP, false);
 		}
@@ -302,7 +302,7 @@ void InGameScene::Draw()const
 		}
 		else
 		{
-			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 - ((255 / G_END_ANIM_TIME) * change_result_delay));
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 - ((255.f / G_END_ANIM_TIME) * change_result_delay));
 			DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, true);
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
@@ -386,6 +386,8 @@ void InGameScene::ChangeResult(int _delay)
 				PlaySoundMem(game_over_se, DX_PLAYTYPE_BACK);
 			}
 		}
+		//ゲームメインBGMを停止
+		StopSoundMem(gamemain_bgm);
 	}
 }
 
