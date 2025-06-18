@@ -58,10 +58,7 @@ void RankingScene::Draw()const
 	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x999900, TRUE);
 	SetFontSize(32);
 
-	DrawString(SCREEN_WIDTH / 2 + 1, SCREEN_HEIGHT-69, ":タイトル", 0x000000);
-	DrawString(SCREEN_WIDTH / 2, SCREEN_HEIGHT-70, ":タイトル", 0xffff00);
-
-	UserData::DrawButtonImage({ SCREEN_WIDTH / 2 - 40,  SCREEN_HEIGHT - 40 }, XINPUT_BUTTON_A, 50);
+	UserData::DrawButtonAndString({ SCREEN_WIDTH / 2 - 25,  SCREEN_HEIGHT - 48 }, XINPUT_BUTTON_A, ":タイトルに戻る", 0xffff00);
 
 	DrawString(181, 161,"No", 0xffffff);
 	DrawString(180, 160,"No", 0x000000);

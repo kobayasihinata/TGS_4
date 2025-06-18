@@ -55,6 +55,16 @@ public:
 		{
 			last_velocity.y = velocity.y;
 		}
+
+		//HPの減った部分のアニメーション用
+		if (hpbar_move > 1)
+		{
+			hpbar_move -= hpbar_move / 10;
+		}
+		else
+		{
+			hpbar_move = 0;
+		}
 	}
 
 	virtual void Draw()const override

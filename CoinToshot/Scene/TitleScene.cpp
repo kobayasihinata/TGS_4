@@ -32,7 +32,7 @@ TitleScene::TitleScene()
 
 TitleScene::~TitleScene()
 {
-	StopSoundMem(title_bgm);
+
 }
 
 void TitleScene::Initialize()
@@ -72,10 +72,11 @@ eSceneType TitleScene::Update(float _delta)
 			switch (current_num)
 			{
 			case TitleItem::tGameMain:
-
+				StopSoundMem(title_bgm);
 				return eSceneType::eInGame;
 				break;
 			case TitleItem::tRanking:
+				StopSoundMem(title_bgm);
 				return eSceneType::eRanking;
 				break;
 			case TitleItem::tEnd:
@@ -121,10 +122,10 @@ void TitleScene::Draw()const
 	DrawGraph(0, 0, bg_image, TRUE);
 
 	//タイトル文字
-	SetFontSize(98);
-	UserData::DrawStringCenter({ SCREEN_WIDTH / 2,50 }, "CoinToshot", 0x000000);
 	SetFontSize(96);
-	UserData::DrawStringCenter({ SCREEN_WIDTH / 2,50 }, "CoinToshot", 0xdddd00);
+	UserData::DrawStringCenter({ SCREEN_WIDTH / 2+2,52 }, "CoinToshot", 0x000000);
+	UserData::DrawStringCenter({ SCREEN_WIDTH / 2 -2,48 }, "CoinToshot", 0xffffff);
+	UserData::DrawStringCenter({ SCREEN_WIDTH / 2,50 }, "CoinToshot", 0xddbb00);
 
 	int size = 48;
 	SetFontSize(size);
@@ -156,9 +157,9 @@ void TitleScene::Draw()const
 	UserData::DrawButtonImage({ _loc.x+40,_loc.y }, L_STICK_DOWN, 50);
 	UserData::DrawButtonImage({ _loc.x+80,_loc.y }, XINPUT_BUTTON_DPAD_UP, 50);
 	UserData::DrawButtonImage({ _loc.x+120,_loc.y }, XINPUT_BUTTON_DPAD_DOWN, 50);
-	DrawStringF(_loc.x + 140, _loc.y-20, "=カーソル移動", 0x000000);
+	DrawStringF(_loc.x + 140, _loc.y-20, "：カーソル移動", 0x000000);
 	UserData::DrawButtonImage({ _loc.x + 120,_loc.y + 60 }, XINPUT_BUTTON_A, 50);
-	DrawStringF(_loc.x + 140, _loc.y + 40, "=決定", 0x000000);
+	DrawStringF(_loc.x + 140, _loc.y + 40, "：決定", 0x000000);
 	if (start_anim_flg)
 	{
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 - ((255.f / START_ANIM) * start_anim_timer));

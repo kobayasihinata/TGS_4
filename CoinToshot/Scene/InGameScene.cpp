@@ -237,7 +237,7 @@ eSceneType InGameScene::Update(float _delta)
 
 		if (InputPad::OnButton(XINPUT_BUTTON_A))
 		{
-			//objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{40,40},eHEAL });
+			objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{40,40},eHEAL });
 		}
 #endif // _DEBUG
 
@@ -329,15 +329,19 @@ void InGameScene::Draw()const
 	//遷移時アニメーションフラグが立っていたら、アニメーション処理
 	if (start_anim_flg)
 	{
+		Vector2D coin_loc = { SCREEN_WIDTH / 2 + 100, SCREEN_HEIGHT / 2 };
 		int coin_size = 900 - start_anim_timer * (900 / G_START_ANIM_TIME);
 		if (coin_size > 20)
 		{
-			UserData::DrawCoin({ SCREEN_WIDTH / 2 + 100, SCREEN_HEIGHT / 2 }, coin_size);
+			//波動
+			DrawCircleAA(coin_loc.x, coin_loc.y, coin_size - (start_anim_timer*5) % coin_size + coin_size,50,0xffffff,false);
+
+			UserData::DrawCoin(coin_loc, coin_size);
 		}
 		else
 		{
 			SetDrawBlendMode(DX_BLENDMODE_ALPHA, coin_size * 10);
-			UserData::DrawCoin({ SCREEN_WIDTH / 2 + 100, SCREEN_HEIGHT / 2 }, 80 - coin_size*2,255,255,255);
+			UserData::DrawCoin(coin_loc, 80 - coin_size*2,255,255,255);
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 		}
 	}

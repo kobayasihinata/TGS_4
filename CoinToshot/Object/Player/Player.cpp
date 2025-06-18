@@ -285,6 +285,73 @@ void Player::Draw()const
 		__super::Draw();
 	}
 
+	if (hp > 0)
+	{
+		//HPゲージ内側
+		DrawBoxAA(local_location.x - (HPBAR_SIZE / 2),
+			local_location.y - (box_size.y / 2) - 10,
+			local_location.x + (HPBAR_SIZE / 2),
+			local_location.y - (box_size.y / 2),
+			0x000000,
+			true
+		);
+		//HPゲージ本体
+		DrawBoxAA(local_location.x - (HPBAR_SIZE / 2),
+			local_location.y - (box_size.y / 2) - 9,
+			local_location.x - (HPBAR_SIZE / 2) + (hp * (HPBAR_SIZE / max_hp)) + hpbar_move,
+			local_location.y - (box_size.y / 2) - 1,
+			hp > 3 ? 0x22ff00 : frame % (int)(10 * hp) > (10 * hp) / 2 ? 0xff1100 : 0xffcc00,
+			true
+		);
+		//HPゲージ減少アニメーション
+		DrawBoxAA(local_location.x - (HPBAR_SIZE / 2) + (hp * (HPBAR_SIZE / max_hp)),
+			local_location.y - (box_size.y / 2) - 9,
+			local_location.x - (HPBAR_SIZE / 2) + (hp * (HPBAR_SIZE / max_hp)) + hpbar_move,
+			local_location.y - (box_size.y / 2) - 1,
+			0xff0000,
+			true
+		);
+		//HPゲージ外枠
+		DrawBoxAA(local_location.x - (HPBAR_SIZE / 2),
+			local_location.y - (box_size.y / 2) - 10,
+			local_location.x + (HPBAR_SIZE / 2),
+			local_location.y - (box_size.y / 2),
+			0xffffff,
+			false
+		);
+		//HPゲージ限界突破見た目
+		if (UserData::player_hp > DEFAULT_HP)
+		{
+			DrawBoxAA(local_location.x + (HPBAR_SIZE / 2) - 2,
+				local_location.y - (box_size.y / 2) - 9,
+				local_location.x + (HPBAR_SIZE / 2) + 2,
+				local_location.y - (box_size.y / 2) - 1,
+				0x22ff00,
+				true
+			);
+			DrawLine(local_location.x + (HPBAR_SIZE / 2),
+				local_location.y - (box_size.y / 2) - 10,
+				local_location.x + (HPBAR_SIZE / 2) + 5,
+				local_location.y - (box_size.y / 2) - 15,
+				0xffffff);
+			DrawLine(local_location.x + (HPBAR_SIZE / 2),
+				local_location.y - (box_size.y / 2),
+				local_location.x + (HPBAR_SIZE / 2) + 5,
+				local_location.y - (box_size.y / 2) + 5,
+				0xffffff);
+		}
+		//HPピンチ表示
+		if (hp <= 3)
+		{
+			DrawTriangleAA(local_location.x, local_location.y - 60,
+				local_location.x + 15, local_location.y - 30,
+				local_location.x - 15, local_location.y - 30,
+				frame % (int)(10 * hp) > (10 * hp) / 2 ? 0xff1100 : 0xffcc00,
+				false);
+			DrawStringF(local_location.x-4, local_location.y - 55, "!", frame % (int)(10 * hp) > (10 * hp) / 2 ? 0xff1100 : 0xffcc00);
+		}
+	}
+
 	//フォント大きさ元通り
 	SetFontSize(old);
 }
@@ -313,7 +380,7 @@ void Player::Death()
 	//ゲームオーバーに設定
 	UserData::is_clear = false;
 	//リザルト遷移
-	manager->Result(120);
+	manager->Result(240);
 
 	//リスポーン位置に移動
 	location = 0;

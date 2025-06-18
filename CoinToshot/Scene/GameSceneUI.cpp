@@ -397,7 +397,7 @@ void GameSceneUI::CreateConfettiImage()
 void GameSceneUI::DrawBullet(Vector2D _loc, int _type)const
 {
 	//Œ‚‚Ä‚È‚¢’e‚ÌUI‚Í”–ˆÃ‚­‚·‚é
-	int draw_color = pBullet[UserData::bullet_type].cost <= UserData::coin ? 0xffffcc : 0xaaaa55;
+	int draw_color = pBullet[_type].cost <= UserData::coin ? 0xffffcc : 0xaaaa55;
 
 	//’e‚ÌŽí—Þ•`‰æ
 	DrawBox(_loc.x, _loc.y, _loc.x + 200, _loc.y + 100, 0x777722, true);
@@ -450,7 +450,7 @@ void GameSceneUI::DrawPlayerUI()const
 	if (UserData::ranking_data[9].coin < UserData::coin)
 	{
 		DrawString(SCREEN_WIDTH - GetDrawStringWidth("V‹L˜^I", strlen("V‹L˜^I")),
-			player_ui_loc.y + 60, 
+			player_ui_loc.y + 40, 
 			"V‹L˜^I", 
 			frame % 30 > 15 ?0xff0000: 0xffffff);
 	}

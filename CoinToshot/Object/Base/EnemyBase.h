@@ -46,16 +46,6 @@ public:
 
 		MovetoPlayer();
 
-		//HPの減った部分のアニメーション用
-		if (hpbar_move > 1)
-		{
-			hpbar_move -= hpbar_move / 10;
-		}
-		else
-		{
-			hpbar_move = 0;
-		}
-
 		//レア個体ならオーラアニメーションの更新
 		if (rare_flg)
 		{
@@ -76,21 +66,13 @@ public:
 
 		__super::Draw();
 
-		//HPゲージ外枠
+		//HPゲージ内側
 		DrawBoxAA(local_location.x - (HPBAR_SIZE / 2),
 			local_location.y - (box_size.y / 2) - 10,
 			local_location.x + (HPBAR_SIZE / 2),
 			local_location.y - (box_size.y / 2),
 			0x000000,
 			true
-		);
-		//HPゲージ内側
-		DrawBoxAA(local_location.x - (HPBAR_SIZE / 2),
-			local_location.y - (box_size.y / 2) - 10,
-			local_location.x + (HPBAR_SIZE / 2),
-			local_location.y - (box_size.y / 2),
-			0xffffff,
-			false
 		);
 		//HPゲージ本体
 		DrawBoxAA(local_location.x - (HPBAR_SIZE / 2),
@@ -107,6 +89,14 @@ public:
 			local_location.y - (box_size.y / 2),
 			0xff0000,
 			true
+		);
+		//HPゲージ外枠
+		DrawBoxAA(local_location.x - (HPBAR_SIZE / 2),
+			local_location.y - (box_size.y / 2) - 10,
+			local_location.x + (HPBAR_SIZE / 2),
+			local_location.y - (box_size.y / 2),
+			0xffffff,
+			false
 		);
 
 #ifdef _DEBUG
