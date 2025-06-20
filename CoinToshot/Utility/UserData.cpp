@@ -24,6 +24,7 @@ int UserData::bullet_type = 0;
 bool UserData::attraction_flg = false;
 int UserData::attraction_timer = 0;
 bool UserData::can_bullet_change_flg = false;
+bool UserData::player_damage_flg = false;
 std::vector<std::vector<int>> UserData::button_image;
 
 int UserData::variable = 0;

@@ -192,5 +192,8 @@ BulletData Enemy3::GetBulletData()
 	_data.speed = ENEMY3_ATTACK_SPEED;
 	_data.who = this;
 	_data.b_type = BulletType::bNormal;
+	_data.color[0] = 255;
+	_data.color[1] = 0;
+	_data.color[2] = 0;
 	return _data;
 }

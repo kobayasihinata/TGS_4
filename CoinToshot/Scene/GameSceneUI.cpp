@@ -18,6 +18,9 @@ void GameSceneUI::Initialize()
 	player_ui_loc = { SCREEN_WIDTH - 350,0 };
 	now_coin_num = 0;
 	old_coin_num = 0;
+	first_bonus_timer = 0;
+	second_bonus_timer = 0;
+	damage_timer = 0;
 	con_spawn = 1;
 	//ロックの画像生成
 	CreateLockImage();
@@ -164,7 +167,15 @@ void GameSceneUI::Update()
 		PlaySoundMem(lock_se, DX_PLAYTYPE_BACK);
 	}
 	
-
+	//ダメージ演出用時間測定
+	if (UserData::player_damage_flg)
+	{
+		damage_timer++;
+	}
+	else
+	{
+		damage_timer = 0;
+	}
 	//弾種類見た目生成
 	CreateBulletTypeImage();
 
@@ -285,6 +296,13 @@ void GameSceneUI::Draw()const
 		DrawRotaGraphF(con_data.location.x, con_data.location.y, 1.f, con_data.radian, con_data.image, TRUE);
 	}
 
+	//ダメージ描画
+	if (UserData::player_damage_flg)
+	{
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 120 - (damage_timer*5));
+		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0xff0000, true);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+	}
 	SetFontSize(old);
 }
 
@@ -397,7 +415,7 @@ void GameSceneUI::CreateConfettiImage()
 void GameSceneUI::DrawBullet(Vector2D _loc, int _type)const
 {
 	//撃てない弾のUIは薄暗くする
-	int draw_color = pBullet[_type].cost <= UserData::coin ? 0xffffcc : 0xaaaa55;
+	int draw_color = pBullet[_type].cost <= UserData::coin ? GetColor(pBullet[_type].color[0], pBullet[_type].color[1], pBullet[_type].color[2]) : 0xaaaa55;
 
 	//弾の種類描画
 	DrawBox(_loc.x, _loc.y, _loc.x + 200, _loc.y + 100, 0x777722, true);

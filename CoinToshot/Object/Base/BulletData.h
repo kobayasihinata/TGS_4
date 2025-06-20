@@ -14,4 +14,5 @@ struct BulletData {
 	int h_count;		//ŠÑ’Êo—ˆ‚é“G‚Ì”
 	int delete_time;	//’e‚ğÁ‚·‚Ü‚Å‚ÌŠÔ
 	BulletType b_type;		 //’e‚Ìí—Ş
+	int color[3];			//’e‚ÌF
 };

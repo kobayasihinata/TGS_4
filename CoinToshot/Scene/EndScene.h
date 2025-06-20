@@ -37,7 +37,9 @@ static char sound_cledit[SOUND_LINE_NUM][256]
 class EndScene : public SceneBase
 {
 private:
+	bool release_button;	//Aボタンを離したか判断
 
+	int button_se;			//ボタンSE
 public:
 	EndScene();
 	virtual ~EndScene();

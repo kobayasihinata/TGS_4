@@ -3,21 +3,22 @@
 
 static int rank_color[10]
 {
-	0xffff00,
-	0xdddd00,
-	0xbbbb00,
-	0x666600,
-	0x666600,
-	0x666600,
-	0x666600,
-	0x666600,
-	0x666600,
-	0x666600,
+	0xffff44,
+	0xdddd44,
+	0xbbbb77,
+	0x666644,
+	0x666644,
+	0x666644,
+	0x666644,
+	0x666644,
+	0x666644,
+	0x666644,
 };
 class RankingScene : public SceneBase
 {
 private:
-	int ranking_bgm;	
+	int ranking_bgm;//BGM
+	int button_se;	//–ß‚éƒ{ƒ^ƒ“Œø‰Ê‰¹
 public:
 	RankingScene();
 	virtual ~RankingScene();

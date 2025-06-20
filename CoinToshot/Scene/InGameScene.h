@@ -31,6 +31,8 @@ private:
 	int tuto_coin_count;		//チュートリアル時に指定の枚数コインを発生させる
 	bool tuto_heal_once;		//チュートリアル時回復アイテム生成
 	int tuto_heal_timer;		//チュートリアル時回復アイテム生成タイミング
+	int first_bonus_count;		//一定時間経過時に指定の枚数コインを発生させる
+	int second_bonus_count;		//一定時間経過時に指定の枚数コインを発生させる
 	int bg_image;				//完成した背景画像を格納する
 
 	bool update_once;			//遷移時アニメーション用描画の為に一回だけ更新

@@ -22,6 +22,12 @@
 #define RANKING_DATA 10			//登録するランキングデータの数
 
 #define HPBAR_SIZE 50			//HPゲージの幅
+
+#define FIRST_BONUS_TIME (DEFAULT_TIMELIMIT / 3) * 2	//時間経過ボーナス一回目の時間
+#define SECOND_BONUS_TIME (DEFAULT_TIMELIMIT / 3)	//時間経過ボーナス二回目の時間
+#define FIRST_BONUS_NUM 50		//時間経過ボーナス一回目の枚数
+#define SECOND_BONUS_NUM 100		//時間経過ボーナス二回目の枚数
+
 //コインの設定
 #define COIN_FUSION_RANGE 10.f	//コインが融合する範囲
 #define COIN_ATTRACTON_TIMER 600//コイン吸い寄せ時間

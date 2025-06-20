@@ -139,7 +139,7 @@ void TitleScene::Draw()const
 			UserData::DrawCoin({ (float)SCREEN_WIDTH / 2 - 30, (float)SCREEN_HEIGHT / 2 + (i * size) + size/2 }, 20,227+abs(((int)frame%56 - 28)),200 );
 			//	DrawCircle(SCREEN_WIDTH / 2 - 30, SCREEN_HEIGHT / 2 + (i * 30)+15, 15, 0x00ff00, true);
 			//çÄñ⁄ÇÃï`âÊ
-			DrawFormatString(SCREEN_WIDTH / 2-1, SCREEN_HEIGHT / 2 + (i * size)-1, 0x00ff00, "%s", item_text[i]);
+			DrawFormatString(SCREEN_WIDTH / 2-1, SCREEN_HEIGHT / 2 + (i * size)-1, GetColor(227 + abs(((int)frame % 56 - 28)), 200,0), "%s", item_text[i]);
 		}
 		//çÄñ⁄ÇÃÇ›ÇÃï`âÊ
 		else

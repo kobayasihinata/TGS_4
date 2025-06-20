@@ -2,22 +2,25 @@
 #include "Base/ObjectBase.h"
 #include "Base/BulletData.h"
 #include "Player/PlayerBullet.h"
+#include "../Scene/Camera/Camera.h"
 
 class Attack :
 	public ObjectBase
 {
 private:
 	ObjectBase* object;			//攻撃を生成したオブジェクト いなければnullptr
+	class Camera* camera;		//カメラポインタ格納
 	float damage;				//攻撃力を格納
 	float angle;				//角度を保存
 	int time;					//存在できる時間
 	int count_up;				//生成されてからの時間測定
 	Vector2D move_velocity;		//移動方向
 	int hit_count;				//当たったオブジェクトの数を測定
+	int wall_hit;				//画面端に当たった回数を測定
 	int hit_max;				//いくつのオブジェクトに当たれるか
 	ObjectBase* old_hit_object;	//ひとつ前に当たったオブジェクトを保存
 	BulletType bullet_type;		//自身の弾種類を格納
-
+	int bullet_color[3];		//弾の色を格納
 	int ripple_color;			//生成する波紋の色
 	int gauss_image;			//ぼかし画像保存
 	//音源
@@ -43,5 +46,8 @@ public:
 
 	//弾の情報を取得
 	BulletData GetBulletData(float _shot_rad);
+
+	//最強弾専用更新
+	void UpdateStrongest();
 };
 

@@ -4,6 +4,7 @@
 
 Attack::Attack(BulletData _bullet_data)
 {
+	camera = Camera::Get();
 	damage = _bullet_data.damage;
 	object = _bullet_data.who;
 	time = _bullet_data.delete_time;
@@ -12,19 +13,15 @@ Attack::Attack(BulletData _bullet_data)
 	move_velocity.y = _bullet_data.speed * sinf(_bullet_data.b_angle);
 	angle = _bullet_data.b_angle;
 	hit_count = 0;
+	wall_hit = 0;
 	hit_max = _bullet_data.h_count;
 	old_hit_object = nullptr;
 	bullet_type = _bullet_data.b_type;
-
-	//プレイヤー攻撃なら波紋を黄色、敵なら赤にする
-	if (object->GetObjectType() == ePLAYER)
+	for (int i = 0; i < 3; i++)
 	{
-		ripple_color = 0xffff00;
+		bullet_color[i] = _bullet_data.color[i];
 	}
-	else
-	{
-		ripple_color = 0xff0000;
-	}
+	ripple_color = GetColor(bullet_color[0], bullet_color[1], bullet_color[2]);
 
 	//画像読込
 	ResourceManager* rm = ResourceManager::GetInstance();
@@ -76,6 +73,12 @@ void Attack::Update()
 	{
 		manager->CreateEffect(elRipples, this->location, false, ripple_color,30);
 	}
+
+	//最強弾用の更新
+	if (bullet_type == BulletType::bStrongest)
+	{
+		UpdateStrongest();
+	}
 	//弾の移動
 	this->location += move_velocity;
 }
@@ -86,16 +89,7 @@ void Attack::Draw()const
 
 	SetDrawScreen(gauss_image);
 	ClearDrawScreen();
-	//コイン仮(プレイヤー)
-	if (object->GetObjectType() == ePLAYER)
-	{
-		UserData::DrawCoin({ radius,radius }, radius);
-	}
-	//コイン仮(敵)
-	else
-	{
-		UserData::DrawCoin({ radius,radius }, radius,255,0,0);
-	}
+	UserData::DrawCoin({ radius,radius }, radius,bullet_color[0], bullet_color[1], bullet_color[2]);
 	SetDrawScreen(DX_SCREEN_BACK);
 
 	DrawRotaGraphF(local_location.x, local_location.y,1.f, angle, gauss_image, true);
@@ -152,15 +146,58 @@ void Attack::Hit(ObjectBase* hit_object)
 BulletData Attack::GetBulletData(float _shot_rad)
 {
 	BulletData _data;
-	_data.damage = damage;
+	_data.damage = 6;
 	_data.b_angle = _shot_rad;
-	_data.delete_time = time;
+	_data.delete_time = 20;
 	_data.h_count = 100;
 	_data.location = this->location;
 	_data.radius = 5;
 	_data.speed = 10;
 	_data.who = object;
 	_data.b_type = BulletType::bNormal;
-
+	_data.color[0] = 255;
+	_data.color[1] = 255;
+	_data.color[2] = 255;
 	return _data;
+}
+
+void Attack::UpdateStrongest()
+{
+	//カメラの外に居たら前の座標に戻す&反射
+//左端
+	if (location.x - (box_size.x / 2) <= camera->GetCameraLocation().x)
+	{
+		location.x = camera->GetCameraLocation().x + (box_size.x / 2);
+		move_velocity.x = -1 * move_velocity.x;
+		PlaySoundMem(shot_se, DX_PLAYTYPE_BACK);
+	}
+	//右端
+	if (location.x + (box_size.x / 2) > camera->GetCameraLocation().x + SCREEN_WIDTH)
+	{
+		location.x = camera->GetCameraLocation().x + SCREEN_WIDTH - (box_size.x / 2);
+		move_velocity.x = -1 * move_velocity.x;
+		PlaySoundMem(shot_se, DX_PLAYTYPE_BACK);
+	}
+	//上端
+	if (location.y - (box_size.y / 2) <= camera->GetCameraLocation().y)
+	{
+		location.y = camera->GetCameraLocation().y + (box_size.y / 2);
+		move_velocity.y = -1 * move_velocity.y;
+		PlaySoundMem(shot_se, DX_PLAYTYPE_BACK);
+	}
+	//下端
+	if (location.y + (box_size.y / 2) > camera->GetCameraLocation().y + SCREEN_HEIGHT)
+	{
+		location.y = camera->GetCameraLocation().y + SCREEN_HEIGHT - (box_size.y / 2);
+		move_velocity.y = -1 * move_velocity.y;
+		PlaySoundMem(shot_se, DX_PLAYTYPE_BACK);
+	}
+	if (count_up % 30 == 0)
+	{
+		for (float i = 0; i < 6.28; i += 0.53f)
+		{
+			manager->CreateAttack(GetBulletData(i));
+		}
+		PlaySoundMem(shot_se, DX_PLAYTYPE_BACK);
+	}
 }

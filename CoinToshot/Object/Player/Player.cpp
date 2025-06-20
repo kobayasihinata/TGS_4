@@ -95,7 +95,8 @@ void Player::Update()
 {
 	//HP“¯Šú
 	hp = UserData::player_hp;
-
+	//ˆÚ“®‰Â”\‚©“¯Šú
+	UserData::player_damage_flg = damage_stop;
 	__super::Update();
 
 	//‹z‚¢Šñ‚¹ˆ—‚ÌŠÔ‘ª’è
@@ -527,7 +528,10 @@ BulletData Player::GetBulletData(float _shot_rad)
 	_data.speed = pBullet[UserData::bullet_type].speed;
 	_data.who = this;
 	_data.b_type = (BulletType)UserData::bullet_type;
-
+	for (int i = 0; i < 3; i++)
+	{
+		_data.color[i] = pBullet[UserData::bullet_type].color[i];
+	}
 	return _data;
 }
 

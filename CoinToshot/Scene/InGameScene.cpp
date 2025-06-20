@@ -38,6 +38,8 @@ void InGameScene::Initialize()
 	tuto_coin_count = 0;
 	pause_flg = false;
 	coin_spawn_once = false;
+	first_bonus_count = 0;
+	second_bonus_count = 0;
 	update_once = false;
 	start_anim_flg = true;
 	start_anim_timer = 0;
@@ -146,6 +148,17 @@ eSceneType InGameScene::Update(float _delta)
 				objects->CreateObject(eCOIN, rand, { 40,40 }, 20.f, rand_velocity);
 			}
 
+			//一定時間経過でボーナスコイン投げ入れ
+			if ((UserData::timer < FIRST_BONUS_TIME && first_bonus_count++ < FIRST_BONUS_NUM) ||
+				(UserData::timer < SECOND_BONUS_TIME && second_bonus_count++ < SECOND_BONUS_NUM))
+			{
+				Vector2D rand = GetRandLoc();
+				Vector2D camera_center = { camera->GetCameraLocation().x + (SCREEN_WIDTH / 2),camera->GetCameraLocation().y + (SCREEN_HEIGHT / 2) };
+				Vector2D rand_velocity = { ((camera_center.x - rand.x) + (GetRand(SCREEN_WIDTH - 200) - (SCREEN_WIDTH - 200) / 2)) / 10,
+										   ((camera_center.y - rand.y) + (GetRand(SCREEN_HEIGHT - 200) - (SCREEN_HEIGHT - 200) / 2)) / 10 };
+				objects->CreateObject(eCOIN, rand, { 40,40 }, 20.f, rand_velocity);
+			}
+
 			//チュートリアルが終わっていないとタイマーが動かず、敵とコインが湧かないようにする
 			if (tutorial->GetIsEndTutorial(TutoType::tAttack))
 			{
@@ -237,7 +250,8 @@ eSceneType InGameScene::Update(float _delta)
 
 		if (InputPad::OnButton(XINPUT_BUTTON_A))
 		{
-			objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{40,40},eHEAL });
+			//objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{40,40},eHEAL });
+			objects->CreateObject({ Vector2D{ 150, 30 },Vector2D{40,40},eCOIN, 20.f });  
 		}
 #endif // _DEBUG
 

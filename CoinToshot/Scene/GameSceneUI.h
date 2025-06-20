@@ -6,6 +6,7 @@
 using namespace std;
 
 #define STRING_SPAN 10		//項目同士の間隔
+#define BONUS_TEXT_TIMER 300	//時間経過ボーナス表示時間
 
 struct UIData
 {
@@ -66,6 +67,10 @@ private:
 	int now_coin_num;		//現在のコイン枚数
 	int old_coin_num;		//１フレーム前のコイン枚数
 
+	int first_bonus_timer;	//時間経過ボーナスの表示時間
+	int second_bonus_timer;	//時間経過ボーナスの表示時間
+
+	int damage_timer;		//ダメージ時間測定
 	int con_spawn;			//紙吹雪生成までの間隔
 
 	int lock_image;			//"ロックされている"用画像

@@ -3,10 +3,15 @@
 #include "../Utility/InputPad.h"
 #include "DxLib.h"
 #include "../Utility/UserData.h"
+#include "../Utility/ResourceManager.h"
 
 EndScene::EndScene()
 {
+	release_button = false;
 
+	//SE読み込み
+	ResourceManager* rm = ResourceManager::GetInstance();
+	button_se = rm->GetSounds("Resource/Sounds/pop.wav");
 }
 
 EndScene::~EndScene()
@@ -23,19 +28,26 @@ eSceneType EndScene::Update(float _delta)
 {
 
 	//3秒立ったらゲーム終了
+
 	if (frame >= END_TIMER)
 	{
 		return eSceneType::eNull;
 	}
-	//Aボタンでタイトルに戻る
+	//Bボタンでタイトルに戻る
 	if (InputPad::OnButton(XINPUT_BUTTON_B))
 	{
+		PlaySoundMem(button_se, DX_PLAYTYPE_BACK);
 		return eSceneType::eTitle;
 	}
-	//Bボタンでカウントを早める
-	if (InputPad::OnPressed(XINPUT_BUTTON_A))
+	//Aボタンでカウントを早める
+	if (release_button && InputPad::OnPressed(XINPUT_BUTTON_A))
 	{
 		frame += 6;
+	}
+	//↑タイトルからの遷移後すぐにカウントを早めないようにする
+	if (InputPad::OnRelease(XINPUT_BUTTON_A))
+	{
+		release_button = true;
 	}
 #ifdef _DEBUG
 	//入力機能の取得

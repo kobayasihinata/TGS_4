@@ -7,8 +7,9 @@
 
 RankingScene::RankingScene()
 {
-	//BGM読み込み
+	//BGM、SE読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
+	button_se = rm->GetSounds("Resource/Sounds/pop.wav");
 	ranking_bgm = rm->GetSounds("Resource/Sounds/BGM/Sweet_smelling_flower.mp3");
 	SetVolumeSoundMem(8000, ranking_bgm);
 	if (!CheckSoundMem(ranking_bgm))
@@ -33,9 +34,10 @@ void RankingScene::Initialize()
 eSceneType RankingScene::Update(float _delta)
 {
 
-	//Aボタンでタイトルに戻る
-	if (InputPad::OnButton(XINPUT_BUTTON_A))
+	//Bボタンでタイトルに戻る
+	if (InputPad::OnButton(XINPUT_BUTTON_B))
 	{
+		PlaySoundMem(button_se, DX_PLAYTYPE_BACK);
 		return eSceneType::eTitle;
 	}
 
@@ -56,9 +58,10 @@ eSceneType RankingScene::Update(float _delta)
 void RankingScene::Draw()const
 {
 	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x999900, TRUE);
+	UserData::DrawCoin({ SCREEN_WIDTH +100, SCREEN_HEIGHT / 2 }, 600);
 	SetFontSize(32);
 
-	UserData::DrawButtonAndString({ SCREEN_WIDTH / 2 - 25,  SCREEN_HEIGHT - 48 }, XINPUT_BUTTON_A, ":タイトルに戻る", 0xffff00);
+	UserData::DrawButtonAndString({ SCREEN_WIDTH / 2 - 25,  SCREEN_HEIGHT - 48 }, XINPUT_BUTTON_B, ":タイトルに戻る", 0xffff00);
 
 	DrawString(181, 161,"No", 0xffffff);
 	DrawString(180, 160,"No", 0x000000);
