@@ -1,5 +1,5 @@
 #pragma once
-#define DEBUG_SKIP false		//デバッグ用チュートリアルスキップモード
+#define DEBUG_SKIP true		//デバッグ用チュートリアルスキップモード
 #define DEBUG_PLAYER false		//クリアと死をすぐ確認したい時用
 
 #define FRAME_RATE 60			//フレームレート
@@ -11,7 +11,7 @@
 
 #define DEFAULT_TIMELIMIT 18000	//制限時間初期値(フレーム単位)
 
-#define F_PI (float)(3.1415)				//円周率
+#define F_PI (float)(3.1415)	//円周率
 
 #define DEFAULT_ANIM_SPAN 10	//アニメーション周期
 #define DEFAULT_DEATH_TIMER 60	//死亡演出の時間
@@ -47,33 +47,33 @@
 #define ENEMY1_HEIGHT 40		//敵１高さ
 #define ENEMY1_SPEED 0.5f		//敵１速度
 #define ENEMY1_DAMAGE 1			//敵１与ダメ
-#define ENEMY1_DROPCOIN 5		//敵１コインドロップ量
+#define ENEMY1_DROPCOIN 6		//敵１コインドロップ量
 
 #define ENEMY2_HP 5				//敵２HP
 #define ENEMY2_WIDTH 50			//敵２幅
 #define ENEMY2_HEIGHT 50		//敵２高さ
 #define ENEMY2_SPEED 1.2f		//敵２速度
 #define ENEMY2_DAMAGE 3			//敵２与ダメ
-#define ENEMY2_DROPCOIN 10		//敵２コインドロップ量
+#define ENEMY2_DROPCOIN 14		//敵２コインドロップ量
 
 #define ENEMY3_HP 3				//敵３HP
 #define ENEMY3_WIDTH 50			//敵３幅
 #define ENEMY3_HEIGHT 50		//敵３高さ
 #define ENEMY3_SPEED 0.f		//敵３速度
-#define ENEMY3_DAMAGE 3			//敵３与ダメ
+#define ENEMY3_DAMAGE 2			//敵３与ダメ
 #define ENEMY3_ATTACK_SPAN 180	//敵３攻撃周期
 #define ENEMY3_ATTACK_SPEED 5	//敵３弾速度
 #define ENEMY3_ATTACK_LIMIT 180	//敵３弾残留時間
-#define ENEMY3_DROPCOIN 7		//敵３コインドロップ量
+#define ENEMY3_DROPCOIN 8		//敵３コインドロップ量
 
 #define ENEMY4_HP 3				//敵４HP
 #define ENEMY4_WIDTH 40			//敵４幅
 #define ENEMY4_HEIGHT 40		//敵４高さ
 #define ENEMY4_SPEED 3.f		//敵４速度
 #define ENEMY4_ESCAPE_SPEED 0.5f//敵４逃げ速度
-#define ENEMY4_STEAL 10			//敵４盗むコイン量
+#define ENEMY4_STEAL 15			//敵４盗むコイン量
 #define ENEMY4_DAMAGE 0			//敵４与ダメ
-#define ENEMY4_DROPCOIN 5		//敵４コインドロップ量
+#define ENEMY4_DROPCOIN 7		//敵４コインドロップ量
 
 #define ENEMY5_HP 20			//敵５HP
 #define ENEMY5_WIDTH 90			//敵５幅

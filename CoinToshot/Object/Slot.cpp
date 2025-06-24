@@ -133,7 +133,7 @@ void Slot::Draw()const
 		local_location.x + (box_size.x / 2),
 		local_location.y + (box_size.y / 2),
 		0xffffff, false);
-	UserData::DrawStringCenter(local_location, "‚·‚ë‚Á‚Æ",0xffffff);
+	UserData::DrawStringCenter(local_location, "7 7 7", 0xff0000);
 
 	//ƒŠ[ƒ‹‚Í‰ñ‚µ‚Ä‚é‚¾‚¯•\¦
 	if (can_stop)
