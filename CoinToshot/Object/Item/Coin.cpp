@@ -49,7 +49,7 @@ void Coin::Update()
 		velocity.x += ((camera->player_location.x - this->location.x) / 200);
 		velocity.y += ((camera->player_location.y - this->location.y) / 200);
 	}
-	if (++frame % 30 == 0)
+	if (++frame % 20 == 0)
 	{
 		manager->CreateEffect(elShine, { location.x+GetRand((int)radius)-(radius/2),location.y + GetRand((int)radius) - (radius / 2) }, TRUE, 0xffff00);
 	}

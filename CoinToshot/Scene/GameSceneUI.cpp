@@ -36,6 +36,7 @@ void GameSceneUI::Initialize()
 	ex_anim = rm->GetImages("Resource/Images/Effect/E_PuffAndStar.png", 60, 10, 6, 108, 116);
 	ex_se = rm->GetSounds("Resource/Sounds/explsion_big.mp3");
 	lock_se = rm->GetSounds("Resource/Sounds/lock.mp3");
+	count_se = rm->GetSounds("Resource/Sounds/lock.mp3");
 }
 
 void GameSceneUI::Update()
@@ -489,6 +490,11 @@ void GameSceneUI::DrawPlayerUI()const
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 - ((UserData::timer % 60) * 6));
 		DrawFormatString(SCREEN_WIDTH / 2 - GetDrawFormatStringWidth("%d", UserData::timer / 60) / 2, SCREEN_HEIGHT / 2 - GetFontSize() / 2 - 100, GetColor(255,(UserData::timer/3),0), "%d", (UserData::timer / 60));
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+		//カウントダウンSE
+		if (UserData::timer % 60 == 0)
+		{
+			PlaySoundMem(count_se, DX_PLAYTYPE_BACK);
+		}
 	}
 }
 

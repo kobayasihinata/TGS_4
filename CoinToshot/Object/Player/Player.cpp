@@ -30,6 +30,7 @@ void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init
 	tutorial = Tutorial::Get();
 
 	bullet_change_cd = 0;
+	danger_once = false;
 	arrow_image = MakeScreen(100, 100, TRUE);
 	aim_once_flg = false;
 	shot_rad = 123456.f;	//ありえない値を入れておく
@@ -76,10 +77,11 @@ void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init
 	not_shoot_se = rm->GetSounds("Resource/Sounds/Player/CannotShoot.mp3");
 	death_se = rm->GetSounds("Resource/Sounds/explsion_big.mp3");
 	bullet_change_se = rm->GetSounds("Resource/Sounds/メッセージ表示音2.mp3");
+	danger_se = rm->GetSounds("Resource/Sounds/Direction/警告音2.mp3");
 
 	//音量調節
 	SetVolumeSoundMem(9500, walk_se);
-	//		PlaySoundMem(cursor_se, DX_PLAYTYPE_BACK);
+	//PlaySoundMem(cursor_se, DX_PLAYTYPE_BACK);
 
 }
 
@@ -129,6 +131,7 @@ void Player::Update()
 	{
 		bullet_change_cd--;
 	}
+
 	//少しでも移動していたら表示アニメーションを変える
 	if (fabsf(velocity.x) > 0.3f || fabsf(velocity.y) > 0.3f)
 	{
@@ -167,6 +170,7 @@ void Player::Update()
 			location.y = camera->GetCameraLocation().y + SCREEN_HEIGHT - (box_size.y / 2);
 		}
 	}
+
 	//ダメージ後無敵を測定する
 	if (damage_flg && --damage_timer <= 0)
 	{
@@ -195,11 +199,27 @@ void Player::Update()
 		!CheckSoundMem(walk_se))
 	{
 		PlaySoundMem(walk_se, DX_PLAYTYPE_BACK);
+		manager->CreateEffect(elWalk, { location.x,location.y+(box_size.y/2) }, FALSE, 0xffffff, velocity.x > 0 ? FALSE : TRUE, 30);
 	}
+
 	//hpが0以下の時死亡処理
 	if (hp <= 0)
 	{
 		death_flg = true;
+	}
+
+	//HPが3以下になったら一回だけSE
+	if (hp <= 3)
+	{
+		if (!danger_once)
+		{
+			PlaySoundMem(danger_se, DX_PLAYTYPE_BACK);
+			danger_once = true;
+		}
+	}
+	else
+	{
+		danger_once = false;
 	}
 
 	//死亡演出フラグが立っているなら
@@ -344,12 +364,13 @@ void Player::Draw()const
 		//HPピンチ表示
 		if (hp <= 3)
 		{
-			DrawTriangleAA(local_location.x, local_location.y - 60,
-				local_location.x + 15, local_location.y - 30,
-				local_location.x - 15, local_location.y - 30,
+			DrawTriangleAA(local_location.x, local_location.y - 80,
+				local_location.x + 30, local_location.y - 30,
+				local_location.x - 30, local_location.y - 30,
 				frame % (int)(10 * hp) > (10 * hp) / 2 ? 0xff1100 : 0xffcc00,
 				false);
-			DrawStringF(local_location.x-4, local_location.y - 55, "!", frame % (int)(10 * hp) > (10 * hp) / 2 ? 0xff1100 : 0xffcc00);
+			SetFontSize(40);
+			DrawStringF(local_location.x-7, local_location.y - 75, "!", frame % (int)(10 * hp) > (10 * hp) / 2 ? 0xff1100 : 0xffcc00);
 		}
 	}
 
@@ -365,7 +386,7 @@ void Player::Hit(ObjectBase* hit_Object)
 void Player::Damage(float _value, Vector2D _attack_loc, int _knock_back)
 {
 	//ダメージ後無敵でないならダメージを受ける
-	if (!damage_flg)
+	if (!damage_flg && !death_flg)
 	{
 		__super::Damage(_value, _attack_loc, _knock_back);
 		UserData::player_hp = hp;

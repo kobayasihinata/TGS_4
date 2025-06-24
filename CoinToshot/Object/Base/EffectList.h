@@ -5,4 +5,6 @@ static enum EffectList {
 	elSmoke,		//‰Œ
 	elShine,		//‹P‚«
 	elExplosion,	//”š”­
+	elWalk,			//•às
+	elHit,			//‘ÅŒ‚
 };

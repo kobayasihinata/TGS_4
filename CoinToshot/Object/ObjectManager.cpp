@@ -45,7 +45,7 @@ void ObjectManager::Update()
 		create_object.object->Initialize(this, create_object.object_num, create_object.init_location, create_object.init_size,create_object.init_radius);
 		object_list.push_back(create_object.object);
 		//煙エフェクト生成
-		CreateEffect(elSmoke, create_object.init_location, true,0x000000, 30);
+		CreateEffect(elSmoke, create_object.init_location, true,0x000000, false,30);
 	}
 
 	//追加したオブジェクトは消去
@@ -243,7 +243,7 @@ void ObjectManager::DeleteAllObject()
 	}
 }
 
-void ObjectManager::CreateEffect(int object_type, Vector2D init_location, bool _front_flg, int _color, int _timer, int _anim_span)
+void ObjectManager::CreateEffect(int object_type, Vector2D init_location, bool _front_flg, int _color, bool _dir, int _timer, int _anim_span)
 {
 	switch (object_type)
 	{
@@ -258,6 +258,12 @@ void ObjectManager::CreateEffect(int object_type, Vector2D init_location, bool _
 		break;
 	case EffectList::elExplosion:
 		create_effect.push_back(EffectInitData{ new Explosion(),init_location, _front_flg,_timer, _anim_span });
+		break;
+	case EffectList::elWalk:
+		create_effect.push_back(EffectInitData{ new Walk(_dir),init_location, _front_flg,_timer, _anim_span });
+		break;
+	case EffectList::elHit:
+		create_effect.push_back(EffectInitData{ new Hit(),init_location, _front_flg,_timer, _anim_span });
 		break;
 	default:
 		break;

@@ -32,6 +32,7 @@ private:
 	bool tuto_heal_once;		//チュートリアル時回復アイテム生成
 	int tuto_heal_timer;		//チュートリアル時回復アイテム生成タイミング
 	int first_bonus_count;		//一定時間経過時に指定の枚数コインを発生させる
+	int bonus_timer;			//ボーナスコインの表示時間測定
 	int second_bonus_count;		//一定時間経過時に指定の枚数コインを発生させる
 	int bg_image;				//完成した背景画像を格納する
 
@@ -46,6 +47,8 @@ private:
 	int game_clear_se;			//ゲームクリア効果音
 	int game_over_se;			//ゲームオーバー効果音
 	int clap_se;				//拍手効果音
+	int coin_se;				//コインSE
+
 public:
 	InGameScene();
 	virtual ~InGameScene();
@@ -133,7 +136,15 @@ public:
 	/// </summary>
 	void CreateBackGround();
 
-	
+	/// <summary>
+	/// ボーナスコイン更新
+	/// </summary>
+	void BonusCoinUpdate();
+
+	/// <summary>
+	/// チュートリアル用更新
+	/// </summary>
+	void TutorialUpdate();
 };
 
 

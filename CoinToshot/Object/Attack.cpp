@@ -65,13 +65,13 @@ void Attack::Update()
 		}
 
 		//消滅エフェクト
-		manager->CreateEffect(elRipples, this->location, true, ripple_color, 45);
+		manager->CreateEffect(elRipples, this->location, true, ripple_color, false,45);
 	}
 
 	//波紋を生成
 	if (count_up % 5 == 0)
 	{
-		manager->CreateEffect(elRipples, this->location, false, ripple_color,30);
+		manager->CreateEffect(elRipples, this->location, false, ripple_color,false,30);
 	}
 
 	//最強弾用の更新
@@ -126,6 +126,7 @@ void Attack::Hit(ObjectBase* hit_object)
 		{
 			manager->DeleteObject(this);
 		}
+		manager->CreateEffect(elHit, hit_object->GetLocation(), true, 0x000000, false, 30);
 	}
 
 	//攻撃したのがプレイヤーで、敵に攻撃が当たっているなら
@@ -140,6 +141,7 @@ void Attack::Hit(ObjectBase* hit_object)
 		{
 			manager->DeleteObject(this);
 		}
+		manager->CreateEffect(elHit, hit_object->GetLocation(), true, 0x000000, false, 30);
 	}
 }
 

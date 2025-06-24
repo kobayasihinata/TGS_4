@@ -20,7 +20,7 @@ private:
 
 	//弾変更
 	int bullet_change_cd;		//弾種類変更クールダウン測定
-
+	bool danger_once;			//危険SE再生
 
 	//コイン発射関連
 	bool aim_once_flg;			//一回でもカーソルを動かしたか判断
@@ -42,6 +42,7 @@ private:
 	int not_shoot_se;			//発射失敗SE
 	int death_se;				//死亡SE
 	int bullet_change_se;		//弾変更SE
+	int danger_se;				//危険SE
 public:
 	static InGameScene* ingame;		//現在のシーンのポインタを保存
 

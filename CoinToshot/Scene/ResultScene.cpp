@@ -491,7 +491,7 @@ void ResultScene::EnterNameDraw()const
 
 	UserData::DrawButtonImage({ SCREEN_WIDTH / 2 - 40, 420 }, XINPUT_BUTTON_A, 50);
 	UserData::DrawButtonImage({ SCREEN_WIDTH / 2 - 40, 460 }, XINPUT_BUTTON_B, 50);
-	UserData::DrawButtonImage({ SCREEN_WIDTH / 2 - 40, 480 }, XINPUT_BUTTON_START, 50);
+	UserData::DrawButtonImage({ SCREEN_WIDTH / 2 - 40, 490 }, XINPUT_BUTTON_START, 50);
 
 	SetFontSize(32);
 	//•¶Žš‚Ì•`‰æ

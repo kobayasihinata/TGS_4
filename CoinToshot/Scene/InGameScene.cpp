@@ -39,6 +39,7 @@ void InGameScene::Initialize()
 	pause_flg = false;
 	coin_spawn_once = false;
 	first_bonus_count = 0;
+	bonus_timer = 0;
 	second_bonus_count = 0;
 	update_once = false;
 	start_anim_flg = true;
@@ -82,6 +83,7 @@ void InGameScene::Initialize()
 	game_clear_se = rm->GetSounds("Resource/Sounds/Direction/victory.mp3");
 	game_over_se = rm->GetSounds("Resource/Sounds/Direction/deden.mp3");
 	clap_se = rm->GetSounds("Resource/Sounds/Direction/大勢で拍手.mp3");
+	coin_se = rm->GetSounds("Resource/Sounds/Coin/Get.mp3");
 	SetVolumeSoundMem(9000, game_clear_se);
 	//BGMを初めから再生するための処理
 	PlaySoundMem(gamemain_bgm, DX_PLAYTYPE_LOOP, TRUE);
@@ -138,76 +140,9 @@ eSceneType InGameScene::Update(float _delta)
 			//カメラ更新
 			camera->Update();
 
-			//移動チュートリアルが終わっていたらコイン投げ入れ
-			if (!tutorial->tuto_flg && tutorial->GetIsEndTutorial(TutoType::tMove) && (int)frame % 10 == 0 && tuto_coin_count++ < 20)
-			{
-				Vector2D rand = GetRandLoc();
-				Vector2D camera_center = { camera->GetCameraLocation().x + (SCREEN_WIDTH / 2),camera->GetCameraLocation().y + (SCREEN_HEIGHT / 2) };
-				Vector2D rand_velocity = { ((camera_center.x - rand.x) + (GetRand(SCREEN_WIDTH - 200) - (SCREEN_WIDTH - 200) / 2)) / 10,
-										   ((camera_center.y - rand.y) + (GetRand(SCREEN_HEIGHT - 200) - (SCREEN_HEIGHT - 200) / 2)) / 10 };
-				objects->CreateObject(eCOIN, rand, { 40,40 }, 20.f, rand_velocity);
-			}
-
-			//一定時間経過でボーナスコイン投げ入れ
-			if ((UserData::timer < FIRST_BONUS_TIME && first_bonus_count++ < FIRST_BONUS_NUM) ||
-				(UserData::timer < SECOND_BONUS_TIME && second_bonus_count++ < SECOND_BONUS_NUM))
-			{
-				Vector2D rand = GetRandLoc();
-				Vector2D camera_center = { camera->GetCameraLocation().x + (SCREEN_WIDTH / 2),camera->GetCameraLocation().y + (SCREEN_HEIGHT / 2) };
-				Vector2D rand_velocity = { ((camera_center.x - rand.x) + (GetRand(SCREEN_WIDTH - 200) - (SCREEN_WIDTH - 200) / 2)) / 10,
-										   ((camera_center.y - rand.y) + (GetRand(SCREEN_HEIGHT - 200) - (SCREEN_HEIGHT - 200) / 2)) / 10 };
-				objects->CreateObject(eCOIN, rand, { 40,40 }, 20.f, rand_velocity);
-			}
-
-			//チュートリアルが終わっていないとタイマーが動かず、敵とコインが湧かないようにする
-			if (tutorial->GetIsEndTutorial(TutoType::tAttack))
-			{
-				//アイテム生成
-				SpawnItem();
-				//制限時間減少
-				if(!UserData::is_dead)UserData::timer--;
-				//敵生成
-				SpawnEnemy();
-			}
-
-			//攻撃チュートリアル中にコインが０枚になったら１枚生成
-			if (tutorial->GetNowTutorial() == TutoType::tAttack && UserData::coin <= 0)
-			{
-				if (!coin_spawn_once)
-				{
-					objects->CreateObject({ Vector2D{ 140, 30 },Vector2D{40,40},eCOIN, 20.f });
-					coin_spawn_once = true;
-				}
-			}
-			else
-			{
-				coin_spawn_once = false;
-			}
-
-			//照準チュートリアルと攻撃チュートリアル中はHPが5以下になったら画面外から回復アイテムを投げつけられる
-			if (tutorial->GetNowTutorial() == TutoType::tAim || tutorial->GetNowTutorial() == TutoType::tAttack)
-			{
-				if (UserData::player_hp <= 5)
-				{
-					if (!tuto_heal_once && ++tuto_heal_timer > 15)
-					{
-						//回復アイテム生成
-						Vector2D rand = GetRandLoc();
-						Vector2D rand_velocity = { (camera->player_location.x - rand.x)/7  ,
-												   (camera->player_location.y - rand.y)/7 };
-						objects->CreateObject(eHEAL, rand, { 40,40 }, 20.f, rand_velocity);
-						tuto_heal_once = true;
-						tuto_heal_timer = 0;
-					}
-				}
-				//HPが回復したらリセット
-				else
-				{
-					tuto_heal_once = false;
-				}
-				
-			}
-
+			//チュートリアル更新
+			TutorialUpdate();
+			
 			//オブジェクト更新
 			objects->Update();
 		}
@@ -288,8 +223,6 @@ eSceneType InGameScene::Update(float _delta)
 void InGameScene::Draw()const
 {
 	int old = GetFontSize();
-	DrawString(10, 10, "InGame", GetColor(255, 255, 255));
-	DrawString(10, 30, "1 = Title  2 = Result", 0xffffff);
 
 	//背景画像描画
 	DrawGraphF(-STAGE_SIZE - camera->GetCameraLocation().x,- STAGE_SIZE -camera->GetCameraLocation().y, bg_image, true);
@@ -359,12 +292,40 @@ void InGameScene::Draw()const
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 		}
 	}
-
+	//時間経過ボーナス描画
+	if (bonus_timer > 0)
+	{
+		SetFontSize(48);
+		if (UserData::timer < SECOND_BONUS_TIME)
+		{
+			DrawFormatString(SCREEN_WIDTH / 2 - GetDrawStringWidth("2/3 経過ボーナス！", strlen("2/3 経過ボーナス！"))/2 + 1,
+				SCREEN_HEIGHT / 2 - 200 + 1,
+				bonus_timer % 20 > 10 ? 0xffff00 : 0xffffff,
+				"2/3 経過ボーナス！");
+			DrawFormatString(SCREEN_WIDTH / 2 - GetDrawStringWidth("2/3 経過ボーナス！", strlen("2/3 経過ボーナス！")) / 2,
+				SCREEN_HEIGHT / 2 - 200,
+				bonus_timer % 20 > 10 ? 0xffffff : 0xffff00,
+				"2/3 経過ボーナス！");
+		}
+		else if (UserData::timer < FIRST_BONUS_TIME)
+		{
+			DrawFormatString(SCREEN_WIDTH / 2 - GetDrawStringWidth("1/3 経過ボーナス！", strlen("1/3 経過ボーナス！"))/2 + 1,
+				SCREEN_HEIGHT / 2 - 200 + 1,
+				bonus_timer % 20 > 10 ? 0xffff00 : 0xffffff,
+				"1/3 経過ボーナス！");
+			DrawFormatString(SCREEN_WIDTH / 2 - GetDrawStringWidth("1/3 経過ボーナス！", strlen("1/3 経過ボーナス！")) / 2,
+				SCREEN_HEIGHT / 2 - 200,
+				bonus_timer % 20 > 10 ? 0xffffff : 0xffff00,
+				"1/3 経過ボーナス！");
+		}
+	}
 	//最低保証コインが出た時のメッセージ
 	if (coin_spawn_once)
 	{
+		SetFontSize(12);
 		DrawString((SCREEN_WIDTH / 2) + 100, (SCREEN_HEIGHT / 2) + 20, "あきらめないで！", (int)frame % 30 > 15 ? 0xcccc00 : 0xffff00);
 	}
+
 	SetFontSize(old);
 }
 
@@ -426,7 +387,7 @@ void InGameScene::SpawnItem()
 void InGameScene::SpawnEnemy()
 {
 	//画面外からランダムに一定周期でスポーン
-	if ((int)frame % (120 -((DEFAULT_TIMELIMIT - UserData::timer)/300)) == 0)
+	if ((int)frame % (100 -((DEFAULT_TIMELIMIT - UserData::timer)/300)) == 0)
 	{
 		objects->CreateObject(GetEnemyData());
 	}
@@ -625,5 +586,93 @@ void InGameScene::CreateBackGround()
 		}
 	}
 	SetDrawScreen(DX_SCREEN_BACK);
+
+}
+
+void InGameScene::BonusCoinUpdate()
+{
+	//一定時間経過でボーナスコイン投げ入れ
+	if (bonus_timer % 10 == 0 &&
+		((UserData::timer < FIRST_BONUS_TIME && first_bonus_count++ < FIRST_BONUS_NUM) ||
+		(UserData::timer < SECOND_BONUS_TIME && second_bonus_count++ < SECOND_BONUS_NUM)))
+	{
+		Vector2D rand = GetRandLoc();
+		Vector2D camera_center = { camera->GetCameraLocation().x + (SCREEN_WIDTH / 2),camera->GetCameraLocation().y + (SCREEN_HEIGHT / 2) };
+		Vector2D rand_velocity = { ((camera_center.x - rand.x) + (GetRand(SCREEN_WIDTH - 200) - (SCREEN_WIDTH - 200) / 2)) / 10,
+								   ((camera_center.y - rand.y) + (GetRand(SCREEN_HEIGHT - 200) - (SCREEN_HEIGHT - 200) / 2)) / 10 };
+		objects->CreateObject(eCOIN, rand, { 40,40 }, 20.f, rand_velocity);
+		bonus_timer = 60;
+		PlaySoundMem(coin_se, DX_PLAYTYPE_BACK);
+	}
+
+	//ボーナスコイン表示時間
+	if (--bonus_timer < 0)
+	{
+		bonus_timer = 0;
+	}
+}
+
+void InGameScene::TutorialUpdate()
+{
+	//移動チュートリアルが終わっていたらコイン投げ入れ
+	if (!tutorial->tuto_flg && tutorial->GetIsEndTutorial(TutoType::tMove) && (int)frame % 10 == 0 && tuto_coin_count++ < 20)
+	{
+		Vector2D rand = GetRandLoc();
+		Vector2D camera_center = { camera->GetCameraLocation().x + (SCREEN_WIDTH / 2),camera->GetCameraLocation().y + (SCREEN_HEIGHT / 2) };
+		Vector2D rand_velocity = { ((camera_center.x - rand.x) + (GetRand(SCREEN_WIDTH - 200) - (SCREEN_WIDTH - 200) / 2)) / 10,
+								   ((camera_center.y - rand.y) + (GetRand(SCREEN_HEIGHT - 200) - (SCREEN_HEIGHT - 200) / 2)) / 10 };
+		objects->CreateObject(eCOIN, rand, { 40,40 }, 20.f, rand_velocity);
+	}
+
+	BonusCoinUpdate();
+
+	//チュートリアルが終わっていないとタイマーが動かず、敵とコインが湧かないようにする
+	if (tutorial->GetIsEndTutorial(TutoType::tAttack))
+	{
+		//アイテム生成
+		SpawnItem();
+		//制限時間減少
+		if (!UserData::is_dead)UserData::timer--;
+		//敵生成
+		SpawnEnemy();
+	}
+
+	//攻撃チュートリアル中にコインが０枚になったら１枚生成
+	if (tutorial->GetNowTutorial() == TutoType::tAttack && UserData::coin <= 0)
+	{
+		if (!coin_spawn_once)
+		{
+			objects->CreateObject({ Vector2D{ 140, 30 },Vector2D{40,40},eCOIN, 20.f });
+			coin_spawn_once = true;
+		}
+	}
+	else
+	{
+		coin_spawn_once = false;
+	}
+
+	//照準チュートリアルと攻撃チュートリアル中はHPが5以下になったら画面外から回復アイテムを投げつけられる
+	if (tutorial->GetNowTutorial() == TutoType::tAim || tutorial->GetNowTutorial() == TutoType::tAttack)
+	{
+		if (UserData::player_hp <= 5)
+		{
+			if (!tuto_heal_once && ++tuto_heal_timer > 15)
+			{
+				//回復アイテム生成
+				Vector2D rand = GetRandLoc();
+				Vector2D rand_velocity = { (camera->player_location.x - rand.x) / 7  ,
+										   (camera->player_location.y - rand.y) / 7 };
+				objects->CreateObject(eHEAL, rand, { 40,40 }, 20.f, rand_velocity);
+				tuto_heal_once = true;
+				tuto_heal_timer = 0;
+			}
+		}
+		//HPが回復したらリセット
+		else
+		{
+			tuto_heal_once = false;
+		}
+
+	}
 
 }
