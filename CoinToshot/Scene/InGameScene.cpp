@@ -290,29 +290,31 @@ void InGameScene::Draw()const
 	//時間経過ボーナス描画
 	if (bonus_timer > 0)
 	{
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (255.f/TIME_BONUS) * bonus_timer);
 		SetFontSize(48);
 		if (UserData::timer < SECOND_BONUS_TIME)
 		{
 			DrawFormatString(SCREEN_WIDTH / 2 - GetDrawStringWidth("2/3 経過ボーナス！", strlen("2/3 経過ボーナス！"))/2 + 1,
 				SCREEN_HEIGHT / 2 - 200 + 1,
-				bonus_timer % 20 > 10 ? 0xffff00 : 0xffffff,
+				0x555500,
 				"2/3 経過ボーナス！");
 			DrawFormatString(SCREEN_WIDTH / 2 - GetDrawStringWidth("2/3 経過ボーナス！", strlen("2/3 経過ボーナス！")) / 2,
 				SCREEN_HEIGHT / 2 - 200,
-				bonus_timer % 20 > 10 ? 0xffffff : 0xffff00,
+				0xffffff,
 				"2/3 経過ボーナス！");
 		}
 		else if (UserData::timer < FIRST_BONUS_TIME)
 		{
 			DrawFormatString(SCREEN_WIDTH / 2 - GetDrawStringWidth("1/3 経過ボーナス！", strlen("1/3 経過ボーナス！"))/2 + 1,
 				SCREEN_HEIGHT / 2 - 200 + 1,
-				bonus_timer % 20 > 10 ? 0xffff00 : 0xffffff,
+				0xffff00,
 				"1/3 経過ボーナス！");
 			DrawFormatString(SCREEN_WIDTH / 2 - GetDrawStringWidth("1/3 経過ボーナス！", strlen("1/3 経過ボーナス！")) / 2,
 				SCREEN_HEIGHT / 2 - 200,
-				bonus_timer % 20 > 10 ? 0xffffff : 0xffff00,
+				0xffffff,
 				"1/3 経過ボーナス！");
 		}
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 	}
 	//最低保証コインが出た時のメッセージ
 	if (coin_spawn_once)
@@ -612,7 +614,7 @@ void InGameScene::BonusCoinUpdate()
 		Vector2D rand_velocity = { ((camera_center.x - rand.x) + (GetRand(SCREEN_WIDTH - 200) - (SCREEN_WIDTH - 200) / 2)) / 10,
 								   ((camera_center.y - rand.y) + (GetRand(SCREEN_HEIGHT - 200) - (SCREEN_HEIGHT - 200) / 2)) / 10 };
 		objects->CreateObject(eCOIN, rand, { 40,40 }, 20.f, rand_velocity);
-		bonus_timer = 60;
+		bonus_timer = TIME_BONUS;
 		PlaySoundMem(coin_se, DX_PLAYTYPE_BACK);
 	}
 

@@ -165,7 +165,7 @@ void Enemy4::Draw()const
 void Enemy4::Hit(ObjectBase* hit_object)
 {
 	//プレイヤーに当たったらコインを奪い、コインを奪ったフラグを立てる
-	if (!death_flg && !steal_flg && hit_object->GetObjectType() == ePLAYER)
+	if (!death_flg && !steal_flg && hit_object->GetObjectType() == ePLAYER && !hit_object->GetDeathFlg())
 	{
 		//コイン量が盗む量より多ければ規定量盗む
 		if (UserData::coin > ENEMY4_STEAL)

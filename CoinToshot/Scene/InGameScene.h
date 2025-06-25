@@ -16,6 +16,8 @@
 #define G_START_ANIM_TIME 180
 #define G_END_ANIM_TIME 300
 
+//ボーナスアニメーション
+#define TIME_BONUS 60	//文字表示時間
 class InGameScene : public SceneBase
 {
 private:
