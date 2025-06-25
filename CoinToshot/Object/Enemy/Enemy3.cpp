@@ -146,7 +146,7 @@ void Enemy3::Update()
 			if (rare_flg)
 			{
 				//‰ñ•œ‚©Ž¥Î
-				if (GetRand(1) == 0)
+				if (GetRand(50 - UserData::player_hp) > 10)
 				{
 					manager->CreateObject(
 						eHEAL,

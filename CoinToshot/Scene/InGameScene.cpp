@@ -49,11 +49,6 @@ void InGameScene::Initialize()
 	camera = Camera::Get();
 	camera->player_location = 0;
 	tutorial = Tutorial::Get();
-	//チュートリアルを受けたことが無いなら初期化
-	if (!tutorial->tuto_flg)
-	{
-		tutorial->Initialize();
-	}
 
 	//チュートリアルが完了していないなら初期コインは0枚、しているなら20枚
 	UserData::coin = tutorial->GetBasicTuto() ? 20 : 0;
@@ -389,7 +384,23 @@ void InGameScene::SpawnEnemy()
 	//画面外からランダムに一定周期でスポーン
 	if ((int)frame % (100 -((DEFAULT_TIMELIMIT - UserData::timer)/300)) == 0)
 	{
-		objects->CreateObject(GetEnemyData());
+		//低確率で塊出現
+		if (GetRand(30) == 0)
+		{
+			ObjectData data = GetEnemyData();
+			for (int i = 0; i < 10; i++)
+			{
+				
+				objects->CreateObject(data.type,
+					{ data.loc.x + (GetRand(50) - 25),data.loc.y + (GetRand(50) - 25) },
+					data.size,
+					data.radius);
+			}
+		}
+		else
+		{
+			objects->CreateObject(GetEnemyData());
+		}
 	}
 }
 

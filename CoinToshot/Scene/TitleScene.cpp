@@ -11,9 +11,12 @@
 
 TitleScene::TitleScene()
 {
+	tutorial = Tutorial::Get();
+
 	start_anim_flg = true;
 	start_anim_timer = 0;
-
+	tuto_reset_flg = false;
+	tuto_current_num = 0;
 	current_num = 0;
 	bg_image = CreateBackGround();
 
@@ -47,45 +50,99 @@ eSceneType TitleScene::Update(float _delta)
 	//アニメーション中なら操作不可
 	if (!start_anim_flg)
 	{
-		//下入力で項目下移動
-		if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_DOWN) || InputPad::GetPressedButton(L_STICK_DOWN))
+		if (!tuto_reset_flg)
 		{
-			if (++current_num >= ITEM_NUM)
+			//下入力で項目下移動
+			if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_DOWN) || InputPad::GetPressedButton(L_STICK_DOWN))
 			{
-				current_num = 0;
+				if (++current_num >= ITEM_NUM)
+				{
+					current_num = 0;
+				}
+				PlaySoundMem(cursor_se, DX_PLAYTYPE_BACK);
 			}
-			PlaySoundMem(cursor_se, DX_PLAYTYPE_BACK);
-		}
-		//上入力で項目上移動
-		if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_UP) || InputPad::GetPressedButton(L_STICK_UP))
-		{
-			if (--current_num < 0)
+			//上入力で項目上移動
+			if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_UP) || InputPad::GetPressedButton(L_STICK_UP))
 			{
-				current_num = ITEM_NUM - 1;
+				if (--current_num < 0)
+				{
+					current_num = ITEM_NUM - 1;
+				}
+				PlaySoundMem(cursor_se, DX_PLAYTYPE_BACK);
 			}
-			PlaySoundMem(cursor_se, DX_PLAYTYPE_BACK);
-		}
-		//Aボタンで決定
-		if (InputPad::OnButton(XINPUT_BUTTON_A))
-		{
-			PlaySoundMem(enter_se, DX_PLAYTYPE_BACK);
-			switch (current_num)
+			//Aボタンで決定
+			if (InputPad::OnButton(XINPUT_BUTTON_A))
 			{
-			case TitleItem::tGameMain:
-				StopSoundMem(title_bgm);
-				return eSceneType::eInGame;
-				break;
-			case TitleItem::tRanking:
-				StopSoundMem(title_bgm);
-				return eSceneType::eRanking;
-				break;
-			case TitleItem::tEnd:
-				return eSceneType::eEnd;
-				break;
-			default:
-				break;
-			}
+				PlaySoundMem(enter_se, DX_PLAYTYPE_BACK);
+				switch (current_num)
+				{
+				case TitleItem::tGameMain:
+					StopSoundMem(title_bgm);
+					//既プレイならチュートリアルをスキップできる
+					if (tutorial->tuto_flg)
+					{
+						tuto_reset_flg = true;
+					}
+					else
+					{
+						tutorial->Initialize();
+						return eSceneType::eInGame;
+					}
+					break;
+				case TitleItem::tRanking:
+					StopSoundMem(title_bgm);
+					return eSceneType::eRanking;
+					break;
+				case TitleItem::tEnd:
+					return eSceneType::eEnd;
+					break;
+				default:
+					break;
+				}
 
+			}
+		}
+		//チュートリアルをリセットするか選ばせる所
+		else
+		{
+			//右入力で項目右移動
+			if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_RIGHT) || InputPad::GetPressedButton(L_STICK_RIGHT))
+			{
+				if (++tuto_current_num >= 2)
+				{
+					tuto_current_num = 0;
+				}
+				PlaySoundMem(cursor_se, DX_PLAYTYPE_BACK);
+			}
+			//左入力で項目左移動
+			if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_LEFT) || InputPad::GetPressedButton(L_STICK_LEFT))
+			{
+				if (--tuto_current_num < 0)
+				{
+					tuto_current_num = 1;
+				}
+				PlaySoundMem(cursor_se, DX_PLAYTYPE_BACK);
+			}
+			//Aボタンで決定
+			if (InputPad::OnButton(XINPUT_BUTTON_A))
+			{
+				PlaySoundMem(enter_se, DX_PLAYTYPE_BACK);
+				switch (tuto_current_num)
+				{
+				case 0:
+					tutorial->tuto_flg = true;
+					return eSceneType::eInGame;
+					break;
+				case 1:
+					tutorial->Initialize();
+					tutorial->tuto_flg = false;
+					return eSceneType::eInGame;
+					break;
+				default:
+					break;
+				}
+
+			}
 		}
 	}
 	//アニメーション中の処理
@@ -165,6 +222,19 @@ void TitleScene::Draw()const
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 - ((255.f / START_ANIM) * start_anim_timer));
 		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, true);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+	}
+
+	//チュートリアル描画
+	if (tuto_reset_flg)
+	{
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 160);
+		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, true);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+		SetFontSize(48);
+		UserData::DrawStringCenter({ SCREEN_WIDTH / 2,300 }, "チュートリアルを飛ばしますか？", 0xffffff);
+		SetFontSize(32);
+		DrawString(SCREEN_WIDTH / 2 - 200, 400, "はい", tuto_current_num == 0 ? 0xff5555 : 0x999999);
+		DrawString(SCREEN_WIDTH / 2 + 200, 400, "いいえ", tuto_current_num == 1 ? 0xff5555 : 0x999999);
 	}
 	SetFontSize(old);
 }

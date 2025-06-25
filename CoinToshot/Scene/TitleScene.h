@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SceneBase.h"
+#include "Tutorial.h"
 
 #define ITEM_NUM 3	//タイトルの項目数
 #define START_ANIM 180  //アニメーション時間
@@ -21,8 +22,12 @@ static char item_text[ITEM_NUM][256] =
 class TitleScene : public SceneBase
 {
 private:
+	class Tutorial* tutorial;	//チュートリアル格納
+
 	bool start_anim_flg;	//タイトル遷移時アニメーション
 	int start_anim_timer;	//タイトル遷移時アニメーション測定
+	bool tuto_reset_flg;	//チュートリアルをスキップするか選ばせる
+	int tuto_current_num;	//チュートリアルスキップ時の項目
 
 	int current_num;		//選択されている項目
 

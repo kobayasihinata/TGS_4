@@ -1,5 +1,5 @@
 #pragma once
-#define DEBUG_SKIP true		//デバッグ用チュートリアルスキップモード
+#define DEBUG_SKIP true			//デバッグ用チュートリアルスキップモード
 #define DEBUG_PLAYER false		//クリアと死をすぐ確認したい時用
 
 #define FRAME_RATE 60			//フレームレート
@@ -56,7 +56,7 @@
 #define ENEMY2_DAMAGE 3			//敵２与ダメ
 #define ENEMY2_DROPCOIN 14		//敵２コインドロップ量
 
-#define ENEMY3_HP 3				//敵３HP
+#define ENEMY3_HP 1				//敵３HP
 #define ENEMY3_WIDTH 50			//敵３幅
 #define ENEMY3_HEIGHT 50		//敵３高さ
 #define ENEMY3_SPEED 0.f		//敵３速度

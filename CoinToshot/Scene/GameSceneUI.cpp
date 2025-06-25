@@ -483,6 +483,9 @@ void GameSceneUI::DrawPlayerUI()const
 		UserData::coin);
 	SetFontSize(old);
 
+	DrawString(50, 10, ": 一時停止", 0x000000);
+	UserData::DrawButtonImage({ 30, 20 }, XINPUT_BUTTON_START, 50);
+
 	//残り時間１０秒以下なら、カウントダウンを描画する
 	if (UserData::timer < 600 && UserData::timer > 0)
 	{
