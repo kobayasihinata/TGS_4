@@ -2,9 +2,9 @@
 #include "Base/ObjectBase.h"
 
 #define REEL_NUM 9		//リールの要素数
-#define PEKA 50			//光る確率 〇分の１
+#define PEKA 30			//光る確率 〇分の１
 #define REEL_WAIT 120	//待ち時間
-#define BIG_BONUS 240	//ドロップコイン量
+#define BIG_BONUS 480	//ドロップコイン量
 
 class InGameScene;
 

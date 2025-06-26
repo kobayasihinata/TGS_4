@@ -434,35 +434,35 @@ Vector2D InGameScene::GetRandLoc()
 ObjectList InGameScene::GetRandEnemy()
 {
 	int coin = UserData::coin;
-	//コインが0～49ならenemy1をスポーン
-	if (coin < 50)
+	//コインが0～69ならenemy1をスポーン
+	if (coin < 70)
 	{
 		return GetEnemy(eENEMY1, 100);
 	}
-	//コインが50～100ならenemy1と2をランダムでスポーン
-	if (coin < 100)
+	//コインが70～150ならenemy1と2をランダムでスポーン
+	if (coin < 150)
 	{
 		return GetEnemy(eENEMY1, 50, eENEMY2, 50);
 	}
-	//コインが100～199ならenemy2をスポーン
-	if (coin < 200)
+	//コインが150～299ならenemy2をスポーン
+	if (coin < 300)
 	{
 		return GetEnemy(eENEMY2, 100);
 	}
-	//コインが200～299ならenemy2と3をスポーン
-	if (coin < 300)
-	{
-		return GetEnemy(eENEMY2, 50, eENEMY3, 50);
-	}
-	//コインが300～399ならenemy2と4をスポーン
-	if (coin < 400)
-	{
-		return GetEnemy(eENEMY2, 90, eENEMY4, 10);
-	}
-	//コインが400～499ならenemy2と5をスポーン
+	//コインが300～499ならenemy1と2と3をスポーン
 	if (coin < 500)
 	{
-		return GetEnemy(eENEMY2, 80, eENEMY5, 20);
+		return GetEnemy(eENEMY1, 30,eENEMY2, 40, eENEMY3, 30);
+	}
+	//コインが500～699ならenemy1と2と4をスポーン
+	if (coin < 700)
+	{
+		return GetEnemy(eENEMY1, 30, eENEMY2, 60, eENEMY4, 10);
+	}
+	//コインが700～999ならenemy1と2と5をスポーン
+	if (coin < 1000)
+	{
+		return GetEnemy(eENEMY1, 20, eENEMY2, 60, eENEMY5, 20);
 	}
 	//それ以降は全ての敵を均等に
 	else
