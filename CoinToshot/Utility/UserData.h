@@ -46,13 +46,13 @@ public:
 	static bool can_bullet_change_flg;	//弾種類変更可能か
 	static bool player_damage_flg;	//プレイヤーがダメージを受けて動けない状態か判断
 	static std::vector<std::vector<int>> button_image;//ボタン画像格納
-
+	static int coin_image;			//黄色コイン画像格納
 	//デバッグ用
 	static int variable;			//起動中に好きに変更できる値
 	static bool variable_change;	//値変更中か
 	static Vector2D variable_loc;	//調整表示用座標
 public:
-	//ボタン画像を読み込む
+	//画像を読み込む
 	static void LoadButtonImage();
 
 	//ボタンアニメーション用更新
@@ -76,6 +76,9 @@ public:
 	//コイン描画
 	static void DrawCoin(Vector2D _loc, float _radius, int _r = 255, int _g = 255, int _b = 0);
 		
+	//黄色のコイン描画(メモリ節約の為)
+	static void DrawDefaultCoin(Vector2D _loc, float _radius);
+
 	//可変の変数描画
 	static void DrawVariable();
 };

@@ -76,10 +76,6 @@ void Tutorial::Update()
 		UpdateBulletChange();
 		UpdateTimeTuto();
 		break;
-	case TutoType::tEnemyBullet:
-		break;
-	case TutoType::tSlot:
-		break;
 	default:
 		break;
 	}
@@ -106,12 +102,6 @@ void Tutorial::Draw()const
 		break;
 	case TutoType::tBulletChange:
 		DrawBulletChange();
-		break;
-	case TutoType::tEnemyBullet:
-		DrawString(100, 100, "ìGçUåÇê‡ñæ", 0x00ff00);
-		break;
-	case TutoType::tSlot:
-		DrawString(100, 100, "ÉXÉçÉbÉgê‡ñæ", 0x00ff00);
 		break;
 	default:
 		break;
@@ -177,10 +167,6 @@ void Tutorial::InitTuto(TutoType _type)
 		GenerateTextBox(text_box_size);
 		tuto_stop_flg = true;
 		timer = 240;
-		break;
-	case TutoType::tEnemyBullet:
-		break;
-	case TutoType::tSlot:
 		break;
 	default:
 		break;
@@ -570,7 +556,7 @@ void Tutorial::DrawAttack()const
 		
 		SetFontSize(32);
 		DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 50, "ÉRÉCÉìÇîÚÇŒÇµÇƒ", 0xffffff);
-		DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 20, "ìGÇçUåÇÅI", timer % 30 > 15 ? 0xffffff : 0xff0000);
+		DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 20, "    ìGÇçUåÇÅI", timer % 30 > 15 ? 0xffffff : 0xff0000);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 		break;
 	case 1:	//é¿ëH
@@ -589,7 +575,7 @@ void Tutorial::DrawAttack()const
 		DrawGraph(text_box_loc.x - text_box_size.x / 2, text_box_loc.y - text_box_size.y / 2, generate_text_box, TRUE);
 		
 		SetFontSize(32);
-		DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 50, "åÇÇ¡Çƒì|ÇµÇƒâ“Ç∞ÅI", 0xffffff);
+		DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 30, "åÇÇ¡Çƒì|ÇµÇƒâ“Ç∞ÅI", 0xffffff);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 		break;
 	}
@@ -602,6 +588,8 @@ void Tutorial::UpdateBulletChange()
 }
 void Tutorial::DrawBulletChange()const
 {
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha - 150);
+	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, TRUE);
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha);
 	DrawGraph(text_box_loc.x - text_box_size.x / 2, text_box_loc.y - text_box_size.y / 2, generate_text_box, TRUE);
 	SetFontSize(24);

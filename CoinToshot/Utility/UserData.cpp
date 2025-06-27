@@ -26,6 +26,7 @@ int UserData::attraction_timer = 0;
 bool UserData::can_bullet_change_flg = false;
 bool UserData::player_damage_flg = false;
 std::vector<std::vector<int>> UserData::button_image;
+int UserData::coin_image = 0;
 
 int UserData::variable = 0;
 bool UserData::variable_change = 0;
@@ -41,6 +42,11 @@ void UserData::LoadButtonImage()
 	tmp = rm->GetImages("Resource/Images/UI/button2.png", 26, 7, 4, 40, 40);
 	button_image.push_back(tmp);
 
+	coin_image = MakeScreen(40, 40, TRUE);
+	SetDrawScreen(coin_image);
+	ClearDrawScreen();
+	UserData::DrawCoin({ 20,20 }, 20);
+	SetDrawScreen(DX_SCREEN_BACK);
 	//Še•Ï”‰Šú‰»
 	frame = 0;
 	now_button = 0;
@@ -128,9 +134,9 @@ void UserData::DrawCoin(Vector2D _loc, float _radius,int _r, int _g, int _b)
 	int shadow_color = GetColor(_r > 80 ? _r - 80 : 0, _g > 80 ? _g - 80 : 0, _b);
 	int sub_color = GetColor(_r, _g > 32 ? _g - 32 : 0, _b);
 
-	DrawCircleAA(_loc.x, _loc.y, _radius, 20, main_color, true);
-	DrawCircleAA(_loc.x - 1, _loc.y - 1, _radius / 1.5f, 20, shadow_color, true);
-	DrawCircleAA(_loc.x, _loc.y, _radius / 1.5f, 20, sub_color, true);
+	DrawCircleAA(_loc.x, _loc.y, _radius, 40, main_color, true);
+	DrawCircleAA(_loc.x - 1, _loc.y - 1, _radius / 1.5f, 40, shadow_color, true);
+	DrawCircleAA(_loc.x, _loc.y, _radius / 1.5f, 40, sub_color, true);
 	DrawBoxAA(_loc.x - (_radius / 6) + 1,
 		_loc.y - (_radius / 2) + 1,
 		_loc.x + (_radius / 6) + 1,
@@ -142,6 +148,11 @@ void UserData::DrawCoin(Vector2D _loc, float _radius,int _r, int _g, int _b)
 		_loc.y + (_radius / 2),
 		main_color, true);
 
+}
+
+void UserData::DrawDefaultCoin(Vector2D _loc, float _radius)
+{
+	DrawRotaGraphF(_loc.x, _loc.y, _radius / 20.f, 0.f, coin_image, TRUE);
 }
 
 void UserData::DrawVariable()

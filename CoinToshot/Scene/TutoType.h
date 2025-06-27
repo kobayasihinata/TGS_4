@@ -7,8 +7,6 @@ static enum TutoType
 	tAim,			//照準カーソル説明
 	tAttack,		//攻撃説明
 	tBulletChange,	//弾変更説明
-	tEnemyBullet,	//敵の攻撃説明
-	tSlot,			//スロット説明
 	tNone			//チュートリアルをしていない時用
 };
 

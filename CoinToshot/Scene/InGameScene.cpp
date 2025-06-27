@@ -49,7 +49,9 @@ void InGameScene::Initialize()
 	camera = Camera::Get();
 	camera->player_location = 0;
 	tutorial = Tutorial::Get();
-
+	guide_loc = 0;
+	guide_local_loc = 0;
+	guide_size = 95;
 	//チュートリアルが完了していないなら初期コインは0枚、しているなら20枚
 	UserData::coin = tutorial->GetBasicTuto() ? 20 : 0;
 
@@ -69,6 +71,7 @@ void InGameScene::Initialize()
 
 	objects->CreateObject({ {1050,0}, Vector2D{ ENEMY1_WIDTH,ENEMY1_HEIGHT }, eENEMY1});
 
+	flower_image = MakeScreen(191, 191);
 	//背景の自動生成
 	CreateBackGround();
 
@@ -134,7 +137,8 @@ eSceneType InGameScene::Update(float _delta)
 
 			//カメラ更新
 			camera->Update();
-
+			//ガイド表示更新
+			UpdateGuideLoc();
 			//チュートリアル更新
 			TutorialUpdate();
 			
@@ -225,6 +229,24 @@ void InGameScene::Draw()const
 	//オブジェクト描画
 	objects->Draw();
 
+	//チュートリアル中でない、且つ画面内に初期位置が移っていないなら
+	Vector2D camera_loc = camera->GetCameraLocation();
+	if (!tutorial->GetTutorialFlg() && 
+		(camera_loc.x > 90 || 
+		camera_loc.x < -SCREEN_WIDTH ||
+		camera_loc.y > 90 || 
+		camera_loc.y < -SCREEN_HEIGHT)
+		)
+	{
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
+		DrawBoxAA(guide_local_loc.x - guide_size.x / 2,
+			guide_local_loc.y - guide_size.y / 2,
+			guide_local_loc.x + guide_size.x / 2,
+			guide_local_loc.y + guide_size.y / 2,
+			0x000000, false);
+		DrawRotaGraphF(guide_local_loc.x, guide_local_loc.y, 0.5f, 0.f, flower_image, false);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+	}
 	//UI描画
 	ui->Draw();
 
@@ -374,7 +396,6 @@ void InGameScene::SpawnItem()
 	if ((int)frame % 60 == 0)
 	{
 		objects->CreateObject({ Vector2D{(float)(GetRand(100)),(float)(GetRand(100))},Vector2D{40,40},eCOIN, 20.f });
-		//objects->CreateObject({ Vector2D{-100,-100},Vector2D{30,30},eENEMY1,/* 20.f */ });
 	}
 	if ((int)frame % 10 == 0)
 	{
@@ -548,11 +569,13 @@ ObjectData InGameScene::GetEnemyData()
 void InGameScene::CreateBackGround()
 {
 	std::vector<int> background_image;	//背景画像格納
+	std::vector<int> deco_image;	//背景画像格納
 	std::vector<std::vector<int>> bg_arran;	//背景画像配置
 
 	//画像読込
 	ResourceManager* rm = ResourceManager::GetInstance();
 	background_image = rm->GetImages("Resource/Images/BackGround/terrain_tiles_v2.png", 160, 10, 16, 64, 64);
+	deco_image = rm->GetImages("Resource/Images/BackGround/decorations.png", 24, 3, 8, 24, 24);
 
 	//草を敷き詰める
 	std::vector<int> test;
@@ -590,14 +613,28 @@ void InGameScene::CreateBackGround()
 		}
 		y++;
 	}
+
+	//ガイド表示用に初期地点の緑地エリアを保存する
+	SetDrawScreen(flower_image);
+	ClearDrawScreen();
 	//コインが生成されるエリアを緑地にする
 	for (int y = 0; y < 3; y++)
 	{
 		for (int x = 0; x < 3; x++)
 		{
-			DrawGraph(1950 + x * 64, 1950 + y * 64, background_image[40 + x + (y * 10)], TRUE);
+			DrawGraph(x * 64, y * 64, background_image[40 + x + (y * 10)], TRUE);
 		}
 	}
+	//コインが生成されるエリアに華を
+	for (int y = 0; y < 5; y++)
+	{
+		for (int x = 0; x < 5; x++)
+		{
+			DrawGraph(30 + x * 24 + GetRand(20),20 + y * 24 + GetRand(20), deco_image[GetRand(23)], TRUE);
+		}
+	}
+	SetDrawScreen(bg_image);
+	DrawGraph(1970, 1970, flower_image, FALSE);
 	SetDrawScreen(DX_SCREEN_BACK);
 
 }
@@ -688,4 +725,28 @@ void InGameScene::TutorialUpdate()
 
 	}
 
+}	
+
+void InGameScene::UpdateGuideLoc()
+{
+	//初期位置とプレイヤーの絶対座標を比較して進行方向を求める
+	float rad;
+	Vector2D velo;
+	rad = atan2f(-camera->player_location.y, -camera->player_location.x);
+	velo.x = cosf(rad);
+	velo.y = sinf(rad);
+	guide_loc = camera->player_location;
+	//画面端に当たるまで移動を繰り返す
+	while (1)
+	{
+		guide_loc += velo;
+		guide_local_loc = guide_loc - camera->GetCameraLocation();
+		if (guide_local_loc.x - guide_size.x / 2 < 0 ||
+			guide_local_loc.x + guide_size.x / 2 > SCREEN_WIDTH ||
+			guide_local_loc.y - guide_size.y / 2 < 0 ||
+			guide_local_loc.y + guide_size.y / 2 > SCREEN_HEIGHT)
+		{
+			break;
+		}
+	}
 }

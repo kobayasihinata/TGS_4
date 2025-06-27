@@ -37,6 +37,10 @@ private:
 	int bonus_timer;			//ボーナスコインの表示時間測定
 	int second_bonus_count;		//一定時間経過時に指定の枚数コインを発生させる
 	int bg_image;				//完成した背景画像を格納する
+	int flower_image;			//ガイド表示用の花を保存
+	Vector2D guide_loc;			//ガイド表示の絶対座標
+	Vector2D guide_local_loc;			//ガイド表示の描画座標
+	Vector2D guide_size;			//ガイド表示の大きさ
 
 	bool update_once;			//遷移時アニメーション用描画の為に一回だけ更新
 	bool start_anim_flg;		//遷移時アニメーション
@@ -147,6 +151,11 @@ public:
 	/// チュートリアル用更新
 	/// </summary>
 	void TutorialUpdate();
+
+	/// <summary>
+	/// ガイド表示位置を更新
+	/// </summary>
+	void UpdateGuideLoc();
 };
 
 

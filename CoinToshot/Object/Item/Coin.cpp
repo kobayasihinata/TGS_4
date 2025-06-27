@@ -12,9 +12,6 @@ Coin::Coin(InGameScene* _ingame, Vector2D _init_velocity)
 	add_num = 1;
 	check_flg = false;
 
-	color_r = 255;
-	color_g = 255;
-	color_b = 0;
 	//SE“Ç‚İ‚İ
 	ResourceManager* rm = ResourceManager::GetInstance();
 
@@ -59,7 +56,17 @@ void Coin::Draw()const
 {
 	__super::Draw();
 
-	UserData::DrawCoin(local_location, radius, color_r, color_g, color_b);
+	//‘å‚«‚³‚É‚æ‚Á‚ÄŒy—Ê•`‰æ‚©•’Ê•`‰æ‚©•Ï‚¦‚é
+	if (radius < 100)
+	{
+		//¬‚³‚¢ƒRƒCƒ“‚ğŒy—Ê•`‰æ
+		UserData::DrawDefaultCoin(local_location, radius);
+	}
+	else
+	{
+		//‘å‚«‚¢ƒRƒCƒ“‚ğ•’Ê•`‰æ
+		UserData::DrawCoin(local_location, radius);
+	}
 #ifdef _DEBUG
 	//©g‚ÌŠl“¾–‡”‚ğ•\¦
 	DrawFormatStringF(local_location.x, local_location.y, 0xff0000, "%d", (int)add_num);
