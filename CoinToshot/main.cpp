@@ -20,7 +20,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 	try {
 		//オブジェクト生成
 		scene_manager = new SceneManager();
-
+		
 		//初期化処理
 		scene_manager->Initialize();
 

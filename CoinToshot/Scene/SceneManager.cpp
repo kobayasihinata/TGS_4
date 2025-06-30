@@ -28,6 +28,11 @@ void SceneManager::Initialize()
 	//画面サイズの設定
 	SetGraphMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32);
 
+	//ウィンドウの名前
+	SetMainWindowText("CoinToShot");
+
+	//SetWindowIconID(101);
+
 	//DXライブラリの初期化
 	if (DxLib_Init() == -1)
 	{
