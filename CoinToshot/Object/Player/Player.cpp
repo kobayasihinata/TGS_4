@@ -12,13 +12,18 @@
 #define _USE_MATH_DEFINES
 
 InGameScene* Player::ingame;		//現在のシーンのポインタを保存
+bool Player::player_once;
 
 Player* Player::Get(InGameScene* _ingame)
 {
-	ingame = _ingame;
-	static Player instance;
-	//自分自身のポインタを返却する
-	return &instance;
+	if (!player_once)
+	{
+		player_once = true;
+		ingame = _ingame;
+		static Player instance;
+		//自分自身のポインタを返却する
+		return &instance;
+	}
 }
 
 void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init_location, Vector2D init_size, float init_radius)
@@ -90,7 +95,7 @@ void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init
 /// </summary>
 void Player::Finalize()
 {
-
+	player_once = false;
 }
 
 void Player::Update()

@@ -3,8 +3,8 @@
 3 hina 3388
 4 0 3002
 5 srqp 2949
-6 hi 3
-7 vvvvv 2
-7 k 2
-9 u 1
-9 hhhhhh 1
+6 0 166
+7 bb 49
+8 hi 3
+9 vvvvv 2
+9 k 2

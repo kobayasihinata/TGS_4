@@ -45,7 +45,7 @@ private:
 	int danger_se;				//危険SE
 public:
 	static InGameScene* ingame;		//現在のシーンのポインタを保存
-
+	static bool player_once;		//プレイヤー生成を一回だけにする
 private:
 	//コンストラクタをprivateにすることで、
 //自クラスのメンバ関数でインスタンスを生成できないようにする

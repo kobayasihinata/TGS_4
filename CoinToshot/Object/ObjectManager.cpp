@@ -20,7 +20,16 @@ void ObjectManager::Initialize(InGameScene* _ingame)
 
 void ObjectManager::Finalize()
 {
-
+	for (const auto& object_list : object_list)
+	{
+		object_list->Finalize();
+	}
+	for (const auto& effect_list : effect_list)
+	{
+		effect_list->Finalize();
+	}
+	object_list.clear();
+	effect_list.clear();
 }
 
 void ObjectManager::Update()
@@ -185,10 +194,16 @@ void ObjectManager::Draw()const
 
 void ObjectManager::CreateObject(int object_type, Vector2D init_location, Vector2D init_size, float init_radius, Vector2D init_velocity)
 {
+	Player* p;
 	switch (object_type)
 	{
 	case ObjectList::ePLAYER:
-		create_object.push_back(ObjectInitData{Player::Get(ingame) ,object_type,init_location,init_size,init_radius});
+		p = Player::Get(ingame);
+		//一ゲーム中に複数プレイヤー生成されないように
+		if (p != nullptr)
+		{
+			create_object.push_back(ObjectInitData{p ,object_type,init_location,init_size,init_radius});
+		}
 		break;
 	case ObjectList::eENEMY1:
 		create_object.push_back(ObjectInitData{ new Enemy1(),object_type,init_location,init_size,init_radius });
