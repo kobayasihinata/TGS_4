@@ -31,7 +31,7 @@ void SceneManager::Initialize()
 	//ウィンドウの名前
 	SetMainWindowText("CoinToShot");
 
-	//SetWindowIconID(101);
+	SetWindowIconID(101);
 
 	//DXライブラリの初期化
 	if (DxLib_Init() == -1)
