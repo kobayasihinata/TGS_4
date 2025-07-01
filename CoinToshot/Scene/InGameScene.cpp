@@ -504,31 +504,31 @@ ObjectList InGameScene::GetEnemy(ObjectList _list1, int _prob1,
 	int rand = GetRand(_prob1 + _prob2 + _prob3 + _prob4 + _prob5);
 
 	//ランダムな値がオブジェクト１の確率の値を下回っていたら
-	if (rand < _prob1)
+	if (rand <= _prob1)
 	{
 		//オブジェクト１を返す
 		return _list1;
 	}
 	//ランダムな値がオブジェクト１、２の確率の合計を下回っていたら
-	else if (rand < _prob1 + _prob2)
+	else if (rand <= _prob1 + _prob2)
 	{
 		//オブジェクト２
 		return _list2;
 	}
 	//ランダムな(略)
-	else if (rand < _prob1 + _prob2 + _prob3)
+	else if (rand <= _prob1 + _prob2 + _prob3)
 	{
 		//オブジェクト３
 		return _list3;
 	}
 	//ランダムな(略)
-	else if (rand < _prob1 + _prob2 + _prob3 + _prob4)
+	else if (rand <= _prob1 + _prob2 + _prob3 + _prob4)
 	{
 		//オブジェクト４
 		return _list4;
 	}
 	//ランダムな(略)
-	else if (rand < _prob1 + _prob2 + _prob3 + _prob4 + _prob5)
+	else if (rand <= _prob1 + _prob2 + _prob3 + _prob4 + _prob5)
 	{
 		//オブジェクト５
 		return _list5;
@@ -736,15 +736,18 @@ void InGameScene::UpdateGuideLoc()
 	velo.x = cosf(rad);
 	velo.y = sinf(rad);
 	guide_loc = camera->player_location;
+	int count = 0;
 	//画面端に当たるまで移動を繰り返す
 	while (1)
 	{
+		count++;
 		guide_loc += velo;
 		guide_local_loc = guide_loc - camera->GetCameraLocation();
-		if (guide_local_loc.x - guide_size.x / 2 < 0 ||
+		if (count > 40 &&
+			(guide_local_loc.x - guide_size.x / 2 < 0 ||
 			guide_local_loc.x + guide_size.x / 2 > SCREEN_WIDTH ||
 			guide_local_loc.y - guide_size.y / 2 < 0 ||
-			guide_local_loc.y + guide_size.y / 2 > SCREEN_HEIGHT)
+			guide_local_loc.y + guide_size.y / 2 > SCREEN_HEIGHT))
 		{
 			break;
 		}
