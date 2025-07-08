@@ -24,6 +24,10 @@ Player* Player::Get(InGameScene* _ingame)
 		//自分自身のポインタを返却する
 		return &instance;
 	}
+	else
+	{
+		return nullptr;
+	}
 }
 
 void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init_location, Vector2D init_size, float init_radius)
