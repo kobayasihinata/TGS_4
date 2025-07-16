@@ -592,20 +592,92 @@ void Player::CreateArrowImage()const
 {
 	SetDrawScreen(arrow_image);
 	ClearDrawScreen();
+	////現在の弾の種類に応じて見た目を変更
+	//switch (UserData::bullet_type)
+	//{
+	//case BulletType::bNormal:
+	//	for (int i = 1; i < 5; i++)
+	//	{
+	//		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (i * 200) - ((frame % 20) * 10));
+	//		DrawQuadrangleAA(50, (i * 20) - (frame % 20),
+	//			25, 25 + (i * 20) - (frame % 20),
+	//			30, 30 + (i * 20) - (frame % 20),
+	//			50, 10 + (i * 20) - (frame % 20),
+	//			0xffffff, TRUE);
+	//		DrawQuadrangleAA(50, (i * 20) - (frame % 20),
+	//			75, 25 + (i * 20) - (frame % 20),
+	//			70, 30 + (i * 20) - (frame % 20),
+	//			50, 10 + (i * 20) - (frame % 20),
+	//			0xffffff, TRUE);
+	//	}
+	//	//文字透過リセット
+	//	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+	//	break;
+	//case BulletType::bShotgun:
+	//	break;
+	//case BulletType::bStrong:
+	//	for (int i = 1; i < 5; i++)
+	//	{
+	//		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (i * 200) - ((frame % 20) * 10));
+	//		DrawQuadrangleAA(50, (i * 20) - (frame % 20),
+	//			25, 25 + (i * 20) - (frame % 20),
+	//			30, 30 + (i * 20) - (frame % 20),
+	//			50, 10 + (i * 20) - (frame % 20),
+	//			0xffaa00, TRUE);
+	//		DrawQuadrangleAA(50, (i * 20) - (frame % 20),
+	//			75, 25 + (i * 20) - (frame % 20),
+	//			70, 30 + (i * 20) - (frame % 20),
+	//			50, 10 + (i * 20) - (frame % 20),
+	//			0xffaa00, TRUE);
+	//	}
+	//	//文字透過リセット
+	//	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+	//	break;
+	//case BulletType::bExplosion:
+	//	break;
+	//case BulletType::bStrongest:
+	//	for (int i = 1; i < 5; i++)
+	//	{
+	//		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (i * 200) - ((frame % 20) * 10));
+	//		DrawQuadrangleAA(50, (i * 20) - (frame % 20),
+	//			25, 25 + (i * 20) - (frame % 20),
+	//			30, 30 + (i * 20) - (frame % 20),
+	//			50, 10 + (i * 20) - (frame % 20),
+	//			0x000000, TRUE);
+	//		DrawQuadrangleAA(50, (i * 20) - (frame % 20),
+	//			75, 25 + (i * 20) - (frame % 20),
+	//			70, 30 + (i * 20) - (frame % 20),
+	//			50, 10 + (i * 20) - (frame % 20),
+	//			0x000000, TRUE);
+	//	}
+	//	//文字透過リセット
+	//	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+	//	break;
+	//default:
+	//	break;
+	//}
+
+	//仮
+	int color[3] = { 0 };
+	for (int i = 0; i < 3; i++)
+	{
+		color[i] = pBullet[UserData::bullet_type].color[i];
+	}
 	for (int i = 1; i < 5; i++)
 	{
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (i * 200) - ((frame % 20)*10));
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (i * 200) - ((frame % 20) * 10));
 		DrawQuadrangleAA(50, (i * 20) - (frame % 20),
 			25, 25 + (i * 20) - (frame % 20),
 			30, 30 + (i * 20) - (frame % 20),
 			50, 10 + (i * 20) - (frame % 20),
-			0xff0000, TRUE);
+			GetColor(color[0], color[1], color[2]), TRUE);
 		DrawQuadrangleAA(50, (i * 20) - (frame % 20),
 			75, 25 + (i * 20) - (frame % 20),
 			70, 30 + (i * 20) - (frame % 20),
 			50, 10 + (i * 20) - (frame % 20),
-			0xff0000, TRUE);
+			GetColor(color[0], color[1], color[2]), TRUE);
 	}
+
 	//文字透過リセット
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
