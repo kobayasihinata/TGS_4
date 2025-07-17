@@ -7,7 +7,8 @@ static enum TutoType
 	tAim,			//照準カーソル説明
 	tAttack,		//攻撃説明
 	tBulletChange,	//弾変更説明
+	tSteal,			//コイン盗まれ説明
 	tNone			//チュートリアルをしていない時用
 };
 
-#define TUTO_NUM 8
+#define TUTO_NUM 6

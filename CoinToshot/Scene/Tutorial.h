@@ -140,4 +140,9 @@ public:
 	void UpdateBulletChange();
 	//弾変更説明描画
 	void DrawBulletChange()const;
+
+	//コインを盗まれた時の説明更新
+	void UpdateSteal();
+	//コインを盗まれた時の説明描画
+	void DrawSteal()const;
 };

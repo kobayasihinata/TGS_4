@@ -1,5 +1,6 @@
 #pragma once
 #include "../Base/EnemyBase.h"
+#include "../../Scene/Tutorial.h"
 
 class InGameScene;
 
@@ -8,7 +9,7 @@ class Enemy4 :
 {
 private:
 	InGameScene* ingame;		//現在のシーンのポインタを保存
-
+	class Tutorial* tutorial;	//チュートリアル格納
 	int coin_num;	//持っているコイン
 	bool steal_flg;	//コインを盗んだか
 

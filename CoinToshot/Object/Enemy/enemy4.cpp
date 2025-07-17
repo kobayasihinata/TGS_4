@@ -6,6 +6,7 @@
 Enemy4::Enemy4(InGameScene* _ingame)
 {
 	ingame = _ingame;
+	tutorial = Tutorial::Get();
 
 	move_speed = ENEMY4_SPEED;
 	max_hp = hp = ENEMY4_HP;
@@ -185,6 +186,9 @@ void Enemy4::Hit(ObjectBase* hit_object)
 
 		std::string s = "-" + std::to_string(coin_num);
 		ingame->CreatePopUp(this->location, s, 0xff0000, -1);
+
+		//コインを盗まれた時のチュートリアルをリクエストする
+		tutorial->StartTutoRequest(TutoType::tSteal, this);
 	}
 }
 

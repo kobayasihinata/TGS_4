@@ -76,6 +76,10 @@ void Tutorial::Update()
 		UpdateBulletChange();
 		UpdateTimeTuto();
 		break;
+	case TutoType::tSteal:
+		UpdateSteal();
+		UpdateTimeTuto();
+		break;
 	default:
 		break;
 	}
@@ -102,6 +106,9 @@ void Tutorial::Draw()const
 		break;
 	case TutoType::tBulletChange:
 		DrawBulletChange();
+		break;
+	case TutoType::tSteal:
+		DrawSteal();
 		break;
 	default:
 		break;
@@ -168,6 +175,13 @@ void Tutorial::InitTuto(TutoType _type)
 		tuto_stop_flg = true;
 		timer = 240;
 		break;
+	case TutoType::tSteal:
+		text_box_loc = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 100 };
+		text_box_size = { 250, 100 };
+		GenerateTextBox(text_box_size);
+		tuto_stop_flg = true;
+		timer = 240;
+		break;
 	default:
 		break;
 	}
@@ -177,7 +191,7 @@ void Tutorial::TutoEnd()
 {
 	tutorial_flg = false;
 	tuto_stop_flg = false;
-	tuto_executed_flg[(int)now_tuto > 7 ? 7 : (int)now_tuto] = true;
+	tuto_executed_flg[(int)now_tuto > TUTO_NUM-1 ? TUTO_NUM-1 : (int)now_tuto] = true;
 	now_tuto = TutoType::tNone;
 	timer = 0;
 	text_alpha = 0;
@@ -594,8 +608,26 @@ void Tutorial::DrawBulletChange()const
 	DrawGraph(text_box_loc.x - text_box_size.x / 2, text_box_loc.y - text_box_size.y / 2, generate_text_box, TRUE);
 	SetFontSize(24);
 	DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 40, "弾の変更をアンロック！", 0xffffff);
-	DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 20, "どれも高級で強力", 0xffffff);
 	SetFontSize(20);
 	UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y + 10 }, "左右トリガーで変更", 0xffffff);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+}
+
+void Tutorial::UpdateSteal()
+{
+
+}
+
+void Tutorial::DrawSteal()const
+{
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha - 150);
+	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, TRUE);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha);
+	DrawGraph(text_box_loc.x - text_box_size.x / 2, text_box_loc.y - text_box_size.y / 2, generate_text_box, TRUE);
+	SetFontSize(24);
+	DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 40, "コインを盗まれた！", 0xffffff);
+	SetFontSize(20);
+	UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y + 10 }, "倒すと取り返せる", 0xffffff);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+	tuto_object->Draw();
 }
