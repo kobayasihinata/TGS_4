@@ -426,9 +426,9 @@ void GameSceneUI::DrawBullet(Vector2D _loc, int _type)const
 	DrawFormatString(_loc.x + 100 - GetDrawFormatStringWidth(pBullet[_type].name) / 2, _loc.y, draw_color, "%s", pBullet[_type].name);
 
 	SetFontSize(20);
-	UserData::DrawCoin({ _loc.x + 20, _loc.y + 80 }, 15);
-	DrawFormatString(_loc.x + 35, _loc.y + 70, draw_color, " - %d", pBullet[_type].cost);
-	DrawFormatString(_loc.x + 90, _loc.y + 70, draw_color, "power:%d", (int)pBullet[_type].damage);
+	UserData::DrawCoin({ _loc.x + 70, _loc.y + 80 }, 15);
+	DrawFormatString(_loc.x + 85, _loc.y + 70, draw_color, " - %d", pBullet[_type].cost);
+	//DrawFormatString(_loc.x + 90, _loc.y + 70, draw_color, "power:%d", (int)pBullet[_type].damage);
 }
 
 void GameSceneUI::DrawPlayerUI()const

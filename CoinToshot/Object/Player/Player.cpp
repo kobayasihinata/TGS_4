@@ -40,7 +40,7 @@ void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init
 
 	bullet_change_cd = 0;
 	danger_once = false;
-	arrow_image = MakeScreen(100, 100, TRUE);
+	arrow_image = MakeScreen(100, 110, TRUE);
 	aim_once_flg = false;
 	shot_rad = 123456.f;	//ありえない値を入れておく
 	old_shot_rad = 0.f;
@@ -585,97 +585,138 @@ void Player::ShotBullet()
 
 void Player::DrawBulletOrbit()const
 {
-	DrawRotaGraph(local_location.x+40*sinf(shot_rad+1.5f), local_location.y-40*cosf(shot_rad+ 1.5f), 1.0f, shot_rad + 1.55f, arrow_image, TRUE);
+	float span,start;
+	switch (UserData::bullet_type)
+	{
+		//普通タイプの矢印
+	case BulletType::bNormal:
+	case BulletType::bStrong:
+	case BulletType::bStrongest:
+		DrawRotaGraph(local_location.x + 40 * sinf(shot_rad + 1.5f), local_location.y - 40 * cosf(shot_rad + 1.5f), 1.0f, shot_rad + 1.55f, arrow_image, TRUE);
+
+		break;
+		//拡散弾の矢印
+	case BulletType::bShotgun:
+		span = (pBullet[UserData::bullet_type].space * pBullet[UserData::bullet_type].bullet_num);
+		start = shot_rad + 1.55f - (span / 2);
+		for (float i = start; i <= start + span; i += pBullet[UserData::bullet_type].space)
+		{
+			DrawRotaGraph(local_location.x + 40 * sinf(i), local_location.y - 40 * cosf(i), 1.0f, i, arrow_image, TRUE);
+		}
+		break;
+
+	case BulletType::bExplosion:
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200 - (frame * 5) % 200);
+		DrawRotaGraph(local_location.x + 40 * sinf(shot_rad + 1.5f), local_location.y - 40 * cosf(shot_rad + 1.5f), 1.0f, shot_rad + 1.55f, arrow_image, TRUE);
+		DrawCircleAA(local_location.x + (pBullet[UserData::bullet_type].speed*pBullet[UserData::bullet_type].life_span) * sinf(shot_rad + 1.55f),
+			local_location.y - (pBullet[UserData::bullet_type].speed * pBullet[UserData::bullet_type].life_span) * cosf(shot_rad + 1.55f),
+			(frame*5) % 200, 100, 0xffaa00, true);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+		break;
+	default:
+		break;
+	}
 }
 
 void Player::CreateArrowImage()const
 {
 	SetDrawScreen(arrow_image);
 	ClearDrawScreen();
-	////現在の弾の種類に応じて見た目を変更
-	//switch (UserData::bullet_type)
-	//{
-	//case BulletType::bNormal:
-	//	for (int i = 1; i < 5; i++)
-	//	{
-	//		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (i * 200) - ((frame % 20) * 10));
-	//		DrawQuadrangleAA(50, (i * 20) - (frame % 20),
-	//			25, 25 + (i * 20) - (frame % 20),
-	//			30, 30 + (i * 20) - (frame % 20),
-	//			50, 10 + (i * 20) - (frame % 20),
-	//			0xffffff, TRUE);
-	//		DrawQuadrangleAA(50, (i * 20) - (frame % 20),
-	//			75, 25 + (i * 20) - (frame % 20),
-	//			70, 30 + (i * 20) - (frame % 20),
-	//			50, 10 + (i * 20) - (frame % 20),
-	//			0xffffff, TRUE);
-	//	}
-	//	//文字透過リセット
-	//	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
-	//	break;
-	//case BulletType::bShotgun:
-	//	break;
-	//case BulletType::bStrong:
-	//	for (int i = 1; i < 5; i++)
-	//	{
-	//		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (i * 200) - ((frame % 20) * 10));
-	//		DrawQuadrangleAA(50, (i * 20) - (frame % 20),
-	//			25, 25 + (i * 20) - (frame % 20),
-	//			30, 30 + (i * 20) - (frame % 20),
-	//			50, 10 + (i * 20) - (frame % 20),
-	//			0xffaa00, TRUE);
-	//		DrawQuadrangleAA(50, (i * 20) - (frame % 20),
-	//			75, 25 + (i * 20) - (frame % 20),
-	//			70, 30 + (i * 20) - (frame % 20),
-	//			50, 10 + (i * 20) - (frame % 20),
-	//			0xffaa00, TRUE);
-	//	}
-	//	//文字透過リセット
-	//	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
-	//	break;
-	//case BulletType::bExplosion:
-	//	break;
-	//case BulletType::bStrongest:
-	//	for (int i = 1; i < 5; i++)
-	//	{
-	//		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (i * 200) - ((frame % 20) * 10));
-	//		DrawQuadrangleAA(50, (i * 20) - (frame % 20),
-	//			25, 25 + (i * 20) - (frame % 20),
-	//			30, 30 + (i * 20) - (frame % 20),
-	//			50, 10 + (i * 20) - (frame % 20),
-	//			0x000000, TRUE);
-	//		DrawQuadrangleAA(50, (i * 20) - (frame % 20),
-	//			75, 25 + (i * 20) - (frame % 20),
-	//			70, 30 + (i * 20) - (frame % 20),
-	//			50, 10 + (i * 20) - (frame % 20),
-	//			0x000000, TRUE);
-	//	}
-	//	//文字透過リセット
-	//	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
-	//	break;
-	//default:
-	//	break;
-	//}
-
-	//仮
-	int color[3] = { 0 };
-	for (int i = 0; i < 3; i++)
+	//現在の弾の種類に応じて見た目を変更
+	switch (UserData::bullet_type)
 	{
-		color[i] = pBullet[UserData::bullet_type].color[i];
-	}
-	for (int i = 1; i < 5; i++)
-	{
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (i * 200) - ((frame % 20) * 10));
-		DrawQuadrangleAA(50, (i * 20) - (frame % 20),
-			25, 25 + (i * 20) - (frame % 20),
-			30, 30 + (i * 20) - (frame % 20),
-			50, 10 + (i * 20) - (frame % 20),
-			GetColor(color[0], color[1], color[2]), TRUE);
-		DrawQuadrangleAA(50, (i * 20) - (frame % 20),
-			75, 25 + (i * 20) - (frame % 20),
-			70, 30 + (i * 20) - (frame % 20),
-			50, 10 + (i * 20) - (frame % 20),
-			GetColor(color[0], color[1], color[2]), TRUE);
+	case BulletType::bNormal:
+		for (int i = 1; i < 5; i++)
+		{
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, (i * 200) - ((frame % 20) * 10));
+			DrawQuadrangleAA(50, (i * 20) - (frame % 20),
+					    35, 25 + (i * 20) - (frame % 20),
+					    40, 30 + (i * 20) - (frame % 20),
+					    50, 10 + (i * 20) - (frame % 20),
+					    0xffffff, TRUE);				
+			DrawQuadrangleAA(50, (i * 20) - (frame % 20),
+						65, 25 + (i * 20) - (frame % 20),
+						60, 30 + (i * 20) - (frame % 20),
+						50, 10 + (i * 20) - (frame % 20),
+						0xffffff, TRUE);
+		}
+		//文字透過リセット
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+		break;
+	case BulletType::bShotgun:
+		for (int i = 1; i < 4; i++)
+		{
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, (i * 200) - ((frame % 20) * 10));
+			DrawQuadrangleAA(50, (i * 20) - (frame % 20),
+						40, 25 + (i * 20) - (frame % 20),
+						45, 30 + (i * 20) - (frame % 20),
+						50, 10 + (i * 20) - (frame % 20),
+						0x00ffff, TRUE);
+			DrawQuadrangleAA(50, (i * 20) - (frame % 20),
+						60, 25 + (i * 20) - (frame % 20),
+						55, 30 + (i * 20) - (frame % 20),
+						50, 10 + (i * 20) - (frame % 20),
+						0x00ffff, TRUE);
+		}
+		//文字透過リセット
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+		break;
+	case BulletType::bStrong:
+		for (int i = 1; i < 5; i++)
+		{
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, (i * 200) - ((frame % 20) * 10));
+			DrawQuadrangleAA(50, (i * 20) - (frame % 20),
+						25, 25 + (i * 20) - (frame % 20),
+						30, 30 + (i * 20) - (frame % 20),
+						50, 10 + (i * 20) - (frame % 20),
+						0xffaa00, TRUE);			
+			DrawQuadrangleAA(50, (i * 20) - (frame % 20),
+						75, 25 + (i * 20) - (frame % 20),
+						70, 30 + (i * 20) - (frame % 20),
+						50, 10 + (i * 20) - (frame % 20),
+						0xffaa00, TRUE);
+		}
+		//文字透過リセット
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+		break;
+	case BulletType::bExplosion:
+		for (int i = 1; i < 5; i++)
+		{
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, (i * 200) - ((frame % 20) * 10));
+			DrawQuadrangleAA(50, (i * 20) - (frame % 20),
+				40, 25 + (i * 20) - (frame % 20),
+				45, 30 + (i * 20) - (frame % 20),
+				50, 10 + (i * 20) - (frame % 20),
+				0xffaa00, TRUE);
+			DrawQuadrangleAA(50, (i * 20) - (frame % 20),
+				60, 25 + (i * 20) - (frame % 20),
+				55, 30 + (i * 20) - (frame % 20),
+				50, 10 + (i * 20) - (frame % 20),
+				0xffaa00, TRUE);
+		}
+		//文字透過リセット
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+		break;
+	case BulletType::bStrongest:
+		for (int i = 1; i < 5; i++)
+		{
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, (i * 200) - ((frame % 20) * 10));
+			DrawQuadrangleAA(50, (i * 20) - (frame % 20)*2,
+						15, 25 + (i * 20) - (frame % 20)*2,
+						20, 30 + (i * 20) - (frame % 20)*2,
+						50, 10 + (i * 20) - (frame % 20)*2,
+						0x000000, TRUE);			 	 
+			DrawQuadrangleAA(50, (i * 20) - (frame % 20)*2,
+						85, 25 + (i * 20) - (frame % 20)*2,
+						80, 30 + (i * 20) - (frame % 20)*2,
+						50, 10 + (i * 20) - (frame % 20)*2,
+						0x000000, TRUE);
+		}
+		//文字透過リセット
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+		break;
+	default:
+		break;
 	}
 
 	//文字透過リセット
