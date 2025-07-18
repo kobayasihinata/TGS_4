@@ -100,8 +100,7 @@ public:
 	/// <param name="_text">表示する文字</param>
 	/// <param name="_text_color">文字色</param>
 	/// <param name="_move">移動量</param>
-	/// <param name="_life_span">生存期間</param>
-	void CreatePopUp(Vector2D _location, string _text, int _text_color = 0xffffff, float _move = 1.f, int _life_span = 60, int _font_size = 24);
+	void CreatePopUp(Vector2D _location, string _text, int _text_color = 0xffffff, float _move = 1.f, int _life_span = 60);
 
 	/// <summary>
 	/// 画面端のランダムな座標を受け取る

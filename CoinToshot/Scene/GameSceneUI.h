@@ -11,8 +11,7 @@ using namespace std;
 struct UIData
 {
 	Vector2D location;		//文字表示位置
-	string text;		//表示文字
-	int font_size;			//文字大きさ
+	string text;			//表示文字
 	int text_color;			//文字色
 	float move_speed;		//UI移動速度（上に進む）
 	int life_span;			//寿命
@@ -89,6 +88,11 @@ private:
 	std::vector<UIData> ui_data;
 	std::vector<UIData> delete_ui_data;
 
+	//コインログ用
+	std::vector<UIData> coin_data;
+	std::vector<UIData> delete_coin_data;
+
+	//紙吹雪用
 	std::vector<ConfettiData> confetti_data;
 	std::vector<ConfettiData> delete_confetti_data;
 
@@ -103,7 +107,7 @@ public:
 	void Draw()const;
 
 	//文字生成
-	void SetUIData(Vector2D _location, string _text, int _text_color, float _move, int _life_span, int _font_size);
+	void SetUIData(Vector2D _location, string _text, int _text_color, float _move, int _life_span);
 
 	//紙吹雪データ生成
 	ConfettiData GetConfettiData()const;

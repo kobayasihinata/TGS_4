@@ -476,7 +476,7 @@ void Player::Control()
 			UserData::coin -= pBullet[UserData::bullet_type].cost;
 			PlaySoundMem(shot_se, DX_PLAYTYPE_BACK);
 			std::string s = "-" + std::to_string(pBullet[UserData::bullet_type].cost);
-			ingame->CreatePopUp(this->location, s, 0xff0000, -1);
+			ingame->CreatePopUp({ (float)SCREEN_WIDTH - 60.f,100.f }, s, 0xff0000, -1);
 		}
 		//”­ŽËŽ¸”sSE
 		else

@@ -73,6 +73,33 @@ void GameSceneUI::Update()
 		}
 	}
 
+
+	//コイン増減ログ用
+	for (auto& coin_data : coin_data)
+	{
+		//時間を過ぎたら消す
+		if (++coin_data.life_count >= coin_data.life_span)
+		{
+			delete_coin_data.push_back(coin_data);
+		}
+	}
+
+	//オブジェクト配列から削除する処理
+	for (const auto& delete_data : delete_coin_data)
+	{
+		for (auto it = coin_data.begin(); it != coin_data.end();)
+		{
+			if (*it == delete_data)
+			{
+				it = coin_data.erase(it);
+				break;
+			}
+			else
+			{
+				++it;
+			}
+		}
+	}
 	//フラグが立っているなら、紙吹雪を生成
 	if (confetti_flg)
 	{
@@ -287,6 +314,30 @@ void GameSceneUI::Draw()const
 			ui_data.text.c_str()
 		);
 	}
+	int i = 0;
+	int size = GetFontSize();
+	//coin_dataの描画
+	for (const auto coin_data : coin_data)
+	{
+		//フォントサイズ変更
+		//SetFontSize(ui_data.font_size);
+		//文字透過設定
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 - (255 / coin_data.life_span) * coin_data.life_count);
+
+		DrawFormatStringF(coin_data.location.x + 1.f,
+			coin_data.location.y + i + 1.f,
+			0x000000,
+			"%s",
+			coin_data.text.c_str()
+		);
+		DrawFormatStringF(coin_data.location.x,
+			coin_data.location.y + i,
+			coin_data.text_color,
+			"%s",
+			coin_data.text.c_str()
+		);
+		i += size;
+	}
 
 	//文字透過リセット
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
@@ -307,10 +358,9 @@ void GameSceneUI::Draw()const
 	SetFontSize(old);
 }
 
-void GameSceneUI::SetUIData(Vector2D _location, string _text, int _text_color, float _move, int _life_span, int _font_size)
+void GameSceneUI::SetUIData(Vector2D _location, string _text, int _text_color, float _move, int _life_span)
 {
 	UIData data;
-	data.font_size = _font_size;
 	data.life_count = 0;
 	data.life_span = _life_span;
 	data.location = _location;
@@ -319,6 +369,9 @@ void GameSceneUI::SetUIData(Vector2D _location, string _text, int _text_color, f
 	data.text_color = _text_color;
 
 	ui_data.push_back(data);
+	//コインログは座標をコイン枚数表示位置に固定
+	data.location = { (float)SCREEN_WIDTH - 10.f - GetDrawNStringWidth(_text.c_str(),_text.size()),40};
+	coin_data.push_back(data);
 }
 
 ConfettiData GameSceneUI::GetConfettiData()const
@@ -468,8 +521,8 @@ void GameSceneUI::DrawPlayerUI()const
 	//新記録なら
 	if (UserData::ranking_data[9].coin < UserData::coin)
 	{
-		DrawString(SCREEN_WIDTH - GetDrawStringWidth("新記録！", strlen("新記録！")),
-			player_ui_loc.y + 40, 
+		DrawString(SCREEN_WIDTH - GetDrawStringWidth("新記録！", strlen("新記録！")) - 110,
+			player_ui_loc.y +  40, 
 			"新記録！", 
 			frame % 30 > 15 ?0xff0000: 0xffffff);
 	}

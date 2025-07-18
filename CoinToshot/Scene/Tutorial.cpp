@@ -630,4 +630,5 @@ void Tutorial::DrawSteal()const
 	UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y + 10 }, "“|‚·‚ÆŽæ‚è•Ô‚¹‚é", 0xffffff);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 	tuto_object->Draw();
+	DrawCircleAA(tuto_object->GetLocalLocation().x, tuto_object->GetLocalLocation().y, tuto_object->GetSize().x * 1.5f, 100, 0xff0000, false);
 }

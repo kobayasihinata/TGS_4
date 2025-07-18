@@ -427,9 +427,9 @@ void InGameScene::SpawnEnemy()
 	}
 }
 
-void InGameScene::CreatePopUp(Vector2D _location, string _text, int _text_color, float _move, int _life_span, int _font_size)
+void InGameScene::CreatePopUp(Vector2D _location, string _text, int _text_color, float _move, int _life_span)
 {
-	ui->SetUIData(_location, _text, _text_color, _move, _life_span, _font_size);
+	ui->SetUIData(_location, _text, _text_color, _move, _life_span);
 }
 
 Vector2D InGameScene::GetRandLoc()
