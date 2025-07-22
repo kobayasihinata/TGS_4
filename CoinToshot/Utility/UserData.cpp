@@ -25,6 +25,7 @@ bool UserData::attraction_flg = false;
 int UserData::attraction_timer = 0;
 bool UserData::can_bullet_change_flg = false;
 bool UserData::player_damage_flg = false;
+std::vector<int> UserData::coin_graph;
 std::vector<std::vector<int>> UserData::button_image;
 int UserData::coin_image = 0;
 
@@ -45,7 +46,7 @@ void UserData::LoadButtonImage()
 	coin_image = MakeScreen(40, 40, TRUE);
 	SetDrawScreen(coin_image);
 	ClearDrawScreen();
-	UserData::DrawCoin({ 20,20 }, 20);
+	UserData::DrawCoin({ 19,19 }, 20);
 	SetDrawScreen(DX_SCREEN_BACK);
 	//Še•Ï”‰Šú‰»
 	frame = 0;

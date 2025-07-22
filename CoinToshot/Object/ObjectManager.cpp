@@ -89,6 +89,11 @@ void ObjectManager::Update()
 	{
 		object_list->SetLocalLocation(camera->GetCameraLocation());	//ここでカメラ座標を渡せるようにする
 		object_list->Update();
+		//画面と大きく離れたオブジェクトの更新
+		if (!CheckInScreen(object_list, 1000))
+		{
+			OffScreenUpdate(object_list);
+		}
 	}
 
 
@@ -313,7 +318,7 @@ void ObjectManager::ObjectHitCheck()
 		for (const auto& object2 : object_list)
 		{
 			//オブジェクトのどちらかが画面外にあればスキップ
-			if (CheckInScreen(object2, 50) && CheckInScreen(object1,50) && object1 != object2 && object1->CheckHit(object2))
+			if (/*CheckInScreen(object2, 50) && CheckInScreen(object1,50) &&*/ object1 != object2 && object1->CheckHit(object2))
 			{
 				object1->Hit(object2);
 			}
@@ -348,4 +353,14 @@ bool ObjectManager::CheckInScreen(ObjectBase* _object, int space)const
 void ObjectManager::DrawButton(Vector2D _location,int _button)const
 {
 	DrawGraphF(_location.x, _location.y, button_image[b_anim][_button], true);
+}
+
+void ObjectManager::OffScreenUpdate(ObjectBase* _object)
+{
+	//敵なら消す
+	if (_object->IsEnemy())
+	{
+		delete_object.push_back(_object);
+	}
+	//delete_object.push_back(_object);
 }

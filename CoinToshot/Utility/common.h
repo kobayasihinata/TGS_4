@@ -1,6 +1,7 @@
 #pragma once
-#define DEBUG_SKIP false			//デバッグ用チュートリアルスキップモード
+#define DEBUG_SKIP false		//デバッグ用チュートリアルスキップモード
 #define DEBUG_PLAYER false		//クリアと死をすぐ確認したい時用
+#define BUTTON_TYPE false       //操作方法を指示された者に変更したやつ
 
 #define FRAME_RATE 60			//フレームレート
 

@@ -17,6 +17,9 @@ using namespace std;
 #define GRAVITY 1	//一フレーム間に加算される重力量
 #define DECELERATION 0.1f	//減速率
 
+#define GRAPH_WIDTH 1000	//スランプグラフの幅
+#define GRAPH_HEIGHT 600	//スランプグラフの高さ
+
 struct StringData {
 	char text;		//表示文字
 	Vector2D location;	//座標
@@ -53,6 +56,7 @@ enum DispScene
 	dIsClear = 0,
 	dDispResult,
 	dBonusPoint,
+	dGraphDisp,
 	dEnterName,
 };
 
@@ -70,6 +74,10 @@ private:
 	int add_anim_coin;		//加算アニメーション用コイン枚数
 
 	bool add_coin_once;		//ボーナス加算を一回だけ行う
+
+	//スランプグラフ関連
+	Vector2D graph_loc;		//グラフの左上座標
+
 	//名前入力関連
 	Vector2D name_string_loc;	//名前表示位置
 	Vector2D key_box_loc;		//名前入力箱位置

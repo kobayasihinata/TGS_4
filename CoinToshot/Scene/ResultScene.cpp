@@ -16,7 +16,7 @@ ResultScene::ResultScene()
 	add_anim_coin = UserData::coin;
 	add_coin_once = false;
 	disp_se_once = true;
-
+	graph_loc = { 100,100 };
 	name_string_loc = { 500,70 };
 	key_box_loc = { 400,200 };
 	current_x = 0;
@@ -140,18 +140,7 @@ eSceneType ResultScene::Update(float _delta)
 			if (bonus_anim_timer > BONUS_ANIM_TIME)
 			{
 				PlaySoundMem(button_se, DX_PLAYTYPE_BACK);
-				//ランキング最下位のスコアを上回っていたら
-				if (UserData::coin > UserData::ranking_data[9].coin)
-				{
-					//名前入力に遷移
-					now_disp = DispScene::dEnterName;
-				}
-				//ランク外ならランキング表示シーンに飛ぶ
-				else
-				{
-					return eSceneType::eRanking;
-				}
-
+				now_disp = DispScene::dGraphDisp;
 			}
 			//終了していなければ演出スキップ
 			else
@@ -160,6 +149,25 @@ eSceneType ResultScene::Update(float _delta)
 				bonus_anim_timer = bonus_anim_timer >= BONUS_ANIM_TIME - SKIP_TIME ? bonus_anim_timer : BONUS_ANIM_TIME - SKIP_TIME;
 			}
 		}
+		break;
+	case DispScene::dGraphDisp:
+		//Aボタンを押したとき
+		if (InputPad::OnButton(XINPUT_BUTTON_A))
+		{
+			PlaySoundMem(button_se, DX_PLAYTYPE_BACK);
+			//ランキング最下位のスコアを上回っていたら
+			if (UserData::coin > UserData::ranking_data[9].coin)
+			{
+				//名前入力に遷移
+				now_disp = DispScene::dEnterName;
+			}
+			//ランク外ならランキング表示シーンに飛ぶ
+			else
+			{
+				return eSceneType::eRanking;
+			}
+		}
+
 		break;
 	case DispScene::dEnterName:
 		//名前入力
@@ -185,7 +193,9 @@ eSceneType ResultScene::Update(float _delta)
 
 void ResultScene::Draw()const
 {
-	int bg_color, text_color1, text_color2, text_color3;
+	int bg_color, text_color1, text_color2, text_color3, g_count = 1;
+	float graph_space = (float)GRAPH_WIDTH / (DEFAULT_TIMELIMIT / 60);
+	float g_old = 0;
 	DrawString(10, 10, "Result", GetColor(255, 255, 255));
 
 	switch (now_disp)
@@ -317,6 +327,89 @@ void ResultScene::Draw()const
 		if (bonus_anim_timer > BONUS_ANIM_TIME)
 		{
 			UserData::DrawButtonImage({ SCREEN_WIDTH / 2,SCREEN_HEIGHT - 30 }, XINPUT_BUTTON_A, 60);
+		}
+		break;
+	case DispScene::dGraphDisp:
+		if (UserData::is_clear)
+		{
+			bg_color = 0xffffbb;
+			text_color1 = 0x888800;
+			text_color2 = 0xaaaa00;
+			text_color3 = 0xffbb00;
+		}
+		else
+		{
+			bg_color = 0x555500;
+			text_color1 = 0x999900;
+			text_color2 = 0x666600;
+			text_color3 = 0x995500;
+		}
+		//背景
+		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, bg_color, TRUE);
+		//グラフ背景
+		DrawBoxAA(graph_loc.x, 
+			graph_loc.y, 
+			graph_loc.x + GRAPH_WIDTH, 
+			graph_loc.y + GRAPH_HEIGHT,
+			0xffffff, TRUE);
+		//グリッド
+		for (int x = 0; x < GRAPH_WIDTH; x+= (graph_space*15))
+		{
+			//60秒区切りでグリッド色を変更＆数字を描画
+			if (x % (int)(graph_space * 15) * 4 == 0)
+			{
+				DrawLineAA(graph_loc.x + x,
+					graph_loc.y,
+					graph_loc.x + x,
+					graph_loc.y + GRAPH_HEIGHT,
+					0xffaaaa);
+				DrawFormatStringF(graph_loc.x + x,
+					graph_loc.y + GRAPH_HEIGHT + 20,
+					0xff0000,
+					"%d秒", x);
+			}
+			else
+			{
+				DrawLine(graph_loc.x + x,
+					graph_loc.y,
+					graph_loc.x + x,
+					graph_loc.y + GRAPH_HEIGHT,
+					0xaaaaaa);
+			}
+		}
+		for (int y = 0; y < GRAPH_HEIGHT; y += 50)
+		{
+			//1000枚区切りでグリッド色を変更＆数字を描画
+			if (y % 100 == 0)
+			{
+				//DrawLineAA(graph_loc.x,
+				//	graph_loc.y + y,
+				//	graph_loc.x + GRAPH_WIDTH,
+				//	graph_loc.y + y,
+				//	0xaaffaa);
+				DrawFormatStringF(graph_loc.x - 20,
+					graph_loc.y + y,
+					0x00ff00,
+					"%d枚", y*10);
+			}
+			else
+			{
+				DrawLine(graph_loc.x,
+					graph_loc.y + y,
+					graph_loc.x + GRAPH_WIDTH,
+					graph_loc.y + y,
+					0xaaaaaa);
+			}
+		}
+		for (auto& coin_graph : UserData::coin_graph)
+		{
+			DrawLineAA(graph_loc.x + (g_count - 1) * graph_space,
+				graph_loc.y + GRAPH_HEIGHT - g_old/10,
+				graph_loc.x + g_count * graph_space,
+				graph_loc.y + GRAPH_HEIGHT - coin_graph/10,
+				0x000000, TRUE);
+			g_old = coin_graph;
+			g_count++;
 		}
 		break;
 	case DispScene::dEnterName:

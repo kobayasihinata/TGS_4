@@ -109,5 +109,8 @@ public:
 
 	//ボタン描画
 	void DrawButton(Vector2D _location, int _button)const;
+
+	//画面外に出たオブジェクトの処理
+	void OffScreenUpdate(ObjectBase* _object);
 };
 

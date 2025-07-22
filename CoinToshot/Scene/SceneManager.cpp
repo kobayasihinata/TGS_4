@@ -22,7 +22,7 @@ SceneManager::~SceneManager()
 /// </summary>
 void SceneManager::Initialize()
 {
-	//ウィンドウモードで軌道
+	//ウィンドウモードで起動
 	ChangeWindowMode(TRUE);
 
 	//画面サイズの設定

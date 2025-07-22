@@ -73,7 +73,14 @@ void GameSceneUI::Update()
 		}
 	}
 
-
+	//一フレームに一個ずつ追加する処理
+	for (auto& wait_data : coin_wait_data)
+	{
+		coin_data.push_back(wait_data);
+		//追加したログは消す
+		coin_wait_data.erase(coin_wait_data.begin());
+		break;
+	}
 	//コイン増減ログ用
 	for (auto& coin_data : coin_data)
 	{
@@ -188,9 +195,15 @@ void GameSceneUI::Update()
 		}
 	}
 
+#if BUTTON_TYPE
+	//弾種類変更解禁前にトリガーを入力した時のロック演出
+	if (!UserData::can_bullet_change_flg &&
+		(InputPad::OnButton(XINPUT_BUTTON_LEFT_SHOULDER) || InputPad::OnButton(XINPUT_BUTTON_RIGHT_SHOULDER)))
+#else
 	//弾種類変更解禁前にトリガーを入力した時のロック演出
 	if (!UserData::can_bullet_change_flg &&
 		(InputPad::OnButton(L_TRIGGER) || InputPad::OnButton(R_TRIGGER)))
+#endif // BUTTON_TYPE
 	{
 		PlaySoundMem(lock_se, DX_PLAYTYPE_BACK);
 	}
@@ -257,9 +270,13 @@ void GameSceneUI::Draw()const
 	Vector2D button_lt = { SCREEN_WIDTH / 2 - 130, 30 };
 	Vector2D button_rt = { SCREEN_WIDTH / 2 + 130, 30 };
 	//ボタンを押したら画像を変える
-	DrawRotaGraphF(button_lt.x, button_lt.y, 1.f,0,UserData::button_image[(int)InputPad::OnPressed(L_TRIGGER)][L_TRIGGER], true);
-	DrawRotaGraphF(button_rt.x, button_rt.y, 1.f,0,UserData::button_image[(int)InputPad::OnPressed(R_TRIGGER)][R_TRIGGER], true);
-
+#if BUTTON_TYPE
+	DrawRotaGraphF(button_lt.x, button_lt.y, 1.f, 0, UserData::button_image[(int)InputPad::OnPressed(XINPUT_BUTTON_LEFT_SHOULDER)][XINPUT_BUTTON_LEFT_SHOULDER], true);
+	DrawRotaGraphF(button_rt.x, button_rt.y, 1.f, 0, UserData::button_image[(int)InputPad::OnPressed(XINPUT_BUTTON_RIGHT_SHOULDER)][XINPUT_BUTTON_RIGHT_SHOULDER], true);
+#else
+	DrawRotaGraphF(button_lt.x, button_lt.y, 1.f, 0, UserData::button_image[(int)InputPad::OnPressed(L_TRIGGER)][L_TRIGGER], true);
+	DrawRotaGraphF(button_rt.x, button_rt.y, 1.f, 0, UserData::button_image[(int)InputPad::OnPressed(R_TRIGGER)][R_TRIGGER], true);
+#endif // BUTTON_TYPE
 	//弾種類を変えられない状態なら、ボタンの上に×を描画
 	if (!UserData::can_bullet_change_flg)
 	{
@@ -371,7 +388,7 @@ void GameSceneUI::SetUIData(Vector2D _location, string _text, int _text_color, f
 	ui_data.push_back(data);
 	//コインログは座標をコイン枚数表示位置に固定
 	data.location = { (float)SCREEN_WIDTH - 10.f - GetDrawNStringWidth(_text.c_str(),_text.size()),40};
-	coin_data.push_back(data);
+	coin_wait_data.push_back(data);
 }
 
 ConfettiData GameSceneUI::GetConfettiData()const
@@ -508,7 +525,7 @@ void GameSceneUI::DrawPlayerUI()const
 	if (now_coin_num != old_coin_num)
 	{
 		//コインが減ったか増えたかでフォントの大きさと色を変える
-		SetFontSize(GetFontSize() + (now_coin_num > old_coin_num ? 2 : -2));
+		SetFontSize(GetFontSize() + (now_coin_num > old_coin_num ? 3 : -3));
 		coin_text_color = now_coin_num > old_coin_num ? 0xffff00 : 0xff0000;
 	}
 	else
@@ -521,10 +538,24 @@ void GameSceneUI::DrawPlayerUI()const
 	//新記録なら
 	if (UserData::ranking_data[9].coin < UserData::coin)
 	{
+		int rank = 0;
+		for (int i = 0; i < 10; i++)
+		{
+			if (UserData::ranking_data[i].coin < UserData::coin)
+			{
+				rank = UserData::ranking_data[i].num;
+				break;
+			}
+		}
 		DrawString(SCREEN_WIDTH - GetDrawStringWidth("新記録！", strlen("新記録！")) - 110,
-			player_ui_loc.y +  40, 
+			player_ui_loc.y + 70, 
 			"新記録！", 
 			frame % 30 > 15 ?0xff0000: 0xffffff);
+		DrawFormatString(SCREEN_WIDTH - GetDrawStringWidth("新記録！", strlen("新記録！"))-30,
+			player_ui_loc.y + 70,
+			frame % 30 > 15 ? 0xff0000 : 0xffffff,
+			"現在%d位!",
+			rank);
 	}
 	UserData::DrawCoin({ player_ui_loc.x - GetDrawFormatStringWidth("×%d", UserData::coin) + 320, 
 		player_ui_loc.y + 30 }, 

@@ -90,6 +90,7 @@ private:
 
 	//コインログ用
 	std::vector<UIData> coin_data;
+	std::vector<UIData> coin_wait_data;
 	std::vector<UIData> delete_coin_data;
 
 	//紙吹雪用

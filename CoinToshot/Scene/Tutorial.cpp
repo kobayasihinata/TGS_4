@@ -575,9 +575,15 @@ void Tutorial::DrawAttack()const
 		break;
 	case 1:	//実践
 		SetFontSize(24);
-		UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y - 50 }, "左 or 右トリガー：攻撃", 0xffffff);
+#if BUTTON_TYPE
+		UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y - 50 }, "Bボタン：攻撃", 0xffffff);
+		DrawRotaGraphF(text_box_loc.x - 20, text_box_loc.y + 50, 1.f, 0, UserData::button_image[button_anim][XINPUT_BUTTON_B], TRUE);
+#else
+		UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y - 50 }, "LB、RBボタン：攻撃", 0xffffff);
 		DrawRotaGraphF(text_box_loc.x - 40, text_box_loc.y + 50, 1.f, 0, UserData::button_image[button_anim][XINPUT_BUTTON_LEFT_SHOULDER], TRUE);
 		DrawRotaGraphF(text_box_loc.x + 40, text_box_loc.y + 50, 1.f, 0, UserData::button_image[button_anim][XINPUT_BUTTON_RIGHT_SHOULDER], TRUE);
+#endif // BUTTON_TYPE
+
 		break;
 	case 2:	//成功描画手順
 		DrawString(enemy_loc.x - camera->GetCameraLocation().x - 25, enemy_loc.y - camera->GetCameraLocation().y - 70, "nice!", attack_success_timer % 30 > 15 ? 0xaaaa00 : 0xff4400);
@@ -609,7 +615,11 @@ void Tutorial::DrawBulletChange()const
 	SetFontSize(24);
 	DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 40, "弾の変更をアンロック！", 0xffffff);
 	SetFontSize(20);
+#if BUTTON_TYPE
+	UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y + 10 }, "LB、RBで変更", 0xffffff);
+#else
 	UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y + 10 }, "左右トリガーで変更", 0xffffff);
+#endif // BUTTON_TYPE
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 }
 

@@ -32,6 +32,7 @@ void InGameScene::Initialize()
 	UserData::is_clear = false;
 	UserData::can_bullet_change_flg = false;
 	UserData::is_dead = false;
+	UserData::coin_graph.clear();
 
 	change_result_delay = -1;//0になったらリザルト遷移
 	change_result = false;
@@ -115,6 +116,11 @@ eSceneType InGameScene::Update(float _delta)
 	//チュートリアル更新
 	tutorial->Update();
 
+	//一定時間経過毎のコインの枚数を保存
+	if (UserData::timer % 60 == 1)
+	{
+		UserData::coin_graph.push_back(UserData::coin);
+	}
 	//一時停止フラグ切り替え
 	if (InputPad::OnButton(XINPUT_BUTTON_START) && !tutorial->GetTutorialFlg())
 	{

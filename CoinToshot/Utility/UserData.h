@@ -45,6 +45,7 @@ public:
 	static int attraction_timer;	//コイン吸い寄せ時間測定
 	static bool can_bullet_change_flg;	//弾種類変更可能か
 	static bool player_damage_flg;	//プレイヤーがダメージを受けて動けない状態か判断
+	static std::vector<int> coin_graph;	//コインの増減保存用
 	static std::vector<std::vector<int>> button_image;//ボタン画像格納
 	static int coin_image;			//黄色コイン画像格納
 	//デバッグ用

@@ -467,8 +467,13 @@ void Player::Control()
 	}
 
 	//攻撃チュートリアルが完了している　もしくは攻撃チュートリアル中ならコイン消費で弾を発射する
-	if (tutorial->GetTutoNowEnd(TutoType::tAttack)&&
+#if BUTTON_TYPE
+	if (tutorial->GetTutoNowEnd(TutoType::tAttack) &&
+		InputPad::OnButton(XINPUT_BUTTON_B))
+#else
+	if (tutorial->GetTutoNowEnd(TutoType::tAttack) &&
 		(InputPad::OnButton(XINPUT_BUTTON_LEFT_SHOULDER) || InputPad::OnButton(XINPUT_BUTTON_RIGHT_SHOULDER)))
+#endif // BUTTON_TYPE
 	{
 		if (UserData::coin >= pBullet[UserData::bullet_type].cost)
 		{
@@ -476,7 +481,7 @@ void Player::Control()
 			UserData::coin -= pBullet[UserData::bullet_type].cost;
 			PlaySoundMem(shot_se, DX_PLAYTYPE_BACK);
 			std::string s = "-" + std::to_string(pBullet[UserData::bullet_type].cost);
-			ingame->CreatePopUp({ (float)SCREEN_WIDTH - 60.f,100.f }, s, 0xff0000, -1);
+			ingame->CreatePopUp(this->location, s, 0xff0000, -1);
 		}
 		//発射失敗SE
 		else
@@ -488,8 +493,12 @@ void Player::Control()
 	//弾種類変更が可能＆クールダウンが終わっていたら弾を変更出来る
 	if (UserData::can_bullet_change_flg && bullet_change_cd <= 0)
 	{
-		//トリガーで弾の種類を変える
+		//弾の種類を変える
+#if BUTTON_TYPE
+		if (InputPad::OnPressed(XINPUT_BUTTON_LEFT_SHOULDER))
+#else
 		if (InputPad::OnPressed(L_TRIGGER))
+#endif // BUTTON_TYPE
 		{
 			if (--UserData::bullet_type < 0)
 			{
@@ -501,7 +510,12 @@ void Player::Control()
 				PlaySoundMem(bullet_change_se, DX_PLAYTYPE_BACK);
 			}
 		}
+			//弾の種類を変える
+#if BUTTON_TYPE
+		else if (InputPad::OnPressed(XINPUT_BUTTON_RIGHT_SHOULDER))
+#else
 		else if (InputPad::OnPressed(R_TRIGGER))
+#endif // BUTTON_TYPE
 		{
 			if (++UserData::bullet_type > BULLET_NUM - 1)
 			{
@@ -610,7 +624,7 @@ void Player::DrawBulletOrbit()const
 		DrawRotaGraph(local_location.x + 40 * sinf(shot_rad + 1.5f), local_location.y - 40 * cosf(shot_rad + 1.5f), 1.0f, shot_rad + 1.55f, arrow_image, TRUE);
 		DrawCircleAA(local_location.x + (pBullet[UserData::bullet_type].speed*pBullet[UserData::bullet_type].life_span) * sinf(shot_rad + 1.55f),
 			local_location.y - (pBullet[UserData::bullet_type].speed * pBullet[UserData::bullet_type].life_span) * cosf(shot_rad + 1.55f),
-			(frame*5) % 200, 100, 0xffaa00, true);
+			(frame*5) % 200, 100, 0xff0000, true);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 		break;
 	default:
@@ -687,12 +701,12 @@ void Player::CreateArrowImage()const
 				40, 25 + (i * 20) - (frame % 20),
 				45, 30 + (i * 20) - (frame % 20),
 				50, 10 + (i * 20) - (frame % 20),
-				0xffaa00, TRUE);
+				0xff0000, TRUE);
 			DrawQuadrangleAA(50, (i * 20) - (frame % 20),
 				60, 25 + (i * 20) - (frame % 20),
 				55, 30 + (i * 20) - (frame % 20),
 				50, 10 + (i * 20) - (frame % 20),
-				0xffaa00, TRUE);
+				0xff0000, TRUE);
 		}
 		//文字透過リセット
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
