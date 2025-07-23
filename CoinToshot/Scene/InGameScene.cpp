@@ -72,7 +72,9 @@ void InGameScene::Initialize()
 
 	objects->CreateObject({ {1050,0}, Vector2D{ ENEMY1_WIDTH,ENEMY1_HEIGHT }, eENEMY1});
 
+	gamemain_image = MakeScreen(SCREEN_WIDTH, SCREEN_HEIGHT);
 	flower_image = MakeScreen(191, 191);
+
 	//背景の自動生成
 	CreateBackGround();
 
@@ -196,6 +198,7 @@ eSceneType InGameScene::Update(float _delta)
 #endif // _DEBUG
 
 	}
+	//遷移アニメーション
 	else
 	{
 		//BGMを止める
@@ -220,6 +223,9 @@ eSceneType InGameScene::Update(float _delta)
 
 	}
 
+	//描画の更新
+	MakeGameMainDraw();
+
 	//遷移時一回だけ更新
 	update_once = true;
 	return change_scene;
@@ -229,19 +235,34 @@ void InGameScene::Draw()const
 {
 	int old = GetFontSize();
 
+	DrawGraph(0, 0, gamemain_image, FALSE);
+
+	SetFontSize(old);
+}
+
+eSceneType InGameScene::GetNowSceneType()const
+{
+	return eSceneType::eInGame;
+}
+
+void InGameScene::MakeGameMainDraw()
+{
+	SetDrawScreen(gamemain_image);
+	ClearDrawScreen();
+
 	//背景画像描画
-	DrawGraphF(-STAGE_SIZE - camera->GetCameraLocation().x,- STAGE_SIZE -camera->GetCameraLocation().y, bg_image, true);
+	DrawGraphF(-STAGE_SIZE - camera->GetCameraLocation().x, -STAGE_SIZE - camera->GetCameraLocation().y, bg_image, true);
 
 	//オブジェクト描画
 	objects->Draw();
 
 	//チュートリアル中でない、且つ画面内に初期位置が移っていないなら
 	Vector2D camera_loc = camera->GetCameraLocation();
-	if (!tutorial->GetTutorialFlg() && 
-		(camera_loc.x > 90 || 
-		camera_loc.x < -SCREEN_WIDTH ||
-		camera_loc.y > 90 || 
-		camera_loc.y < -SCREEN_HEIGHT)
+	if (!tutorial->GetTutorialFlg() &&
+		(camera_loc.x > 90 ||
+			camera_loc.x < -SCREEN_WIDTH ||
+			camera_loc.y > 90 ||
+			camera_loc.y < -SCREEN_HEIGHT)
 		)
 	{
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
@@ -266,7 +287,7 @@ void InGameScene::Draw()const
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
 			SetFontSize(48);
-			DrawBox((SCREEN_WIDTH/2) - 200, (SCREEN_HEIGHT/2) - 50, (SCREEN_WIDTH / 2) + 200, (SCREEN_HEIGHT / 2) + 50, 0x000000, true);
+			DrawBox((SCREEN_WIDTH / 2) - 200, (SCREEN_HEIGHT / 2) - 50, (SCREEN_WIDTH / 2) + 200, (SCREEN_HEIGHT / 2) + 50, 0x000000, true);
 			DrawBox((SCREEN_WIDTH / 2) - 200, (SCREEN_HEIGHT / 2) - 50, (SCREEN_WIDTH / 2) + 200, (SCREEN_HEIGHT / 2) + 50, 0xffffff, false);
 			DrawString((SCREEN_WIDTH / 2) - 150, (SCREEN_HEIGHT / 2) - 30, "GameClear!", 0xffffff);
 		}
@@ -278,7 +299,7 @@ void InGameScene::Draw()const
 
 			SetFontSize(48);
 			DrawBox((SCREEN_WIDTH / 2) - 200, (SCREEN_HEIGHT / 2) - 50, (SCREEN_WIDTH / 2) + 200, (SCREEN_HEIGHT / 2) + 50, 0x000000, true);
-			DrawBox((SCREEN_WIDTH / 2) - 200, (SCREEN_HEIGHT / 2 )- 50, (SCREEN_WIDTH / 2) + 200, (SCREEN_HEIGHT / 2 )+ 50, 0xffffff, false);
+			DrawBox((SCREEN_WIDTH / 2) - 200, (SCREEN_HEIGHT / 2) - 50, (SCREEN_WIDTH / 2) + 200, (SCREEN_HEIGHT / 2) + 50, 0xffffff, false);
 			DrawString((SCREEN_WIDTH / 2) - 150, (SCREEN_HEIGHT / 2) - 30, "GameOver...", 0xaaaaaa);
 		}
 	}
@@ -304,25 +325,25 @@ void InGameScene::Draw()const
 		if (coin_size > 20)
 		{
 			//波動
-			DrawCircleAA(coin_loc.x, coin_loc.y, coin_size - (start_anim_timer*5) % coin_size + coin_size,50,0xffffff,false);
+			DrawCircleAA(coin_loc.x, coin_loc.y, coin_size - (start_anim_timer * 5) % coin_size + coin_size, 50, 0xffffff, false);
 
 			UserData::DrawCoin(coin_loc, coin_size);
 		}
 		else
 		{
 			SetDrawBlendMode(DX_BLENDMODE_ALPHA, coin_size * 10);
-			UserData::DrawCoin(coin_loc, 80 - coin_size*2,255,255,255);
+			UserData::DrawCoin(coin_loc, 80 - coin_size * 2, 255, 255, 255);
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 		}
 	}
 	//時間経過ボーナス描画
 	if (bonus_timer > 0)
 	{
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (255.f/TIME_BONUS) * bonus_timer);
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (255.f / TIME_BONUS) * bonus_timer);
 		SetFontSize(48);
 		if (UserData::timer < SECOND_BONUS_TIME)
 		{
-			DrawFormatString(SCREEN_WIDTH / 2 - GetDrawStringWidth("2/3 経過ボーナス！", strlen("2/3 経過ボーナス！"))/2 + 1,
+			DrawFormatString(SCREEN_WIDTH / 2 - GetDrawStringWidth("2/3 経過ボーナス！", strlen("2/3 経過ボーナス！")) / 2 + 1,
 				SCREEN_HEIGHT / 2 - 200 + 1,
 				0x555500,
 				"2/3 経過ボーナス！");
@@ -333,7 +354,7 @@ void InGameScene::Draw()const
 		}
 		else if (UserData::timer < FIRST_BONUS_TIME)
 		{
-			DrawFormatString(SCREEN_WIDTH / 2 - GetDrawStringWidth("1/3 経過ボーナス！", strlen("1/3 経過ボーナス！"))/2 + 1,
+			DrawFormatString(SCREEN_WIDTH / 2 - GetDrawStringWidth("1/3 経過ボーナス！", strlen("1/3 経過ボーナス！")) / 2 + 1,
 				SCREEN_HEIGHT / 2 - 200 + 1,
 				0xffff00,
 				"1/3 経過ボーナス！");
@@ -351,12 +372,8 @@ void InGameScene::Draw()const
 		DrawString((SCREEN_WIDTH / 2) + 100, (SCREEN_HEIGHT / 2) + 20, "あきらめないで！", (int)frame % 30 > 15 ? 0xcccc00 : 0xffff00);
 	}
 
-	SetFontSize(old);
-}
-
-eSceneType InGameScene::GetNowSceneType()const
-{
-	return eSceneType::eInGame;
+	SetDrawScreen(DX_SCREEN_BACK);
+	ClearDrawScreen();
 }
 
 void InGameScene::ChangeResult(int _delay)

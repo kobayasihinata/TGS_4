@@ -86,11 +86,11 @@ void Attack::Update()
 void Attack::Draw()const
 {
 	__super::Draw();
-
+	int old = GetDrawScreen();
 	SetDrawScreen(gauss_image);
 	ClearDrawScreen();
 	UserData::DrawCoin({ radius,radius }, radius,bullet_color[0], bullet_color[1], bullet_color[2]);
-	SetDrawScreen(DX_SCREEN_BACK);
+	SetDrawScreen(old);
 
 	DrawRotaGraphF(local_location.x, local_location.y,1.f, angle, gauss_image, true);
 }

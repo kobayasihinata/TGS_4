@@ -36,8 +36,11 @@ private:
 	int first_bonus_count;		//一定時間経過時に指定の枚数コインを発生させる
 	int bonus_timer;			//ボーナスコインの表示時間測定
 	int second_bonus_count;		//一定時間経過時に指定の枚数コインを発生させる
+
+	int gamemain_image;			//描画全てを一枚の画像として保存
 	int bg_image;				//完成した背景画像を格納する
 	int flower_image;			//ガイド表示用の花を保存
+
 	Vector2D guide_loc;			//ガイド表示の絶対座標
 	Vector2D guide_local_loc;	//ガイド表示の描画座標
 	Vector2D guide_size;		//ガイド表示の大きさ
@@ -76,6 +79,10 @@ public:
 	//現在のシーンタイプ(オーバーライド必須)
 	virtual eSceneType GetNowSceneType()const override;
 
+	/// <summary>
+	/// 描画する画像を作る
+	/// </summary>
+	void MakeGameMainDraw();
 
 	/// <summary>
 	/// リザルト遷移

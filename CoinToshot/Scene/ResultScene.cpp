@@ -16,7 +16,7 @@ ResultScene::ResultScene()
 	add_anim_coin = UserData::coin;
 	add_coin_once = false;
 	disp_se_once = true;
-	graph_loc = { 100,100 };
+	graph_loc = { (SCREEN_WIDTH / 2) - (GRAPH_WIDTH / 2),(SCREEN_HEIGHT / 2) - (GRAPH_HEIGHT / 2) };
 	name_string_loc = { 500,70 };
 	key_box_loc = { 400,200 };
 	current_x = 0;
@@ -193,7 +193,7 @@ eSceneType ResultScene::Update(float _delta)
 
 void ResultScene::Draw()const
 {
-	int bg_color, text_color1, text_color2, text_color3, g_count = 1;
+	int bg_color, text_color1, text_color2, text_color3, g_count = 1, disp_time = 0;
 	float graph_space = (float)GRAPH_WIDTH / (DEFAULT_TIMELIMIT / 60);
 	float g_old = 0;
 	DrawString(10, 10, "Result", GetColor(255, 255, 255));
@@ -352,11 +352,12 @@ void ResultScene::Draw()const
 			graph_loc.x + GRAPH_WIDTH, 
 			graph_loc.y + GRAPH_HEIGHT,
 			0xffffff, TRUE);
+		SetFontSize(18);
 		//グリッド
-		for (int x = 0; x < GRAPH_WIDTH; x+= (graph_space*15))
+		for (int x = 0; x <= GRAPH_WIDTH; x+= (graph_space*15))
 		{
 			//60秒区切りでグリッド色を変更＆数字を描画
-			if (x % (int)(graph_space * 15) * 4 == 0)
+			if (x % ((int)(graph_space * 15) * 4) == 0)
 			{
 				DrawLineAA(graph_loc.x + x,
 					graph_loc.y,
@@ -364,9 +365,10 @@ void ResultScene::Draw()const
 					graph_loc.y + GRAPH_HEIGHT,
 					0xffaaaa);
 				DrawFormatStringF(graph_loc.x + x,
-					graph_loc.y + GRAPH_HEIGHT + 20,
+					graph_loc.y + GRAPH_HEIGHT,
 					0xff0000,
-					"%d秒", x);
+					"%d秒", disp_time);
+				disp_time += 60;
 			}
 			else
 			{
@@ -377,20 +379,20 @@ void ResultScene::Draw()const
 					0xaaaaaa);
 			}
 		}
-		for (int y = 0; y < GRAPH_HEIGHT; y += 50)
+		for (int y = 0; y <= GRAPH_HEIGHT; y += (GRAPH_HEIGHT/10))
 		{
 			//1000枚区切りでグリッド色を変更＆数字を描画
-			if (y % 100 == 0)
+			if (y % (GRAPH_HEIGHT/5) == 0)
 			{
-				//DrawLineAA(graph_loc.x,
-				//	graph_loc.y + y,
-				//	graph_loc.x + GRAPH_WIDTH,
-				//	graph_loc.y + y,
-				//	0xaaffaa);
-				DrawFormatStringF(graph_loc.x - 20,
+				DrawLineAA(graph_loc.x,
 					graph_loc.y + y,
+					graph_loc.x + GRAPH_WIDTH,
+					graph_loc.y + y,
+					0xaaffaa);
+				DrawFormatStringF(graph_loc.x - GetDrawFormatStringWidth("%d枚", 5000 - y * 10),
+					graph_loc.y + y-12,
 					0x00ff00,
-					"%d枚", y*10);
+					"%d枚", 5000 - y*10);
 			}
 			else
 			{
@@ -404,9 +406,9 @@ void ResultScene::Draw()const
 		for (auto& coin_graph : UserData::coin_graph)
 		{
 			DrawLineAA(graph_loc.x + (g_count - 1) * graph_space,
-				graph_loc.y + GRAPH_HEIGHT - g_old/10,
+				graph_loc.y + GRAPH_HEIGHT - g_old/(5000/ GRAPH_HEIGHT),
 				graph_loc.x + g_count * graph_space,
-				graph_loc.y + GRAPH_HEIGHT - coin_graph/10,
+				graph_loc.y + GRAPH_HEIGHT - coin_graph / (5000 / GRAPH_HEIGHT),
 				0x000000, TRUE);
 			g_old = coin_graph;
 			g_count++;

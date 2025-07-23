@@ -18,7 +18,7 @@ using namespace std;
 #define DECELERATION 0.1f	//減速率
 
 #define GRAPH_WIDTH 1000	//スランプグラフの幅
-#define GRAPH_HEIGHT 600	//スランプグラフの高さ
+#define GRAPH_HEIGHT 500	//スランプグラフの高さ
 
 struct StringData {
 	char text;		//表示文字
