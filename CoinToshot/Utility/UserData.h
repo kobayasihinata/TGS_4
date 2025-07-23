@@ -22,6 +22,13 @@ struct ObjectData
 	int type;			//オブジェクトの種類
 	float radius = 0.f;	//半径(円専用)
 };
+
+struct ReplayData
+{
+	int time;				//何秒時点での出来事か
+	std::vector<int> image;	//再生する画像達
+	std::string text;		//どういうシーンか
+};
 class UserData
 {
 private:
@@ -33,21 +40,23 @@ public:
 	static RankingData my_ranking_data;				//前回プレイのデータ
 
 	//UIに表示する必要がある or 保持しておいた方が良い可能性があるプレイヤー情報はここで管理
-	static float player_hp;			//体力
-	static int coin;				//スコア
-	static int timer;				//残り時間
-	static bool is_clear;			//false=ゲームオーバー true=ゲームクリア
-	static bool is_dead;			//プレイヤーが死亡演出中か
-	static bool is_gamestop;		//false=ゲーム中 true=ゲーム終了
-	static int invincible;			//この数値が０以上なら、その時間だけプレイヤーを無敵にして、0に戻す
-	static int bullet_type;			//選択中の弾の種類
-	static bool attraction_flg;		//コイン吸い寄せ
-	static int attraction_timer;	//コイン吸い寄せ時間測定
-	static bool can_bullet_change_flg;	//弾種類変更可能か
-	static bool player_damage_flg;	//プレイヤーがダメージを受けて動けない状態か判断
-	static std::vector<int> coin_graph;	//コインの増減保存用
+	static float player_hp;					//体力
+	static int coin;						//スコア
+	static int timer;						//残り時間
+	static bool is_clear;					//false=ゲームオーバー true=ゲームクリア
+	static bool is_dead;					//プレイヤーが死亡演出中か
+	static bool is_gamestop;				//false=ゲーム中 true=ゲーム終了
+	static int invincible;					//この数値が０以上なら、その時間だけプレイヤーを無敵にして、0に戻す
+	static int bullet_type;					//選択中の弾の種類
+	static bool attraction_flg;				//コイン吸い寄せ
+	static int attraction_timer;			//コイン吸い寄せ時間測定
+	static bool can_bullet_change_flg;		//弾種類変更可能か
+	static bool player_damage_flg;			//プレイヤーがダメージを受けて動けない状態か判断
+	static std::vector<int> coin_graph;		//コインの増減保存用
+	static std::vector<ReplayData> replay;	//ハイライト保存場所
 	static std::vector<std::vector<int>> button_image;//ボタン画像格納
 	static int coin_image;			//黄色コイン画像格納
+
 	//デバッグ用
 	static int variable;			//起動中に好きに変更できる値
 	static bool variable_change;	//値変更中か

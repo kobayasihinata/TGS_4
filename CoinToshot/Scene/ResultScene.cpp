@@ -412,6 +412,18 @@ void ResultScene::Draw()const
 				0x000000, TRUE);
 			g_old = coin_graph;
 			g_count++;
+			for (int i = 0; i < UserData::replay.size(); i++)
+			{
+				//ƒŠƒvƒŒƒC‚Ì•b”‚Æˆê’v‚µ‚Ä‚¢‚é‚È‚ç•`‰æ
+				if (UserData::replay[i].time == g_count)
+				{
+					DrawRotaGraph(graph_loc.x + g_count * graph_space,
+						graph_loc.y + GRAPH_HEIGHT - coin_graph / (5000 / GRAPH_HEIGHT),
+						0.4f,
+						0.f,
+						UserData::replay[i].image[0], TRUE);
+				}
+			}
 		}
 		break;
 	case DispScene::dEnterName:

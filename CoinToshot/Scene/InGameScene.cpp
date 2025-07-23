@@ -68,11 +68,14 @@ void InGameScene::Initialize()
 	objects->CreateObject({ Vector2D{48,32},Vector2D{40,40},ePLAYER });
 
 	objects->CreateObject({ Vector2D{(float)(GetRand(1)* 2000 - 1000),(float)(GetRand(1)* 2000 - 1000)},Vector2D{100,100},eSLOT});
-	objects->CreateObject({ Vector2D{ 150, 30 },Vector2D{40,40},eCOIN, 20.f });
-
+	for (int i = 0; i < 50; i++)
+	{
+		objects->CreateObject({ Vector2D{ 250/*150*/, 30},Vector2D{40,40},eCOIN, 20.f});
+	}
 	objects->CreateObject({ {1050,0}, Vector2D{ ENEMY1_WIDTH,ENEMY1_HEIGHT }, eENEMY1});
 
 	gamemain_image = MakeScreen(SCREEN_WIDTH, SCREEN_HEIGHT);
+
 	flower_image = MakeScreen(191, 191);
 
 	//”wŒi‚ÌŽ©“®¶¬
@@ -225,6 +228,22 @@ eSceneType InGameScene::Update(float _delta)
 
 	//•`‰æ‚ÌXV
 	MakeGameMainDraw();
+
+	//•Û‘¶
+	image_save.push_back(gamemain_image);
+
+	//‰æ‘œ”‚ª150‚ð‰z‚µ‚Ä‚¢‚½‚çæ“ª‚Ì—v‘f‚Ííœ
+	if (image_save.size() > 150)
+	{
+		image_save.erase(image_save.begin());
+	}
+
+	//\•ª‚Èƒf[ƒ^‚ª‚ ‚ê‚ÎŽÀs
+	if (UserData::coin_graph.size() >= 2)
+	{
+		//ƒŠƒvƒŒƒC‚É•Û‘¶‚·‚é‚©”»’f
+		SaveReplay();
+	}
 
 	//‘JˆÚŽžˆê‰ñ‚¾‚¯XV
 	update_once = true;
@@ -774,5 +793,16 @@ void InGameScene::UpdateGuideLoc()
 		{
 			break;
 		}
+	}
+}
+
+void InGameScene::SaveReplay()
+{
+	//ˆê‹æŠÔ‚Ìƒƒ_ƒ‹‚Ì·–‡‚ª{‚P‚O‚O–‡‚È‚çA—Ç‚¢ê–Ê‚Æ‚µ‚Ä•Û‘¶
+	int num1 = UserData::coin_graph.back();
+	int num2 = UserData::coin_graph[UserData::coin_graph.size() - 2];
+	if (num1 - num2 > 50)
+	{
+		UserData::replay.push_back({(DEFAULT_TIMELIMIT - UserData::timer)/60 ,image_save ,"‘å—Ê" });
 	}
 }

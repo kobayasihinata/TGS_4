@@ -26,6 +26,7 @@ int UserData::attraction_timer = 0;
 bool UserData::can_bullet_change_flg = false;
 bool UserData::player_damage_flg = false;
 std::vector<int> UserData::coin_graph;
+std::vector<ReplayData> UserData::replay;
 std::vector<std::vector<int>> UserData::button_image;
 int UserData::coin_image = 0;
 
