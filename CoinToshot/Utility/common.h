@@ -1,12 +1,12 @@
 #pragma once
-#define DEBUG_SKIP true		//デバッグ用チュートリアルスキップモード
-#define DEBUG_PLAYER true		//クリアと死をすぐ確認したい時用
+#define DEBUG_SKIP false		//デバッグ用チュートリアルスキップモード
+#define DEBUG_PLAYER false		//クリアと死をすぐ確認したい時用
 #define BUTTON_TYPE false       //操作方法を指示された者に変更したやつ
 
 #define FRAME_RATE 60			//フレームレート
 
-#define SCREEN_WIDTH  1280		//画面横幅
-#define SCREEN_HEIGHT 720		//画面高さ
+#define SCREEN_WIDTH  1920		//画面横幅
+#define SCREEN_HEIGHT 1080		//画面高さ
 
 #define STAGE_SIZE 2000			//ステージの大きさ（中心から上下左右に2000pxずつ)
 

@@ -75,7 +75,6 @@ void InGameScene::Initialize()
 	objects->CreateObject({ {1050,0}, Vector2D{ ENEMY1_WIDTH,ENEMY1_HEIGHT }, eENEMY1});
 
 	gamemain_image = MakeScreen(SCREEN_WIDTH, SCREEN_HEIGHT);
-
 	flower_image = MakeScreen(191, 191);
 
 	//背景の自動生成
@@ -228,18 +227,9 @@ eSceneType InGameScene::Update(float _delta)
 
 	//描画の更新
 	MakeGameMainDraw();
-
-	//保存
-	image_save.push_back(gamemain_image);
-
-	//画像数が150を越していたら先頭の要素は削除
-	if (image_save.size() > 150)
-	{
-		image_save.erase(image_save.begin());
-	}
-
-	//十分なデータがあれば実行
-	if (UserData::coin_graph.size() >= 2)
+	
+	//十分なデータがあれば、60フレーム毎に実行
+	if (UserData::coin_graph.size() >= 2 && (int)frame % 60 == 0)
 	{
 		//リプレイに保存するか判断
 		SaveReplay();
@@ -255,7 +245,6 @@ void InGameScene::Draw()const
 	int old = GetFontSize();
 
 	DrawGraph(0, 0, gamemain_image, FALSE);
-
 	SetFontSize(old);
 }
 
@@ -339,9 +328,9 @@ void InGameScene::MakeGameMainDraw()
 	//遷移時アニメーションフラグが立っていたら、アニメーション処理
 	if (start_anim_flg)
 	{
-		Vector2D coin_loc = { SCREEN_WIDTH / 2 + 100, SCREEN_HEIGHT / 2 };
-		int coin_size = 900 - start_anim_timer * (900 / G_START_ANIM_TIME);
-		if (coin_size > 20)
+		Vector2D coin_loc = { SCREEN_WIDTH / 2 + 150, SCREEN_HEIGHT / 2 };
+		int coin_size = 1350 - start_anim_timer * (1500 / G_START_ANIM_TIME);
+		if (coin_size > 30)
 		{
 			//波動
 			DrawCircleAA(coin_loc.x, coin_loc.y, coin_size - (start_anim_timer * 5) % coin_size + coin_size, 50, 0xffffff, false);
@@ -801,8 +790,17 @@ void InGameScene::SaveReplay()
 	//一区間のメダルの差枚が＋１００枚なら、良い場面として保存
 	int num1 = UserData::coin_graph.back();
 	int num2 = UserData::coin_graph[UserData::coin_graph.size() - 2];
+
+	DebugInfomation::Add("num2", num2);
+
 	if (num1 - num2 > 50)
 	{
-		UserData::replay.push_back({(DEFAULT_TIMELIMIT - UserData::timer)/60 ,image_save ,"大量" });
+		int img = MakeScreen(SCREEN_WIDTH, SCREEN_HEIGHT);
+		SetDrawScreen(img);
+		ClearDrawScreen();
+		DrawGraph(0, 0, gamemain_image, FALSE);
+		SetDrawScreen(DX_SCREEN_BACK);
+		ClearDrawScreen();
+		UserData::replay.push_back({(600 - UserData::timer)/60 ,img ,"大量獲得" });
 	}
 }

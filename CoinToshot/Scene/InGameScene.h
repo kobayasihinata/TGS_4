@@ -18,6 +18,8 @@
 
 //ボーナスアニメーション
 #define TIME_BONUS 60	//文字表示時間
+
+
 class InGameScene : public SceneBase
 {
 private:
@@ -37,7 +39,6 @@ private:
 	int bonus_timer;			//ボーナスコインの表示時間測定
 	int second_bonus_count;		//一定時間経過時に指定の枚数コインを発生させる
 
-	std::vector<int> image_save;//画面を保存しておく
 	int gamemain_image;			//描画全てを一枚の画像として保存
 	int bg_image;				//完成した背景画像を格納する
 	int flower_image;			//ガイド表示用の花を保存

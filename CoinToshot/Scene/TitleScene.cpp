@@ -179,12 +179,12 @@ void TitleScene::Draw()const
 	DrawGraph(0, 0, bg_image, TRUE);
 
 	//タイトル文字
-	SetFontSize(96);
+	SetFontSize(144);
 	UserData::DrawStringCenter({ SCREEN_WIDTH / 2+2,52 }, "CoinToshot", 0x000000);
 	UserData::DrawStringCenter({ SCREEN_WIDTH / 2 -2,48 }, "CoinToshot", 0xffffff);
 	UserData::DrawStringCenter({ SCREEN_WIDTH / 2,50 }, "CoinToshot", 0xddbb00);
 
-	int size = 48;
+	int size = 72;
 	SetFontSize(size);
 	
 	for (int i = 0; i < ITEM_NUM; i++)
@@ -206,17 +206,17 @@ void TitleScene::Draw()const
 		}
 	}
 
-	SetFontSize(32);
+	SetFontSize(72);
 
 	//操作説明の描画
-	Vector2D _loc = { 500,600 };
-	UserData::DrawButtonImage(_loc, L_STICK_UP, 50);
-	UserData::DrawButtonImage({ _loc.x+40,_loc.y }, L_STICK_DOWN, 50);
-	UserData::DrawButtonImage({ _loc.x+80,_loc.y }, XINPUT_BUTTON_DPAD_UP, 50);
-	UserData::DrawButtonImage({ _loc.x+120,_loc.y }, XINPUT_BUTTON_DPAD_DOWN, 50);
-	DrawStringF(_loc.x + 140, _loc.y-20, "：カーソル移動", 0x000000);
-	UserData::DrawButtonImage({ _loc.x + 120,_loc.y + 60 }, XINPUT_BUTTON_A, 50);
-	DrawStringF(_loc.x + 140, _loc.y + 40, "：決定", 0x000000);
+	Vector2D _loc = { 700,900 };
+	UserData::DrawButtonImage(_loc, L_STICK_UP, 75);
+	UserData::DrawButtonImage({ _loc.x+60,_loc.y }, L_STICK_DOWN, 75);
+	UserData::DrawButtonImage({ _loc.x+120,_loc.y }, XINPUT_BUTTON_DPAD_UP, 75);
+	UserData::DrawButtonImage({ _loc.x+180,_loc.y }, XINPUT_BUTTON_DPAD_DOWN, 75);
+	DrawStringF(_loc.x + 210, _loc.y - 50, ":カーソル移動", 0x000000);
+	UserData::DrawButtonImage({ _loc.x + 180,_loc.y + 60 }, XINPUT_BUTTON_A, 75);
+	DrawStringF(_loc.x + 210, _loc.y+10 , ":決定", 0x000000);
 	if (start_anim_flg)
 	{
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 - ((255.f / START_ANIM) * start_anim_timer));
@@ -230,9 +230,9 @@ void TitleScene::Draw()const
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 160);
 		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, true);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
-		SetFontSize(48);
+		SetFontSize(108);
 		UserData::DrawStringCenter({ SCREEN_WIDTH / 2,300 }, "チュートリアルを飛ばしますか？", 0xffffff);
-		SetFontSize(32);
+		SetFontSize(72);
 		DrawString(SCREEN_WIDTH / 2 - 200, 400, "はい", tuto_current_num == 0 ? 0xff5555 : 0x999999);
 		DrawString(SCREEN_WIDTH / 2 + 200, 400, "いいえ", tuto_current_num == 1 ? 0xff5555 : 0x999999);
 	}
@@ -256,7 +256,7 @@ int TitleScene::CreateBackGround()
 	//生成した背景を一つの画像として保存、それ以外の情報は削除
 	SetDrawScreen(ret);
 	ClearDrawScreen();
-	UserData::DrawCoin({ SCREEN_WIDTH / 2 + 100, SCREEN_HEIGHT / 2 }, 900);
+	UserData::DrawCoin({ SCREEN_WIDTH / 2 + 150, SCREEN_HEIGHT / 2 }, 1350);
 	SetDrawScreen(DX_SCREEN_BACK);
 
 	return ret;

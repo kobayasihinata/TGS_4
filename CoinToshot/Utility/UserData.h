@@ -26,7 +26,7 @@ struct ObjectData
 struct ReplayData
 {
 	int time;				//何秒時点での出来事か
-	std::vector<int> image;	//再生する画像達
+	int image;	//その時の画像
 	std::string text;		//どういうシーンか
 };
 class UserData
