@@ -207,7 +207,7 @@ void ResultScene::Draw()const
 
 			SetDrawBlendMode(DX_BLENDMODE_ALPHA, start_anim_timer * (255 / (START_ANIM_TIME / 2)));
 			DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0xffffbb, TRUE);
-			SetFontSize(64);
+			SetFontSize(96);
 			UserData::DrawStringCenter({ SCREEN_WIDTH / 2 -1,SCREEN_HEIGHT / 2 - 51 }, "Congratulations...!", 0x000000);
 			UserData::DrawStringCenter({ SCREEN_WIDTH / 2 +1,SCREEN_HEIGHT / 2 - 49 }, "Congratulations...!", 0x000000);
 			UserData::DrawStringCenter({ SCREEN_WIDTH / 2   ,SCREEN_HEIGHT / 2 - 50 }, "Congratulations...!", 0xffff00);
@@ -219,7 +219,7 @@ void ResultScene::Draw()const
 
 			SetDrawBlendMode(DX_BLENDMODE_ALPHA, start_anim_timer * (255 / (START_ANIM_TIME / 2)));
 			DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x999900, TRUE);
-			SetFontSize(64);
+			SetFontSize(96);
 			UserData::DrawStringCenter({ SCREEN_WIDTH / 2 - 1,SCREEN_HEIGHT / 2 - 51 }, "Nice try!", 0xffffff);
 			UserData::DrawStringCenter({ SCREEN_WIDTH / 2 + 1,SCREEN_HEIGHT / 2 - 49 }, "Nice try!", 0xffffff);
 			UserData::DrawStringCenter({ SCREEN_WIDTH / 2   ,SCREEN_HEIGHT / 2 - 50 },  "Nice try!", 0xbbbb00);
@@ -249,31 +249,31 @@ void ResultScene::Draw()const
 		}
 
 		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, bg_color, TRUE);
-		SetFontSize(64);
-		UserData::DrawStringCenter({ SCREEN_WIDTH / 2,50 }, "Result", result_anim_timer % 120 > 60 ? text_color1 : text_color2);
-		SetFontSize(36);
+		SetFontSize(96);
+		UserData::DrawStringCenter({ SCREEN_WIDTH / 2,75 }, "Result", result_anim_timer % 120 > 60 ? text_color1 : text_color2);
+		SetFontSize(54);
 		//タイマーで結果を順番に表示
 		if (result_anim_timer > RESULT_ANIM_TIME / 5)
 		{
-			DrawString(SCREEN_WIDTH / 2 - 120, 250, "Time:", text_color1);
+			DrawString(SCREEN_WIDTH / 2 - 200, 250, "Time:", text_color1);
 			DrawFormatString(SCREEN_WIDTH / 2 + 100 - GetDrawFormatStringWidth("%d", (int)((DEFAULT_TIMELIMIT - UserData::timer) / 60)), 250, text_color1, "%d", (int)((DEFAULT_TIMELIMIT - UserData::timer) / 60));
-			if(DEFAULT_TIMELIMIT - UserData::timer == DEFAULT_TIMELIMIT)DrawString(SCREEN_WIDTH / 2 + 130, 250, "← MAX!!", result_anim_timer % 30 > 15 ? text_color1 : text_color3);
+			if(DEFAULT_TIMELIMIT - UserData::timer == DEFAULT_TIMELIMIT)DrawString(SCREEN_WIDTH / 2 + 140, 250, "← MAX!!", result_anim_timer % 30 > 15 ? text_color1 : text_color3);
 		}
 		if (result_anim_timer > (RESULT_ANIM_TIME / 5) * 2)
 		{
-			DrawString(SCREEN_WIDTH / 2 - 80, 310, "HP:", text_color1);
-			DrawFormatString(SCREEN_WIDTH / 2 + 100 - GetDrawFormatStringWidth("%d", (int)UserData::player_hp), 310, text_color1, "%d", (int)UserData::player_hp);
+			DrawString(SCREEN_WIDTH / 2 - 140, 320, "HP:", text_color1);
+			DrawFormatString(SCREEN_WIDTH / 2 + 100 - GetDrawFormatStringWidth("%d", (int)UserData::player_hp), 320, text_color1, "%d", (int)UserData::player_hp);
 		}
 		if (result_anim_timer > (RESULT_ANIM_TIME / 5) * 3)
 		{
-			UserData::DrawCoin({ SCREEN_WIDTH / 2 - 75, 395 }, 20);
-			DrawString(SCREEN_WIDTH / 2 - 35, 370, ":", text_color1);
-			DrawFormatString(SCREEN_WIDTH / 2 + 100 - GetDrawFormatStringWidth("%d", UserData::coin), 370, text_color1, "%d", UserData::coin);
+			UserData::DrawCoin({ SCREEN_WIDTH / 2 - 105, 425 }, 30);
+			DrawString(SCREEN_WIDTH / 2 - 70, 390, ":", text_color1);
+			DrawFormatString(SCREEN_WIDTH / 2 + 100 - GetDrawFormatStringWidth("%d", UserData::coin), 390, text_color1, "%d", UserData::coin);
 		}
 
 		if (result_anim_timer > RESULT_ANIM_TIME)
 		{
-			UserData::DrawButtonImage({ SCREEN_WIDTH / 2,SCREEN_HEIGHT - 30 }, XINPUT_BUTTON_A, 60);
+			UserData::DrawButtonImage({ SCREEN_WIDTH / 2,SCREEN_HEIGHT - 60 }, XINPUT_BUTTON_A, 90);
 		}
 		break;
 	case DispScene::dBonusPoint:
@@ -293,18 +293,18 @@ void ResultScene::Draw()const
 		}
 
 		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, bg_color, TRUE);
-		SetFontSize(64);
+		SetFontSize(96);
 		UserData::DrawStringCenter({ SCREEN_WIDTH / 2,50 }, "Bonus!!", bonus_anim_timer % 30 > 15 ? text_color1 : text_color3);
-		SetFontSize(36);			
+		SetFontSize(54);			
 
-		DrawString(SCREEN_WIDTH / 2 - 120, 250, "Time:", text_color1);
+		DrawString(SCREEN_WIDTH / 2 - 200, 250, "Time:", text_color1);
 		DrawFormatString(SCREEN_WIDTH / 2 + 100 - GetDrawFormatStringWidth("%d", (int)((DEFAULT_TIMELIMIT - UserData::timer) / 60)), 250, text_color1, "%d", (int)((DEFAULT_TIMELIMIT - UserData::timer) / 60));
 
-		DrawString(SCREEN_WIDTH / 2 - 80, 310, "HP:", text_color1);
+		DrawString(SCREEN_WIDTH / 2 - 140, 320, "HP:", text_color1);
 		DrawFormatString(SCREEN_WIDTH / 2 + 100 - GetDrawFormatStringWidth("%d", (int)UserData::player_hp), 310, text_color1, "%d", (int)UserData::player_hp);
 
-		UserData::DrawCoin({ SCREEN_WIDTH / 2 - 75, 395 }, 20);
-		DrawString(SCREEN_WIDTH / 2 - 35, 370, ":", text_color1);
+		UserData::DrawCoin({ SCREEN_WIDTH / 2 - 105, 395 }, 30);
+		DrawString(SCREEN_WIDTH / 2 - 70, 390, ":", text_color1);
 		DrawFormatString(SCREEN_WIDTH / 2 + 100 - GetDrawFormatStringWidth("%d", bonus_anim_timer >= BONUS_ANIM_TIME - SKIP_TIME ? UserData::coin : add_anim_coin), 370, text_color1, "%d", bonus_anim_timer >= BONUS_ANIM_TIME - SKIP_TIME ? UserData::coin : add_anim_coin);
 
 		//ボーナス加算描画
@@ -316,17 +316,17 @@ void ResultScene::Draw()const
 		if (bonus_anim_timer > (BONUS_ANIM_TIME / 5)*2)
 		{
 			DrawFormatString(SCREEN_WIDTH / 2 + 130, 310, 0xffbb00, "=    ×%d", (int)UserData::player_hp * 10);
-			UserData::DrawCoin({ SCREEN_WIDTH / 2 + 175, 330 }, 20);
+			UserData::DrawCoin({ SCREEN_WIDTH / 2 + 175, 330 }, 30);
 		}
 		if (bonus_anim_timer > (BONUS_ANIM_TIME / 5) * 3)
 		{
-			SetFontSize(48);
+			SetFontSize(72);
 			DrawFormatString(SCREEN_WIDTH / 2 + 130, 365, bonus_anim_timer % 30 > 15 ? 0xffbb00 : 0xff0000, "+    ×%d", (int)UserData::player_hp * 10 + (int)((DEFAULT_TIMELIMIT - UserData::timer) / 60));
-			UserData::DrawCoin({ SCREEN_WIDTH / 2 + 200, 390 }, 30);
+			UserData::DrawCoin({ SCREEN_WIDTH / 2 + 200, 390 }, 45);
 		}
 		if (bonus_anim_timer > BONUS_ANIM_TIME)
 		{
-			UserData::DrawButtonImage({ SCREEN_WIDTH / 2,SCREEN_HEIGHT - 30 }, XINPUT_BUTTON_A, 60);
+			UserData::DrawButtonImage({ SCREEN_WIDTH / 2,SCREEN_HEIGHT -60 }, XINPUT_BUTTON_A, 90);
 		}
 		break;
 	case DispScene::dGraphDisp:
@@ -352,12 +352,12 @@ void ResultScene::Draw()const
 			graph_loc.x + GRAPH_WIDTH, 
 			graph_loc.y + GRAPH_HEIGHT,
 			0xffffff, TRUE);
-		SetFontSize(18);
+		SetFontSize(27);
 		//グリッド
-		for (int x = 0; x <= GRAPH_WIDTH; x+= (graph_space*15))
+		for (int x = 0; x <= GRAPH_WIDTH; x+= (graph_space*20))
 		{
 			//60秒区切りでグリッド色を変更＆数字を描画
-			if (x % ((int)(graph_space * 15) * 4) == 0)
+			if (x % ((int)(graph_space * 20) * 4) == 0)
 			{
 				DrawLineAA(graph_loc.x + x,
 					graph_loc.y,
