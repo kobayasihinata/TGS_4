@@ -54,7 +54,7 @@ void InGameScene::Initialize()
 	guide_local_loc = 0;
 	guide_size = 95;
 	//チュートリアルが完了していないなら初期コインは0枚、しているなら20枚
-	UserData::coin = tutorial->GetBasicTuto() ? 50 : 0;
+	UserData::coin = tutorial->GetBasicTuto() ? 2500 : 0;
 
 	//オブジェクト管理クラス生成
 	objects = new ObjectManager();

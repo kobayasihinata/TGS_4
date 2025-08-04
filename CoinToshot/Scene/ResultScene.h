@@ -17,8 +17,8 @@ using namespace std;
 #define GRAVITY 1	//一フレーム間に加算される重力量
 #define DECELERATION 0.1f	//減速率
 
-#define GRAPH_WIDTH 1000	//スランプグラフの幅
-#define GRAPH_HEIGHT 500	//スランプグラフの高さ
+#define GRAPH_WIDTH 1500	//スランプグラフの幅
+#define GRAPH_HEIGHT 700	//スランプグラフの高さ
 
 struct StringData {
 	char text;		//表示文字
@@ -69,6 +69,7 @@ private:
 	int start_anim_timer;	//遷移演出時間測定
 	int result_anim_timer;	//リザルト表示演出時間測定
 	int bonus_anim_timer;	//ボーナス点数加算演出時間測定
+	int graph_timer;		//グラフ表示時間
 
 	int add_anim_num;		//加算アニメーション用1フレーム辺りの加算枚数
 	int add_anim_coin;		//加算アニメーション用コイン枚数
