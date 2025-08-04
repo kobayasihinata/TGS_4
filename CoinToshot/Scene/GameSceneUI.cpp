@@ -10,12 +10,12 @@ void GameSceneUI::Initialize()
 	tutorial = Tutorial::Get();
 
 	frame = 0;
-	bullet_image = MakeScreen(200, 150, TRUE);
-	lock_image = MakeScreen(40, 50, TRUE);
+	bullet_image = MakeScreen(300, 225, TRUE);
+	lock_image = MakeScreen(60, 75, TRUE);
 	old_bullet_type = UserData::bullet_type;
 	bullet_change_timer = 0;
-	change_anim_move = 200.f / PLATER_BULLET_CHANGE_CD;
-	player_ui_loc = { SCREEN_WIDTH - 350,0 };
+	change_anim_move = 300.f / PLATER_BULLET_CHANGE_CD;
+	player_ui_loc = { SCREEN_WIDTH - 525,0 };
 	now_coin_num = 0;
 	old_coin_num = 0;
 	first_bonus_timer = 0;
@@ -267,8 +267,8 @@ void GameSceneUI::Draw()const
 			0xffffff, false);
 	}
 
-	Vector2D button_lt = { SCREEN_WIDTH / 2 - 130, 30 };
-	Vector2D button_rt = { SCREEN_WIDTH / 2 + 130, 30 };
+	Vector2D button_lt = { SCREEN_WIDTH / 2 - 195, 45 };
+	Vector2D button_rt = { SCREEN_WIDTH / 2 + 195, 45 };
 	//ボタンを押したら画像を変える
 #if BUTTON_TYPE
 	DrawRotaGraphF(button_lt.x, button_lt.y, 1.f, 0, UserData::button_image[(int)InputPad::OnPressed(XINPUT_BUTTON_LEFT_SHOULDER)][XINPUT_BUTTON_LEFT_SHOULDER], true);
@@ -295,8 +295,8 @@ void GameSceneUI::Draw()const
 	//爆発アニメーション
 	if (!ex_anim_once && UserData::can_bullet_change_flg)
 	{
-		DrawRotaGraphF(SCREEN_WIDTH / 2 - 130, 30, 1.f, 0, ex_anim[now_image], TRUE);
-		DrawRotaGraphF(SCREEN_WIDTH / 2 + 130, 30, 1.f, 0, ex_anim[now_image], TRUE);
+		DrawRotaGraphF(SCREEN_WIDTH / 2 - 195, 30, 1.f, 0, ex_anim[now_image], TRUE);
+		DrawRotaGraphF(SCREEN_WIDTH / 2 + 195, 30, 1.f, 0, ex_anim[now_image], TRUE);
 	}
 
 	//プレイヤーが弾種類UIと被ったら透過する
@@ -307,9 +307,9 @@ void GameSceneUI::Draw()const
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 125);
 	}
 	//弾の種類描画
-	DrawRotaGraph(SCREEN_WIDTH / 2, 75, 1.0f, 0, bullet_image, TRUE);
+	DrawRotaGraph(SCREEN_WIDTH / 2, 112, 1.0f, 0, bullet_image, TRUE);
 
-	SetFontSize(24);
+	SetFontSize(36);
 
 	//ui_dataの描画
 	for (const auto ui_data : ui_data)
@@ -431,14 +431,14 @@ void GameSceneUI::CreateBulletTypeImage()const
 		if (CheckMoveDirection(UserData::bullet_type, old_bullet_type))
 		{
 			//右移動
-			DrawBullet({ change_anim_move * bullet_change_timer - 200, 0 }, UserData::bullet_type);
+			DrawBullet({ change_anim_move * bullet_change_timer - 300, 0 }, UserData::bullet_type);
 			DrawBullet({ change_anim_move * bullet_change_timer, 0 }, old_bullet_type);
 		}
 		else
 		{
 			//左移動
 			DrawBullet({ change_anim_move * -bullet_change_timer, 0 }, old_bullet_type);
-			DrawBullet({ (change_anim_move * -bullet_change_timer) + 200, 0 }, UserData::bullet_type);
+			DrawBullet({ (change_anim_move * -bullet_change_timer) + 300, 0 }, UserData::bullet_type);
 		} 
 	}
 	//変更が無いなら通常の描画
@@ -448,7 +448,7 @@ void GameSceneUI::CreateBulletTypeImage()const
 	}
 
 	//文字大きさ設定
-	SetFontSize(24);
+	SetFontSize(36);
 
 	SetDrawScreen(DX_SCREEN_BACK);
 }
@@ -458,13 +458,13 @@ void GameSceneUI::CreateLockImage()const
 	SetDrawScreen(lock_image);
 	ClearDrawScreen();
 	
-	DrawBox(0, 25, 40, 50, 0xff0000, TRUE);
-	DrawCircle(20, 25, 17, 0xff0000, FALSE);
-	DrawCircle(20, 25, 16, 0xff0000, FALSE);
-	DrawCircle(20, 25, 15, 0xff0000, FALSE);
+	DrawBox(0, 37, 60, 75, 0xff0000, TRUE);
+	DrawCircle(30, 37, 24, 0xff0000, FALSE);
+	DrawCircle(30, 37, 23, 0xff0000, FALSE);
+	DrawCircle(30, 37, 22, 0xff0000, FALSE);
 
-	DrawCircle(20, 35, 5, 0x000000, TRUE);
-	DrawBox(17, 35, 23, 45, 0x000000, TRUE);
+	DrawCircle(30, 40, 5, 0x000000, TRUE);
+	DrawBox(22, 40, 28, 50, 0x000000, TRUE);
 	SetDrawScreen(DX_SCREEN_BACK);
 }
 
@@ -474,11 +474,11 @@ void GameSceneUI::CreateConfettiImage()
 	int color[8] = { 0xff0000,0xffaa00,0xffff00,0xaaff00,0x00ff00,0x00ffff,0x0000ff,0xff00ff };
 	for (int i = 0; i < 8; i++)
 	{
-		confetti_image[i] = MakeScreen(16, 16, FALSE);
+		confetti_image[i] = MakeScreen(24, 24, FALSE);
 		SetDrawScreen(confetti_image[i]);
 		ClearDrawScreen();
 
-		DrawBox(0, 0, 16, 16, color[i], TRUE);
+		DrawBox(0, 0, 24, 24, color[i], TRUE);
 	}
 	SetDrawScreen(DX_SCREEN_BACK);
 }
@@ -489,15 +489,15 @@ void GameSceneUI::DrawBullet(Vector2D _loc, int _type)const
 	int draw_color = pBullet[_type].cost <= UserData::coin ? GetColor(pBullet[_type].color[0], pBullet[_type].color[1], pBullet[_type].color[2]) : 0xaaaa55;
 
 	//弾の種類描画
-	DrawBox(_loc.x, _loc.y, _loc.x + 200, _loc.y + 100, 0x777722, true);
-	DrawBox(_loc.x, _loc.y, _loc.x + 200, _loc.y + 100, draw_color, false);
+	DrawBox(_loc.x, _loc.y, _loc.x + 300, _loc.y + 150, 0x777722, true);
+	DrawBox(_loc.x, _loc.y, _loc.x + 300, _loc.y + 150, draw_color, false);
 
 	SetFontSize(60);
-	DrawFormatString(_loc.x + 100 - GetDrawFormatStringWidth(pBullet[_type].name) / 2, _loc.y, draw_color, "%s", pBullet[_type].name);
+	DrawFormatString(_loc.x + 150 - GetDrawFormatStringWidth(pBullet[_type].name) / 2, _loc.y, draw_color, "%s", pBullet[_type].name);
 
 	SetFontSize(20);
-	UserData::DrawCoin({ _loc.x + 70, _loc.y + 80 }, 15);
-	DrawFormatString(_loc.x + 85, _loc.y + 70, draw_color, " - %d", pBullet[_type].cost);
+	UserData::DrawCoin({ _loc.x + 115, _loc.y + 120 }, 15);
+	DrawFormatString(_loc.x + 127, _loc.y + 115, draw_color, " - %d", pBullet[_type].cost);
 	//DrawFormatString(_loc.x + 90, _loc.y + 70, draw_color, "power:%d", (int)pBullet[_type].damage);
 }
 
@@ -505,20 +505,20 @@ void GameSceneUI::DrawPlayerUI()const
 {
 	int old = GetFontSize();
 
-	SetFontSize(24);
+	SetFontSize(36);
 	int width = GetDrawFormatStringWidth("HP:%d %d %d", (int)(UserData::player_hp)+1, (int)(UserData::timer / 60), UserData::coin);
 	DrawQuadrangle(player_ui_loc.x - width+170, player_ui_loc.y,
-		player_ui_loc.x + 420, player_ui_loc.y,
-		player_ui_loc.x + 370, player_ui_loc.y + 65,
-		player_ui_loc.x - width +190, player_ui_loc.y + 65,
+		player_ui_loc.x + 630, player_ui_loc.y,
+		player_ui_loc.x + 555, player_ui_loc.y + 120,
+		player_ui_loc.x - width +200, player_ui_loc.y + 120,
 		0x333300, TRUE);
 	DrawQuadrangle(player_ui_loc.x - width +180, player_ui_loc.y, 
-		player_ui_loc.x + 400, player_ui_loc.y,
-		player_ui_loc.x + 350, player_ui_loc.y + 70,
-		player_ui_loc.x - width +200, player_ui_loc.y + 70,
+		player_ui_loc.x + 600, player_ui_loc.y,
+		player_ui_loc.x + 525, player_ui_loc.y + 125,
+		player_ui_loc.x - width +210, player_ui_loc.y + 125,
 		0x666600, TRUE);
-	DrawFormatString(player_ui_loc.x - width +200, player_ui_loc.y+15, 0xffffff, "HP:%d", (int)(UserData::player_hp));
-	DrawFormatString(player_ui_loc.x - GetDrawFormatStringWidth("TIME:%d %d", (int)(UserData::timer/60), UserData::coin)+280, player_ui_loc.y+15, 0xffffff, "TIME:%d", (int)(UserData::timer/60));
+	DrawFormatString(player_ui_loc.x - width +350, player_ui_loc.y+22, 0xffffff, "HP:%d", (int)(UserData::player_hp));
+	DrawFormatString(player_ui_loc.x - GetDrawFormatStringWidth("TIME:%d %d", (int)(UserData::timer/60), UserData::coin)+415, player_ui_loc.y+22, 0xffffff, "TIME:%d", (int)(UserData::timer/60));
 	
 	int coin_text_color = 0xffffff;
 	//コイン加算時のアニメーション
@@ -530,9 +530,9 @@ void GameSceneUI::DrawPlayerUI()const
 	}
 	else
 	{
-		if (GetFontSize() != 24)
+		if (GetFontSize() != 36)
 		{
-			SetFontSize(24);
+			SetFontSize(36);
 		}
 	}
 	//新記録なら
@@ -547,33 +547,33 @@ void GameSceneUI::DrawPlayerUI()const
 				break;
 			}
 		}
-		DrawString(SCREEN_WIDTH - GetDrawStringWidth("新記録！", strlen("新記録！")) - 110,
-			player_ui_loc.y + 70, 
+		DrawString(SCREEN_WIDTH - GetDrawStringWidth("新記録！", strlen("新記録！")) - 165,
+			player_ui_loc.y + 105, 
 			"新記録！", 
 			frame % 30 > 15 ?0xff0000: 0xffffff);
-		DrawFormatString(SCREEN_WIDTH - GetDrawStringWidth("新記録！", strlen("新記録！"))-30,
-			player_ui_loc.y + 70,
+		DrawFormatString(SCREEN_WIDTH - GetDrawStringWidth("新記録！", strlen("新記録！"))-45,
+			player_ui_loc.y + 105,
 			frame % 30 > 15 ? 0xff0000 : 0xffffff,
 			"現在%d位!",
 			rank);
 	}
-	UserData::DrawCoin({ player_ui_loc.x - GetDrawFormatStringWidth("×%d", UserData::coin) + 320, 
-		player_ui_loc.y + 30 }, 
-		20);
-	DrawFormatString(player_ui_loc.x - GetDrawFormatStringWidth("×%d", UserData::coin) + 340, 
-		player_ui_loc.y + 15, 
+	UserData::DrawCoin({ player_ui_loc.x - GetDrawFormatStringWidth("×%d", UserData::coin) + 480, 
+		player_ui_loc.y + 45 }, 
+		30);
+	DrawFormatString(player_ui_loc.x - GetDrawFormatStringWidth("×%d", UserData::coin) + 510, 
+		player_ui_loc.y + 22, 
 		coin_text_color,
 		"×%d", 
 		UserData::coin);
 	SetFontSize(old);
 
-	DrawString(50, 10, ": 一時停止", 0x000000);
-	UserData::DrawButtonImage({ 30, 20 }, XINPUT_BUTTON_START, 50);
+	DrawString(75, 15, ": 一時停止", 0x000000);
+	UserData::DrawButtonImage({45, 30 }, XINPUT_BUTTON_START, 75);
 
 	//残り時間１０秒以下なら、カウントダウンを描画する
 	if (UserData::timer < 600 && UserData::timer > 0)
 	{
-		SetFontSize(90 - (UserData::timer % 60 * 1.5f));
+		SetFontSize(120 - (UserData::timer % 60 * 2));
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 - ((UserData::timer % 60) * 6));
 		DrawFormatString(SCREEN_WIDTH / 2 - GetDrawFormatStringWidth("%d", UserData::timer / 60) / 2, SCREEN_HEIGHT / 2 - GetFontSize() / 2 - 100, GetColor(255,(UserData::timer/3),0), "%d", (UserData::timer / 60));
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);

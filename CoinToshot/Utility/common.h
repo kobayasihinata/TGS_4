@@ -2,11 +2,12 @@
 #define DEBUG_SKIP false		//デバッグ用チュートリアルスキップモード
 #define DEBUG_PLAYER false		//クリアと死をすぐ確認したい時用
 #define BUTTON_TYPE false       //操作方法を指示された者に変更したやつ
+#define WINDOW_MODE true		//フルスクリーンかどうか
 
 #define FRAME_RATE 60			//フレームレート
 
-#define SCREEN_WIDTH  1920		//画面横幅
-#define SCREEN_HEIGHT 1080		//画面高さ
+#define SCREEN_WIDTH  (WINDOW_MODE ? 1280 : 1920) 	//画面横幅
+#define SCREEN_HEIGHT (WINDOW_MODE ? 720 : 1080) 	//画面高さ
 
 #define STAGE_SIZE 2000			//ステージの大きさ（中心から上下左右に2000pxずつ)
 

@@ -23,7 +23,7 @@ SceneManager::~SceneManager()
 void SceneManager::Initialize()
 {
 	//ウィンドウモードで起動
-	ChangeWindowMode(FALSE);
+	ChangeWindowMode(WINDOW_MODE);
 
 	//画面サイズの設定
 	SetGraphMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32);
