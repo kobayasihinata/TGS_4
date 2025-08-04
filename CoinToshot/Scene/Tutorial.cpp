@@ -140,44 +140,44 @@ void Tutorial::InitTuto(TutoType _type)
 	{
 	case TutoType::tRule:
 		//テキスト量に合った大きさの箱画像を生成
-		text_box_loc = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 100 };
-		text_box_size = { 300, 100 };
+		text_box_loc = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 150 };
+		text_box_size = { 450, 150 };
 		GenerateTextBox(text_box_size);
 		//表示中にゲームを停止状態に
 		tuto_stop_flg = true;
 		timer = 240;
 		break;
 	case TutoType::tMove:
-		text_box_loc = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 100 };
-		text_box_size = { 300, 100 };
+		text_box_loc = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 150 };
+		text_box_size = { 450, 150 };
 		timer = 240;
 		break;
 	case TutoType::tAim:
 		//テキスト量に合った大きさの箱画像を生成
-		text_box_loc = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 100 };
-		text_box_size = { 300, 100 };
+		text_box_loc = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 150 };
+		text_box_size = { 450, 150 };
 		GenerateTextBox(text_box_size);
 		//表示中にゲームを停止状態に
 		tuto_stop_flg = true;
 		timer = 180;
 		break;
 	case TutoType::tAttack:
-		text_box_loc = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 100 };
-		text_box_size = { 250, 100 };
+		text_box_loc = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 150 };
+		text_box_size = { 375, 150 };
 		GenerateTextBox(text_box_size);
 		tuto_stop_flg = true;
 		timer = 180;
 		break;
 	case TutoType::tBulletChange:
-		text_box_loc = { SCREEN_WIDTH / 2, 150 };
-		text_box_size = { 250, 100 };
+		text_box_loc = { SCREEN_WIDTH / 2, 225 };
+		text_box_size = { 375, 150 };
 		GenerateTextBox(text_box_size);
 		tuto_stop_flg = true;
 		timer = 240;
 		break;
 	case TutoType::tSteal:
-		text_box_loc = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 100 };
-		text_box_size = { 250, 100 };
+		text_box_loc = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 150 };
+		text_box_size = { 375, 150 };
 		GenerateTextBox(text_box_size);
 		tuto_stop_flg = true;
 		timer = 240;
@@ -285,8 +285,8 @@ void Tutorial::GenerateTextBox(Vector2D _size)const
 	//X軸
 	for (int i = 0; i < size.x - (TEXT_BOX*2); i += TEXT_BOX)
 	{
-		DrawRotaGraphF((TEXT_BOX * 1.5) + i,  (TEXT_BOX / 2), 1.0f, 0.f * 3.14f, text_box[1], TRUE);
-		DrawRotaGraphF((TEXT_BOX * 1.5) + i,  size.y - (TEXT_BOX / 2), 1.0f, 1.f * 3.14f, text_box[1], TRUE);
+		DrawRotaGraphF((TEXT_BOX * 1.5) + i -1,  (TEXT_BOX / 2), 1.0f, 0.f * 3.14f, text_box[1], TRUE);
+		DrawRotaGraphF((TEXT_BOX * 1.5) + i -1,  size.y - (TEXT_BOX / 2), 1.0f, 1.f * 3.14f, text_box[1], TRUE);
 	}
 	//y軸
 	for (int i = 0; i < size.y - (TEXT_BOX * 2); i += TEXT_BOX)
@@ -326,13 +326,13 @@ void Tutorial::UpdateTimeTuto()
 
 void Tutorial::DrawRule()const
 {
-	SetFontSize(24);
+	SetFontSize(36);
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha - 150);
 	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, TRUE);
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha);
 	DrawGraph(text_box_loc.x - text_box_size.x / 2, text_box_loc.y - text_box_size.y / 2, generate_text_box, TRUE);
 	UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y - 50 }, "ルール説明", 0xffffff);
-	SetFontSize(32);
+	SetFontSize(48);
 	DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 20, "ひたすらコインを稼げ！", 0xeeeeee);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 }
@@ -350,7 +350,7 @@ void Tutorial::UpdateMove()
 }
 void Tutorial::DrawMove()const
 {
-	SetFontSize(24);
+	SetFontSize(36);
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha);
 	UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y - 50 }, "左スティック：移動", 0xffffff);
 	DrawRotaGraphF(text_box_loc.x, text_box_loc.y + 50, 1.f, 0, UserData::button_image[1][l_stick[stick_anim]], TRUE);
@@ -433,12 +433,12 @@ void Tutorial::DrawAim()const
 	//説明のテキストボックス
 	if (timer > 0)
 	{
-		SetFontSize(24);
+		SetFontSize(36);
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha - 150);
 		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, TRUE);
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha);
 		DrawGraph(text_box_loc.x - text_box_size.x / 2, text_box_loc.y - text_box_size.y / 2, generate_text_box, TRUE);
-		SetFontSize(32);
+		SetFontSize(48);
 		DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 20, "敵に照準を合わせよう", 0xffffff);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 	}
@@ -460,8 +460,8 @@ void Tutorial::DrawAim()const
 				tuto_object->GetLocalLocation().x       + 30,
 				tuto_object->GetLocalLocation().y       - 40,
 				0xffffff, FALSE);
-			DrawFormatString(tuto_object->GetLocalLocation().x + 1, tuto_object->GetLocalLocation().y - 49, 0x000000, "%d", 3 - (aim_timer / 30));
-			DrawFormatString(tuto_object->GetLocalLocation().x, tuto_object->GetLocalLocation().y - 50, 0xff0000, "%d", 3 - (aim_timer / 30));
+			DrawFormatString(tuto_object->GetLocalLocation().x + 1, tuto_object->GetLocalLocation().y - 59, 0x000000, "%d", 3 - (aim_timer / 30));
+			DrawFormatString(tuto_object->GetLocalLocation().x, tuto_object->GetLocalLocation().y - 60, 0xff0000, "%d", 3 - (aim_timer / 30));
 		}
 		//照準合わせ成功描画
 		if (aim_success_flg)
@@ -568,13 +568,13 @@ void Tutorial::DrawAttack()const
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha);
 		DrawGraph(text_box_loc.x - text_box_size.x / 2, text_box_loc.y - text_box_size.y / 2, generate_text_box, TRUE);
 		
-		SetFontSize(32);
-		DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 50, "コインを飛ばして", 0xffffff);
-		DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 20, "    敵を攻撃！", timer % 30 > 15 ? 0xffffff : 0xff0000);
+		SetFontSize(48);
+		DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 60, "コインを飛ばして", 0xffffff);
+		DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 10, "    敵を攻撃！", timer % 30 > 15 ? 0xffffff : 0xff0000);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 		break;
 	case 1:	//実践
-		SetFontSize(24);
+		SetFontSize(36);
 #if BUTTON_TYPE
 		UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y - 50 }, "Bボタン：攻撃", 0xffffff);
 		DrawRotaGraphF(text_box_loc.x - 20, text_box_loc.y + 50, 1.f, 0, UserData::button_image[button_anim][XINPUT_BUTTON_B], TRUE);
@@ -594,7 +594,7 @@ void Tutorial::DrawAttack()const
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha);
 		DrawGraph(text_box_loc.x - text_box_size.x / 2, text_box_loc.y - text_box_size.y / 2, generate_text_box, TRUE);
 		
-		SetFontSize(32);
+		SetFontSize(48);
 		DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 30, "撃って倒して稼げ！", 0xffffff);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 		break;
@@ -612,9 +612,9 @@ void Tutorial::DrawBulletChange()const
 	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, TRUE);
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha);
 	DrawGraph(text_box_loc.x - text_box_size.x / 2, text_box_loc.y - text_box_size.y / 2, generate_text_box, TRUE);
-	SetFontSize(24);
+	SetFontSize(36);
 	DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 40, "弾の変更をアンロック！", 0xffffff);
-	SetFontSize(20);
+	SetFontSize(30);
 #if BUTTON_TYPE
 	UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y + 10 }, "LB、RBで変更", 0xffffff);
 #else
@@ -634,9 +634,9 @@ void Tutorial::DrawSteal()const
 	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, TRUE);
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha);
 	DrawGraph(text_box_loc.x - text_box_size.x / 2, text_box_loc.y - text_box_size.y / 2, generate_text_box, TRUE);
-	SetFontSize(24);
-	DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 40, "コインを盗まれた！", 0xffffff);
-	SetFontSize(20);
+	SetFontSize(36);
+	DrawString(text_box_loc.x - (text_box_size.x / 2) + 15, text_box_loc.y - 40, "コインを盗まれた！", 0xffffff);
+	SetFontSize(30);
 	UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y + 10 }, "倒すと取り返せる", 0xffffff);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 	tuto_object->Draw();

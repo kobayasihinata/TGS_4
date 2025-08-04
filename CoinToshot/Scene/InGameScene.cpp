@@ -291,10 +291,10 @@ void InGameScene::MakeGameMainDraw()
 			DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0xffffff, true);
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
-			SetFontSize(48);
-			DrawBox((SCREEN_WIDTH / 2) - 200, (SCREEN_HEIGHT / 2) - 50, (SCREEN_WIDTH / 2) + 200, (SCREEN_HEIGHT / 2) + 50, 0x000000, true);
-			DrawBox((SCREEN_WIDTH / 2) - 200, (SCREEN_HEIGHT / 2) - 50, (SCREEN_WIDTH / 2) + 200, (SCREEN_HEIGHT / 2) + 50, 0xffffff, false);
-			DrawString((SCREEN_WIDTH / 2) - 150, (SCREEN_HEIGHT / 2) - 30, "GameClear!", 0xffffff);
+			SetFontSize(72);
+			DrawBox((SCREEN_WIDTH / 2) - 300, (SCREEN_HEIGHT / 2) - 75, (SCREEN_WIDTH / 2) + 300, (SCREEN_HEIGHT / 2) + 75, 0x000000, true);
+			DrawBox((SCREEN_WIDTH / 2) - 300, (SCREEN_HEIGHT / 2) - 75, (SCREEN_WIDTH / 2) + 300, (SCREEN_HEIGHT / 2) + 75, 0xffffff, false);
+			DrawString((SCREEN_WIDTH / 2) - 200, (SCREEN_HEIGHT / 2) - 45, "GameClear!", 0xffffff);
 		}
 		else
 		{
@@ -302,10 +302,10 @@ void InGameScene::MakeGameMainDraw()
 			DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, true);
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
-			SetFontSize(48);
-			DrawBox((SCREEN_WIDTH / 2) - 200, (SCREEN_HEIGHT / 2) - 50, (SCREEN_WIDTH / 2) + 200, (SCREEN_HEIGHT / 2) + 50, 0x000000, true);
-			DrawBox((SCREEN_WIDTH / 2) - 200, (SCREEN_HEIGHT / 2) - 50, (SCREEN_WIDTH / 2) + 200, (SCREEN_HEIGHT / 2) + 50, 0xffffff, false);
-			DrawString((SCREEN_WIDTH / 2) - 150, (SCREEN_HEIGHT / 2) - 30, "GameOver...", 0xaaaaaa);
+			SetFontSize(72);
+			DrawBox((SCREEN_WIDTH / 2) - 300, (SCREEN_HEIGHT / 2) - 75, (SCREEN_WIDTH / 2) + 300, (SCREEN_HEIGHT / 2) + 75, 0x000000, true);
+			DrawBox((SCREEN_WIDTH / 2) - 300, (SCREEN_HEIGHT / 2) - 75, (SCREEN_WIDTH / 2) + 300, (SCREEN_HEIGHT / 2) + 75, 0xffffff, false);
+			DrawString((SCREEN_WIDTH / 2) - 200, (SCREEN_HEIGHT / 2) - 45, "GameOver...", 0xaaaaaa);
 		}
 	}
 
@@ -315,6 +315,7 @@ void InGameScene::MakeGameMainDraw()
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
 		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, true);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+		SetFontSize(72);
 		UserData::DrawStringCenter({ SCREEN_WIDTH / 2,SCREEN_HEIGHT / 2 }, "ポーズ中", 0xffffff);
 	}
 	//チュートリアルフラグが立っていたら、チュートリアル描画
@@ -345,7 +346,7 @@ void InGameScene::MakeGameMainDraw()
 	if (bonus_timer > 0)
 	{
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (255.f / TIME_BONUS) * bonus_timer);
-		SetFontSize(48);
+		SetFontSize(72);
 		if (UserData::timer < SECOND_BONUS_TIME)
 		{
 			DrawFormatString(SCREEN_WIDTH / 2 - GetDrawStringWidth("2/3 経過ボーナス！", strlen("2/3 経過ボーナス！")) / 2 + 1,
@@ -373,7 +374,7 @@ void InGameScene::MakeGameMainDraw()
 	//最低保証コインが出た時のメッセージ
 	if (coin_spawn_once)
 	{
-		SetFontSize(12);
+		SetFontSize(18);
 		DrawString((SCREEN_WIDTH / 2) + 100, (SCREEN_HEIGHT / 2) + 20, "あきらめないで！", (int)frame % 30 > 15 ? 0xcccc00 : 0xffff00);
 	}
 
