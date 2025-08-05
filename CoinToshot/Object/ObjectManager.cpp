@@ -288,6 +288,9 @@ void ObjectManager::CreateEffect(int object_type, Vector2D init_location, bool _
 	case EffectList::elHit:
 		create_effect.push_back(EffectInitData{ new Hit(),init_location, _front_flg,_timer, _anim_span });
 		break;
+	case EffectList::elCoin:
+		create_effect.push_back(EffectInitData{ new CoinGet(),init_location, _front_flg,_timer, _anim_span });
+		break;
 	default:
 		break;
 	}

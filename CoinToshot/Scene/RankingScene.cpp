@@ -58,17 +58,18 @@ eSceneType RankingScene::Update(float _delta)
 void RankingScene::Draw()const
 {
 	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x999900, TRUE);
-	UserData::DrawCoin({ SCREEN_WIDTH +100, SCREEN_HEIGHT / 2 }, 600);
-	SetFontSize(32);
+	UserData::DrawCoin({ SCREEN_WIDTH +100, SCREEN_HEIGHT / 2 }, 900);
+	SetFontSize(48);
 
-	UserData::DrawButtonAndString({ SCREEN_WIDTH / 2 - 25,  SCREEN_HEIGHT - 48 }, XINPUT_BUTTON_B, ":タイトルに戻る", 0xffff00);
+	UserData::DrawButtonAndString({ SCREEN_WIDTH / 2 - 25,  SCREEN_HEIGHT - 64 }, XINPUT_BUTTON_B, ":タイトルに戻る", 0xffff00);
 
-	DrawString(181, 161,"No", 0xffffff);
-	DrawString(180, 160,"No", 0x000000);
-	DrawString(261, 161,"Name", 0xffffff);
-	DrawString(260, 160,"Name", 0x000000);
-	DrawString(651, 161,"coin", 0xffffff);
-	DrawString(650, 160,"coin", 0x000000);
+	DrawString(161, 151,"No", 0xffffff);
+	DrawString(160, 150,"No", 0x000000);
+	DrawString(281, 151,"Name", 0xffffff);
+	DrawString(280, 150,"Name", 0x000000);
+	DrawString(661, 151,"Coin", 0xffffff);
+	DrawString(660, 150,"Coin", 0x000000);
+
 	for (int i = 0; i < RANKING_DATA; i++)
 	{
 		if (UserData::my_ranking_data.num == UserData::ranking_data[i].num &&
@@ -76,15 +77,15 @@ void RankingScene::Draw()const
 			UserData::my_ranking_data.coin == UserData::ranking_data[i].coin
 			)
 		{
-			DrawFormatString(180, 200 + i * 40, (int)frame %30 >15 ? 0xffffff:rank_color[i], "%d", UserData::ranking_data[i].num);
-			DrawFormatString(260, 200 + i * 40, (int)frame %30 >15 ? 0xffffff: rank_color[i], "%s", UserData::ranking_data[i].name.c_str());
-			DrawFormatString(650, 200 + i * 40, (int)frame %30 >15 ? 0xffffff: rank_color[i], "%d", UserData::ranking_data[i].coin);
-		}
-		else
-		{
-			DrawFormatString(180, 200 + i * 40, rank_color[i], "%d", UserData::ranking_data[i].num);
-			DrawFormatString(260, 200 + i * 40, rank_color[i], "%s", UserData::ranking_data[i].name.c_str());
-			DrawFormatString(650, 200 + i * 40, rank_color[i], "%d", UserData::ranking_data[i].coin);
+			DrawFormatString(180, 200 + i * 60, (int)frame %30 >15 ? 0xffffff:rank_color[i], "%d", UserData::ranking_data[i].num);
+			DrawFormatString(260, 200 + i * 60, (int)frame %30 >15 ? 0xffffff: rank_color[i], "%s", UserData::ranking_data[i].name.c_str());
+			DrawFormatString(650, 200 + i * 60, (int)frame %30 >15 ? 0xffffff: rank_color[i], "%d", UserData::ranking_data[i].coin);
+		}									
+		else								
+		{									
+			DrawFormatString(180, 200 + i * 60, rank_color[i], "%d", UserData::ranking_data[i].num);
+			DrawFormatString(260, 200 + i * 60, rank_color[i], "%s", UserData::ranking_data[i].name.c_str());
+			DrawFormatString(650, 200 + i * 60, rank_color[i], "%d", UserData::ranking_data[i].coin);
 		}
 	}
 }

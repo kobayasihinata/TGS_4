@@ -26,6 +26,7 @@
 #include "Effect/Explosion.h"
 #include "Effect/Walk.h"
 #include "Effect/Hit.h"
+#include "Effect/CoinGet.h"
 #include "Base/EffectList.h"
 
 class InGameScene;

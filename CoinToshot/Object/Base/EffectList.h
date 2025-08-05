@@ -7,4 +7,5 @@ static enum EffectList {
 	elExplosion,	//”š”­
 	elWalk,			//•às
 	elHit,			//‘ÅŒ‚
+	elCoin,			//ƒRƒCƒ“æ“¾
 };

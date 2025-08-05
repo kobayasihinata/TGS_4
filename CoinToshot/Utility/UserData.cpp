@@ -110,9 +110,10 @@ void UserData::DrawButtonImage(Vector2D _loc, int _button,int _size)
 
 void UserData::DrawButtonAndString(Vector2D _loc, int _button ,const char* _text, int _color)
 {
-	DrawButtonImage(_loc, _button, 50);
-	DrawStringF(_loc.x + 26, _loc.y - 26, _text, 0x000000);
-	DrawStringF(_loc.x + 25, _loc.y - 25, _text, _color);
+	int size = (GetFontSize() * 1.5f);
+	DrawButtonImage(_loc, _button, size);
+	DrawStringF(_loc.x + (size/2), _loc.y - (size/2), _text, 0x000000);
+	DrawStringF(_loc.x + (size/2), _loc.y - (size/2), _text, _color);
 }
 
 void UserData::DrawStringCenter(Vector2D _loc, const char* _text, int _color, int _font)

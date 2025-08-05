@@ -448,6 +448,32 @@ void Player::Control()
 		}
 	}
 
+	//十字キーでの移動
+	if (InputPad::OnPressed(XINPUT_BUTTON_DPAD_UP))
+	{
+		velocity.y = -PLAYER_SPEED;
+		//移動したい方向保存
+		move_velocity.y = velocity.y;
+	}
+	else if (InputPad::OnPressed(XINPUT_BUTTON_DPAD_DOWN))
+	{
+		velocity.y = PLAYER_SPEED;
+		//移動したい方向保存
+		move_velocity.y = velocity.y;
+	}
+	if (InputPad::OnPressed(XINPUT_BUTTON_DPAD_RIGHT))
+	{
+		velocity.x = PLAYER_SPEED;
+		//移動したい方向保存
+		move_velocity.x = velocity.x;
+	}
+	else if (InputPad::OnPressed(XINPUT_BUTTON_DPAD_LEFT))
+	{
+		velocity.x = -PLAYER_SPEED;
+		//移動したい方向保存
+		move_velocity.x = velocity.x;
+	}
+
 	//照準チュートリアルが完了している　もしくは照準チュートリアル中なら右スティックの傾きが一定以上なら角度を変更する
 	if (tutorial->GetTutoNowEnd(TutoType::tAim)&&
 		(fabsf(InputPad::TipRStick(STICKL_X)) > 0.3f || fabsf(InputPad::TipRStick(STICKL_Y)) > 0.3f))

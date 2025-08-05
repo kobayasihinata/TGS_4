@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Object\Effect\CoinGet.cpp" />
     <ClCompile Include="Object\Effect\Explosion.cpp" />
     <ClCompile Include="Object\Effect\Hit.cpp" />
     <ClCompile Include="Object\Effect\Ripples.cpp" />
@@ -182,6 +183,7 @@
     <ClInclude Include="Object\Base\BulletData.h" />
     <ClInclude Include="Object\Base\EffectBase.h" />
     <ClInclude Include="Object\Base\EffectList.h" />
+    <ClInclude Include="Object\Effect\CoinGet.h" />
     <ClInclude Include="Object\Effect\Explosion.h" />
     <ClInclude Include="Object\Effect\Hit.h" />
     <ClInclude Include="Object\Effect\Ripples.h" />

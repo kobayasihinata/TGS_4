@@ -67,9 +67,9 @@ void EndScene::Draw()const
 	int old = GetFontSize();
 	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x999900, TRUE);
 
-	SetFontSize(32);
+	SetFontSize(48);
 	//クレジット描画
-	DrawCledit(400 - frame);
+	DrawCledit(600 - frame);
 
 	DrawBox(0,
 		SCREEN_HEIGHT - 30,
@@ -77,9 +77,9 @@ void EndScene::Draw()const
 		SCREEN_HEIGHT,
 		GetColor(255, 255 - ((255.f / (float)END_TIMER) * frame), 0),
 		TRUE);
-	UserData::DrawButtonAndString({ SCREEN_WIDTH / 2 +250,  SCREEN_HEIGHT-16}, XINPUT_BUTTON_B, ":タイトルに戻る", 0x444400);
+	UserData::DrawButtonAndString({ SCREEN_WIDTH / 2 +250,  SCREEN_HEIGHT-26}, XINPUT_BUTTON_B, ":タイトルに戻る", 0x444400);
 
-	UserData::DrawButtonAndString({ SCREEN_WIDTH / 2 - 350,  SCREEN_HEIGHT-16}, XINPUT_BUTTON_A, ":スキップ", 0x444400);
+	UserData::DrawButtonAndString({ SCREEN_WIDTH / 2 - 350,  SCREEN_HEIGHT-26}, XINPUT_BUTTON_A, ":スキップ", 0x444400);
 	SetFontSize(old);
 }
 
@@ -103,7 +103,7 @@ void EndScene::DrawCledit(float _loc_y)const
 	SetFontSize(size);
 	for (int i = 1; i < IMAGE_LINE_NUM; i++)
 	{
-		UserData::DrawStringCenter({ (float)SCREEN_WIDTH / 2,_loc_y + size * i + 50 }, image_cledit[i], 0xffffff);
+		UserData::DrawStringCenter({ (float)SCREEN_WIDTH / 2,_loc_y + size * i + 80 }, image_cledit[i], 0xffffff);
 	}
 
 	//音声素材表記の文字列を描画
@@ -113,6 +113,6 @@ void EndScene::DrawCledit(float _loc_y)const
 	SetFontSize(size);
 	for (int i = 1; i < SOUND_LINE_NUM; i++)
 	{
-		UserData::DrawStringCenter({ (float)SCREEN_WIDTH / 2,_loc_y + size * i + 50 + shift }, sound_cledit[i], 0xffffff);
+		UserData::DrawStringCenter({ (float)SCREEN_WIDTH / 2,_loc_y + size * i + 80 + shift }, sound_cledit[i], 0xffffff);
 	}
 }

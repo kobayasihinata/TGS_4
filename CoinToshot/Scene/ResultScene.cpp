@@ -19,8 +19,8 @@ ResultScene::ResultScene()
 	add_coin_once = false;
 	disp_se_once = true;
 	graph_loc = { (SCREEN_WIDTH / 2) - (GRAPH_WIDTH / 2),(SCREEN_HEIGHT / 2) - (GRAPH_HEIGHT / 2) };
-	name_string_loc = { 500,70 };
-	key_box_loc = { 400,200 };
+	name_string_loc = { 750,120 };
+	key_box_loc = { 600,250 };
 	current_x = 0;
 	current_y = 0;
 
@@ -518,7 +518,11 @@ eSceneType ResultScene::EnterName()
 	if (InputPad::OnButton(XINPUT_BUTTON_A))
 	{
 		PlaySoundMem(button_se, DX_PLAYTYPE_BACK);
-		CreateMoveString(key[current_y][current_x], { key_box_loc.x + (current_x * 40),key_box_loc.y + (current_y * 40) }, { name_string_loc.x + 150,name_string_loc.y + 25 }, { 400,50 }, true);
+		CreateMoveString(key[current_y][current_x], 
+			{ key_box_loc.x + (current_x * 60),key_box_loc.y + (current_y * 60) }, 
+			{ name_string_loc.x + 100,name_string_loc.y + 25 },
+			{ 700,100 }, 
+			true);
 	}
 
 	//Bボタンを押して一文字消す(現在の入力が0文字より大きいなら)
@@ -563,6 +567,7 @@ eSceneType ResultScene::EnterName()
 			)
 		{
 			if(name.size() < 10)delete_string_data.push_back(string_data);
+		
 			if(string_data.is_add && name.size() < 10)name.push_back(string_data.text);
 		}
 		//画面外に出ても消す
@@ -604,18 +609,18 @@ eSceneType ResultScene::EnterName()
 void ResultScene::EnterNameDraw()const 
 {
 	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x999900, TRUE);
-	SetFontSize(24);
+	SetFontSize(36);
 
-	DrawString(SCREEN_WIDTH / 2+1, 401, ":入力",  0x000000);
-	DrawString(SCREEN_WIDTH / 2,   400, ":入力",  0xffff00);
-	DrawString(SCREEN_WIDTH / 2+1, 441, ":一字消す",0x000000);
-	DrawString(SCREEN_WIDTH / 2, 440, ":一字消す",0xffff00);
-	DrawString(SCREEN_WIDTH / 2+1, 481, ":確定",    0x000000);
-	DrawString(SCREEN_WIDTH / 2, 480, ":確定",    0xffff00);
+	DrawString(SCREEN_WIDTH / 2+1, 601, ":入力",  0x000000);
+	DrawString(SCREEN_WIDTH / 2,   600, ":入力",  0xffff00);
+	DrawString(SCREEN_WIDTH / 2+1, 661, ":一字消す",0x000000);
+	DrawString(SCREEN_WIDTH / 2, 660, ":一字消す",0xffff00);
+	DrawString(SCREEN_WIDTH / 2+1, 721, ":確定",    0x000000);
+	DrawString(SCREEN_WIDTH / 2, 720, ":確定",    0xffff00);
 
-	UserData::DrawButtonImage({ SCREEN_WIDTH / 2 - 40, 420 }, XINPUT_BUTTON_A, 50);
-	UserData::DrawButtonImage({ SCREEN_WIDTH / 2 - 40, 460 }, XINPUT_BUTTON_B, 50);
-	UserData::DrawButtonImage({ SCREEN_WIDTH / 2 - 40, 490 }, XINPUT_BUTTON_START, 50);
+	UserData::DrawButtonImage({ SCREEN_WIDTH / 2 - 40, 620 }, XINPUT_BUTTON_A, 75);
+	UserData::DrawButtonImage({ SCREEN_WIDTH / 2 - 40, 680 }, XINPUT_BUTTON_B, 75);
+	UserData::DrawButtonImage({ SCREEN_WIDTH / 2 - 40, 740 }, XINPUT_BUTTON_START, 75);
 
 	SetFontSize(32);
 	//文字の描画
@@ -626,13 +631,13 @@ void ResultScene::EnterNameDraw()const
 			//選択されている項目の色を変える
 			if (current_x == x && current_y == y)
 			{
-				DrawFormatString(key_box_loc.x+1 + x * 40, key_box_loc.y+1 + y * 40, 0x000000, "%c", key[y][x]);
-				DrawFormatString(key_box_loc.x + x * 40, key_box_loc.y + y * 40, 0xff9900, "%c", key[y][x]);
+				DrawFormatString(key_box_loc.x+1 + x * 60, key_box_loc.y+1 + y * 60, 0x000000, "%c", key[y][x]);
+				DrawFormatString(key_box_loc.x + x * 60, key_box_loc.y + y * 60, 0xff9900, "%c", key[y][x]);
 			}
 			else
 			{
-				DrawFormatString(key_box_loc.x+1 + x * 40, key_box_loc.y + 1 + y * 40, 0x000000, "%c", key[y][x]);
-				DrawFormatString(key_box_loc.x + x * 40, key_box_loc.y + y * 40, 0xffff88, "%c", key[y][x]);
+				DrawFormatString(key_box_loc.x+1 + x * 60, key_box_loc.y + 1 + y * 60, 0x000000, "%c", key[y][x]);
+				DrawFormatString(key_box_loc.x + x * 60, key_box_loc.y + y * 60, 0xffff88, "%c", key[y][x]);
 			}
 		}
 	}
@@ -641,7 +646,7 @@ void ResultScene::EnterNameDraw()const
 	DrawFormatString(name_string_loc.x, name_string_loc.y, 0xffff00, "name:%s", name.c_str());
 	if ((int)frame % 30 > 15)DrawLine(name_string_loc.x + 100, name_string_loc.y + GetFontSize(), name_string_loc.x + 400, name_string_loc.y + GetFontSize(), 0xffff00);
 
-	SetFontSize(32);
+	SetFontSize(48);
 	//ui_dataの描画
 	for (const auto string_data : string_data)
 	{
