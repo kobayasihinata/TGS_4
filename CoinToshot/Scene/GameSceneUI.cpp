@@ -387,8 +387,11 @@ void GameSceneUI::SetUIData(Vector2D _location, string _text, int _text_color, f
 
 	ui_data.push_back(data);
 	//コインログは座標をコイン枚数表示位置に固定
-	data.location = { (float)SCREEN_WIDTH - 10.f - GetDrawNStringWidth(_text.c_str(),_text.size()),40};
-	coin_wait_data.push_back(data);
+	if (_text[0] != 'H')
+	{
+		data.location = { (float)SCREEN_WIDTH - 10.f - GetDrawNStringWidth(_text.c_str(),_text.size()),40};
+		coin_wait_data.push_back(data);
+	}
 }
 
 ConfettiData GameSceneUI::GetConfettiData()const

@@ -36,7 +36,7 @@ void CoinGet::Finalize()
 void CoinGet::Update()
 {
 
-	if (timer % 3 == 0)
+	if (timer % 6 == 0)
 	{
 		manager->CreateEffect(elShine, { location.x + GetRand(30) - 15,location.y + GetRand(30) - 15 }, TRUE, 0xffff00);
 		if (now_anim >= 11)
