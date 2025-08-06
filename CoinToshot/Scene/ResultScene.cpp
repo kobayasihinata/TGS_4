@@ -36,10 +36,9 @@ ResultScene::ResultScene()
 	//クリアかゲームオーバーかでSEを変える
 	disp_se = UserData::is_clear ? rm->GetSounds("Resource/Sounds/Coin/Get.mp3"): rm->GetSounds("Resource/Sounds/bishi.wav");
 	coin_se = rm->GetSounds("Resource/Sounds/Coin/Get.mp3");
-	SetVolumeSoundMem(8000, result_bgm);
 	if (!CheckSoundMem(result_bgm))
 	{
-		PlaySoundMem(result_bgm, DX_PLAYTYPE_LOOP);
+		ResourceManager::rPlaySound(result_bgm, DX_PLAYTYPE_LOOP);
 	}
 }
 
@@ -57,7 +56,7 @@ eSceneType ResultScene::Update(float _delta)
 {
 	if (!disp_se_once)
 	{
-		PlaySoundMem(disp_se, DX_PLAYTYPE_BACK);
+		ResourceManager::rPlaySound(disp_se, DX_PLAYTYPE_BACK);
 		disp_se_once = true;
 	}
 	switch (now_disp)
@@ -71,7 +70,7 @@ eSceneType ResultScene::Update(float _delta)
 			if (start_anim_timer > START_ANIM_TIME)
 			{
 				now_disp = DispScene::dDispResult;
-				PlaySoundMem(button_se, DX_PLAYTYPE_BACK);
+				ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
 			}
 			//終了していなければ演出スキップ
 			else
@@ -98,7 +97,7 @@ eSceneType ResultScene::Update(float _delta)
 			if (result_anim_timer > RESULT_ANIM_TIME)
 			{
 				now_disp = DispScene::dBonusPoint;
-				PlaySoundMem(button_se, DX_PLAYTYPE_BACK);
+				ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
 			}
 			//終了していなければ演出スキップ
 			else
@@ -130,7 +129,7 @@ eSceneType ResultScene::Update(float _delta)
 				add_anim_coin += add_anim_num;
 				if (bonus_anim_timer % 3 == 0)
 				{
-					PlaySoundMem(coin_se, DX_PLAYTYPE_BACK);
+					ResourceManager::rPlaySound(coin_se, DX_PLAYTYPE_BACK);
 				}
 			}
 
@@ -141,7 +140,7 @@ eSceneType ResultScene::Update(float _delta)
 			//演出が終了していたら遷移
 			if (bonus_anim_timer > BONUS_ANIM_TIME)
 			{
-				PlaySoundMem(button_se, DX_PLAYTYPE_BACK);
+				ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
 				now_disp = DispScene::dGraphDisp;
 			}
 			//終了していなければ演出スキップ
@@ -158,7 +157,7 @@ eSceneType ResultScene::Update(float _delta)
 		//Aボタンを押したとき
 		if (InputPad::OnButton(XINPUT_BUTTON_A))
 		{
-			PlaySoundMem(button_se, DX_PLAYTYPE_BACK);
+			ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
 			//演出が終了していれば遷移
 			if (graph_timer > 120)
 			{
@@ -475,7 +474,7 @@ eSceneType ResultScene::EnterName()
 				current_x = KEY_WIDTH - 1;
 			}
 		} while (key[current_y][current_x] == ' ');
-		PlaySoundMem(cursor_se, DX_PLAYTYPE_BACK);
+		ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 	}
 	if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_RIGHT) || InputPad::GetPressedButton(L_STICK_RIGHT))
 	{
@@ -487,7 +486,7 @@ eSceneType ResultScene::EnterName()
 				current_x = 0;
 			}
 		} while (key[current_y][current_x] == ' ');
-		PlaySoundMem(cursor_se, DX_PLAYTYPE_BACK);
+		ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 	}
 	if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_UP) || InputPad::GetPressedButton(L_STICK_UP))
 	{
@@ -499,7 +498,7 @@ eSceneType ResultScene::EnterName()
 				current_y = KEY_HEIGHT - 1;
 			}
 		} while (key[current_y][current_x] == ' ');
-		PlaySoundMem(cursor_se, DX_PLAYTYPE_BACK);
+		ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 	}
 	if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_DOWN) || InputPad::GetPressedButton(L_STICK_DOWN))
 	{
@@ -511,13 +510,13 @@ eSceneType ResultScene::EnterName()
 				current_y = 0;
 			}
 		} while (key[current_y][current_x] == ' ');
-		PlaySoundMem(cursor_se, DX_PLAYTYPE_BACK);
+		ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 	}
 
 	//Aボタンを押して文字の追加(現在の入力と画面内の文字の合計が10文字未満なら)
 	if (InputPad::OnButton(XINPUT_BUTTON_A))
 	{
-		PlaySoundMem(button_se, DX_PLAYTYPE_BACK);
+		ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
 		CreateMoveString(key[current_y][current_x], 
 			{ key_box_loc.x + (current_x * 60),key_box_loc.y + (current_y * 60) }, 
 			{ name_string_loc.x + 100,name_string_loc.y + 25 },
@@ -538,7 +537,7 @@ eSceneType ResultScene::EnterName()
 		}
 		CreateMoveString(t, { name_string_loc.x + 80 + size,name_string_loc.y }, { SCREEN_WIDTH/2,SCREEN_HEIGHT }, {SCREEN_WIDTH,100},false, { (float)GetRand(10) - 5,-5 });
 		name.erase(name.end()-1);
-		PlaySoundMem(erase_se, DX_PLAYTYPE_BACK);
+		ResourceManager::rPlaySound(erase_se, DX_PLAYTYPE_BACK);
 	}
 
 	//STARTボタンで入力終了(一文字以上入力されているなら)
@@ -549,7 +548,7 @@ eSceneType ResultScene::EnterName()
 		UserData::ranking_data[9] = UserData::my_ranking_data;
 		SortRanking();
 		UserData::WriteRankingData();
-		PlaySoundMem(button_se, DX_PLAYTYPE_BACK);
+		ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
 		return eSceneType::eRanking;
 	}
 

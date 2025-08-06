@@ -73,7 +73,7 @@ public:
 	const int& GetSounds(const char* file_name);
 
 	//‰¹Œ¹‚ÌÄ¶
-	static void rPlaySound(int _sound_path);
+	static void rPlaySound(int _sound_path,int _play_type,int _reset = 1);
 
 	/**
 	* ‘S‚Ä‚Ì‰æ‘œ‚Æ‰¹Œ¹‚ğíœ‚·‚é

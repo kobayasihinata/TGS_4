@@ -87,11 +87,6 @@ void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init
 	death_se = rm->GetSounds("Resource/Sounds/explsion_big.mp3");
 	bullet_change_se = rm->GetSounds("Resource/Sounds/メッセージ表示音2.mp3");
 	danger_se = rm->GetSounds("Resource/Sounds/Direction/警告音2.mp3");
-
-	//音量調節
-	SetVolumeSoundMem(9500, walk_se);
-	//PlaySoundMem(cursor_se, DX_PLAYTYPE_BACK);
-
 }
 
 /// <summary>
@@ -207,7 +202,7 @@ void Player::Update()
 		(image_num == 4 || image_num == 10)&&
 		!CheckSoundMem(walk_se))
 	{
-		PlaySoundMem(walk_se, DX_PLAYTYPE_BACK);
+		ResourceManager::rPlaySound(walk_se, DX_PLAYTYPE_BACK);
 		manager->CreateEffect(elWalk, { location.x,location.y+(box_size.y/2) }, FALSE, 0xffffff, velocity.x > 0 ? FALSE : TRUE, 30);
 	}
 
@@ -222,7 +217,7 @@ void Player::Update()
 	{
 		if (!danger_once)
 		{
-			PlaySoundMem(danger_se, DX_PLAYTYPE_BACK);
+			ResourceManager::rPlaySound(danger_se, DX_PLAYTYPE_BACK);
 			danger_once = true;
 		}
 	}
@@ -251,7 +246,7 @@ void Player::Update()
 				rand);
 			drop_coin_count++;
 			//死亡SE再生
-			PlaySoundMem(death_se, DX_PLAYTYPE_BACK);
+			ResourceManager::rPlaySound(death_se, DX_PLAYTYPE_BACK);
 			//爆発エフェクト
 			manager->CreateEffect(elExplosion, { location.x + (GetRand(100) - 50),location.y + (GetRand(100) - 50) });
 		}
@@ -271,7 +266,7 @@ void Player::Update()
 					rand);
 			}
 			//死亡SE再生
-			PlaySoundMem(death_se, DX_PLAYTYPE_BACK);
+			ResourceManager::rPlaySound(death_se, DX_PLAYTYPE_BACK);
 		}
 		if (death_timer <= 0)
 		{
@@ -488,31 +483,27 @@ void Player::Control()
 		//角度が一定以上変更されていたらSEを鳴らす
 		if (fabsf(old_shot_rad - shot_rad) > 0.01f && frame % 4==0)
 		{
-			PlaySoundMem(cursor_se, DX_PLAYTYPE_BACK);
+			ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 		}
 	}
 
 	//攻撃チュートリアルが完了している　もしくは攻撃チュートリアル中ならコイン消費で弾を発射する
-#if BUTTON_TYPE
+
 	if (tutorial->GetTutoNowEnd(TutoType::tAttack) &&
-		InputPad::OnButton(XINPUT_BUTTON_B))
-#else
-	if (tutorial->GetTutoNowEnd(TutoType::tAttack) &&
-		(InputPad::OnButton(XINPUT_BUTTON_LEFT_SHOULDER) || InputPad::OnButton(XINPUT_BUTTON_RIGHT_SHOULDER)))
-#endif // BUTTON_TYPE
+		UserData::CheckBulletButton())
 	{
 		if (UserData::coin >= pBullet[UserData::bullet_type].cost)
 		{
 			ShotBullet();
 			UserData::coin -= pBullet[UserData::bullet_type].cost;
-			PlaySoundMem(shot_se, DX_PLAYTYPE_BACK);
+			ResourceManager::rPlaySound(shot_se, DX_PLAYTYPE_BACK);
 			std::string s = "-" + std::to_string(pBullet[UserData::bullet_type].cost);
 			ingame->CreatePopUp(this->location, s, 0xff0000, -1);
 		}
 		//発射失敗SE
 		else
 		{
-			PlaySoundMem(not_shoot_se, DX_PLAYTYPE_BACK);
+			ResourceManager::rPlaySound(not_shoot_se, DX_PLAYTYPE_BACK);
 		}
 	}
 
@@ -520,11 +511,7 @@ void Player::Control()
 	if (UserData::can_bullet_change_flg && bullet_change_cd <= 0)
 	{
 		//弾の種類を変える
-#if BUTTON_TYPE
-		if (InputPad::OnPressed(XINPUT_BUTTON_LEFT_SHOULDER))
-#else
-		if (InputPad::OnPressed(L_TRIGGER))
-#endif // BUTTON_TYPE
+		if (UserData::CheckBulletChangeButtonLeft())
 		{
 			if (--UserData::bullet_type < 0)
 			{
@@ -533,15 +520,10 @@ void Player::Control()
 			bullet_change_cd = PLATER_BULLET_CHANGE_CD;
 			if (!CheckSoundMem(bullet_change_se))
 			{
-				PlaySoundMem(bullet_change_se, DX_PLAYTYPE_BACK);
+				ResourceManager::rPlaySound(bullet_change_se, DX_PLAYTYPE_BACK);
 			}
 		}
-			//弾の種類を変える
-#if BUTTON_TYPE
-		else if (InputPad::OnPressed(XINPUT_BUTTON_RIGHT_SHOULDER))
-#else
-		else if (InputPad::OnPressed(R_TRIGGER))
-#endif // BUTTON_TYPE
+		else if (UserData::CheckBulletChangeButtonRight())
 		{
 			if (++UserData::bullet_type > BULLET_NUM - 1)
 			{
@@ -550,7 +532,7 @@ void Player::Control()
 			bullet_change_cd = PLATER_BULLET_CHANGE_CD;
 			if (!CheckSoundMem(bullet_change_se))
 			{
-				PlaySoundMem(bullet_change_se, DX_PLAYTYPE_BACK);
+				ResourceManager::rPlaySound(bullet_change_se, DX_PLAYTYPE_BACK);
 			}
 		}
 		else

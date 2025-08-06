@@ -162,7 +162,7 @@ void Enemy3::Update()
 			//エフェクト
 			manager->CreateEffect(elExplosion, this->location);
 			//SE再生
-			PlaySoundMem(death_se, DX_PLAYTYPE_BACK);
+			ResourceManager::rPlaySound(death_se, DX_PLAYTYPE_BACK);
 
 			//レア個体ならアイテム生成
 			if (rare_flg)

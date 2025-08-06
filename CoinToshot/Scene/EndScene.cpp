@@ -36,7 +36,7 @@ eSceneType EndScene::Update(float _delta)
 	//Bボタンでタイトルに戻る
 	if (InputPad::OnButton(XINPUT_BUTTON_B))
 	{
-		PlaySoundMem(button_se, DX_PLAYTYPE_BACK);
+		ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
 		return eSceneType::eTitle;
 	}
 	//Aボタンでカウントを早める

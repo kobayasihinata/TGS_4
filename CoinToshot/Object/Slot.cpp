@@ -101,7 +101,7 @@ void Slot::Update()
 		if (!bonus_se_play_once)
 		{
 			//SEÇçƒê∂
-			PlaySoundMem(bonus_se, DX_PLAYTYPE_BACK);
+			ResourceManager::rPlaySound(bonus_se, DX_PLAYTYPE_BACK);
 			bonus_se_play_once = true;
 		}
 		//ÉÅÉ_ÉãÇ∆ìØéûÇ…çUåÇÇ‡èoÇµÇƒé¸àÕÇÃìGÇàÍë|ÇµÇΩÇ¢
@@ -228,7 +228,7 @@ void Slot::Hit(ObjectBase* hit_object)
 		can_stop = true;
 		bet_once = false;
 		//SEÇçƒê∂
-		PlaySoundMem(reel_se, DX_PLAYTYPE_BACK);
+		ResourceManager::rPlaySound(reel_se, DX_PLAYTYPE_BACK);
 	}
 
 	//ìGÇ™êGÇÍÇΩÇÁíeÇ©ÇÍÇÈ
@@ -277,7 +277,7 @@ void Slot::AutoPlay()
 					reel[0] = now_reel[0];
 				}
 				//SEÇçƒê∂
-				PlaySoundMem(button_se, DX_PLAYTYPE_BACK);
+				ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
 			}
 		if (reel_wait >= (REEL_WAIT / 4) * 2 && reel[1] == -1)
 			{
@@ -291,7 +291,7 @@ void Slot::AutoPlay()
 					reel[1] = now_reel[1];
 				}
 				//SEÇçƒê∂
-				PlaySoundMem(button_se, DX_PLAYTYPE_BACK);
+				ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
 			}
 		if (reel_wait >= (REEL_WAIT / 4) * 3 && reel[2] == -1)
 			{
@@ -305,7 +305,7 @@ void Slot::AutoPlay()
 					reel[2] = now_reel[2];
 				}
 				//SEÇçƒê∂
-				PlaySoundMem(button_se, DX_PLAYTYPE_BACK);
+				ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
 			}
 	}
 
@@ -377,7 +377,7 @@ void Slot::BonusStop()
 					}
 				}
 				//SEÇçƒê∂
-				PlaySoundMem(button_se, DX_PLAYTYPE_BACK);
+				ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
 			}
 		if (CheckButton(XINPUT_BUTTON_Y) && InputPad::OnButton(XINPUT_BUTTON_Y) && reel[1] == -1)
 			{
@@ -396,7 +396,7 @@ void Slot::BonusStop()
 					}
 				}
 				//SEÇçƒê∂
-				PlaySoundMem(button_se, DX_PLAYTYPE_BACK);
+				ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
 			}
 		if (CheckButton(XINPUT_BUTTON_B) && InputPad::OnButton(XINPUT_BUTTON_B) && reel[2] == -1)
 			{
@@ -415,7 +415,7 @@ void Slot::BonusStop()
 					}
 				}
 				//SEÇçƒê∂
-				PlaySoundMem(button_se, DX_PLAYTYPE_BACK);
+				ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
 			}
 	}
 

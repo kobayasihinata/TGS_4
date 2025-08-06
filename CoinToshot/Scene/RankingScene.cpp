@@ -11,10 +11,9 @@ RankingScene::RankingScene()
 	ResourceManager* rm = ResourceManager::GetInstance();
 	button_se = rm->GetSounds("Resource/Sounds/pop.wav");
 	ranking_bgm = rm->GetSounds("Resource/Sounds/BGM/Sweet_smelling_flower.mp3");
-	SetVolumeSoundMem(8000, ranking_bgm);
 	if (!CheckSoundMem(ranking_bgm))
 	{
-		PlaySoundMem(ranking_bgm,DX_PLAYTYPE_BACK,TRUE);
+		ResourceManager::rPlaySound(ranking_bgm,DX_PLAYTYPE_BACK,TRUE);
 	}
 }
 
@@ -37,7 +36,7 @@ eSceneType RankingScene::Update(float _delta)
 	//Bボタンでタイトルに戻る
 	if (InputPad::OnButton(XINPUT_BUTTON_B))
 	{
-		PlaySoundMem(button_se, DX_PLAYTYPE_BACK);
+		ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
 		return eSceneType::eTitle;
 	}
 

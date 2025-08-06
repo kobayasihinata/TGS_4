@@ -25,11 +25,10 @@ TitleScene::TitleScene()
 	cursor_se = rm->GetSounds("Resource/Sounds/cursor.mp3");
 	enter_se = rm->GetSounds("Resource/Sounds/Coin/Get.mp3");
 	//BGM読み込み
-	title_bgm = rm->GetSounds("Resource/Sounds/BGM/Colorful_Cheerful_Jelly_Beans_2.mp3");
-	SetVolumeSoundMem(8000, title_bgm);
+	title_bgm = rm->GetSounds("Resource/Sounds/BGM/Colorful_Cheerful_Jelly_Beans.mp3");
 	if (!CheckSoundMem(title_bgm))
 	{
-		PlaySoundMem(title_bgm, DX_PLAYTYPE_LOOP);
+		ResourceManager::rPlaySound(title_bgm, DX_PLAYTYPE_LOOP);
 	}
 }
 
@@ -59,7 +58,7 @@ eSceneType TitleScene::Update(float _delta)
 				{
 					current_num = 0;
 				}
-				ResourceManager::rPlaySound(cursor_se/*DX_PLAYTYPE_BACK*/);
+				ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 			}
 			//上入力で項目上移動
 			if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_UP) || InputPad::GetPressedButton(L_STICK_UP))
@@ -68,12 +67,12 @@ eSceneType TitleScene::Update(float _delta)
 				{
 					current_num = ITEM_NUM - 1;
 				}
-				ResourceManager::rPlaySound(cursor_se/*DX_PLAYTYPE_BACK*/);
+				ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 			}
 			//Aボタンで決定
 			if (InputPad::OnButton(XINPUT_BUTTON_A))
 			{
-				ResourceManager::rPlaySound(enter_se/*DX_PLAYTYPE_BACK*/);
+				ResourceManager::rPlaySound(enter_se, DX_PLAYTYPE_BACK);
 				switch (current_num)
 				{
 				case TitleItem::tGameMain:
@@ -116,7 +115,7 @@ eSceneType TitleScene::Update(float _delta)
 				{
 					tuto_current_num = 0;
 				}
-				PlaySoundMem(cursor_se, DX_PLAYTYPE_BACK);
+				ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 			}
 			//左入力で項目左移動
 			if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_LEFT) || InputPad::GetPressedButton(L_STICK_LEFT))
@@ -125,12 +124,12 @@ eSceneType TitleScene::Update(float _delta)
 				{
 					tuto_current_num = 1;
 				}
-				PlaySoundMem(cursor_se, DX_PLAYTYPE_BACK);
+				ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 			}
 			//Aボタンで決定
 			if (InputPad::OnButton(XINPUT_BUTTON_A))
 			{
-				PlaySoundMem(enter_se, DX_PLAYTYPE_BACK);
+				ResourceManager::rPlaySound(enter_se, DX_PLAYTYPE_BACK);
 				switch (tuto_current_num)
 				{
 				case 0:

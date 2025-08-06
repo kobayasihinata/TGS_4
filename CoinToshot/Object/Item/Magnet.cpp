@@ -61,7 +61,7 @@ void Magnet::Hit(ObjectBase* hit_object)
 	{
 		UserData::attraction_timer += COIN_ATTRACTON_TIMER;
 		manager->DeleteObject(this);
-		PlaySoundMem(magnet_se, DX_PLAYTYPE_BACK);
+		ResourceManager::rPlaySound(magnet_se, DX_PLAYTYPE_BACK);
 	}
 }
 

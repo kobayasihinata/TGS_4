@@ -401,7 +401,7 @@ void Tutorial::UpdateAim()
 			}
 			if (!CheckSoundMem(charge_se))
 			{
-				PlaySoundMem(charge_se, DX_PLAYTYPE_BACK);
+				ResourceManager::rPlaySound(charge_se, DX_PLAYTYPE_BACK);
 			}
 		}
 		//照準がずれたらリセット
@@ -460,8 +460,8 @@ void Tutorial::DrawAim()const
 				tuto_object->GetLocalLocation().x       + 30,
 				tuto_object->GetLocalLocation().y       - 40,
 				0xffffff, FALSE);
-			DrawFormatString(tuto_object->GetLocalLocation().x + 1, tuto_object->GetLocalLocation().y - 59, 0x000000, "%d", 3 - (aim_timer / 30));
-			DrawFormatString(tuto_object->GetLocalLocation().x, tuto_object->GetLocalLocation().y - 60, 0xff0000, "%d", 3 - (aim_timer / 30));
+			DrawFormatString(tuto_object->GetLocalLocation().x + 1, tuto_object->GetLocalLocation().y - 79, 0x000000, "%d", 3 - (aim_timer / 30));
+			DrawFormatString(tuto_object->GetLocalLocation().x, tuto_object->GetLocalLocation().y - 80, 0xff0000, "%d", 3 - (aim_timer / 30));
 		}
 		//照準合わせ成功描画
 		if (aim_success_flg)
@@ -476,7 +476,7 @@ void Tutorial::DrawAim()const
 				tuto_object->GetLocalLocation().x + 30,
 				tuto_object->GetLocalLocation().y - 40,
 				0xffffff, FALSE);
-			DrawString(tuto_object->GetLocalLocation().x - 30, tuto_object->GetLocalLocation().y - 70, "nice!", aim_success_timer % 30 > 15 ? 0xaaaa00 : 0xffff00);
+			DrawString(tuto_object->GetLocalLocation().x - 30, tuto_object->GetLocalLocation().y - 80, "nice!", aim_success_timer % 30 > 15 ? 0xaaaa00 : 0xffff00);
 		}
 	}
 }
@@ -575,14 +575,16 @@ void Tutorial::DrawAttack()const
 		break;
 	case 1:	//実践
 		SetFontSize(36);
-#if BUTTON_TYPE
-		UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y - 50 }, "Bボタン：攻撃", 0xffffff);
-		DrawRotaGraphF(text_box_loc.x - 20, text_box_loc.y + 50, 1.f, 0, UserData::button_image[button_anim][XINPUT_BUTTON_B], TRUE);
-#else
-		UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y - 50 }, "LB、RBボタン：攻撃", 0xffffff);
-		DrawRotaGraphF(text_box_loc.x - 40, text_box_loc.y + 50, 1.f, 0, UserData::button_image[button_anim][XINPUT_BUTTON_LEFT_SHOULDER], TRUE);
-		DrawRotaGraphF(text_box_loc.x + 40, text_box_loc.y + 50, 1.f, 0, UserData::button_image[button_anim][XINPUT_BUTTON_RIGHT_SHOULDER], TRUE);
-#endif // BUTTON_TYPE
+		if (UserData::control_type == 0) {
+			UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y - 50 }, "LB、RBボタン：攻撃", 0xffffff);
+			DrawRotaGraphF(text_box_loc.x - 40, text_box_loc.y + 50, 1.f, 0, UserData::button_image[button_anim][XINPUT_BUTTON_LEFT_SHOULDER], TRUE);
+			DrawRotaGraphF(text_box_loc.x + 40, text_box_loc.y + 50, 1.f, 0, UserData::button_image[button_anim][XINPUT_BUTTON_RIGHT_SHOULDER], TRUE);
+		}
+		else if (UserData::control_type == 1)
+		{
+			UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y - 50 }, "Bボタン：攻撃", 0xffffff);
+			DrawRotaGraphF(text_box_loc.x - 20, text_box_loc.y + 50, 1.f, 0, UserData::button_image[button_anim][XINPUT_BUTTON_B], TRUE);
+		}
 
 		break;
 	case 2:	//成功描画手順
@@ -615,11 +617,14 @@ void Tutorial::DrawBulletChange()const
 	SetFontSize(36);
 	DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 40, "弾の変更をアンロック！", 0xffffff);
 	SetFontSize(30);
-#if BUTTON_TYPE
-	UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y + 10 }, "LB、RBで変更", 0xffffff);
-#else
-	UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y + 10 }, "左右トリガーで変更", 0xffffff);
-#endif // BUTTON_TYPE
+	if (UserData::control_type == 0) 
+	{
+		UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y + 10 }, "左右トリガーで変更", 0xffffff);
+	}
+	else if (UserData::control_type == 1)
+	{
+		UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y + 10 }, "LB、RBで変更", 0xffffff);
+	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 }
 

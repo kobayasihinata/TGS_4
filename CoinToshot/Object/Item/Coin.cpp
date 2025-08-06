@@ -142,7 +142,7 @@ void Coin::Hit(ObjectBase* hit_object)
 		ingame->CreatePopUp(this->location, s,0xffff33);
 
 		manager->DeleteObject(this);
-		PlaySoundMem(get_se, DX_PLAYTYPE_BACK);
+		ResourceManager::rPlaySound(get_se, DX_PLAYTYPE_BACK);
 		//for (int i = 0; i < 6; i++)
 		//{
 		//	manager->CreateEffect(elShine, { location.x + GetRand((int)radius) - (radius / 2),location.y + GetRand((int)radius) - (radius / 2) }, TRUE, 0xffff00);

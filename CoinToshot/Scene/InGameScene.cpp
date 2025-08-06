@@ -84,9 +84,8 @@ void InGameScene::Initialize()
 	game_over_se = rm->GetSounds("Resource/Sounds/Direction/deden.mp3");
 	clap_se = rm->GetSounds("Resource/Sounds/Direction/大勢で拍手.mp3");
 	coin_se = rm->GetSounds("Resource/Sounds/Coin/Get.mp3");
-	SetVolumeSoundMem(9000, game_clear_se);
 	//BGMを初めから再生するための処理
-	PlaySoundMem(gamemain_bgm, DX_PLAYTYPE_LOOP, TRUE);
+	ResourceManager::rPlaySound(gamemain_bgm, DX_PLAYTYPE_LOOP, TRUE);
 	StopSoundMem(gamemain_bgm);
 }
 
@@ -133,7 +132,7 @@ eSceneType InGameScene::Update(float _delta)
 	{
 		if (!CheckSoundMem(gamemain_bgm) && update_once && !UserData::is_gamestop)
 		{
-			PlaySoundMem(gamemain_bgm, DX_PLAYTYPE_LOOP, false);
+			ResourceManager::rPlaySound(gamemain_bgm, DX_PLAYTYPE_LOOP, false);
 		}
 
 		//いずれかの時間停止フラグが立っていたらオブジェクトの動きはすべて止める
@@ -403,14 +402,14 @@ void InGameScene::ChangeResult(int _delay)
 		{
 			if (!CheckSoundMem(game_clear_se))
 			{
-				PlaySoundMem(game_clear_se, DX_PLAYTYPE_BACK);
+				ResourceManager::rPlaySound(game_clear_se, DX_PLAYTYPE_BACK);
 			}
 		}
 		else
 		{
 			if (!CheckSoundMem(game_over_se))
 			{
-				PlaySoundMem(game_over_se, DX_PLAYTYPE_BACK);
+				ResourceManager::rPlaySound(game_over_se, DX_PLAYTYPE_BACK);
 			}
 		}
 		//ゲームメインBGMを停止
@@ -681,7 +680,7 @@ void InGameScene::BonusCoinUpdate()
 								   ((camera_center.y - rand.y) + (GetRand(SCREEN_HEIGHT - 200) - (SCREEN_HEIGHT - 200) / 2)) / 10 };
 		objects->CreateObject(eCOIN, rand, { 40,40 }, 20.f, rand_velocity);
 		bonus_timer = TIME_BONUS;
-		PlaySoundMem(coin_se, DX_PLAYTYPE_BACK);
+		ResourceManager::rPlaySound(coin_se, DX_PLAYTYPE_BACK);
 	}
 
 	//ボーナスコイン表示時間

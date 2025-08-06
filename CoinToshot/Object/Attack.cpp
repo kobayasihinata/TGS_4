@@ -61,7 +61,7 @@ void Attack::Update()
 			{
 				manager->CreateAttack(GetBulletData(i));
 			}
-			PlaySoundMem(shot_se, DX_PLAYTYPE_BACK);
+			ResourceManager::rPlaySound(shot_se, DX_PLAYTYPE_BACK);
 		}
 
 		//消滅エフェクト
@@ -171,28 +171,28 @@ void Attack::UpdateStrongest()
 	{
 		location.x = camera->GetCameraLocation().x + (box_size.x / 2);
 		move_velocity.x = -1 * move_velocity.x;
-		PlaySoundMem(shot_se, DX_PLAYTYPE_BACK);
+		ResourceManager::rPlaySound(shot_se, DX_PLAYTYPE_BACK);
 	}
 	//右端
 	if (location.x + (box_size.x / 2) > camera->GetCameraLocation().x + SCREEN_WIDTH)
 	{
 		location.x = camera->GetCameraLocation().x + SCREEN_WIDTH - (box_size.x / 2);
 		move_velocity.x = -1 * move_velocity.x;
-		PlaySoundMem(shot_se, DX_PLAYTYPE_BACK);
+		ResourceManager::rPlaySound(shot_se, DX_PLAYTYPE_BACK);
 	}
 	//上端
 	if (location.y - (box_size.y / 2) <= camera->GetCameraLocation().y)
 	{
 		location.y = camera->GetCameraLocation().y + (box_size.y / 2);
 		move_velocity.y = -1 * move_velocity.y;
-		PlaySoundMem(shot_se, DX_PLAYTYPE_BACK);
+		ResourceManager::rPlaySound(shot_se, DX_PLAYTYPE_BACK);
 	}
 	//下端
 	if (location.y + (box_size.y / 2) > camera->GetCameraLocation().y + SCREEN_HEIGHT)
 	{
 		location.y = camera->GetCameraLocation().y + SCREEN_HEIGHT - (box_size.y / 2);
 		move_velocity.y = -1 * move_velocity.y;
-		PlaySoundMem(shot_se, DX_PLAYTYPE_BACK);
+		ResourceManager::rPlaySound(shot_se, DX_PLAYTYPE_BACK);
 	}
 	if (count_up % 30 == 0)
 	{
@@ -200,6 +200,6 @@ void Attack::UpdateStrongest()
 		{
 			manager->CreateAttack(GetBulletData(i));
 		}
-		PlaySoundMem(shot_se, DX_PLAYTYPE_BACK);
+		ResourceManager::rPlaySound(shot_se, DX_PLAYTYPE_BACK);
 	}
 }

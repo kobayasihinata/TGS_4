@@ -7,6 +7,7 @@ enum OptionItem
 	oVolume = 0,
 	oControl,
 	oEnd,
+	oNull
 };
 
 static char option_text[OPTION_NUM][256] =
@@ -19,7 +20,13 @@ static char option_text[OPTION_NUM][256] =
 class OptionScene : public SceneBase
 {
 private:
+	eSceneType change_scene;	//シーン遷移用
+
 	int cursor;		//大項目選択
+	int current_item;	//選択中の項目
+
+	int volume_cursor;	//音量調整のカーソル
+	int end_cursor;		//オプション終了の確認画面のカーソル
 
 	int option_bgm; //BGM
 	int cursor_se;	//カーソルSE
@@ -45,4 +52,18 @@ public:
 	//現在のシーンタイプ(オーバーライド必須)
 	virtual eSceneType GetNowSceneType()const override;
 
+	//音量調整の更新
+	void VolumeUpdate();
+	//音量調整の描画
+	void VolumeDraw()const;
+
+	//操作変更の更新
+	void ControlUpdate();
+	//操作変更の描画
+	void ControlDraw()const;
+
+	//設定終了の更新
+	void EndUpdate();
+	//設定終了の描画
+	void EndDraw()const;
 };

@@ -138,7 +138,7 @@ public:
 			hpbar_move += _value * (HPBAR_SIZE / max_hp);
 
 			//ダメージSE
-			PlaySoundMem(damage_se, DX_PLAYTYPE_BACK);
+			ResourceManager::rPlaySound(damage_se, DX_PLAYTYPE_BACK);
 
 			//ノックバック処理
 

@@ -178,7 +178,7 @@ void GameSceneUI::Update()
 	//爆発音再生
 	if (UserData::can_bullet_change_flg && !ex_se_once)
 	{
-		PlaySoundMem(ex_se, DX_PLAYTYPE_BACK);
+		ResourceManager::rPlaySound(ex_se, DX_PLAYTYPE_BACK);
 		ex_se_once = true;
 	}
 	//爆発アニメーション
@@ -195,17 +195,11 @@ void GameSceneUI::Update()
 		}
 	}
 
-#if BUTTON_TYPE
 	//弾種類変更解禁前にトリガーを入力した時のロック演出
 	if (!UserData::can_bullet_change_flg &&
-		(InputPad::OnButton(XINPUT_BUTTON_LEFT_SHOULDER) || InputPad::OnButton(XINPUT_BUTTON_RIGHT_SHOULDER)))
-#else
-	//弾種類変更解禁前にトリガーを入力した時のロック演出
-	if (!UserData::can_bullet_change_flg &&
-		(InputPad::OnButton(L_TRIGGER) || InputPad::OnButton(R_TRIGGER)))
-#endif // BUTTON_TYPE
+		(UserData::CheckBulletChangeButtonLeft() || UserData::CheckBulletChangeButtonRight()))
 	{
-		PlaySoundMem(lock_se, DX_PLAYTYPE_BACK);
+		ResourceManager::rPlaySound(lock_se, DX_PLAYTYPE_BACK);
 	}
 	
 	//ダメージ演出用時間測定
@@ -270,21 +264,25 @@ void GameSceneUI::Draw()const
 	Vector2D button_lt = { SCREEN_WIDTH / 2 - 195, 45 };
 	Vector2D button_rt = { SCREEN_WIDTH / 2 + 195, 45 };
 	//ボタンを押したら画像を変える
-#if BUTTON_TYPE
-	DrawRotaGraphF(button_lt.x, button_lt.y, 1.f, 0, UserData::button_image[(int)InputPad::OnPressed(XINPUT_BUTTON_LEFT_SHOULDER)][XINPUT_BUTTON_LEFT_SHOULDER], true);
-	DrawRotaGraphF(button_rt.x, button_rt.y, 1.f, 0, UserData::button_image[(int)InputPad::OnPressed(XINPUT_BUTTON_RIGHT_SHOULDER)][XINPUT_BUTTON_RIGHT_SHOULDER], true);
-#else
-	DrawRotaGraphF(button_lt.x, button_lt.y, 1.5f, 0, UserData::button_image[(int)InputPad::OnPressed(L_TRIGGER)][L_TRIGGER], true);
-	DrawRotaGraphF(button_rt.x, button_rt.y, 1.5f, 0, UserData::button_image[(int)InputPad::OnPressed(R_TRIGGER)][R_TRIGGER], true);
-#endif // BUTTON_TYPE
+	if (UserData::control_type == 0)
+	{
+		DrawRotaGraphF(button_lt.x, button_lt.y, 1.5f, 0, UserData::button_image[(int)InputPad::OnPressed(L_TRIGGER)][L_TRIGGER], true);
+		DrawRotaGraphF(button_rt.x, button_rt.y, 1.5f, 0, UserData::button_image[(int)InputPad::OnPressed(R_TRIGGER)][R_TRIGGER], true);
+	}
+	else if(UserData::control_type == 1)
+	{
+		DrawRotaGraphF(button_lt.x, button_lt.y, 1.f, 0, UserData::button_image[(int)InputPad::OnPressed(XINPUT_BUTTON_LEFT_SHOULDER)][XINPUT_BUTTON_LEFT_SHOULDER], true);
+		DrawRotaGraphF(button_rt.x, button_rt.y, 1.f, 0, UserData::button_image[(int)InputPad::OnPressed(XINPUT_BUTTON_RIGHT_SHOULDER)][XINPUT_BUTTON_RIGHT_SHOULDER], true);
+	}
+
 	//弾種類を変えられない状態なら、ボタンの上に×を描画
 	if (!UserData::can_bullet_change_flg)
 	{
-		if (InputPad::OnButton(L_TRIGGER))
+		if (UserData::CheckBulletChangeButtonLeft())
 		{
 			button_lt.x += 5;
 		}
-		if (InputPad::OnButton(R_TRIGGER))
+		if (UserData::CheckBulletChangeButtonRight())
 		{
 			button_rt.x += 5;
 		}
@@ -583,7 +581,7 @@ void GameSceneUI::DrawPlayerUI()const
 		//カウントダウンSE
 		if (UserData::timer % 60 == 0)
 		{
-			PlaySoundMem(count_se, DX_PLAYTYPE_BACK);
+			ResourceManager::rPlaySound(count_se, DX_PLAYTYPE_BACK);
 		}
 	}
 }

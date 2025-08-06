@@ -57,6 +57,8 @@ public:
 	static std::vector<std::vector<int>> button_image;//ボタン画像格納
 	static int coin_image;					//黄色コイン画像格納
 	static int se_volume;					//SEの音量格納
+	static int bgm_volume;					//BGMの音量格納
+	static int control_type;				//操作方法の格納
 
 	//デバッグ用
 	static int variable;			//起動中に好きに変更できる値
@@ -89,6 +91,13 @@ public:
 		
 	//黄色のコイン描画(メモリ節約の為)
 	static void DrawDefaultCoin(Vector2D _loc, float _radius);
+
+	//弾発射に割り当てられたボタンが押されているか確認
+	static bool CheckBulletButton();
+
+	//弾変更に割り当てられたボタンが押されているか確認
+	static bool CheckBulletChangeButtonRight();
+	static bool CheckBulletChangeButtonLeft();
 
 	//可変の変数描画
 	static void DrawVariable();

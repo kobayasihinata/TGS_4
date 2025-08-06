@@ -70,7 +70,7 @@ void Heal::Hit(ObjectBase* hit_object)
 
 		std::string s = "HP + " + std::to_string((int)heal_num);
 		ingame->CreatePopUp(this->location, s,0x00ff22);
-		PlaySoundMem(heal_se,DX_PLAYTYPE_BACK);
+		ResourceManager::rPlaySound(heal_se,DX_PLAYTYPE_BACK);
 	}
 }
 

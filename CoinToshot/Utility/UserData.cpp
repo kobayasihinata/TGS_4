@@ -29,7 +29,10 @@ std::vector<int> UserData::coin_graph;
 std::vector<ReplayData> UserData::replay;
 std::vector<std::vector<int>> UserData::button_image;
 int UserData::coin_image = 0;
+
 int UserData::se_volume = 8000;
+int UserData::bgm_volume = 8000;
+int UserData::control_type = 0;
 
 int UserData::variable = 0;
 bool UserData::variable_change = 0;
@@ -157,6 +160,53 @@ void UserData::DrawCoin(Vector2D _loc, float _radius,int _r, int _g, int _b)
 void UserData::DrawDefaultCoin(Vector2D _loc, float _radius)
 {
 	DrawRotaGraphF(_loc.x, _loc.y, _radius / 20.f, 0.f, coin_image, TRUE);
+}
+
+bool UserData::CheckBulletButton()
+{
+	switch (control_type)
+	{
+		//LBとRB
+	case 0:
+		return InputPad::OnButton(XINPUT_BUTTON_LEFT_SHOULDER) || InputPad::OnButton(XINPUT_BUTTON_RIGHT_SHOULDER);
+		break;
+
+		//Bボタン
+	case 1:
+		return InputPad::OnButton(XINPUT_BUTTON_B);
+		break;
+	}
+}
+
+bool UserData::CheckBulletChangeButtonRight()
+{
+	switch (control_type)
+	{
+		//右トリガー
+	case 0:
+		return InputPad::OnPressed(R_TRIGGER);
+		break;
+
+		//RB
+	case 1:
+		return InputPad::OnButton(XINPUT_BUTTON_RIGHT_SHOULDER);
+		break;
+	}
+}
+bool UserData::CheckBulletChangeButtonLeft()
+{
+	switch (control_type)
+	{
+		//左トリガー
+	case 0:
+		return InputPad::OnPressed(L_TRIGGER);
+		break;
+
+		//LB
+	case 1:
+		return InputPad::OnButton(XINPUT_BUTTON_LEFT_SHOULDER);
+		break;
+	}
 }
 
 void UserData::DrawVariable()
