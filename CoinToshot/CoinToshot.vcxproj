@@ -161,6 +161,7 @@
     <ClCompile Include="Object\Enemy\Enemy5.cpp" />
     <ClCompile Include="Object\Enemy\Enemy1.cpp" />
     <ClCompile Include="Object\Player\Player.cpp" />
+    <ClCompile Include="Scene\OptionScene.cpp" />
     <ClCompile Include="Scene\RankingScene.cpp" />
     <ClCompile Include="Scene\ResultScene.cpp" />
     <ClCompile Include="Scene\InGameScene.cpp" />
@@ -210,6 +211,7 @@
     <ClInclude Include="Object\Base\EnemyBase.h" />
     <ClInclude Include="Object\Enemy\Enemy1.h" />
     <ClInclude Include="Object\Player\Player.h" />
+    <ClInclude Include="Scene\OptionScene.h" />
     <ClInclude Include="Scene\RankingScene.h" />
     <ClInclude Include="Scene\ResultScene.h" />
     <ClInclude Include="Scene\InGameScene.h" />

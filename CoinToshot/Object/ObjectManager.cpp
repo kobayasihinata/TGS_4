@@ -319,9 +319,8 @@ void ObjectManager::ObjectHitCheck()
 	for (const auto& object1 : object_list)
 	{
 		for (const auto& object2 : object_list)
-		{
-			//オブジェクトのどちらかが画面外にあればスキップ
-			if (/*CheckInScreen(object2, 50) && CheckInScreen(object1,50) &&*/ object1 != object2 && object1->CheckHit(object2))
+		{	
+			if (CheckHit(object1,object2))
 			{
 				object1->Hit(object2);
 			}
@@ -366,4 +365,16 @@ void ObjectManager::OffScreenUpdate(ObjectBase* _object)
 		delete_object.push_back(_object);
 	}
 	//delete_object.push_back(_object);
+}
+
+bool ObjectManager::CheckHit(ObjectBase* _object1, ObjectBase* _object2)const
+{
+	//コインと敵なら偽を返す
+	if ((_object1->IsEnemy() && _object2->GetObjectType() == eCOIN) ||
+		(_object2->IsEnemy() && _object1->GetObjectType() == eCOIN))
+	{
+		return false;
+	}
+	//同じオブジェクトを参照していなくて、当たり判定が被っていたら真を返す
+	return _object1 != _object2 && _object1->CheckHit(_object2);
 }

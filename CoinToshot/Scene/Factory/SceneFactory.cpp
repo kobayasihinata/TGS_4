@@ -4,6 +4,7 @@
 #include "../InGameScene.h"
 #include "../RankingScene.h"
 #include "../ResultScene.h"
+#include "../OptionScene.h"
 #include "../EndScene.h"
 
 SceneBase* SceneFactory::CreateScene(eSceneType scene)
@@ -18,6 +19,8 @@ SceneBase* SceneFactory::CreateScene(eSceneType scene)
 		return new RankingScene();
 	case eResult:
 		return new ResultScene();
+	case eOption:
+		return new OptionScene();
 	case eEnd:
 		return new EndScene();
 	default:

@@ -72,6 +72,9 @@ public:
 	const int& GetSounds(std::string file_name);
 	const int& GetSounds(const char* file_name);
 
+	//‰¹Œ¹‚ÌÄ¶
+	static void rPlaySound(int _sound_path);
+
 	/**
 	* ‘S‚Ä‚Ì‰æ‘œ‚Æ‰¹Œ¹‚ğíœ‚·‚é
 	*/

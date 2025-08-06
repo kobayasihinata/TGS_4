@@ -113,5 +113,8 @@ public:
 
 	//画面外に出たオブジェクトの処理
 	void OffScreenUpdate(ObjectBase* _object);
+
+	//当たり判定のチェック
+	bool CheckHit(ObjectBase* _object1, ObjectBase* _object2)const;
 };
 

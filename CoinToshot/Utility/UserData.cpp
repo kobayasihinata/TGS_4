@@ -29,6 +29,7 @@ std::vector<int> UserData::coin_graph;
 std::vector<ReplayData> UserData::replay;
 std::vector<std::vector<int>> UserData::button_image;
 int UserData::coin_image = 0;
+int UserData::se_volume = 8000;
 
 int UserData::variable = 0;
 bool UserData::variable_change = 0;

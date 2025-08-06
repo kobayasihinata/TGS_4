@@ -3,13 +3,14 @@
 #include "SceneBase.h"
 #include "Tutorial.h"
 
-#define ITEM_NUM 3	//タイトルの項目数
+#define ITEM_NUM 4	//タイトルの項目数
 #define START_ANIM 180  //アニメーション時間
 
 enum TitleItem
 {
 	tGameMain = 0,
 	tRanking,
+	tOption,
 	tEnd,
 };
 
@@ -17,6 +18,7 @@ static char item_text[ITEM_NUM][256] =
 {
 	"Start",
 	"Ranking",
+	"Option",
 	"End"
 };
 class TitleScene : public SceneBase

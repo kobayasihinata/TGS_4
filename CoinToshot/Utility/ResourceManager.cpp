@@ -1,5 +1,6 @@
 #include "ResourceManager.h"
 #include "DxLib.h"
+#include "UserData.h"
 
 //静的メンバ変数定義
 ResourceManager* ResourceManager::instance = nullptr;		//クラスのインスタンスのポインタ
@@ -91,6 +92,13 @@ const int& ResourceManager::GetSounds(std::string file_name)
 const int& ResourceManager::GetSounds(const char* file_name)
 {
 	return GetSounds(std::string(file_name));
+}
+
+void ResourceManager::rPlaySound(int _sound_path)
+{
+	int path = _sound_path;
+	SetVolumeSoundMem(UserData::se_volume, path);
+	PlaySoundMem(path, DX_PLAYTYPE_BACK);
 }
 
 /**

@@ -59,7 +59,7 @@ eSceneType TitleScene::Update(float _delta)
 				{
 					current_num = 0;
 				}
-				PlaySoundMem(cursor_se, DX_PLAYTYPE_BACK);
+				ResourceManager::rPlaySound(cursor_se/*DX_PLAYTYPE_BACK*/);
 			}
 			//è„ì¸óÕÇ≈çÄñ⁄è„à⁄ìÆ
 			if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_UP) || InputPad::GetPressedButton(L_STICK_UP))
@@ -68,12 +68,12 @@ eSceneType TitleScene::Update(float _delta)
 				{
 					current_num = ITEM_NUM - 1;
 				}
-				PlaySoundMem(cursor_se, DX_PLAYTYPE_BACK);
+				ResourceManager::rPlaySound(cursor_se/*DX_PLAYTYPE_BACK*/);
 			}
 			//AÉ{É^ÉìÇ≈åàíË
 			if (InputPad::OnButton(XINPUT_BUTTON_A))
 			{
-				PlaySoundMem(enter_se, DX_PLAYTYPE_BACK);
+				ResourceManager::rPlaySound(enter_se/*DX_PLAYTYPE_BACK*/);
 				switch (current_num)
 				{
 				case TitleItem::tGameMain:
@@ -92,6 +92,10 @@ eSceneType TitleScene::Update(float _delta)
 				case TitleItem::tRanking:
 					StopSoundMem(title_bgm);
 					return eSceneType::eRanking;
+					break;
+				case TitleItem::tOption:
+					StopSoundMem(title_bgm);
+					return eSceneType::eOption;
 					break;
 				case TitleItem::tEnd:
 					return eSceneType::eEnd;

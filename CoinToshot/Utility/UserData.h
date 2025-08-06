@@ -55,7 +55,8 @@ public:
 	static std::vector<int> coin_graph;		//コインの増減保存用
 	static std::vector<ReplayData> replay;	//ハイライト保存場所
 	static std::vector<std::vector<int>> button_image;//ボタン画像格納
-	static int coin_image;			//黄色コイン画像格納
+	static int coin_image;					//黄色コイン画像格納
+	static int se_volume;					//SEの音量格納
 
 	//デバッグ用
 	static int variable;			//起動中に好きに変更できる値
