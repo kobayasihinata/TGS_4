@@ -18,11 +18,9 @@ void CoinGet::Initialize(ObjectManager* _manager, Vector2D init_location, bool _
 
 	ResourceManager* rm = ResourceManager::GetInstance();
 
-	animation_image = rm->GetImages("Resource/Images/Effect/coin_get.png", 99, 11, 9, 64, 64);
+	animation_image = rm->GetImages("Resource/Images/Effect/shine.png", 25, 5, 5, 64, 56);
 
-	color = 4;//0~8のランダム　一回色固定
-
-	image = animation_image[color*11];
+	image = animation_image[0];
 
 }
 
@@ -35,17 +33,19 @@ void CoinGet::Finalize()
 //更新処理
 void CoinGet::Update()
 {
-
-	if (timer % 6 == 0)
+	//アニメーションの切り替え速度を、画像枚数とエフェクト時間から割り出す
+	int r = init_timer / (animation_image.size() - 1);
+	if (r <= 0)r = 1;
+	if (timer % r == 0)
 	{
 		manager->CreateEffect(elShine, { location.x + GetRand(30) - 15,location.y + GetRand(30) - 15 }, TRUE, 0xffff00);
-		if (now_anim >= 11)
+		if (now_anim >= (animation_image.size() - 1))
 		{
 			image = 0;
 		}
 		else
 		{
-			image = animation_image[(color*11) + now_anim];
+			image = animation_image[now_anim];
 			now_anim++;
 		}
 	}
