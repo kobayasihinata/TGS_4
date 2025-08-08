@@ -2,7 +2,10 @@
 #define DEBUG_SKIP false		//デバッグ用チュートリアルスキップモード
 #define DEBUG_PLAYER false		//クリアと死をすぐ確認したい時用
 #define BUTTON_TYPE false       //操作方法を指示された者に変更したやつ
-#define WINDOW_MODE true		//フルスクリーンかどうか
+#define WINDOW_MODE false		//フルスクリーンかどうか
+
+#define SE_MAX 13000	//SE音量の上限
+#define BGM_MAX 10000	//BGM音量の上限
 
 #define FRAME_RATE 60			//フレームレート
 

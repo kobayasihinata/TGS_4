@@ -547,7 +547,7 @@ eSceneType ResultScene::EnterName()
 		UserData::my_ranking_data.coin = UserData::coin;
 		UserData::ranking_data[9] = UserData::my_ranking_data;
 		SortRanking();
-		UserData::WriteRankingData();
+		UserData::WriteData();
 		ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
 		return eSceneType::eRanking;
 	}

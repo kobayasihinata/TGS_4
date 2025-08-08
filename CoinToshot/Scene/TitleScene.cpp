@@ -209,7 +209,7 @@ void TitleScene::Draw()const
 		}
 	}
 
-	SetFontSize(72);
+	SetFontSize(48);
 
 	//操作説明の描画
 	Vector2D _loc = { 700,900 };
@@ -217,19 +217,14 @@ void TitleScene::Draw()const
 	UserData::DrawButtonImage({ _loc.x+60,_loc.y }, L_STICK_DOWN, 75);
 	UserData::DrawButtonImage({ _loc.x+120,_loc.y }, XINPUT_BUTTON_DPAD_UP, 75);
 	UserData::DrawButtonImage({ _loc.x+180,_loc.y }, XINPUT_BUTTON_DPAD_DOWN, 75);
-	DrawStringF(_loc.x + 210, _loc.y - 50, ":カーソル移動", 0x000000);
+	DrawStringF(_loc.x + 210, _loc.y - 30, ":カーソル移動", 0x222200);
 	UserData::DrawButtonImage({ _loc.x + 180,_loc.y + 60 }, XINPUT_BUTTON_A, 75);
-	DrawStringF(_loc.x + 210, _loc.y+10 , ":決定", 0x000000);
-	if (start_anim_flg)
-	{
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 - ((255.f / START_ANIM) * start_anim_timer));
-		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, true);
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
-	}
+	DrawStringF(_loc.x + 210, _loc.y+30 , ":決定", 0x222200);
 
 	//チュートリアル描画
 	if (tuto_reset_flg)
 	{
+		SetFontSize(72);
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 160);
 		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, true);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
@@ -239,6 +234,14 @@ void TitleScene::Draw()const
 		DrawString(SCREEN_WIDTH / 2 - 200, 400, "はい", tuto_current_num == 0 ? 0xff5555 : 0x999999);
 		DrawString(SCREEN_WIDTH / 2 + 200, 400, "いいえ", tuto_current_num == 1 ? 0xff5555 : 0x999999);
 	}
+
+	if (start_anim_flg)
+	{
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 - ((255.f / START_ANIM) * start_anim_timer));
+		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, true);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+	}
+
 	SetFontSize(old);
 }
 

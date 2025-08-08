@@ -1,6 +1,7 @@
 #pragma once
 #include "SceneBase.h"
 #define OPTION_NUM 3	//項目の数
+#define VOLUME 5000		//音量0から上げる値
 
 enum OptionItem
 {
@@ -26,11 +27,15 @@ private:
 	int current_item;	//選択中の項目
 
 	int volume_cursor;	//音量調整のカーソル
+	int se_volume[10];		//SE音量の段階
+	int bgm_volume[10];		//BGM音量の段階
+
 	int end_cursor;		//オプション終了の確認画面のカーソル
 
 	int option_bgm; //BGM
 	int cursor_se;	//カーソルSE
-	int button_se;	//戻るボタン効果音
+	int button_se;	//ボタン効果音
+	int back_se;	//戻るボタン効果音
 public:
 	OptionScene();
 	virtual ~OptionScene();

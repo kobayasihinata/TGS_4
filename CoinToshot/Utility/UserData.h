@@ -57,7 +57,9 @@ public:
 	static std::vector<std::vector<int>> button_image;//ƒ{ƒ^ƒ“‰æ‘œŠi”[
 	static int coin_image;					//‰©FƒRƒCƒ“‰æ‘œŠi”[
 	static int se_volume;					//SE‚Ì‰¹—ÊŠi”[
+	static int se_volume_num;				//SE‚Ì‰¹—Ê‹­“xŠi”[
 	static int bgm_volume;					//BGM‚Ì‰¹—ÊŠi”[
+	static int bgm_volume_num;					//BGM‚Ì‰¹—Ê‹­“xŠi”[
 	static int control_type;				//‘€ì•û–@‚ÌŠi”[
 
 	//ƒfƒoƒbƒO—p
@@ -75,7 +77,7 @@ public:
 	static void ReadRankingData();
 
 	//ƒf[ƒ^‚ğ‘‚«‚Ş
-	static void WriteRankingData();
+	static void WriteData();
 
 	//ƒ{ƒ^ƒ“‰æ‘œ‚ğ•`‰æ
 	static void DrawButtonImage(Vector2D _loc, int _button,int _size);

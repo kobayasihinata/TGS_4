@@ -12,16 +12,32 @@ OptionScene::OptionScene()
 	current_item = oNull;
 
 	volume_cursor = -1;//どこも選択されていない状態
+
+	for (int i = 0; i < 10; i++)
+	{
+		//0以外は一定数加算
+		if (i == 0)
+		{
+			se_volume[i] = 0;
+			bgm_volume[i] = 0;
+		}
+		else
+		{
+			se_volume[i] = VOLUME + (((SE_MAX - VOLUME) / 8) * (i - 1));
+			bgm_volume[i] = VOLUME + (((BGM_MAX - VOLUME) / 8) * (i - 1));
+		}
+	}
 	end_cursor = 0;
 
 	//BGM、SE読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
 	button_se = rm->GetSounds("Resource/Sounds/pop.wav");
 	cursor_se = rm->GetSounds("Resource/Sounds/cursor.mp3");
+	back_se = rm->GetSounds("Resource/Sounds/Hanahana/button.mp3");
 	option_bgm = rm->GetSounds("Resource/Sounds/BGM/Sweet_smelling_flower.mp3");
 	if (!CheckSoundMem(option_bgm))
 	{
-		ResourceManager::rPlaySound(option_bgm, DX_PLAYTYPE_BACK, TRUE);
+		ResourceManager::rPlaySound(option_bgm, DX_PLAYTYPE_LOOP, TRUE);
 	}
 }
 
@@ -70,10 +86,8 @@ eSceneType OptionScene::Update(float _delta)
 			}
 			ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 		}
-		//右入力orAボタンで現在選択している項目に移動
-		if (InputPad::OnButton(XINPUT_BUTTON_A) ||
-			InputPad::OnButton(XINPUT_BUTTON_DPAD_RIGHT) ||
-			InputPad::OnButton(L_STICK_RIGHT))
+		//Aボタンで現在選択している項目に移動
+		if (InputPad::OnButton(XINPUT_BUTTON_A))
 		{
 			ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
 			current_item = cursor;
@@ -81,7 +95,7 @@ eSceneType OptionScene::Update(float _delta)
 		//Bボタンでオプション終了画面
 		if (InputPad::OnButton(XINPUT_BUTTON_B))
 		{
-			ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
+			ResourceManager::rPlaySound(back_se, DX_PLAYTYPE_BACK);
 			current_item = OptionItem::oEnd;
 		}
 		break;
@@ -130,13 +144,22 @@ void OptionScene::Draw()const
 				UserData::DrawCoin({ 30.f, (float)124 + i * (SCREEN_HEIGHT / OPTION_NUM) }, 20, 227 + abs(((int)frame % 56 - 28)), 200);
 			}
 		}
+		Vector2D _loc = { 700,900 };
+		UserData::DrawButtonImage(_loc, L_STICK_UP, 72);
+		UserData::DrawButtonImage({ _loc.x + 60,_loc.y }, L_STICK_DOWN, 72);
+		UserData::DrawButtonImage({ _loc.x + 120,_loc.y }, XINPUT_BUTTON_DPAD_UP, 72);
+		UserData::DrawButtonImage({ _loc.x + 180,_loc.y }, XINPUT_BUTTON_DPAD_DOWN, 72);
+		DrawStringF(_loc.x + 210, _loc.y - 30, ":カーソル移動", 0x444400);
+		UserData::DrawButtonAndString({ _loc.x + 170,  _loc.y + 70 }, XINPUT_BUTTON_A, ":決定", 0x444400);
+		UserData::DrawButtonAndString({ _loc.x + 170,  _loc.y + 140 }, XINPUT_BUTTON_B, ":戻る", 0x444400);
 		break;
 	}
 }
 
 void OptionScene::Finalize()
 {
-
+	//設定保存
+	UserData::WriteData();
 }
 
 eSceneType OptionScene::GetNowSceneType()const
@@ -152,6 +175,7 @@ void OptionScene::VolumeUpdate()
 		//カーソルのリセット
 		volume_cursor = -1;
 		current_item = OptionItem::oNull;
+		ResourceManager::rPlaySound(back_se, DX_PLAYTYPE_BACK);
 	}
 	//下入力で項目下移動
 	if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_DOWN) || InputPad::GetPressedButton(L_STICK_DOWN))
@@ -179,14 +203,33 @@ void OptionScene::VolumeUpdate()
 		switch (volume_cursor)
 		{
 		case 0:
-			UserData::se_volume -= 100;
+			//下限に達したらそれ以下にはならない
+			if (UserData::se_volume_num > 0)
+			{
+				UserData::se_volume_num--;
+			}
+			else
+			{
+				UserData::se_volume_num = 0;
+			}
+			UserData::se_volume = se_volume[UserData::se_volume_num];
+			ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 			break;
 		case 1:
-			UserData::bgm_volume -= 100;
+			//下限に達したらそれ以下にはならない
+			if (UserData::bgm_volume_num > 0)
+			{
+				UserData::bgm_volume_num--;
+			}
+			else
+			{
+				UserData::bgm_volume_num = 0;
+			}
+			UserData::bgm_volume = bgm_volume[UserData::bgm_volume_num];
 			ResourceManager::rPlaySound(option_bgm, DX_PLAYTYPE_LOOP, false);
+			ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 			break;
 		}
-		ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 	}
 	if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_RIGHT) ||
 		InputPad::GetPressedButton(L_STICK_RIGHT))
@@ -194,34 +237,77 @@ void OptionScene::VolumeUpdate()
 		switch (volume_cursor)
 		{
 		case 0:
-			UserData::se_volume += 100;
+			//上限に達したらそれ以上にはならない
+			if (UserData::se_volume_num < 9)
+			{
+				UserData::se_volume_num++;
+			}
+			else
+			{
+				UserData::se_volume_num = 9;
+			}
+			UserData::se_volume = se_volume[UserData::se_volume_num];
+			ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 			break;
 		case 1:
-			UserData::bgm_volume += 100;
+			//上限に達したらそれ以上にはならない
+			if (UserData::bgm_volume_num < 9)
+			{
+				UserData::bgm_volume_num++;
+			}
+			else
+			{
+				UserData::bgm_volume_num = 9;
+			}
+			UserData::bgm_volume = bgm_volume[UserData::bgm_volume_num];
 			ResourceManager::rPlaySound(option_bgm, DX_PLAYTYPE_LOOP, false);
+			ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 			break;
 		}
-		ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 	}
 }
 
 void OptionScene::VolumeDraw()const
 {
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 150);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
 	for (int i = 0; i < OPTION_NUM; i++)
 	{
 		DrawFormatString(50, 100 + i * (SCREEN_HEIGHT / OPTION_NUM), 0x000000, "%s", option_text[i]);
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
-	DrawString(300, 100, "volume", 0x000000);
+
+
+	Vector2D se_loc = { 700,150 };
+	Vector2D bgm_loc = { 700,550 };
+	int span = 40;	//ゲージの間隔
+	DrawString(se_loc.x + (span*9/2) - (GetDrawStringWidth("SE",strlen("SE"))/2) +1, se_loc.y - 49, "SE", 0xffffff);
+	DrawString(se_loc.x + (span*9/2) - (GetDrawStringWidth("SE",strlen("SE"))/2), se_loc.y - 50, "SE", 0x000000);
+	DrawBox(se_loc.x, se_loc.y, se_loc.x + span*9, se_loc.y + 50, 0x555500, TRUE);
+	DrawBox(se_loc.x, se_loc.y, se_loc.x + UserData::se_volume_num * span, se_loc.y + 50, 0xffff00, TRUE);
+	DrawString(bgm_loc.x + (span * 9 / 2) - (GetDrawStringWidth("BGM", strlen("BGM")) / 2)+1, bgm_loc.y - 49, "BGM", 0xffffff);
+	DrawString(bgm_loc.x + (span * 9 / 2) - (GetDrawStringWidth("BGM", strlen("BGM")) / 2), bgm_loc.y - 50, "BGM", 0x000000);
+	DrawBox(bgm_loc.x, bgm_loc.y, bgm_loc.x + span * 9, bgm_loc.y + 50, 0x555500, TRUE);
+	DrawBox(bgm_loc.x, bgm_loc.y, bgm_loc.x + UserData::bgm_volume_num * span, bgm_loc.y + 50, 0xffff00, TRUE);
 
 	if (volume_cursor != -1)
 	{
-		UserData::DrawCoin({ 300.f, (float)150 + (volume_cursor * 100) }, 20, 227 + abs(((int)frame % 56 - 28)), 200);
+		UserData::DrawCoin({ se_loc.x-30, (float)se_loc.y + (volume_cursor * (bgm_loc.y - se_loc.y))+30 }, 20, 227 + abs(((int)frame % 56 - 28)), 200);
 	}
-	DrawFormatString(500, 150, 0x000000, "SE:%d", UserData::se_volume);
-	DrawFormatString(500, 250, 0x000000, "BGM:%d", UserData::bgm_volume);
 
+	SetFontSize(48);
+
+	Vector2D _loc = { 700,900 };
+	UserData::DrawButtonImage(_loc,					   L_STICK_UP,				72);
+	UserData::DrawButtonImage({ _loc.x + 60,_loc.y },  L_STICK_DOWN,			72);
+	UserData::DrawButtonImage({ _loc.x + 120,_loc.y }, XINPUT_BUTTON_DPAD_UP,	72);
+	UserData::DrawButtonImage({ _loc.x + 180,_loc.y }, XINPUT_BUTTON_DPAD_DOWN, 72);
+	DrawStringF(_loc.x + 210, _loc.y - 30, ":カーソル移動", 0x444400);
+	UserData::DrawButtonImage({ _loc.x,_loc.y + 70 },     L_STICK_RIGHT,			   72);
+	UserData::DrawButtonImage({ _loc.x + 60,_loc.y+70 },  L_STICK_LEFT,			   72);
+	UserData::DrawButtonImage({ _loc.x + 120,_loc.y+70 }, XINPUT_BUTTON_DPAD_RIGHT,   72);
+	UserData::DrawButtonImage({ _loc.x + 180,_loc.y+70 }, XINPUT_BUTTON_DPAD_LEFT, 72);
+	DrawStringF(_loc.x + 210, _loc.y + 40, ":音量調整", 0x444400);
+	UserData::DrawButtonAndString({ _loc.x+170,  _loc.y + 140 }, XINPUT_BUTTON_B, ":戻る", 0x444400);
 }
 
 void OptionScene::ControlUpdate()
@@ -230,6 +316,7 @@ void OptionScene::ControlUpdate()
 	if (InputPad::OnButton(XINPUT_BUTTON_B))
 	{
 		current_item = OptionItem::oNull;
+		ResourceManager::rPlaySound(back_se, DX_PLAYTYPE_BACK);
 	}
 	//操作タイプの変更
 	if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_LEFT) ||
@@ -239,6 +326,7 @@ void OptionScene::ControlUpdate()
 		{
 			UserData::control_type = 1;
 		}
+		ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 	}
 	if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_RIGHT) ||
 		InputPad::GetPressedButton(L_STICK_RIGHT))
@@ -247,19 +335,50 @@ void OptionScene::ControlUpdate()
 		{
 			UserData::control_type = 0;
 		}
+		ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 	}
 }
 
 void OptionScene::ControlDraw()const
 {
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 150);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
 	for (int i = 0; i < OPTION_NUM; i++)
 	{
 		DrawFormatString(50, 100 + i * (SCREEN_HEIGHT / OPTION_NUM), 0x000000, "%s", option_text[i]);
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
-	DrawString(300, 100, "control", 0x000000);
-	DrawFormatString(500, 150, 0x000000, "type:%d", UserData::control_type);
+	Vector2D cont_text_loc = { 700,250 };
+	DrawFormatString(cont_text_loc.x, cont_text_loc.y - 100, 0x000000, "type:%d", UserData::control_type);
+	switch (UserData::control_type)
+	{
+		//LBRB発射 トリガー変更
+	case 0:
+		UserData::DrawButtonImage({ cont_text_loc.x,cont_text_loc.y }, XINPUT_BUTTON_LEFT_SHOULDER, 72);
+		UserData::DrawButtonImage({ cont_text_loc.x + 60,cont_text_loc.y }, XINPUT_BUTTON_RIGHT_SHOULDER, 72);
+		DrawStringF(cont_text_loc.x + 90, cont_text_loc.y - 30, ":弾発射", 0x000000);
+		UserData::DrawButtonImage({ cont_text_loc.x,cont_text_loc.y + 70 }, L_TRIGGER, 72);
+		UserData::DrawButtonImage({ cont_text_loc.x + 60,cont_text_loc.y+70 }, R_TRIGGER, 72);
+		DrawStringF(cont_text_loc.x + 90, cont_text_loc.y +40, ":弾の種類変更", 0x000000);
+		break;
+		//B発射 LBRB変更
+	case 1:
+		UserData::DrawButtonImage({ cont_text_loc.x,cont_text_loc.y }, XINPUT_BUTTON_B, 72);
+		DrawStringF(cont_text_loc.x + 30, cont_text_loc.y - 30, ":弾発射", 0x000000);
+		UserData::DrawButtonImage({ cont_text_loc.x,cont_text_loc.y + 70 }, XINPUT_BUTTON_LEFT_SHOULDER, 72);
+		UserData::DrawButtonImage({ cont_text_loc.x + 60,cont_text_loc.y + 70 }, XINPUT_BUTTON_RIGHT_SHOULDER, 72);
+		DrawStringF(cont_text_loc.x + 90, cont_text_loc.y + 40, ":弾の種類変更", 0x000000);
+		break;
+	default:
+		break;
+	}
+
+	Vector2D _loc = { 700,900 };
+	UserData::DrawButtonImage({ _loc.x,_loc.y}, L_STICK_RIGHT, 72);
+	UserData::DrawButtonImage({ _loc.x + 60,_loc.y}, L_STICK_LEFT, 72);
+	UserData::DrawButtonImage({ _loc.x + 120,_loc.y}, XINPUT_BUTTON_DPAD_RIGHT, 72);
+	UserData::DrawButtonImage({ _loc.x + 180,_loc.y}, XINPUT_BUTTON_DPAD_LEFT, 72);
+	DrawStringF(_loc.x + 210, _loc.y - 30, ":操作タイプ変更", 0x444400);
+	UserData::DrawButtonAndString({ _loc.x + 170,  _loc.y + 70 }, XINPUT_BUTTON_B, ":戻る", 0x444400);
 }
 
 void OptionScene::EndUpdate()
@@ -272,6 +391,7 @@ void OptionScene::EndUpdate()
 		{
 			end_cursor = 1;
 		}
+		ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 	}
 	if (InputPad::OnButton(XINPUT_BUTTON_DPAD_RIGHT) ||
 		InputPad::OnButton(L_STICK_RIGHT))
@@ -280,11 +400,13 @@ void OptionScene::EndUpdate()
 		{
 			end_cursor = 0;
 		}
+		ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 	}
 	//Bボタンで項目の選択を解除
 	if (InputPad::OnButton(XINPUT_BUTTON_B))
 	{
 		current_item = OptionItem::oNull;
+		ResourceManager::rPlaySound(back_se, DX_PLAYTYPE_BACK);
 	}
 	//Aボタンでカーソルが合っている場所ごとの処理
 	if (InputPad::OnButton(XINPUT_BUTTON_A))
@@ -294,10 +416,12 @@ void OptionScene::EndUpdate()
 		//項目の選択解除
 		case 0:
 			current_item = OptionItem::oNull;
+			ResourceManager::rPlaySound(back_se, DX_PLAYTYPE_BACK);
 			break;
 		//オプション終了
 		case 1:
 			change_scene = eSceneType::eTitle;
+			ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
 			break;
 		default:
 			break;
@@ -314,9 +438,9 @@ void OptionScene::EndDraw()const
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
 	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
-	DrawString(300, 100, "タイトルに戻りますか？", 0x000000);
-	DrawString(320, 150, "いいえ", 0x000000);
-	DrawString(520, 150, "はい", 0x000000);
-	UserData::DrawCoin({ (float)300 + (end_cursor*200), 175 }, 20, 227 + abs(((int)frame % 56 - 28)), 200);
+	DrawString(500, 300, "タイトルに戻りますか？", 0xffffff);
+	DrawString(520, 350, "いいえ", 0xffffff);
+	DrawString(720, 350, "はい", 0xffffff);
+	UserData::DrawCoin({ (float)500 + (end_cursor*200), 375 }, 20, 227 + abs(((int)frame % 56 - 28)), 200);
 }
 

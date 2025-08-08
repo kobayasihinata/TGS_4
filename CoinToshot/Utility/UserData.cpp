@@ -30,8 +30,10 @@ std::vector<ReplayData> UserData::replay;
 std::vector<std::vector<int>> UserData::button_image;
 int UserData::coin_image = 0;
 
-int UserData::se_volume = 8000;
-int UserData::bgm_volume = 8000;
+int UserData::se_volume = 0;
+int UserData::se_volume_num = 7;
+int UserData::bgm_volume = 0;
+int UserData::bgm_volume_num = 7;
 int UserData::control_type = 0;
 
 int UserData::variable = 0;
@@ -86,10 +88,15 @@ void UserData::ReadRankingData()
 			file >> ranking_data[i].name;
 			file >> ranking_data[i].coin;
 		}
+		file >> se_volume;
+		file >> se_volume_num;
+		file >> bgm_volume;
+		file >> bgm_volume_num;
+		file >> control_type;
 	}
 }
 
-void UserData::WriteRankingData()
+void UserData::WriteData()
 {
 	const char* a = "Resource/Data/CTs_RankingData.txt";
 
@@ -104,6 +111,11 @@ void UserData::WriteRankingData()
 			file << ranking_data[i].name.c_str() << " ";
 			file << ranking_data[i].coin << "\n";
 		}
+		file << se_volume << "\n";
+		file << se_volume_num << "\n";
+		file << bgm_volume << "\n";
+		file << bgm_volume_num << "\n";
+		file << control_type;
 	}
 }
 
