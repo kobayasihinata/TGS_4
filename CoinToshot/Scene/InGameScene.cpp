@@ -86,6 +86,9 @@ void InGameScene::Initialize()
 	game_over_se = rm->GetSounds("Resource/Sounds/Direction/deden.mp3");
 	clap_se = rm->GetSounds("Resource/Sounds/Direction/大勢で拍手.mp3");
 	coin_se = rm->GetSounds("Resource/Sounds/Coin/Get.mp3");
+	cursor_se = rm->GetSounds("Resource/Sounds/cursor.mp3");
+	enter_se = rm->GetSounds("Resource/Sounds/Coin/Get.mp3");
+
 	//BGMを初めから再生するための処理
 	ResourceManager::rPlaySound(gamemain_bgm, DX_PLAYTYPE_LOOP, TRUE);
 	StopSoundMem(gamemain_bgm);
@@ -201,7 +204,49 @@ eSceneType InGameScene::Update(float _delta)
 	//ポーズ画面
 	else if (pause_flg)
 	{
+		//下入力で項目下移動
+		if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_DOWN) || InputPad::GetPressedButton(L_STICK_DOWN))
+		{
+			if (++pause_cursor >= 3)
+			{
+				pause_cursor = 0;
+			}
+			ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
+		}
+		//上入力で項目上移動
+		if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_UP) || InputPad::GetPressedButton(L_STICK_UP))
+		{
+			if (--pause_cursor < 0)
+			{
+				pause_cursor = 2;
+			}
+			ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
+		}
+		//Aボタンでカーソルが合っているところの処理を実行
+		if (InputPad::OnButton(XINPUT_BUTTON_A))
+		{
+			ResourceManager::rPlaySound(enter_se, DX_PLAYTYPE_BACK);
+			switch (pause_cursor)
+			{
+			case 0:	//ゲームに戻る
+				pause_flg = false;
+				break;
+			case 1: //オプション
+				break;
+			case 2: //タイトルに戻る
+				return eSceneType::eTitle;
+				break;
+			default: 
+				break;
+			}
 
+		}
+		//Bボタンでゲームに戻る
+		if (InputPad::OnButton(XINPUT_BUTTON_B))
+		{
+			ResourceManager::rPlaySound(enter_se, DX_PLAYTYPE_BACK);
+			pause_flg = false;
+		}
 	}
 	//遷移アニメーション
 	else
@@ -323,6 +368,12 @@ void InGameScene::MakeGameMainDraw()
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 		SetFontSize(72);
 		UserData::DrawStringCenter({ SCREEN_WIDTH / 2,SCREEN_HEIGHT / 2 }, "ポーズ中", 0xffffff);
+		SetFontSize(48);
+		DrawString(SCREEN_WIDTH / 2,SCREEN_HEIGHT / 2 + 100, "再開", 0xffffff);
+		DrawString(SCREEN_WIDTH / 2,SCREEN_HEIGHT / 2 + 150, "オプション", 0xffffff);
+		DrawString(SCREEN_WIDTH / 2,SCREEN_HEIGHT / 2 + 200, "タイトル", 0xffffff);
+		UserData::DrawCoin({ (float)SCREEN_WIDTH / 2 - 30, (float)SCREEN_HEIGHT / 2 + (pause_cursor * 50) + pause_cursor / 2 +100}, 20, 227 + abs(((int)frame % 56 - 28)), 200);
+
 	}
 	//チュートリアルフラグが立っていたら、チュートリアル描画
 	if (tutorial->GetTutorialFlg())
@@ -708,7 +759,7 @@ void InGameScene::TutorialUpdate()
 								   ((camera_center.y - rand.y) + (GetRand(SCREEN_HEIGHT - 200) - (SCREEN_HEIGHT - 200) / 2)) / 10 };
 		objects->CreateObject(eCOIN, rand, { 40,40 }, 20.f, rand_velocity);
 	}
-
+	DebugInfomation::Add("move", tutorial->GetIsEndTutorial(TutoType::tMove));
 	BonusCoinUpdate();
 
 	//チュートリアルが終わっていないとタイマーが動かず、敵とコインが湧かないようにする

@@ -60,6 +60,9 @@ private:
 	int game_over_se;			//ゲームオーバー効果音
 	int clap_se;				//拍手効果音
 	int coin_se;				//コインSE
+	int cursor_se;				//カーソルSE
+	int enter_se;				//決定SE
+
 
 public:
 	InGameScene();

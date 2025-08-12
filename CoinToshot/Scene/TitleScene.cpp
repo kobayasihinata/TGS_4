@@ -78,12 +78,13 @@ eSceneType TitleScene::Update(float _delta)
 				case TitleItem::tGameMain:
 					StopSoundMem(title_bgm);
 					//既プレイならチュートリアルをスキップできる
-					if (tutorial->tuto_flg)
+					if (tutorial->tuto_flg && tutorial->GetBasicTuto())
 					{
 						tuto_reset_flg = true;
 					}
 					else
 					{
+						tutorial->tuto_flg = false;
 						tutorial->Initialize();
 						return eSceneType::eInGame;
 					}
