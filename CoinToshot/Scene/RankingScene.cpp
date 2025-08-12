@@ -13,7 +13,7 @@ RankingScene::RankingScene()
 	ranking_bgm = rm->GetSounds("Resource/Sounds/BGM/Sweet_smelling_flower.mp3");
 	if (!CheckSoundMem(ranking_bgm))
 	{
-		ResourceManager::rPlaySound(ranking_bgm,DX_PLAYTYPE_BACK,TRUE);
+		ResourceManager::rPlaySound(ranking_bgm,DX_PLAYTYPE_LOOP,TRUE);
 	}
 }
 

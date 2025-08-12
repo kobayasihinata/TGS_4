@@ -10,6 +10,7 @@
 
 InGameScene::InGameScene() : objects(nullptr)
 {
+
 }
 
 InGameScene::~InGameScene()
@@ -38,6 +39,7 @@ void InGameScene::Initialize()
 	change_result = false;
 	tuto_coin_count = 0;
 	pause_flg = false;
+	pause_cursor = 0;
 	coin_spawn_once = false;
 	first_bonus_count = 0;
 	bonus_timer = 0;
@@ -54,7 +56,7 @@ void InGameScene::Initialize()
 	guide_local_loc = 0;
 	guide_size = 95;
 	//チュートリアルが完了していないなら初期コインは0枚、しているなら20枚
-	UserData::coin = tutorial->GetBasicTuto() ? 2500 : 0;
+	UserData::coin = tutorial->GetBasicTuto() ? 20 : 0;
 
 	//オブジェクト管理クラス生成
 	objects = new ObjectManager();
@@ -194,6 +196,11 @@ eSceneType InGameScene::Update(float _delta)
 			objects->CreateObject({ Vector2D{ 150, 30 },Vector2D{40,40},eCOIN, 20.f });  
 		}
 #endif // _DEBUG
+
+	}
+	//ポーズ画面
+	else if (pause_flg)
+	{
 
 	}
 	//遷移アニメーション

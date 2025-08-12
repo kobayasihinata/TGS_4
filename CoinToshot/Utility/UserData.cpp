@@ -196,7 +196,7 @@ bool UserData::CheckBulletChangeButtonRight()
 	{
 		//右トリガー
 	case 0:
-		return InputPad::OnPressed(R_TRIGGER);
+		return InputPad::OnButton(R_TRIGGER);
 		break;
 
 		//RB
@@ -211,7 +211,7 @@ bool UserData::CheckBulletChangeButtonLeft()
 	{
 		//左トリガー
 	case 0:
-		return InputPad::OnPressed(L_TRIGGER);
+		return InputPad::OnButton(L_TRIGGER);
 		break;
 
 		//LB
