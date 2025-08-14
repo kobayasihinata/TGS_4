@@ -26,7 +26,7 @@ private:
 	void Draw()const;
 
 	//ƒV[ƒ“Ø‚è‘Ö‚¦ˆ—
-	void ChangeScene(eSceneType type);
+	void ChangeScene(eSceneType type,SceneBase* scene = nullptr);
 };
 
 

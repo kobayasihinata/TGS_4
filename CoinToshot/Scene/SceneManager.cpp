@@ -130,7 +130,7 @@ void SceneManager::Update()
 		//シーン切り替え
 		if (next_scene_type != current_scene->GetNowSceneType())
 		{
-			ChangeScene(next_scene_type);
+			ChangeScene(next_scene_type, UserData::old_scene);
 		}
 
 		//強制終了ボタン
@@ -184,10 +184,19 @@ void SceneManager::Draw()const
 }
 
 
-void SceneManager::ChangeScene(eSceneType type)
+void SceneManager::ChangeScene(eSceneType type, SceneBase* scene)
 {
-	//引数で渡された情報から新しいシーンを作成する
-	SceneBase* new_scene = SceneFactory::CreateScene(type);
+	SceneBase* new_scene;
+
+	if (scene != nullptr)
+	{
+		//引数で渡された情報から新しいシーンを作成する
+		new_scene = SceneFactory::CreateScene(type);
+	}
+	else
+	{
+		new_scene = scene;
+	}
 
 	//エラーチェック
 	if (new_scene == nullptr)
@@ -202,7 +211,7 @@ void SceneManager::ChangeScene(eSceneType type)
 		delete current_scene;
 	}
 
-	//新しいシーンの初期化
-	new_scene->Initialize();
+	//新しいシーンの初期化(既存のシーンに戻らないなら)
+	if(scene == nullptr)new_scene->Initialize();
 	current_scene = new_scene;
 }
