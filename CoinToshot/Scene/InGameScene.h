@@ -53,15 +53,18 @@ private:
 
 	bool pause_flg;				//一時停止判断
 	int pause_cursor;			//ポーズ画面のカーソル
+	bool back_title_flg;			//タイトル画面に戻るか確認する画面を表示するか判断
+	int back_title_cursor;		//タイトル画面に戻るか確認
 	bool coin_spawn_once;		//最低保証コインのスポーン
 
 	int gamemain_bgm;			//BGM格納
-	int game_clear_se;			//ゲームクリア効果音
-	int game_over_se;			//ゲームオーバー効果音
-	int clap_se;				//拍手効果音
+	int game_clear_se;			//ゲームクリアSE
+	int game_over_se;			//ゲームオーバーSE
+	int clap_se;				//拍手sE
 	int coin_se;				//コインSE
 	int cursor_se;				//カーソルSE
 	int enter_se;				//決定SE
+	int back_se;				//戻るボタンSE
 
 
 public:

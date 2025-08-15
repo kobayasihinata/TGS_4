@@ -266,13 +266,13 @@ void GameSceneUI::Draw()const
 	//ボタンを押したら画像を変える
 	if (UserData::control_type == 0)
 	{
-		DrawRotaGraphF(button_lt.x, button_lt.y, 1.5f, 0, UserData::button_image[(int)InputPad::OnPressed(L_TRIGGER)][L_TRIGGER], true);
-		DrawRotaGraphF(button_rt.x, button_rt.y, 1.5f, 0, UserData::button_image[(int)InputPad::OnPressed(R_TRIGGER)][R_TRIGGER], true);
+		DrawRotaGraphF(button_lt.x, button_lt.y, 1.5f, 0, UserData::button_image[(int)InputPad::OnButton(L_TRIGGER)][L_TRIGGER], true);
+		DrawRotaGraphF(button_rt.x, button_rt.y, 1.5f, 0, UserData::button_image[(int)InputPad::OnButton(R_TRIGGER)][R_TRIGGER], true);
 	}
 	else if(UserData::control_type == 1)
 	{
-		DrawRotaGraphF(button_lt.x, button_lt.y, 1.f, 0, UserData::button_image[(int)InputPad::OnPressed(XINPUT_BUTTON_LEFT_SHOULDER)][XINPUT_BUTTON_LEFT_SHOULDER], true);
-		DrawRotaGraphF(button_rt.x, button_rt.y, 1.f, 0, UserData::button_image[(int)InputPad::OnPressed(XINPUT_BUTTON_RIGHT_SHOULDER)][XINPUT_BUTTON_RIGHT_SHOULDER], true);
+		DrawRotaGraphF(button_lt.x, button_lt.y, 1.f, 0, UserData::button_image[(int)InputPad::OnButton(XINPUT_BUTTON_LEFT_SHOULDER)][XINPUT_BUTTON_LEFT_SHOULDER], true);
+		DrawRotaGraphF(button_rt.x, button_rt.y, 1.f, 0, UserData::button_image[(int)InputPad::OnButton(XINPUT_BUTTON_RIGHT_SHOULDER)][XINPUT_BUTTON_RIGHT_SHOULDER], true);
 	}
 
 	//弾種類を変えられない状態なら、ボタンの上に×を描画
@@ -567,8 +567,12 @@ void GameSceneUI::DrawPlayerUI()const
 		"×%d", 
 		UserData::coin);
 
-	DrawString(75, 15, ": 一時停止", 0x000000);
-	UserData::DrawButtonImage({45, 30 }, XINPUT_BUTTON_START, 75);
+	//一時停止可能な時だけ表示する
+	if (!tutorial->GetTutorialFlg())
+	{
+		DrawString(75, 15, ": 一時停止", 0x000000);
+		UserData::DrawButtonImage({45, 30 }, XINPUT_BUTTON_START, 75);
+	}
 	SetFontSize(old);
 
 	//残り時間１０秒以下なら、カウントダウンを描画する

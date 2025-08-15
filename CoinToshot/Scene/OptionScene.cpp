@@ -120,7 +120,7 @@ void OptionScene::Draw()const
 {
 	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x999900, TRUE);
 	UserData::DrawCoin({ SCREEN_WIDTH + 100, SCREEN_HEIGHT / 2 }, 900);
-	int size = 48;
+	int size = 64;
 	SetFontSize(size);
 
 	//選択された項目ごとの更新
@@ -141,7 +141,7 @@ void OptionScene::Draw()const
 			DrawFormatString(50, 100 + i * (SCREEN_HEIGHT / OPTION_NUM), 0x000000, "%s", option_text[i]);
 			if (cursor == i)
 			{
-				UserData::DrawCoin({ 30.f, (float)124 + i * (SCREEN_HEIGHT / OPTION_NUM) }, 20, 227 + abs(((int)frame % 56 - 28)), 200);
+				UserData::DrawCoin({ 30.f, (float)135 + i * (SCREEN_HEIGHT / OPTION_NUM) }, 20, 227 + abs(((int)frame % 56 - 28)), 200);
 			}
 		}
 		Vector2D _loc = { 700,900 };
@@ -280,12 +280,12 @@ void OptionScene::VolumeDraw()const
 	Vector2D se_loc = { 700,150 };
 	Vector2D bgm_loc = { 700,550 };
 	int span = 40;	//ゲージの間隔
-	DrawString(se_loc.x + (span*9/2) - (GetDrawStringWidth("SE",strlen("SE"))/2) +1, se_loc.y - 49, "SE", 0xffffff);
-	DrawString(se_loc.x + (span*9/2) - (GetDrawStringWidth("SE",strlen("SE"))/2), se_loc.y - 50, "SE", 0x000000);
+	DrawString(se_loc.x + (span*9/2) - (GetDrawStringWidth("SE",strlen("SE"))/2) +1, se_loc.y - 69, "SE", 0xffffff);
+	DrawString(se_loc.x + (span*9/2) - (GetDrawStringWidth("SE",strlen("SE"))/2), se_loc.y - 70, "SE", 0x000000);
 	DrawBox(se_loc.x, se_loc.y, se_loc.x + span*9, se_loc.y + 50, 0x555500, TRUE);
 	DrawBox(se_loc.x, se_loc.y, se_loc.x + UserData::se_volume_num * span, se_loc.y + 50, 0xffff00, TRUE);
-	DrawString(bgm_loc.x + (span * 9 / 2) - (GetDrawStringWidth("BGM", strlen("BGM")) / 2)+1, bgm_loc.y - 49, "BGM", 0xffffff);
-	DrawString(bgm_loc.x + (span * 9 / 2) - (GetDrawStringWidth("BGM", strlen("BGM")) / 2), bgm_loc.y - 50, "BGM", 0x000000);
+	DrawString(bgm_loc.x + (span * 9 / 2) - (GetDrawStringWidth("BGM", strlen("BGM")) / 2)+1, bgm_loc.y - 69, "BGM", 0xffffff);
+	DrawString(bgm_loc.x + (span * 9 / 2) - (GetDrawStringWidth("BGM", strlen("BGM")) / 2), bgm_loc.y - 70, "BGM", 0x000000);
 	DrawBox(bgm_loc.x, bgm_loc.y, bgm_loc.x + span * 9, bgm_loc.y + 50, 0x555500, TRUE);
 	DrawBox(bgm_loc.x, bgm_loc.y, bgm_loc.x + UserData::bgm_volume_num * span, bgm_loc.y + 50, 0xffff00, TRUE);
 
@@ -347,8 +347,8 @@ void OptionScene::ControlDraw()const
 		DrawFormatString(50, 100 + i * (SCREEN_HEIGHT / OPTION_NUM), 0x000000, "%s", option_text[i]);
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
-	Vector2D cont_text_loc = { 700,250 };
-	DrawFormatString(cont_text_loc.x, cont_text_loc.y - 100, 0x000000, "type:%d", UserData::control_type);
+	Vector2D cont_text_loc = { 700,300 };
+	DrawFormatString(cont_text_loc.x, cont_text_loc.y - 120, 0x000000, "type:%d", UserData::control_type);
 	switch (UserData::control_type)
 	{
 		//LBRB発射 トリガー変更
@@ -420,7 +420,16 @@ void OptionScene::EndUpdate()
 			break;
 		//オプション終了
 		case 1:
-			change_scene = eSceneType::eTitle;
+			//ゲームメインからオプションへ移動していたのなら、ゲームメインへ
+			if (UserData::old_scene != NULL)
+			{
+				change_scene = eSceneType::eInGame;
+			}
+			//そうでないならタイトルへ
+			else
+			{
+				change_scene = eSceneType::eTitle;
+			}
 			ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
 			break;
 		default:
@@ -438,9 +447,9 @@ void OptionScene::EndDraw()const
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
 	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
-	DrawString(500, 300, "タイトルに戻りますか？", 0xffffff);
-	DrawString(520, 350, "いいえ", 0xffffff);
-	DrawString(720, 350, "はい", 0xffffff);
-	UserData::DrawCoin({ (float)500 + (end_cursor*200), 375 }, 20, 227 + abs(((int)frame % 56 - 28)), 200);
+	DrawString(SCREEN_WIDTH/2 - 200, SCREEN_HEIGHT/2, UserData::old_scene == NULL ? "タイトルに戻りますか？" : "ゲームに戻りますか？", 0xffffff);
+	DrawString(SCREEN_WIDTH / 2 - 180, SCREEN_HEIGHT / 2 + 50, "いいえ", end_cursor == 0 ? 0xffff00 : 0xffffff);
+	DrawString(SCREEN_WIDTH / 2 + 220, SCREEN_HEIGHT / 2 + 50, "はい", end_cursor == 1 ? 0xffff00 : 0xffffff);
+	UserData::DrawCoin({ (float)SCREEN_WIDTH / 2 - 200 + (end_cursor*400), SCREEN_HEIGHT / 2 + 85 }, 20, 227 + abs(((int)frame % 56 - 28)), 200);
 }
 

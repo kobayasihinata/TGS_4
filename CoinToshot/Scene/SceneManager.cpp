@@ -188,30 +188,48 @@ void SceneManager::ChangeScene(eSceneType type, SceneBase* scene)
 {
 	SceneBase* new_scene;
 
-	if (scene != nullptr)
+	//シーン情報を保持していない状態or現在のシーンを保存したなら、新しいシーンを生成する
+	if (scene == NULL || current_scene == scene)
 	{
 		//引数で渡された情報から新しいシーンを作成する
 		new_scene = SceneFactory::CreateScene(type);
+
+		//エラーチェック
+		if (new_scene == nullptr)
+		{
+			throw("シーンが生成できませんでした");
+		}
+
+		//現在シーンの終了処理(ポインタを保存していないなら)
+		if (current_scene != nullptr && current_scene != scene)
+		{
+			current_scene->Finalize();
+			delete current_scene;
+		}
+
+		//新しいシーンの初期化(既存のシーンに戻らないなら)
+		new_scene->Initialize();
+		current_scene = new_scene;
 	}
+	//保存したシーンに戻る処理
 	else
 	{
 		new_scene = scene;
-	}
+		UserData::old_scene = NULL;
 
-	//エラーチェック
-	if (new_scene == nullptr)
-	{
-		throw("シーンが生成できませんでした");
-	}
+		//エラーチェック
+		if (new_scene == nullptr)
+		{
+			throw("シーンが生成できませんでした");
+		}
 
-	//現在シーンの終了処理
-	if (current_scene != nullptr)
-	{
-		current_scene->Finalize();
-		delete current_scene;
-	}
+		//現在シーンの終了処理(ポインタを保存していないなら)
+		if (current_scene != nullptr && current_scene != scene)
+		{
+			current_scene->Finalize();
+			delete current_scene;
+		}
 
-	//新しいシーンの初期化(既存のシーンに戻らないなら)
-	if(scene == nullptr)new_scene->Initialize();
-	current_scene = new_scene;
+		current_scene = new_scene;
+	}
 }

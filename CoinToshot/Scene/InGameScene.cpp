@@ -40,6 +40,8 @@ void InGameScene::Initialize()
 	tuto_coin_count = 0;
 	pause_flg = false;
 	pause_cursor = 0;
+	back_title_flg = false;
+	back_title_cursor = 0;
 	coin_spawn_once = false;
 	first_bonus_count = 0;
 	bonus_timer = 0;
@@ -88,6 +90,7 @@ void InGameScene::Initialize()
 	coin_se = rm->GetSounds("Resource/Sounds/Coin/Get.mp3");
 	cursor_se = rm->GetSounds("Resource/Sounds/cursor.mp3");
 	enter_se = rm->GetSounds("Resource/Sounds/Coin/Get.mp3");
+	back_se = rm->GetSounds("Resource/Sounds/Hanahana/button.mp3");
 
 	//BGMを初めから再生するための処理
 	ResourceManager::rPlaySound(gamemain_bgm, DX_PLAYTYPE_LOOP, TRUE);
@@ -127,7 +130,7 @@ eSceneType InGameScene::Update(float _delta)
 		UserData::coin_graph.push_back(UserData::coin);
 	}
 	//一時停止フラグ切り替え
-	if (InputPad::OnButton(XINPUT_BUTTON_START) && !tutorial->GetTutorialFlg())
+	if (InputPad::OnButton(XINPUT_BUTTON_START) && !tutorial->GetTutorialFlg() && !start_anim_flg)
 	{
 		pause_flg = !pause_flg;
 	}
@@ -204,48 +207,107 @@ eSceneType InGameScene::Update(float _delta)
 	//ポーズ画面
 	else if (pause_flg)
 	{
-		//下入力で項目下移動
-		if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_DOWN) || InputPad::GetPressedButton(L_STICK_DOWN))
+		//タイトル画面に戻る確認画面が出ていなければポーズ更新
+		if (!back_title_flg)
 		{
-			if (++pause_cursor >= 3)
+			if (CheckSoundMem(gamemain_bgm))
 			{
-				pause_cursor = 0;
+				StopSoundMem(gamemain_bgm);
 			}
-			ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
-		}
-		//上入力で項目上移動
-		if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_UP) || InputPad::GetPressedButton(L_STICK_UP))
-		{
-			if (--pause_cursor < 0)
+			//下入力で項目下移動
+			if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_DOWN) || InputPad::GetPressedButton(L_STICK_DOWN))
 			{
-				pause_cursor = 2;
+				if (++pause_cursor >= 3)
+				{
+					pause_cursor = 0;
+				}
+				ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 			}
-			ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
-		}
-		//Aボタンでカーソルが合っているところの処理を実行
-		if (InputPad::OnButton(XINPUT_BUTTON_A))
-		{
-			ResourceManager::rPlaySound(enter_se, DX_PLAYTYPE_BACK);
-			switch (pause_cursor)
+			//上入力で項目上移動
+			if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_UP) || InputPad::GetPressedButton(L_STICK_UP))
 			{
-			case 0:	//ゲームに戻る
-				pause_flg = false;
-				break;
-			case 1: //オプション
-				break;
-			case 2: //タイトルに戻る
-				return eSceneType::eTitle;
-				break;
-			default: 
-				break;
+				if (--pause_cursor < 0)
+				{
+					pause_cursor = 2;
+				}
+				ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 			}
+			//Aボタンでカーソルが合っているところの処理を実行
+			if (InputPad::OnButton(XINPUT_BUTTON_A))
+			{
+				ResourceManager::rPlaySound(enter_se, DX_PLAYTYPE_BACK);
+				switch (pause_cursor)
+				{
+				case 0:	//ゲームに戻る
+					pause_flg = false;
+					break;
+				case 1: //オプション
+					UserData::old_scene = this;
+					return eSceneType::eOption;
+					break;
+				case 2: //タイトルに戻る
+					//確認画面を表示
+					back_title_flg = true;
+					break;
+				default:
+					break;
+				}
 
+			}
+			//Bボタンでゲームに戻る
+			if (InputPad::OnButton(XINPUT_BUTTON_B))
+			{
+				ResourceManager::rPlaySound(enter_se, DX_PLAYTYPE_BACK);
+				pause_flg = false;
+			}
 		}
-		//Bボタンでゲームに戻る
-		if (InputPad::OnButton(XINPUT_BUTTON_B))
+		//タイトル画面に戻る確認画面が出ていれば確認画面更新
+		else
 		{
-			ResourceManager::rPlaySound(enter_se, DX_PLAYTYPE_BACK);
-			pause_flg = false;
+			//左右入力で終了のカーソル移動
+			if (InputPad::OnButton(XINPUT_BUTTON_DPAD_LEFT) ||
+				InputPad::OnButton(L_STICK_LEFT))
+			{
+				if (--back_title_cursor < 0)
+				{
+					back_title_cursor = 1;
+				}
+				ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
+			}
+			if (InputPad::OnButton(XINPUT_BUTTON_DPAD_RIGHT) ||
+				InputPad::OnButton(L_STICK_RIGHT))
+			{
+				if (++back_title_cursor > 1)
+				{
+					back_title_cursor = 0;
+				}
+				ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
+			}
+			//Bボタンで項目の選択を解除
+			if (InputPad::OnButton(XINPUT_BUTTON_B))
+			{
+				back_title_flg = false;
+				ResourceManager::rPlaySound(back_se, DX_PLAYTYPE_BACK);
+			}
+			//Aボタンでカーソルが合っている場所ごとの処理
+			if (InputPad::OnButton(XINPUT_BUTTON_A))
+			{
+				switch (back_title_cursor)
+				{
+					//項目の選択解除
+				case 0:
+					back_title_flg = false;
+					ResourceManager::rPlaySound(back_se, DX_PLAYTYPE_BACK);
+					break;
+					//タイトル遷移
+				case 1:
+					change_scene = eSceneType::eTitle;
+					ResourceManager::rPlaySound(enter_se, DX_PLAYTYPE_BACK);
+					break;
+				default:
+					break;
+				}
+			}
 		}
 	}
 	//遷移アニメーション
@@ -369,11 +431,20 @@ void InGameScene::MakeGameMainDraw()
 		SetFontSize(72);
 		UserData::DrawStringCenter({ SCREEN_WIDTH / 2,SCREEN_HEIGHT / 2 }, "ポーズ中", 0xffffff);
 		SetFontSize(48);
-		DrawString(SCREEN_WIDTH / 2,SCREEN_HEIGHT / 2 + 100, "再開", 0xffffff);
-		DrawString(SCREEN_WIDTH / 2,SCREEN_HEIGHT / 2 + 150, "オプション", 0xffffff);
-		DrawString(SCREEN_WIDTH / 2,SCREEN_HEIGHT / 2 + 200, "タイトル", 0xffffff);
-		UserData::DrawCoin({ (float)SCREEN_WIDTH / 2 - 30, (float)SCREEN_HEIGHT / 2 + (pause_cursor * 50) + pause_cursor / 2 +100}, 20, 227 + abs(((int)frame % 56 - 28)), 200);
-
+		if (back_title_flg)
+		{
+			DrawString(SCREEN_WIDTH / 2 - 200, SCREEN_HEIGHT / 2 +100, "タイトルに戻りますか？", 0xffffff);
+			DrawString(SCREEN_WIDTH / 2 - 180, SCREEN_HEIGHT / 2 + 150, "いいえ", back_title_cursor == 0 ? 0xffff00 : 0xffffff);
+			DrawString(SCREEN_WIDTH / 2 + 120, SCREEN_HEIGHT / 2 + 150, "はい", back_title_cursor == 1 ? 0xffff00 : 0xffffff);
+			UserData::DrawCoin({ (float)SCREEN_WIDTH / 2 - 200 + (back_title_cursor * 300), SCREEN_HEIGHT / 2 + 185 }, 20, 227 + abs(((int)frame % 56 - 28)), 200);
+		}
+		else
+		{
+			DrawString(SCREEN_WIDTH / 2-50, SCREEN_HEIGHT / 2 + 100, "再開", 0xffffff);
+			DrawString(SCREEN_WIDTH / 2-50, SCREEN_HEIGHT / 2 + 150, "オプション", 0xffffff);
+			DrawString(SCREEN_WIDTH / 2-50, SCREEN_HEIGHT / 2 + 200, "タイトル", 0xffffff);
+			UserData::DrawCoin({ (float)SCREEN_WIDTH / 2 - 80, (float)SCREEN_HEIGHT / 2 + (pause_cursor * 50) + 130 }, 20, 227 + abs(((int)frame % 56 - 28)), 200);
+		}
 	}
 	//チュートリアルフラグが立っていたら、チュートリアル描画
 	if (tutorial->GetTutorialFlg())
@@ -398,6 +469,8 @@ void InGameScene::MakeGameMainDraw()
 			UserData::DrawCoin(coin_loc, 80 - coin_size * 2, 255, 255, 255);
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 		}
+		SetFontSize(32);
+		UserData::DrawButtonAndString({ SCREEN_WIDTH - 120,SCREEN_HEIGHT - 30 }, XINPUT_BUTTON_A, ":早送り", 0x000000);
 	}
 	//時間経過ボーナス描画
 	if (bonus_timer > 0)

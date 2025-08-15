@@ -35,7 +35,7 @@ int UserData::se_volume_num = 7;
 int UserData::bgm_volume = 0;
 int UserData::bgm_volume_num = 7;
 int UserData::control_type = 0;
-SceneBase* UserData::old_scene = nullptr;
+SceneBase* UserData::old_scene = NULL;
 	
 int UserData::variable = 0;
 bool UserData::variable_change = 0;
