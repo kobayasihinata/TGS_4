@@ -20,6 +20,12 @@ void GameSceneUI::Initialize()
 	old_coin_num = 0;
 	first_bonus_timer = 0;
 	second_bonus_timer = 0;
+	rank_anim_flg = false;
+	rank_timer = 0;
+	old_rank = 0;
+	old_rank_keep = 0;
+
+	now_rank = -1; //0から順に一位、二位なので11を入れておく
 	damage_timer = 0;
 	con_spawn = 1;
 	//ロックの画像生成
@@ -210,6 +216,34 @@ void GameSceneUI::Update()
 	else
 	{
 		damage_timer = 0;
+	}
+
+	//現在のランキング計測
+	old_rank = now_rank;
+	now_rank = -1;
+	for (int i = 0; i < 10; i++)
+	{
+		if (UserData::ranking_data[i].coin < UserData::coin + ((DEFAULT_TIMELIMIT - UserData::timer) / 60) + (UserData::player_hp * 10))
+		{
+			now_rank = UserData::ranking_data[i].num;
+			break;
+		}
+	}
+
+	//ランキングが変わっているならアニメーション開始
+	if (now_rank != old_rank)
+	{
+		rank_anim_flg = true;
+		rank_timer = 0;
+		old_rank_keep = old_rank;
+	}
+
+	if (rank_anim_flg)
+	{
+		if (++rank_timer > 180)
+		{
+			rank_anim_flg = false;
+		}
 	}
 	//弾種類見た目生成
 	CreateBulletTypeImage();
@@ -536,28 +570,9 @@ void GameSceneUI::DrawPlayerUI()const
 			SetFontSize(36);
 		}
 	}
-	//新記録なら
-	if (UserData::ranking_data[9].coin < UserData::coin)
-	{
-		int rank = 0;
-		for (int i = 0; i < 10; i++)
-		{
-			if (UserData::ranking_data[i].coin < UserData::coin)
-			{
-				rank = UserData::ranking_data[i].num;
-				break;
-			}
-		}
-		DrawString(SCREEN_WIDTH - GetDrawStringWidth("新記録！", strlen("新記録！")) - 145,
-			player_ui_loc.y + 70, 
-			"新記録！", 
-			frame % 30 > 15 ?0xff0000: 0xffffff);
-		DrawFormatString(SCREEN_WIDTH - GetDrawStringWidth("新記録！", strlen("新記録！"))-25,
-			player_ui_loc.y + 70,
-			frame % 30 > 15 ? 0xff0000 : 0xffffff,
-			"現在%d位!",
-			rank);
-	}
+	//ランキング描画
+	DrawRanking();
+
 	UserData::DrawCoin({ player_ui_loc.x - GetDrawFormatStringWidth("×%d", UserData::coin) + 480, 
 		player_ui_loc.y + 45 }, 
 		30);
@@ -602,4 +617,41 @@ bool GameSceneUI::CheckMoveDirection(int _now, int _old)const
 	if (_now > _old) return false;
 	//どれでもないなら
 	return -1;
+}
+
+void GameSceneUI::DrawRanking()const
+{
+	//新記録なら
+	if (now_rank > -1)
+	{
+		DrawString(SCREEN_WIDTH - GetDrawStringWidth("新記録！", strlen("新記録！")) - 145,
+			player_ui_loc.y + 70,
+			"新記録！",
+			frame % 30 > 15 ? 0xff0000 : 0xffffff);
+		DrawFormatString(SCREEN_WIDTH - GetDrawStringWidth("新記録！", strlen("新記録！")) - 25,
+			player_ui_loc.y + 70,
+			frame % 30 > 15 ? 0xff0000 : 0xffffff,
+			"現在%d位!",
+			now_rank);
+	}
+	//順位更新アニメーション
+	if (rank_anim_flg)
+	{
+		Vector2D r_loc = { 100.f,(float)SCREEN_HEIGHT - 200 };
+		int anim_1 = 60;	//ひとつ前の順位が表示されている時間
+		if (frame % 30 > 15)DrawStringF(r_loc.x, r_loc.y - 50, old_rank_keep > now_rank || old_rank_keep == -1 ? "RANK UP!!!" : "RANK DOWN...", old_rank_keep > now_rank ? 0xffffff : 0x0000aa);
+		rank_timer;
+		if (rank_timer < anim_1)
+		{
+			SetFontSize(36 - (rank_timer / 5));
+			DrawFormatStringF(r_loc.x, r_loc.y + (rank_timer/2), 0xffffff, "%d位", old_rank_keep);
+		}
+		else
+		{
+			SetFontSize(36 - (anim_1 / 5));
+			DrawFormatStringF(r_loc.x+GetFontSize()/2, r_loc.y + anim_1, 0xffffff, "%d位", old_rank_keep);
+			SetFontSize(36);
+			DrawFormatStringF(r_loc.x, r_loc.y, 0xffffff, "%d位", now_rank);
+		}
+	}
 }

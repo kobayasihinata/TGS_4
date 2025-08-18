@@ -69,6 +69,11 @@ private:
 	int first_bonus_timer;	//時間経過ボーナスの表示時間
 	int second_bonus_timer;	//時間経過ボーナスの表示時間
 
+	bool rank_anim_flg;		//ランキングアニメーション中か判断	
+	int rank_timer;			//ランキングアニメーション時間測定
+	int old_rank;			//一フレーム前のランキング格納
+	int old_rank_keep;		//ひとつ前のランキング格納
+	int now_rank;			//現在のランキング格納
 	int damage_timer;		//ダメージ時間測定
 	int con_spawn;			//紙吹雪生成までの間隔
 
@@ -130,4 +135,7 @@ public:
 
 	//弾種類の移動が右か左か判断 true=右
 	bool CheckMoveDirection(int _now, int _old)const;
+
+	//ランキング描画の処理
+	void DrawRanking()const;
 };

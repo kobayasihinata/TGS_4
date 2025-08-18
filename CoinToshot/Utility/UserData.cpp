@@ -36,7 +36,8 @@ int UserData::bgm_volume = 0;
 int UserData::bgm_volume_num = 7;
 int UserData::control_type = 0;
 SceneBase* UserData::old_scene = NULL;
-	
+bool UserData::tuto_flg = false;
+
 int UserData::variable = 0;
 bool UserData::variable_change = 0;
 Vector2D UserData::variable_loc = 0;
@@ -94,6 +95,7 @@ void UserData::ReadRankingData()
 		file >> bgm_volume;
 		file >> bgm_volume_num;
 		file >> control_type;
+		file >> tuto_flg;
 	}
 }
 
@@ -116,7 +118,8 @@ void UserData::WriteData()
 		file << se_volume_num << "\n";
 		file << bgm_volume << "\n";
 		file << bgm_volume_num << "\n";
-		file << control_type;
+		file << control_type << "\n";
+		file << tuto_flg;
 	}
 }
 

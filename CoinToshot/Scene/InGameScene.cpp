@@ -101,6 +101,7 @@ void InGameScene::Finalize()
 {
 	//チュートリアルを受けた事があると判断
 	tutorial->tuto_flg = true;
+	UserData::tuto_flg = true;
 	//万が一チュートリアル中にゲームが終了した場合は、チュートリアル履歴をリセット
 	if (tutorial->GetNowTutorial() == TutoType::tAim || tutorial->GetNowTutorial() == TutoType::tAttack)
 	{
@@ -446,11 +447,6 @@ void InGameScene::MakeGameMainDraw()
 			UserData::DrawCoin({ (float)SCREEN_WIDTH / 2 - 80, (float)SCREEN_HEIGHT / 2 + (pause_cursor * 50) + 130 }, 20, 227 + abs(((int)frame % 56 - 28)), 200);
 		}
 	}
-	//チュートリアルフラグが立っていたら、チュートリアル描画
-	if (tutorial->GetTutorialFlg())
-	{
-		tutorial->Draw();
-	}
 	//遷移時アニメーションフラグが立っていたら、アニメーション処理
 	if (start_anim_flg)
 	{
@@ -500,6 +496,11 @@ void InGameScene::MakeGameMainDraw()
 				"1/3 経過ボーナス！");
 		}
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+	}
+	//チュートリアルフラグが立っていたら、チュートリアル描画
+	if (tutorial->GetTutorialFlg())
+	{
+		tutorial->Draw();
 	}
 	//最低保証コインが出た時のメッセージ
 	if (coin_spawn_once)
