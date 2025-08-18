@@ -100,12 +100,11 @@ void InGameScene::Initialize()
 void InGameScene::Finalize()
 {
 	//チュートリアルを受けた事があると判断
-	tutorial->tuto_flg = true;
 	UserData::tuto_flg = true;
 	//万が一チュートリアル中にゲームが終了した場合は、チュートリアル履歴をリセット
 	if (tutorial->GetNowTutorial() == TutoType::tAim || tutorial->GetNowTutorial() == TutoType::tAttack)
 	{
-		tutorial->tuto_flg = false;
+		UserData::tuto_flg = false;
 	}
 	//カメラを初期位置に戻しておく
 	camera->Update({ -SCREEN_WIDTH / 2 + 48, -SCREEN_HEIGHT / 2 + 32 });
@@ -825,7 +824,7 @@ void InGameScene::BonusCoinUpdate()
 void InGameScene::TutorialUpdate()
 {
 	//移動チュートリアルが終わっていたらコイン投げ入れ
-	if (!tutorial->tuto_flg && tutorial->GetIsEndTutorial(TutoType::tMove) && (int)frame % 10 == 0 && tuto_coin_count++ < 20)
+	if (!UserData::tuto_flg && tutorial->GetIsEndTutorial(TutoType::tMove) && (int)frame % 10 == 0 && tuto_coin_count++ < 20)
 	{
 		Vector2D rand = GetRandLoc();
 		Vector2D camera_center = { camera->GetCameraLocation().x + (SCREEN_WIDTH / 2),camera->GetCameraLocation().y + (SCREEN_HEIGHT / 2) };
