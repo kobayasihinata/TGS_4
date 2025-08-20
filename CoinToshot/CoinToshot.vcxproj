@@ -213,6 +213,7 @@
     <ClInclude Include="Object\Enemy\Enemy1.h" />
     <ClInclude Include="Object\Player\Player.h" />
     <ClInclude Include="Scene\OptionScene.h" />
+    <ClInclude Include="Scene\RankColor.h" />
     <ClInclude Include="Scene\RankingScene.h" />
     <ClInclude Include="Scene\ResultScene.h" />
     <ClInclude Include="Scene\InGameScene.h" />

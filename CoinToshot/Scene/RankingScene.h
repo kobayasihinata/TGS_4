@@ -1,19 +1,7 @@
 #pragma once
 #include "SceneBase.h"
+#include "RankColor.h"
 
-static int rank_color[10]
-{
-	0xffff44,
-	0xdddd44,
-	0xbbbb77,
-	0x666644,
-	0x666644,
-	0x666644,
-	0x666644,
-	0x666644,
-	0x666644,
-	0x666644,
-};
 class RankingScene : public SceneBase
 {
 private:

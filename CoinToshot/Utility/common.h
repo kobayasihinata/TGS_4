@@ -1,6 +1,6 @@
 #pragma once
 #define DEBUG_SKIP true			//デバッグ用チュートリアルスキップモード
-#define DEBUG_PLAYER true		//クリアと死をすぐ確認したい時用
+#define DEBUG_PLAYER false		//クリアと死をすぐ確認したい時用
 #define WINDOW_MODE false		//フルスクリーンかどうか
 
 #define SE_MAX 13000	//SE音量の上限

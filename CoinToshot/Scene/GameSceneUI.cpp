@@ -4,6 +4,7 @@
 #include "../Utility/ResourceManager.h"
 #include "../Utility/DebugInformation.h"
 #include "../Object/Player/PlayerBullet.h"
+#include "RankColor.h"
 
 void GameSceneUI::Initialize()
 {
@@ -550,7 +551,7 @@ void GameSceneUI::DrawPlayerUI()const
 		player_ui_loc.x + 525, player_ui_loc.y + 125,
 		player_ui_loc.x - width +210, player_ui_loc.y + 125,
 		0x666600, TRUE);
-	DrawFormatString(player_ui_loc.x - width +300, player_ui_loc.y+22, 0xffffff, "HP:%d", (int)(UserData::player_hp));
+	DrawFormatString(player_ui_loc.x - width +280, player_ui_loc.y+22, 0xffffff, "HP:%d", (int)(UserData::player_hp));
 	DrawFormatString(player_ui_loc.x - GetDrawFormatStringWidth("TIME:%d %d", (int)(UserData::timer/60), UserData::coin)+415, player_ui_loc.y+22, 0xffffff, "TIME:%d", (int)(UserData::timer/60));
 	
 	int coin_text_color = 0xffffff;
@@ -568,8 +569,6 @@ void GameSceneUI::DrawPlayerUI()const
 			SetFontSize(36);
 		}
 	}
-	//ランキング描画
-	DrawRanking();
 
 	UserData::DrawCoin({ player_ui_loc.x - GetDrawFormatStringWidth("×%d", UserData::coin) + 480, 
 		player_ui_loc.y + 45 }, 
@@ -580,6 +579,10 @@ void GameSceneUI::DrawPlayerUI()const
 		"×%d", 
 		UserData::coin);
 
+	//ランキング描画
+	DrawRanking();
+
+	SetFontSize(36);
 	//一時停止可能な時だけ表示する
 	if (!tutorial->GetTutorialFlg())
 	{
@@ -633,23 +636,25 @@ void GameSceneUI::DrawRanking()const
 			now_rank);
 	}
 	//順位更新アニメーション
-	if (rank_anim_flg)
+	if (rank_anim_flg && old_rank_keep != -1 && now_rank != -1)
 	{
 		Vector2D r_loc = { 100.f,(float)SCREEN_HEIGHT - 200 };
 		int anim_1 = 60;	//ひとつ前の順位が表示されている時間
-		if (frame % 30 > 15)DrawStringF(r_loc.x, r_loc.y - 50, old_rank_keep > now_rank || old_rank_keep == -1 ? "RANK UP!!!" : "RANK DOWN...", old_rank_keep > now_rank ? 0xffffff : 0x0000aa);
-		rank_timer;
+		bool is_rankup = old_rank_keep < now_rank;	//falseならランキングが下がった処理
+		SetFontSize(64);
+		if (frame % 30 < 15)DrawStringF(r_loc.x, r_loc.y - 50, is_rankup || old_rank_keep == -1 ? "RANK DOWN..." : "RANK UP!!!", is_rankup ? 0x0000aa : 0xffffff);
+		//ランキング変動演出
 		if (rank_timer < anim_1)
 		{
-			SetFontSize(36 - (rank_timer / 5));
-			DrawFormatStringF(r_loc.x, r_loc.y + (rank_timer/2), 0xffffff, "%d位", old_rank_keep);
+			SetFontSize(48);
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 - rank_timer * 2);
+			DrawFormatStringF(r_loc.x, r_loc.y, rank_color[old_rank_keep], "%d位", old_rank_keep);
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 		}
 		else
 		{
-			SetFontSize(36 - (anim_1 / 5));
-			DrawFormatStringF(r_loc.x+GetFontSize()/2, r_loc.y + anim_1, 0xffffff, "%d位", old_rank_keep);
-			SetFontSize(36);
-			DrawFormatStringF(r_loc.x, r_loc.y, 0xffffff, "%d位", now_rank);
+			SetFontSize(56);
+			DrawFormatStringF(r_loc.x, r_loc.y, rank_color[now_rank], "%d位", now_rank);
 		}
 	}
 }
