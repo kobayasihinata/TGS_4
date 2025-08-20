@@ -11,7 +11,7 @@ OptionScene::OptionScene()
 	cursor = 0;
 	current_item = oNull;
 
-	volume_cursor = -1;//どこも選択されていない状態
+	volume_cursor = 0;//どこも選択されていない状態
 
 	for (int i = 0; i < 10; i++)
 	{
@@ -65,7 +65,17 @@ eSceneType OptionScene::Update(float _delta)
 		ControlUpdate();
 		break;
 	case OptionItem::oEnd:
-		EndUpdate();
+		//ゲームメインからオプションへ移動していたのなら、ゲームメインへ
+		if (UserData::old_scene != NULL)
+		{
+			change_scene = eSceneType::eInGame;
+		}
+		//そうでないならタイトルへ
+		else
+		{
+			change_scene = eSceneType::eTitle;
+		}
+		ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
 		break;
 	case OptionItem::oNull:
 		//下入力で項目下移動
@@ -132,9 +142,6 @@ void OptionScene::Draw()const
 	case OptionItem::oControl:
 		ControlDraw();
 		break;
-	case OptionItem::oEnd:
-		EndDraw();
-		break;
 	case OptionItem::oNull:
 		for (int i = 0; i < OPTION_NUM; i++)
 		{
@@ -144,6 +151,7 @@ void OptionScene::Draw()const
 				UserData::DrawCoin({ 30.f, (float)135 + i * (SCREEN_HEIGHT / OPTION_NUM) }, 20, 227 + abs(((int)frame % 56 - 28)), 200);
 			}
 		}
+		SetFontSize(48);
 		Vector2D _loc = { 700,900 };
 		UserData::DrawButtonImage(_loc, L_STICK_UP, 72);
 		UserData::DrawButtonImage({ _loc.x + 60,_loc.y }, L_STICK_DOWN, 72);
@@ -172,8 +180,6 @@ void OptionScene::VolumeUpdate()
 	//Bボタンで項目の選択を解除
 	if (InputPad::OnButton(XINPUT_BUTTON_B))
 	{
-		//カーソルのリセット
-		volume_cursor = -1;
 		current_item = OptionItem::oNull;
 		ResourceManager::rPlaySound(back_se, DX_PLAYTYPE_BACK);
 	}
@@ -348,14 +354,23 @@ void OptionScene::ControlDraw()const
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 	Vector2D cont_text_loc = { 700,300 };
-	DrawFormatString(cont_text_loc.x, cont_text_loc.y - 120, 0x000000, "type:%d", UserData::control_type);
+	DrawFormatString(cont_text_loc.x, cont_text_loc.y - 120, 0x000000, "操作タイプ : %d", UserData::control_type);
+	DrawTriangleAA(cont_text_loc.x - 70, cont_text_loc.y - 80,
+		cont_text_loc.x - 30, cont_text_loc.y - 100,
+		cont_text_loc.x - 30, cont_text_loc.y - 60,
+		(InputPad::OnPressed(XINPUT_BUTTON_DPAD_LEFT) || InputPad::OnPressed(L_STICK_LEFT)) ? 0xffffff : 0x000000, true);
+	DrawTriangleAA(cont_text_loc.x + 420, cont_text_loc.y - 80,
+		cont_text_loc.x +380, cont_text_loc.y - 100,
+		cont_text_loc.x +380, cont_text_loc.y - 60,
+		(InputPad::OnPressed(XINPUT_BUTTON_DPAD_RIGHT) || InputPad::OnPressed(L_STICK_RIGHT)) ? 0xffffff : 0x000000, true);
+
 	switch (UserData::control_type)
 	{
 		//LBRB発射 トリガー変更
 	case 0:
 		UserData::DrawButtonImage({ cont_text_loc.x,cont_text_loc.y }, XINPUT_BUTTON_LEFT_SHOULDER, 72);
 		UserData::DrawButtonImage({ cont_text_loc.x + 60,cont_text_loc.y }, XINPUT_BUTTON_RIGHT_SHOULDER, 72);
-		DrawStringF(cont_text_loc.x + 90, cont_text_loc.y - 30, ":弾発射", 0x000000);
+		DrawStringF(cont_text_loc.x + 90, cont_text_loc.y - 40, ":弾発射", 0x000000);
 		UserData::DrawButtonImage({ cont_text_loc.x,cont_text_loc.y + 70 }, L_TRIGGER, 72);
 		UserData::DrawButtonImage({ cont_text_loc.x + 60,cont_text_loc.y+70 }, R_TRIGGER, 72);
 		DrawStringF(cont_text_loc.x + 90, cont_text_loc.y +40, ":弾の種類変更", 0x000000);
@@ -363,7 +378,7 @@ void OptionScene::ControlDraw()const
 		//B発射 LBRB変更
 	case 1:
 		UserData::DrawButtonImage({ cont_text_loc.x,cont_text_loc.y }, XINPUT_BUTTON_B, 72);
-		DrawStringF(cont_text_loc.x + 30, cont_text_loc.y - 30, ":弾発射", 0x000000);
+		DrawStringF(cont_text_loc.x + 30, cont_text_loc.y - 40, ":弾発射", 0x000000);
 		UserData::DrawButtonImage({ cont_text_loc.x,cont_text_loc.y + 70 }, XINPUT_BUTTON_LEFT_SHOULDER, 72);
 		UserData::DrawButtonImage({ cont_text_loc.x + 60,cont_text_loc.y + 70 }, XINPUT_BUTTON_RIGHT_SHOULDER, 72);
 		DrawStringF(cont_text_loc.x + 90, cont_text_loc.y + 40, ":弾の種類変更", 0x000000);
@@ -372,6 +387,7 @@ void OptionScene::ControlDraw()const
 		break;
 	}
 
+	SetFontSize(48);
 	Vector2D _loc = { 700,900 };
 	UserData::DrawButtonImage({ _loc.x,_loc.y}, L_STICK_RIGHT, 72);
 	UserData::DrawButtonImage({ _loc.x + 60,_loc.y}, L_STICK_LEFT, 72);
@@ -379,77 +395,5 @@ void OptionScene::ControlDraw()const
 	UserData::DrawButtonImage({ _loc.x + 180,_loc.y}, XINPUT_BUTTON_DPAD_LEFT, 72);
 	DrawStringF(_loc.x + 210, _loc.y - 30, ":操作タイプ変更", 0x444400);
 	UserData::DrawButtonAndString({ _loc.x + 170,  _loc.y + 70 }, XINPUT_BUTTON_B, ":戻る", 0x444400);
-}
-
-void OptionScene::EndUpdate()
-{
-	//左右入力で終了のカーソル移動
-	if (InputPad::OnButton(XINPUT_BUTTON_DPAD_LEFT) ||
-		InputPad::OnButton(L_STICK_LEFT))
-	{
-		if (--end_cursor < 0)
-		{
-			end_cursor = 1;
-		}
-		ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
-	}
-	if (InputPad::OnButton(XINPUT_BUTTON_DPAD_RIGHT) ||
-		InputPad::OnButton(L_STICK_RIGHT))
-	{
-		if (++end_cursor > 1)
-		{
-			end_cursor = 0;
-		}
-		ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
-	}
-	//Bボタンで項目の選択を解除
-	if (InputPad::OnButton(XINPUT_BUTTON_B))
-	{
-		current_item = OptionItem::oNull;
-		ResourceManager::rPlaySound(back_se, DX_PLAYTYPE_BACK);
-	}
-	//Aボタンでカーソルが合っている場所ごとの処理
-	if (InputPad::OnButton(XINPUT_BUTTON_A))
-	{
-		switch (end_cursor)
-		{
-		//項目の選択解除
-		case 0:
-			current_item = OptionItem::oNull;
-			ResourceManager::rPlaySound(back_se, DX_PLAYTYPE_BACK);
-			break;
-		//オプション終了
-		case 1:
-			//ゲームメインからオプションへ移動していたのなら、ゲームメインへ
-			if (UserData::old_scene != NULL)
-			{
-				change_scene = eSceneType::eInGame;
-			}
-			//そうでないならタイトルへ
-			else
-			{
-				change_scene = eSceneType::eTitle;
-			}
-			ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
-			break;
-		default:
-			break;
-		}
-	}
-}
-
-void OptionScene::EndDraw()const
-{
-	for (int i = 0; i < OPTION_NUM; i++)
-	{
-		DrawFormatString(50, 100 + i * (SCREEN_HEIGHT / OPTION_NUM), 0x000000, "%s", option_text[i]);
-	}
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
-	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, true);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
-	DrawString(SCREEN_WIDTH/2 - 200, SCREEN_HEIGHT/2, UserData::old_scene == NULL ? "タイトルに戻りますか？" : "ゲームに戻りますか？", 0xffffff);
-	DrawString(SCREEN_WIDTH / 2 - 180, SCREEN_HEIGHT / 2 + 50, "いいえ", end_cursor == 0 ? 0xffff00 : 0xffffff);
-	DrawString(SCREEN_WIDTH / 2 + 220, SCREEN_HEIGHT / 2 + 50, "はい", end_cursor == 1 ? 0xffff00 : 0xffffff);
-	UserData::DrawCoin({ (float)SCREEN_WIDTH / 2 - 200 + (end_cursor*400), SCREEN_HEIGHT / 2 + 85 }, 20, 227 + abs(((int)frame % 56 - 28)), 200);
 }
 

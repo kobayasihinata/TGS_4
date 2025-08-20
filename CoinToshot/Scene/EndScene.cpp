@@ -79,7 +79,7 @@ void EndScene::Draw()const
 		TRUE);
 	UserData::DrawButtonAndString({ SCREEN_WIDTH / 2 +250,  SCREEN_HEIGHT-26}, XINPUT_BUTTON_B, ":タイトルに戻る", 0x444400);
 
-	UserData::DrawButtonAndString({ SCREEN_WIDTH / 2 - 350,  SCREEN_HEIGHT-26}, XINPUT_BUTTON_A, ":スキップ", 0x444400);
+	UserData::DrawButtonAndString({ SCREEN_WIDTH / 2 - 350,  SCREEN_HEIGHT-26}, XINPUT_BUTTON_A, ":早送り", 0x444400);
 	SetFontSize(old);
 }
 

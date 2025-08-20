@@ -241,8 +241,6 @@ void TitleScene::Draw()const
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 - ((255.f / START_ANIM) * start_anim_timer));
 		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, true);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
-		SetFontSize(32);
-		UserData::DrawButtonAndString({ SCREEN_WIDTH - 150,SCREEN_HEIGHT - 30 }, XINPUT_BUTTON_A, ":スキップ", 0xffffff);
 	}
 
 	SetFontSize(old);

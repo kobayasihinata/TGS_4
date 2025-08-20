@@ -14,7 +14,7 @@ enum OptionItem
 static char option_text[OPTION_NUM][256] =
 {
 	"音量設定",
-	"操作方法",
+	"操作タイプ",
 	"戻る",
 };
 
@@ -66,9 +66,4 @@ public:
 	void ControlUpdate();
 	//操作変更の描画
 	void ControlDraw()const;
-
-	//設定終了の更新
-	void EndUpdate();
-	//設定終了の描画
-	void EndDraw()const;
 };
