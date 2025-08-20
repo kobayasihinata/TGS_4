@@ -3,15 +3,21 @@
 Vector2D::Vector2D() : x(0.0f), y(0.0f)
 {
 }
-
 Vector2D::Vector2D(float scalar) : x(scalar), y(scalar)
 {
 }
-
 Vector2D::Vector2D(float mx, float my) : x(mx), y(my)
 {
 }
-
+Vector2D::Vector2D(int mx, int my) : x((float)mx),y((float)my)
+{
+}
+Vector2D::Vector2D(float mx, int my) : x(mx), y((float)my)
+{
+}
+Vector2D::Vector2D(int mx, float my) : x((float)mx), y(my)
+{
+}
 Vector2D::~Vector2D()
 {
 }

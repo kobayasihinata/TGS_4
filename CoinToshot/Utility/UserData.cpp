@@ -232,3 +232,20 @@ void UserData::DrawVariable()
 	DrawFormatStringF(variable_loc.x-10, variable_loc.y, 0x000000, "%d", variable);
 	DrawFormatStringF(variable_loc.x-11, variable_loc.y-1, 0xffffff, "%d", variable);
 }
+
+int UserData::DrawNum(Vector2D _loc, int _num ,int _color)
+{
+	std::string a = to_string(_num);
+	for (int i = 0; i < a.size();i++)
+	{
+		if (a[i] != '1')
+		{
+			DrawFormatString(_loc.x + (i * (GetFontSize()*0.7f)), _loc.y, _color, "%c", a[i]);
+		}
+		else
+		{
+			DrawFormatString(_loc.x + (i * (GetFontSize() * 0.7f))+ (GetFontSize() * 0.15f), _loc.y, _color, "%c", a[i]);
+		}
+	}
+	return a.size() * (GetFontSize() * 0.7f);
+}

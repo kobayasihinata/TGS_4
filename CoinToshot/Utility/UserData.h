@@ -105,5 +105,8 @@ public:
 
 	//‰Â•Ï‚Ì•Ï”•`‰æ
 	static void DrawVariable();
+
+	//“™•”š•`‰æ –ß‚è’l=‚±‚ÌŠÖ”‚Å•`‰æ‚µ‚½‡Œv‚Ì•¶š•
+	static int DrawNum(Vector2D _loc, int _num, int _color);
 };
 

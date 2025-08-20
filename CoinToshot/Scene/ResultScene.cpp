@@ -175,7 +175,7 @@ eSceneType ResultScene::Update(float _delta)
 			}
 			else
 			{
-				graph_timer == 120;
+				graph_timer = 120;
 			}
 		}
 
@@ -267,19 +267,21 @@ void ResultScene::Draw()const
 		if (result_anim_timer > RESULT_ANIM_TIME / 5)
 		{
 			DrawString(SCREEN_WIDTH / 2 - 200, 250, "Time:", text_color1);
-			DrawFormatString(SCREEN_WIDTH / 2 + 130 - GetDrawFormatStringWidth("%d", (int)((DEFAULT_TIMELIMIT - UserData::timer) / 60)), 250, text_color1, "%d", (int)((DEFAULT_TIMELIMIT - UserData::timer) / 60));
+			UserData::DrawNum({ (float)SCREEN_WIDTH / 2 + 130 - UserData::DrawNum({-1000,0},(int)((DEFAULT_TIMELIMIT - UserData::timer) / 60),0xffffff), 250 }, (int)((DEFAULT_TIMELIMIT - UserData::timer) / 60), text_color1);
 			if(DEFAULT_TIMELIMIT - UserData::timer == DEFAULT_TIMELIMIT)DrawString(SCREEN_WIDTH / 2 + 140, 250, "© MAX!!", result_anim_timer % 30 > 15 ? text_color1 : text_color3);
 		}
 		if (result_anim_timer > (RESULT_ANIM_TIME / 5) * 2)
 		{
 			DrawString(SCREEN_WIDTH / 2 - 140, 320, "HP:", text_color1);
-			DrawFormatString(SCREEN_WIDTH / 2 + 130 - GetDrawFormatStringWidth("%d", (int)UserData::player_hp), 320, text_color1, "%d", (int)UserData::player_hp);
+			UserData::DrawNum({ (float)SCREEN_WIDTH / 2 + 130 - UserData::DrawNum({-1000,0}, (int)UserData::player_hp,0xffffff), 320 }, (int)UserData::player_hp, text_color1);
+
 		}
 		if (result_anim_timer > (RESULT_ANIM_TIME / 5) * 3)
 		{
 			UserData::DrawCoin({ SCREEN_WIDTH / 2 - 105, 425 }, 30);
 			DrawString(SCREEN_WIDTH / 2 - 70, 390, ":", text_color1);
-			DrawFormatString(SCREEN_WIDTH / 2 + 130 - GetDrawFormatStringWidth("%d", UserData::coin), 390, text_color1, "%d", UserData::coin);
+			UserData::DrawNum({ (float)SCREEN_WIDTH / 2 + 130 - UserData::DrawNum({-1000,0},UserData::coin,0xffffff), 390 }, UserData::coin, text_color1);
+
 		}
 
 		if (result_anim_timer > RESULT_ANIM_TIME)
@@ -309,31 +311,34 @@ void ResultScene::Draw()const
 		SetFontSize(54);			
 
 		DrawString(SCREEN_WIDTH / 2 - 200, 250, "Time:", text_color1);
-		DrawFormatString(SCREEN_WIDTH / 2 + 130 - GetDrawFormatStringWidth("%d", (int)((DEFAULT_TIMELIMIT - UserData::timer) / 60)), 250, text_color1, "%d", (int)((DEFAULT_TIMELIMIT - UserData::timer) / 60));
+		UserData::DrawNum({ (float)SCREEN_WIDTH / 2 + 130 - UserData::DrawNum({-1000,0}, (int)((DEFAULT_TIMELIMIT - UserData::timer) / 60),0xffffff), 250}, (int)((DEFAULT_TIMELIMIT - UserData::timer) / 60), text_color1);
 
 		DrawString(SCREEN_WIDTH / 2 - 140, 320, "HP:", text_color1);
-		DrawFormatString(SCREEN_WIDTH / 2 + 130 - GetDrawFormatStringWidth("%d", (int)UserData::player_hp), 320, text_color1, "%d", (int)UserData::player_hp);
+		UserData::DrawNum({ (float)SCREEN_WIDTH / 2 + 130 - UserData::DrawNum({-1000,0} ,(int)UserData::player_hp,0xffffff), 320 }, (int)UserData::player_hp, text_color1);
 
 		UserData::DrawCoin({ SCREEN_WIDTH / 2 - 105, 425 }, 30);
 		DrawString(SCREEN_WIDTH / 2 - 70, 390, ":", text_color1);
-		DrawFormatString(SCREEN_WIDTH / 2 + 130 - GetDrawFormatStringWidth("%d", bonus_anim_timer >= BONUS_ANIM_TIME - SKIP_TIME ? UserData::coin : add_anim_coin), 390, text_color1, "%d", bonus_anim_timer >= BONUS_ANIM_TIME - SKIP_TIME ? UserData::coin : add_anim_coin);
+		UserData::DrawNum({ (float)SCREEN_WIDTH / 2 + 130 - UserData::DrawNum({-1000,0},bonus_anim_timer >= BONUS_ANIM_TIME - SKIP_TIME ? UserData::coin : add_anim_coin,0xffffff),  390 }, bonus_anim_timer >= BONUS_ANIM_TIME - SKIP_TIME ? UserData::coin : add_anim_coin, text_color1);
 
 		//ƒ{[ƒiƒX‰ÁŽZ•`‰æ
 		if (bonus_anim_timer > BONUS_ANIM_TIME / 5)
 		{
-			DrawFormatString(SCREEN_WIDTH / 2 + 150, 250, 0xffbb00, "=    ~%d", (int)((DEFAULT_TIMELIMIT - UserData::timer) / 60));
-			UserData::DrawCoin({ SCREEN_WIDTH / 2 + 215, 280 }, 30);
+			UserData::DrawCoin({ SCREEN_WIDTH / 2 + 225, 280 }, 30);
+			DrawString(SCREEN_WIDTH / 2 + 150, 250,"=    ~", 0xffbb00);
+			UserData::DrawNum({ SCREEN_WIDTH / 2 + 300, 250 }, (int)((DEFAULT_TIMELIMIT - UserData::timer) / 60), 0xffbb00);
 		}
 		if (bonus_anim_timer > (BONUS_ANIM_TIME / 5)*2)
 		{
-			DrawFormatString(SCREEN_WIDTH / 2 + 150, 320, 0xffbb00, "=    ~%d", (int)UserData::player_hp * 10);
-			UserData::DrawCoin({ SCREEN_WIDTH / 2 + 215, 350 }, 30);
+			UserData::DrawCoin({ SCREEN_WIDTH / 2 + 225, 350 }, 30);
+			DrawString(SCREEN_WIDTH / 2 + 150, 320, "=    ~", 0xffbb00);
+			UserData::DrawNum({ SCREEN_WIDTH / 2 + 300, 320 }, (int)UserData::player_hp * 10, 0xffbb00);
+
 		}
 		if (bonus_anim_timer > (BONUS_ANIM_TIME / 5) * 3)
 		{
-			SetFontSize(62);
-			DrawFormatString(SCREEN_WIDTH / 2 + 150, 385, bonus_anim_timer % 30 > 15 ? 0xffbb00 : 0xff0000, "+    ~%d", (int)UserData::player_hp * 10 + (int)((DEFAULT_TIMELIMIT - UserData::timer) / 60));
-			UserData::DrawCoin({ SCREEN_WIDTH / 2 + 235, 430 }, 45);
+			UserData::DrawCoin({ SCREEN_WIDTH / 2 + 225, 420 }, 30);
+			DrawString(SCREEN_WIDTH / 2 + 150, 390,"+    ~", bonus_anim_timer % 30 > 15 ? 0xffbb00 : 0xff0000);
+			UserData::DrawNum({ SCREEN_WIDTH / 2 + 300, 390 }, (int)UserData::player_hp * 10 + (int)((DEFAULT_TIMELIMIT - UserData::timer) / 60), bonus_anim_timer % 30 > 15 ? 0xffbb00 : 0xff0000);
 		}
 		if (bonus_anim_timer > BONUS_ANIM_TIME)
 		{
@@ -401,10 +406,10 @@ void ResultScene::Draw()const
 					graph_loc.x + GRAPH_WIDTH,
 					graph_loc.y + y,
 					0xaaffaa);
-				DrawFormatStringF(graph_loc.x - GetDrawFormatStringWidth("%d–‡", 7000 - y * 10),
+				DrawFormatStringF(graph_loc.x - GetDrawFormatStringWidth("%d–‡", 5000 - y * 10),
 					graph_loc.y + y-12,
 					0x00ff00,
-					"%d–‡", 7000 - y*10);
+					"%d–‡", 5000 - y*10);
 			}
 			else
 			{
@@ -418,9 +423,9 @@ void ResultScene::Draw()const
 		for (auto& coin_graph : UserData::coin_graph)
 		{
 			DrawLineAA(graph_loc.x + (g_count - 1) * graph_space,
-				graph_loc.y + GRAPH_HEIGHT - g_old/(7000/ GRAPH_HEIGHT),
+				graph_loc.y + GRAPH_HEIGHT - g_old/(5000/ GRAPH_HEIGHT),
 				graph_loc.x + g_count * graph_space,
-				graph_loc.y + GRAPH_HEIGHT - coin_graph / (7000 / GRAPH_HEIGHT),
+				graph_loc.y + GRAPH_HEIGHT - coin_graph / (5000 / GRAPH_HEIGHT),
 				0x000000, TRUE);
 			g_old = coin_graph;
 			g_count++;

@@ -419,7 +419,7 @@ void GameSceneUI::SetUIData(Vector2D _location, string _text, int _text_color, f
 	//コインログは座標をコイン枚数表示位置に固定
 	if (_text[0] != 'H')
 	{
-		data.location = { (float)SCREEN_WIDTH - 10.f - GetDrawNStringWidth(_text.c_str(),_text.size()),40};
+		data.location = { SCREEN_WIDTH - 10 - GetDrawNStringWidth(_text.c_str(),_text.size()),40};
 		coin_wait_data.push_back(data);
 	}
 }
@@ -539,7 +539,7 @@ void GameSceneUI::DrawPlayerUI()const
 	int old = GetFontSize();
 
 	SetFontSize(36);
-	int width = GetDrawFormatStringWidth("HP:%d %d %d", (int)(UserData::player_hp)+1, (int)(UserData::timer / 60), UserData::coin);
+	int width = 200;
 	DrawQuadrangle(player_ui_loc.x - width+170, player_ui_loc.y,
 		player_ui_loc.x + 630, player_ui_loc.y,
 		player_ui_loc.x + 555, player_ui_loc.y + 120,

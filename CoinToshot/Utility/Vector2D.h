@@ -11,6 +11,9 @@ public:
 	Vector2D();			//コンストラクタ
 	Vector2D(float scalar);			//コンストラクタ（オーバーロード）
 	Vector2D(float mx, float my);	//コンストラクタ（オーバーロード）
+	Vector2D(int mx, int my);	//コンストラクタ（オーバーロード）
+	Vector2D(float mx, int my);	//コンストラクタ（オーバーロード）
+	Vector2D(int mx, float my);	//コンストラクタ（オーバーロード）
 
 	~Vector2D();					//デストラクタ
 
