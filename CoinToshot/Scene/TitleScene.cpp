@@ -184,9 +184,9 @@ void TitleScene::Draw()const
 
 	//ƒ^ƒCƒgƒ‹•¶Žš
 	SetFontSize(144);
-	UserData::DrawStringCenter({ SCREEN_WIDTH / 2+2,52 }, "CoinToshot", 0x000000);
-	UserData::DrawStringCenter({ SCREEN_WIDTH / 2 -2,48 }, "CoinToshot", 0xffffff);
-	UserData::DrawStringCenter({ SCREEN_WIDTH / 2,50 }, "CoinToshot", 0xddbb00);
+	UserData::DrawStringCenter({ SCREEN_WIDTH / 2+2,52 }, "CoinToShot", 0x000000);
+	UserData::DrawStringCenter({ SCREEN_WIDTH / 2 -2,48 }, "CoinToShot", 0xffffff);
+	UserData::DrawStringCenter({ SCREEN_WIDTH / 2,50 }, "CoinToShot", 0xddbb00);
 
 	int size = 72;
 	SetFontSize(size);

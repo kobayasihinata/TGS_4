@@ -507,7 +507,7 @@ void InGameScene::MakeGameMainDraw()
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 		}
 		SetFontSize(32);
-		UserData::DrawButtonAndString({ SCREEN_WIDTH - 120,SCREEN_HEIGHT - 30 }, XINPUT_BUTTON_A, ":早送り", 0x000000);
+		if(tutorial->tuto_flg)UserData::DrawButtonAndString({ SCREEN_WIDTH - 120,SCREEN_HEIGHT - 30 }, XINPUT_BUTTON_A, ":早送り", 0x000000);
 	}
 	//時間経過ボーナス描画
 	if (bonus_timer > 0)

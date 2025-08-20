@@ -113,8 +113,8 @@ void Player::Update()
 	//吸い寄せの時間が１以上ならフラグを立てる
 	UserData::attraction_flg = (UserData::attraction_timer > 0) ? true : false;
 
-	//コインが100を超えた時、弾種類変更可能フラグを立て、弾変更チュートリアルをリクエスト
-	if (!UserData::can_bullet_change_flg && UserData::coin >= 50)
+	//チュートリアルを終えた時、弾種類変更可能フラグを立て、弾変更チュートリアルをリクエスト
+	if (!UserData::can_bullet_change_flg && tutorial->GetBasicTuto())
 	{
 		UserData::can_bullet_change_flg = true;
 		tutorial->StartTutoRequest(TutoType::tBulletChange);

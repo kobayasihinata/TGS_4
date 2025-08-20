@@ -33,9 +33,7 @@ void GameSceneUI::Initialize()
 
 	//Ž†á‚Ì‰æ‘œ¶¬
 	CreateConfettiImage();
-
-	ex_anim_once =false;
-	ex_se_once = false;
+	ex_se_once = ex_anim_once = tutorial->GetBasicTuto();
 	ex_anim_timer = 0;
 	now_image = 0;
 	ResourceManager* rm = ResourceManager::GetInstance();

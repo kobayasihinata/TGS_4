@@ -24,6 +24,7 @@
     <ProjectGuid>{353277df-beda-4950-ae66-9a9a86ab6ae9}</ProjectGuid>
     <RootNamespace>CoinToshot</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>CoinToShot</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
