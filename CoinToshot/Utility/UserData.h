@@ -63,7 +63,7 @@ public:
 	static int bgm_volume_num;					//BGMの音量強度格納
 	static int control_type;				//操作方法の格納
 	static SceneBase* old_scene;			//ゲームメイン情報保持
-	static bool tuto_flg;					//チュートリアルを受けたか保存
+
 	//デバッグ用
 	static int variable;			//起動中に好きに変更できる値
 	static bool variable_change;	//値変更中か

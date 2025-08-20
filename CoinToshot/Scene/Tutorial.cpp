@@ -36,16 +36,7 @@ void Tutorial::Initialize()
 	}
 	for (int i = 0; i < TUTO_NUM; i++)
 	{
-		//チュートリアルスキップ状態なら
-		if (UserData::tuto_flg)
-		{
-			tuto_executed_flg[i] = true;
-		}
-		//それ以外なら
-		else
-		{
-			tuto_executed_flg[i] = DEBUG_SKIP;
-		}
+		tuto_executed_flg[i] = DEBUG_SKIP;
 	}
 
 	CreateTextBox();

@@ -81,16 +81,8 @@ void InGameScene::Initialize()
 	//背景の自動生成
 	CreateBackGround();
 
-	ResourceManager* rm = ResourceManager::GetInstance();
-	//BGM読み込み
-	gamemain_bgm = rm->GetSounds("Resource/Sounds/BGM/Rail_train.mp3");
-	game_clear_se = rm->GetSounds("Resource/Sounds/Direction/victory.mp3");
-	game_over_se = rm->GetSounds("Resource/Sounds/Direction/deden.mp3");
-	clap_se = rm->GetSounds("Resource/Sounds/Direction/大勢で拍手.mp3");
-	coin_se = rm->GetSounds("Resource/Sounds/Coin/Get.mp3");
-	cursor_se = rm->GetSounds("Resource/Sounds/cursor.mp3");
-	enter_se = rm->GetSounds("Resource/Sounds/Coin/Get.mp3");
-	back_se = rm->GetSounds("Resource/Sounds/Hanahana/button.mp3");
+	//ゲームメインで使う画像、音源の事前読み込み
+	LoadGameMainResource();
 
 	//BGMを初めから再生するための処理
 	ResourceManager::rPlaySound(gamemain_bgm, DX_PLAYTYPE_LOOP, TRUE);
@@ -100,11 +92,11 @@ void InGameScene::Initialize()
 void InGameScene::Finalize()
 {
 	//チュートリアルを受けた事があると判断
-	UserData::tuto_flg = true;
+	tutorial->tuto_flg = true;
 	//万が一チュートリアル中にゲームが終了した場合は、チュートリアル履歴をリセット
 	if (tutorial->GetNowTutorial() == TutoType::tAim || tutorial->GetNowTutorial() == TutoType::tAttack)
 	{
-		UserData::tuto_flg = false;
+		tutorial->tuto_flg = false;
 	}
 	//カメラを初期位置に戻しておく
 	camera->Update({ -SCREEN_WIDTH / 2 + 48, -SCREEN_HEIGHT / 2 + 32 });
@@ -361,6 +353,56 @@ void InGameScene::Draw()const
 eSceneType InGameScene::GetNowSceneType()const
 {
 	return eSceneType::eInGame;
+}
+
+void InGameScene::LoadGameMainResource()
+{
+
+	ResourceManager* rm = ResourceManager::GetInstance();
+
+	//画像を読み込んでおく	
+	rm->GetImages("Resource/Images/Item/Heal.png", 7, 5, 2, 32, 41);
+	rm->GetImages("Resource/Images/Item/Magnet.png", 4, 4, 1, 64, 64);
+	rm->GetImages("Resource/Images/Effect/Walk.png", 12, 12, 1, 62, 64);
+	rm->GetImages("Resource/Images/Effect/Smoke1.png", 12, 12, 1, 64, 66);
+	rm->GetImages("Resource/Images/Effect/Smoke3.png", 12, 12, 1, 64, 64);
+	rm->GetImages("Resource/Images/Effect/Smoke4.png", 12, 12, 1, 64, 64);
+	rm->GetImages("Resource/Images/Effect/Smoke5.png", 12, 12, 1, 64, 64);
+	rm->GetImages("Resource/Images/Effect/Smoke6.png", 12, 12, 1, 64, 64);
+	rm->GetImages("Resource/Images/Effect/R_Hit.png", 12, 12, 1, 64, 66);
+	rm->GetImages("Resource/Images/Effect/E_PuffAndStar.png", 60, 10, 6, 108, 116);
+	rm->GetImages("Resource/Images/Effect/shine.png", 25, 5, 5, 64, 56);
+	rm->GetImages("Resource/Images/Enemy5/Enemy5_Walk2.png", 24, 5, 5, 200, 200);
+	rm->GetImages("Resource/Images/Enemy5/Enemy5_Death.png", 15, 5, 3, 200, 200);
+	rm->GetImages("Resource/Images/Enemy4/Enemy4_Run.png", 12, 5, 3, 96, 96);
+	rm->GetImages("Resource/Images/Enemy4/Enemy4_Walk.png", 24, 5, 5, 96, 96);
+	rm->GetImages("Resource/Images/Enemy4/Enemy4_Death.png", 15, 5, 3, 96, 96);
+	rm->GetImages("Resource/Images/Enemy3/Enemy3_Idle.png", 18, 5, 4, 96, 96);
+	rm->GetImages("Resource/Images/Enemy3/Enemy3_Throw.png", 12, 5, 3, 96, 96);
+	rm->GetImages("Resource/Images/Enemy3/Enemy3_Death.png", 15, 5, 3, 96, 96);
+	rm->GetImages("Resource/Images/Enemy2/Enemy2_Run.png", 12, 5, 3, 96, 96);
+	rm->GetImages("Resource/Images/Enemy2/Enemy2_Death.png", 15, 5, 3, 96, 96);
+	rm->GetImages("Resource/Images/Enemy1/Enemy1_Walk.png", 24, 5, 5, 96, 96);
+	rm->GetImages("Resource/Images/Enemy1/Enemy1_Death.png", 15, 5, 3, 96, 96);
+
+	//BGM、SE読み込み
+	gamemain_bgm = rm->GetSounds("Resource/Sounds/BGM/Rail_train.mp3");
+	game_clear_se = rm->GetSounds("Resource/Sounds/Direction/victory.mp3");
+	game_over_se = rm->GetSounds("Resource/Sounds/Direction/deden.mp3");
+	clap_se = rm->GetSounds("Resource/Sounds/Direction/大勢で拍手.mp3");
+	coin_se = rm->GetSounds("Resource/Sounds/Coin/Get.mp3");
+	cursor_se = rm->GetSounds("Resource/Sounds/cursor.mp3");
+	enter_se = rm->GetSounds("Resource/Sounds/Coin/Get.mp3");
+	back_se = rm->GetSounds("Resource/Sounds/Hanahana/button.mp3");
+
+	//他のオブジェクトが使うSE
+	rm->GetSounds("Resource/Sounds/Enemy/death.mp3");
+	rm->GetSounds("Resource/Sounds/Hanahana/reel.mp3");
+	rm->GetSounds("Resource/Sounds/Hanahana/big.mp3");
+	rm->GetSounds("Resource/Sounds/shot.mp3");
+	rm->GetSounds("Resource/Sounds/Player/Heal.mp3");
+
+
 }
 
 void InGameScene::MakeGameMainDraw()
@@ -824,7 +866,7 @@ void InGameScene::BonusCoinUpdate()
 void InGameScene::TutorialUpdate()
 {
 	//移動チュートリアルが終わっていたらコイン投げ入れ
-	if (!UserData::tuto_flg && tutorial->GetIsEndTutorial(TutoType::tMove) && (int)frame % 10 == 0 && tuto_coin_count++ < 20)
+	if (!tutorial->tuto_flg && tutorial->GetIsEndTutorial(TutoType::tMove) && (int)frame % 10 == 0 && tuto_coin_count++ < 20)
 	{
 		Vector2D rand = GetRandLoc();
 		Vector2D camera_center = { camera->GetCameraLocation().x + (SCREEN_WIDTH / 2),camera->GetCameraLocation().y + (SCREEN_HEIGHT / 2) };

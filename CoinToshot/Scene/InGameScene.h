@@ -89,6 +89,11 @@ public:
 	virtual eSceneType GetNowSceneType()const override;
 
 	/// <summary>
+	/// ゲームメインのオブジェクトが使う画像を読み込んでおく
+	/// </summary>
+	void LoadGameMainResource();
+
+	/// <summary>
 	/// 描画する画像を作る
 	/// </summary>
 	void MakeGameMainDraw();

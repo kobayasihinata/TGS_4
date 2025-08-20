@@ -50,6 +50,7 @@ private:
 
 	bool tuto_executed_flg[TUTO_NUM];	//チュートリアルを既に行ったか判断
 public:
+	bool tuto_flg = false;				//チュートリアルを受けたか保存
 	float player_aim_rad = 1000.f;		//現在の照準位置
 private:
 	//コンストラクタをprivateにすることで、
