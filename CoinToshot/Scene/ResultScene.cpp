@@ -406,10 +406,10 @@ void ResultScene::Draw()const
 					graph_loc.x + GRAPH_WIDTH,
 					graph_loc.y + y,
 					0xaaffaa);
-				DrawFormatStringF(graph_loc.x - GetDrawFormatStringWidth("%d–‡", 5000 - y * 10),
+				DrawFormatStringF(graph_loc.x - GetDrawFormatStringWidth("%d–‡", (int)(5000 - y * 7.14285f)),
 					graph_loc.y + y-12,
 					0x00ff00,
-					"%d–‡", 5000 - y*10);
+					"%d–‡", (int)(5000 - y * 7.14285f));
 			}
 			else
 			{
