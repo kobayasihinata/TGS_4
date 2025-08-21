@@ -40,6 +40,8 @@ void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init
 
 	bullet_change_cd = 0;
 	danger_once = false;
+	change_flg = false;
+	change_timer = 0;
 	arrow_image = MakeScreen(100, 110, TRUE);
 	aim_once_flg = false;
 	shot_rad = 123456.f;	//ありえない値を入れておく
@@ -172,6 +174,16 @@ void Player::Update()
 		if (location.y + (box_size.y / 2) > camera->GetCameraLocation().y + SCREEN_HEIGHT)
 		{
 			location.y = camera->GetCameraLocation().y + SCREEN_HEIGHT - (box_size.y / 2);
+		}
+	}
+
+	//弾変更アニメーション用処理
+	if (change_flg)
+	{
+		if (++change_timer > 30)
+		{
+			change_timer = 0;
+			change_flg = false;
 		}
 	}
 
@@ -351,7 +363,7 @@ void Player::Draw()const
 				local_location.y - (box_size.y / 2) - 9,
 				local_location.x + (HPBAR_SIZE / 2) + 2,
 				local_location.y - (box_size.y / 2) - 1,
-				0x22ff00,
+				0x88ff00,
 				true
 			);
 			DrawLine(local_location.x + (HPBAR_SIZE / 2),
@@ -522,6 +534,7 @@ void Player::Control()
 			{
 				ResourceManager::rPlaySound(bullet_change_se, DX_PLAYTYPE_BACK);
 			}
+			change_flg = true;
 		}
 		else if (UserData::CheckBulletChangeButtonRight())
 		{
@@ -534,6 +547,7 @@ void Player::Control()
 			{
 				ResourceManager::rPlaySound(bullet_change_se, DX_PLAYTYPE_BACK);
 			}
+			change_flg = true;
 		}
 		else
 		{

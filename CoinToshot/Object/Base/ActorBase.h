@@ -74,11 +74,11 @@ public:
 		{
 			if (move_velocity.x > 0)
 			{
-				DrawRotaGraphF(local_location.x, local_location.y, 1.f, 0, image, true, false);
+				DrawRotaGraphF(local_location.x, local_location.y, 1, 0, image, true, false);
 			}
 			else
 			{
-				DrawRotaGraphF(local_location.x, local_location.y, 1.f, 0, image, true, true);
+				DrawRotaGraphF(local_location.x, local_location.y, 1, 0, image, true, true);
 			}
 		}
 #ifdef _DEBUG

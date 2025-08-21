@@ -21,6 +21,8 @@ private:
 	//弾変更
 	int bullet_change_cd;		//弾種類変更クールダウン測定
 	bool danger_once;			//危険SE再生
+	bool change_flg;			//アニメーション用
+	int change_timer;			//アニメーション測定
 
 	//コイン発射関連
 	bool aim_once_flg;			//一回でもカーソルを動かしたか判断

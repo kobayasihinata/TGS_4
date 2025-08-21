@@ -235,8 +235,8 @@ void GameSceneUI::Draw()const
 	Camera* camera = Camera::Get();
 
 	//プレイヤーが弾種類UIと被ったら透過する
-	if (camera->player_location.x - camera->GetCameraLocation().x > SCREEN_WIDTH - 350 &&
-		camera->player_location.y - camera->GetCameraLocation().y < 100)
+	if (camera->player_location.x - camera->GetCameraLocation().x > SCREEN_WIDTH - 520 &&
+		camera->player_location.y - camera->GetCameraLocation().y < 150)
 	{
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
 	}
@@ -303,9 +303,9 @@ void GameSceneUI::Draw()const
 	}
 
 	//プレイヤーが弾種類UIと被ったら透過する
-	if (camera->player_location.x - camera->GetCameraLocation().x > (SCREEN_WIDTH / 2) - 100 &&
-		camera->player_location.x - camera->GetCameraLocation().x < (SCREEN_WIDTH / 2) + 100 &&
-		camera->player_location.y - camera->GetCameraLocation().y < 140)
+	if (camera->player_location.x - camera->GetCameraLocation().x > (SCREEN_WIDTH / 2) - 150 &&
+		camera->player_location.x - camera->GetCameraLocation().x < (SCREEN_WIDTH / 2) + 150 &&
+		camera->player_location.y - camera->GetCameraLocation().y < 200)
 	{
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 125);
 	}
@@ -409,14 +409,14 @@ void GameSceneUI::CreateBulletTypeImage()const
 		if (CheckMoveDirection(UserData::bullet_type, old_bullet_type))
 		{
 			//右移動
-			DrawBullet({ change_anim_move * bullet_change_timer - 300, 0 }, UserData::bullet_type);
-			DrawBullet({ change_anim_move * bullet_change_timer, 0 }, old_bullet_type);
+			DrawBullet({ change_anim_move * bullet_change_timer - 300, GetRand(1)}, UserData::bullet_type);
+			DrawBullet({ change_anim_move * bullet_change_timer,  GetRand(1) }, old_bullet_type);
 		}
 		else
 		{
 			//左移動
-			DrawBullet({ change_anim_move * -bullet_change_timer, 0 }, old_bullet_type);
-			DrawBullet({ (change_anim_move * -bullet_change_timer) + 300, 0 }, UserData::bullet_type);
+			DrawBullet({ change_anim_move * -bullet_change_timer,  GetRand(1) }, old_bullet_type);
+			DrawBullet({ (change_anim_move * -bullet_change_timer) + 300,  GetRand(1) }, UserData::bullet_type);
 		} 
 	}
 	//変更が無いなら通常の描画

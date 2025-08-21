@@ -40,6 +40,16 @@ public:
 		}
 	}
 
+	virtual void Initialize(ObjectManager* _manager, int _object_type, Vector2D init_location = 0.0f, Vector2D init_size = 40.0f, float init_radius = 0.f)override
+	{
+		__super::Initialize(_manager, _object_type, init_location, init_size, init_radius);
+
+		if (rare_flg)
+		{
+			box_size *= 1.5;
+		}
+	}
+
 	virtual void Update()override
 	{
 		__super::Update();
@@ -64,8 +74,32 @@ public:
 			DrawRotaGraphF(local_location.x, local_location.y, box_size.x/40, 0, shine_image[now_shine_image], TRUE);
 		}
 
-		__super::Draw();
+		//‰æ‘œ•`‰æ
+		if (image != 0)
+		{
+			if (move_velocity.x > 0)
+			{
+				DrawRotaGraphF(local_location.x, local_location.y, this->object_type == eENEMY5 ? box_size.x / 90 :box_size.x / 40, 0, image, true, false);
+			}
+			else
+			{
+				DrawRotaGraphF(local_location.x, local_location.y, this->object_type == eENEMY5 ? box_size.x / 90 : box_size.x / 40, 0, image, true, true);
+			}
+		}
+#ifdef _DEBUG
+		//“–‚½‚è”»’è‚Ì•`‰æ
 
+		//lŠp
+		if (this->radius <= 0.f)
+		{
+			Vector2D::DrawBoxV2(local_location - (box_size / 2), local_location + (box_size / 2), 0xff0000, false);
+		}
+		//‰~
+		else
+		{
+			DrawCircleAA(local_location.x, local_location.y, radius, 20, 0xff0000, false);
+		}
+#endif // _DEBUG
 		//HPƒQ[ƒW“à‘¤
 		DrawBoxAA(local_location.x - (HPBAR_SIZE / 2),
 			local_location.y - (box_size.y / 2) - 10,

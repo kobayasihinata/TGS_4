@@ -464,13 +464,16 @@ void ObjectManager::ObjectHitCheck()
  }
 
 	//ƒvƒŒƒCƒ„[‚Ì“–‚½‚è”»’è
-	for (const auto& object : object_list)
+	if (player != nullptr)
 	{
-		 if (player != object && CheckHit(player, object))
-		 {
-			 player->Hit(object);
-			 object->Hit(player);
-		 }
+		for (const auto& object : object_list)
+		{
+			if (player != object && CheckHit(player, object))
+			{
+				player->Hit(object);
+				object->Hit(player);
+			}
+		}
 	}
 
  /************************************/

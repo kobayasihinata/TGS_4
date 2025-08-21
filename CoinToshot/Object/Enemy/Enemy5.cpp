@@ -18,9 +18,9 @@ Enemy5::Enemy5()
 	//‰æ‘œ“Ç
 	ResourceManager* rm = ResourceManager::GetInstance();
 	std::vector<int>tmp;
-	tmp = rm->GetImages("Resource/Images/Enemy5/Enemy5_Walk2.png", 24, 5, 5, 200, 200);
+	tmp = rm->GetImages("Resource/Images/Enemy5/Enemy5_Walk2.png", 24, 5, 5, 96, 96);
 	animation_image.push_back(tmp);
-	tmp = rm->GetImages("Resource/Images/Enemy5/Enemy5_Death.png", 15, 5, 3, 200, 200);
+	tmp = rm->GetImages("Resource/Images/Enemy5/Enemy5_Death.png", 15, 5, 3, 96, 96);
 	animation_image.push_back(tmp);
 
 	image = animation_image[0][0];
