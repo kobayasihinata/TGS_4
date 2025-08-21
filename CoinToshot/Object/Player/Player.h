@@ -6,6 +6,8 @@
 #include "../Base/BulletData.h"
 #include "../../Scene/Tutorial.h"
 
+#define PLAYER_IMAGE_SIZE 150 //プレイヤーの画像サイズ
+
 class InGameScene;
 
 class Player :
@@ -17,12 +19,12 @@ private:
 	class Camera* camera;		//カメラポインタ格納(プレイヤーの情報を渡すためだけに取得)
 	class Tutorial* tutorial;	//チュートリアル格納
 
-
 	//弾変更
 	int bullet_change_cd;		//弾種類変更クールダウン測定
 	bool danger_once;			//危険SE再生
 	bool change_flg;			//アニメーション用
 	int change_timer;			//アニメーション測定
+	int player_image;			//プレイヤー画像保存
 
 	//コイン発射関連
 	bool aim_once_flg;			//一回でもカーソルを動かしたか判断
@@ -122,12 +124,17 @@ private:
 	/// <summary>
 	/// プレイヤーの弾の軌道を描画
 	/// </summary>
-	void DrawBulletOrbit()const;
+	void DrawBulletOrbit(Vector2D _loc)const;
 
 	/// <summary>
 	/// プレイヤーの軌道矢印描画
 	/// </summary>
 	void CreateArrowImage()const;
+
+	/// <summary>
+	/// プレイヤー画像保存
+	/// </summary>
+	void CreatePlayerImage()const;
 };
 
 

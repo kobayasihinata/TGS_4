@@ -193,6 +193,7 @@
     <ClInclude Include="Object\Effect\Smoke.h" />
     <ClInclude Include="Object\Effect\Walk.h" />
     <ClInclude Include="Object\Item\Magnet.h" />
+    <ClInclude Include="Object\Player\Color.h" />
     <ClInclude Include="Object\Player\PlayerBullet.h" />
     <ClInclude Include="Object\Slot.h" />
     <ClInclude Include="Scene\EndScene.h" />

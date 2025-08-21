@@ -7,6 +7,7 @@
 #include "PlayerBullet.h"
 #include "../Base/EffectList.h"
 #include "../../Scene/InGameScene.h"
+#include "Color.h"
 
 #include <cmath>
 #define _USE_MATH_DEFINES
@@ -42,6 +43,7 @@ void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init
 	danger_once = false;
 	change_flg = false;
 	change_timer = 0;
+	player_image = MakeScreen(PLAYER_IMAGE_SIZE, PLAYER_IMAGE_SIZE, TRUE);
 	arrow_image = MakeScreen(100, 110, TRUE);
 	aim_once_flg = false;
 	shot_rad = 123456.f;	//ありえない値を入れておく
@@ -180,7 +182,7 @@ void Player::Update()
 	//弾変更アニメーション用処理
 	if (change_flg)
 	{
-		if (++change_timer > 30)
+		if (++change_timer > 20)
 		{
 			change_timer = 0;
 			change_flg = false;
@@ -208,6 +210,7 @@ void Player::Update()
 	//アニメーション処理
 	Animation();
 	CreateArrowImage();
+
 
 	//アニメーション位置に応じて足音を鳴らす
 	if (image_line == 1 &&
@@ -314,7 +317,7 @@ void Player::Draw()const
 	if (aim_once_flg)
 	{
 		//弾の軌道描画
-		DrawBulletOrbit();
+		DrawBulletOrbit(local_location);
 	}
 
 	if ((!damage_flg || (damage_flg && frame % 3 == 0)) && (!death_flg || death_timer > DEFAULT_DEATH_TIMER * 2))
@@ -359,23 +362,14 @@ void Player::Draw()const
 		//HPゲージ限界突破見た目
 		if (UserData::player_hp > DEFAULT_HP)
 		{
-			DrawBoxAA(local_location.x + (HPBAR_SIZE / 2) - 2,
-				local_location.y - (box_size.y / 2) - 9,
-				local_location.x + (HPBAR_SIZE / 2) + 2,
-				local_location.y - (box_size.y / 2) - 1,
-				0x88ff00,
-				true
-			);
-			DrawLine(local_location.x + (HPBAR_SIZE / 2),
-				local_location.y - (box_size.y / 2) - 10,
-				local_location.x + (HPBAR_SIZE / 2) + 5,
-				local_location.y - (box_size.y / 2) - 15,
-				0xffffff);
-			DrawLine(local_location.x + (HPBAR_SIZE / 2),
-				local_location.y - (box_size.y / 2),
-				local_location.x + (HPBAR_SIZE / 2) + 5,
-				local_location.y - (box_size.y / 2) + 5,
-				0xffffff);
+			for (int i = 0; i < UserData::player_hp - DEFAULT_HP; i++)
+			{
+				DrawBoxAA(local_location.x + (HPBAR_SIZE / 2)+ (i * 5),
+					local_location.y - (box_size.y / 2) - 9,
+					local_location.x + (HPBAR_SIZE / 2) + 5 + (i * 5),
+					local_location.y - (box_size.y / 2) - 1,
+					color[i % 7], true);
+			}
 		}
 		//HPピンチ表示
 		if (hp <= 3)
@@ -390,6 +384,12 @@ void Player::Draw()const
 		}
 	}
 
+	if (change_flg)
+	{
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200 - change_timer * (255 / 20));
+		DrawRotaGraphF(local_location.x, local_location.y, 1.f + (float)(change_timer/10.f), 0, player_image, TRUE);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+	}
 	//フォント大きさ元通り
 	SetFontSize(old);
 }
@@ -535,6 +535,7 @@ void Player::Control()
 				ResourceManager::rPlaySound(bullet_change_se, DX_PLAYTYPE_BACK);
 			}
 			change_flg = true;
+			CreatePlayerImage();
 		}
 		else if (UserData::CheckBulletChangeButtonRight())
 		{
@@ -548,6 +549,7 @@ void Player::Control()
 				ResourceManager::rPlaySound(bullet_change_se, DX_PLAYTYPE_BACK);
 			}
 			change_flg = true;
+			CreatePlayerImage();
 		}
 		else
 		{
@@ -619,7 +621,7 @@ void Player::ShotBullet()
 	}
 }
 
-void Player::DrawBulletOrbit()const
+void Player::DrawBulletOrbit(Vector2D _loc)const
 {
 	float span,start;
 	switch (UserData::bullet_type)
@@ -628,7 +630,7 @@ void Player::DrawBulletOrbit()const
 	case BulletType::bNormal:
 	case BulletType::bStrong:
 	case BulletType::bStrongest:
-		DrawRotaGraph(local_location.x + 40 * sinf(shot_rad + 1.5f), local_location.y - 40 * cosf(shot_rad + 1.5f), 1.0f, shot_rad + 1.55f, arrow_image, TRUE);
+		DrawRotaGraph(_loc.x + 40 * sinf(shot_rad + 1.5f), _loc.y - 40 * cosf(shot_rad + 1.5f), 1.0f, shot_rad + 1.55f, arrow_image, TRUE);
 
 		break;
 		//拡散弾の矢印
@@ -637,15 +639,15 @@ void Player::DrawBulletOrbit()const
 		start = shot_rad + 1.55f - (span / 2);
 		for (float i = start; i <= start + span; i += pBullet[UserData::bullet_type].space)
 		{
-			DrawRotaGraph(local_location.x + 40 * sinf(i), local_location.y - 40 * cosf(i), 1.0f, i, arrow_image, TRUE);
+			DrawRotaGraph(_loc.x + 40 * sinf(i), _loc.y - 40 * cosf(i), 1.0f, i, arrow_image, TRUE);
 		}
 		break;
 
 	case BulletType::bExplosion:
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200 - (frame * 5) % 200);
-		DrawRotaGraph(local_location.x + 40 * sinf(shot_rad + 1.5f), local_location.y - 40 * cosf(shot_rad + 1.5f), 1.0f, shot_rad + 1.55f, arrow_image, TRUE);
-		DrawCircleAA(local_location.x + (pBullet[UserData::bullet_type].speed*pBullet[UserData::bullet_type].life_span) * sinf(shot_rad + 1.55f),
-			local_location.y - (pBullet[UserData::bullet_type].speed * pBullet[UserData::bullet_type].life_span) * cosf(shot_rad + 1.55f),
+		DrawRotaGraph(_loc.x + 40 * sinf(shot_rad + 1.5f), _loc.y - 40 * cosf(shot_rad + 1.5f), 1.0f, shot_rad + 1.55f, arrow_image, TRUE);
+		DrawCircleAA(_loc.x + (pBullet[UserData::bullet_type].speed*pBullet[UserData::bullet_type].life_span) * sinf(shot_rad + 1.55f),
+			_loc.y - (pBullet[UserData::bullet_type].speed * pBullet[UserData::bullet_type].life_span) * cosf(shot_rad + 1.55f),
 			(frame*5) % 200, 100, 0xff0000, true);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 		break;
@@ -758,5 +760,35 @@ void Player::CreateArrowImage()const
 	//文字透過リセット
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
+	SetDrawScreen(DX_SCREEN_BACK);
+}
+
+void Player::CreatePlayerImage()const
+{
+	//プレイヤー画像保存
+	SetDrawScreen(player_image);
+	ClearDrawScreen();
+	//カーソルを動かせる状態なら表示
+	if (aim_once_flg)
+	{
+		//弾の軌道描画
+		DrawBulletOrbit(PLAYER_IMAGE_SIZE / 2);
+	}
+
+	if ((!damage_flg || (damage_flg && frame % 3 == 0)) && (!death_flg || death_timer > DEFAULT_DEATH_TIMER * 2))
+	{
+		//画像描画
+		if (image != 0)
+		{
+			if (move_velocity.x > 0)
+			{
+				DrawRotaGraphF(PLAYER_IMAGE_SIZE/2, PLAYER_IMAGE_SIZE / 2, 1, 0, image, true, false);
+			}
+			else
+			{
+				DrawRotaGraphF(PLAYER_IMAGE_SIZE / 2, PLAYER_IMAGE_SIZE / 2, 1, 0, image, true, true);
+			}
+		}
+	}
 	SetDrawScreen(DX_SCREEN_BACK);
 }

@@ -1,0 +1,12 @@
+#pragma once
+
+static int color[7]
+{
+	0xff0000,
+	0xffaa00,
+	0xffff00,
+	0x00ff00,
+	0x00ffff,
+	0x0000ff,
+	0xff00ff,
+};

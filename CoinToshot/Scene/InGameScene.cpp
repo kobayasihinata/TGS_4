@@ -552,7 +552,6 @@ void InGameScene::MakeGameMainDraw()
 		SetFontSize(18);
 		DrawString((SCREEN_WIDTH / 2) + 100, (SCREEN_HEIGHT / 2) + 20, "‚ ‚«‚ç‚ß‚È‚¢‚ÅI", (int)frame % 30 > 15 ? 0xcccc00 : 0xffff00);
 	}
-
 	SetDrawScreen(DX_SCREEN_BACK);
 	ClearDrawScreen();
 }

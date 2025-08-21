@@ -496,7 +496,7 @@ void GameSceneUI::DrawPlayerUI()const
 		player_ui_loc.x - width +210, player_ui_loc.y + 125,
 		0x666600, TRUE);
 	DrawFormatString(player_ui_loc.x - width +240, player_ui_loc.y+22, 0xffffff, "HP:%d", (int)(UserData::player_hp));
-	DrawFormatString(player_ui_loc.x - GetDrawFormatStringWidth("TIME:%d %d", (int)(UserData::timer/60), UserData::coin)+415, player_ui_loc.y+22, 0xffffff, "TIME:%d", (int)(UserData::timer/60));
+	DrawFormatString(player_ui_loc.x - GetDrawFormatStringWidth("TIME:%d", (int)(UserData::timer/60))+345, player_ui_loc.y+22, 0xffffff, "TIME:%d", (int)(UserData::timer/60));
 	
 	int coin_text_color = 0xffffff;
 	//コイン加算時のアニメーション
