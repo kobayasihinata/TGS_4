@@ -7,6 +7,7 @@ using namespace std;
 
 #define STRING_SPAN 10		//項目同士の間隔
 #define BONUS_TEXT_TIMER 300	//時間経過ボーナス表示時間
+#define RANKUP_TIMER 180	//ランキング変動アニメーション時間
 
 struct UIData
 {
@@ -93,14 +94,12 @@ private:
 	std::vector<UIData> ui_data;
 	std::vector<UIData> delete_ui_data;
 
-	//コインログ用
-	std::vector<UIData> coin_data;
-	std::vector<UIData> coin_wait_data;
-	std::vector<UIData> delete_coin_data;
-
 	//紙吹雪用
 	std::vector<ConfettiData> confetti_data;
 	std::vector<ConfettiData> delete_confetti_data;
+
+	std::vector<int> shine_image;	//輝きアニメーション格納
+	int now_shine_image;			//現在描画輝き画像
 
 public:
 	bool confetti_flg;	//紙吹雪を生成するか判断

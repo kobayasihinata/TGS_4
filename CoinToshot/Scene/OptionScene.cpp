@@ -75,7 +75,6 @@ eSceneType OptionScene::Update(float _delta)
 		{
 			change_scene = eSceneType::eTitle;
 		}
-		ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
 		break;
 	case OptionItem::oNull:
 		//‰º“ü—Í‚Å€–Ú‰ºˆÚ“®

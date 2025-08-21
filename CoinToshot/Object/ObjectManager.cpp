@@ -277,7 +277,10 @@ void ObjectManager::CreateEffect(int object_type, Vector2D init_location, bool _
 		create_effect.push_back(EffectInitData{ new Smoke(),init_location, _front_flg,_timer, _anim_span });
 		break;
 	case EffectList::elShine:
-		create_effect.push_back(EffectInitData{ new Shine(_color),init_location, _front_flg,_timer, _anim_span });
+		if (effect_list.size() < 200)
+		{
+			create_effect.push_back(EffectInitData{ new Shine(_color),init_location, _front_flg,_timer, _anim_span });
+		}
 		break;
 	case EffectList::elExplosion:
 		create_effect.push_back(EffectInitData{ new Explosion(),init_location, _front_flg,_timer, _anim_span });
@@ -316,16 +319,161 @@ void ObjectManager::CreateAttack(BulletData _bullet_data)
 
 void ObjectManager::ObjectHitCheck()
 {
-	for (const auto& object1 : object_list)
+
+/***************
+ 従来の方法
+ *****************/
+
+	//for (const auto& object1 : object_list)
+	//{
+	//	for (const auto& object2 : object_list)
+	//	{
+	//		if (CheckHit(object1, object2))
+	//		{
+	//			object1->Hit(object2);
+	//		}
+	//	}
+	//}
+
+/*****************/
+
+/***************
+ 画面外のオブジェクトを逐一チェックして弾く方法
+ *****************/
+
+	//for (const auto& object1 : object_list)
+	//{
+	//	for (const auto& object2 : object_list)
+	//	{
+	//		if (CheckInScreen(object1, 100) && CheckInScreen(object2, 100) && CheckHit(object1, object2))
+	//		{
+	//			object1->Hit(object2);
+	//		}
+	//	}
+	//}
+
+/*************************/
+
+/***************
+ 予め画面外にあるオブジェクトを保存しておき、
+ 当たり判定チェックの度に参照して画面内にあるか確認する方法
+ *****************/
+
+	//std::vector<ObjectBase*> ignore_list;	//画面外のオブジェクト格納
+	//for (const auto& object : object_list)
+	//{
+	//	if (!CheckInScreen(object, 100))
+	//	{
+	//		ignore_list.push_back(object);
+	//	}
+	//}
+	//for (const auto& object1 : object_list)
+	//{
+	//	for (const auto& object2 : object_list)
+	//	{	
+	//		if (std::find(ignore_list.begin(), ignore_list.end(),object1) == ignore_list.end() && std::find(ignore_list.begin(), ignore_list.end(), object2) == ignore_list.end() && CheckHit(object1, object2))
+	//		{
+	//			object1->Hit(object2);
+	//		}
+	//	}
+	//}
+
+/************************************/
+
+/***************
+上記の方法＋コインと敵の判定を処理しない方法
+ *****************/
+
+	//std::vector<ObjectBase*> ignore_list;	//画面外のオブジェクト格納
+	//for (const auto& object : object_list)
+	//{
+	//	if (!CheckInScreen(object, 100))
+	//	{
+	//		ignore_list.push_back(object);
+	//	}
+	//}
+	//for (const auto& object1 : object_list)
+	//{
+	//	for (const auto& object2 : object_list)
+	//	{	
+	//		if (std::find(ignore_list.begin(), ignore_list.end(),object1) == ignore_list.end() &&
+		//		std::find(ignore_list.begin(), ignore_list.end(), object2) == ignore_list.end() &&
+		//		!(object1->IsEnemy() && object2->GetObjectType() == eCOIN) &&
+		//		!(object2->IsEnemy() && object1->GetObjectType() == eCOIN) && 
+		//		CheckHit(object1, object2))
+	//		{
+	//			object1->Hit(object2);
+	//		}
+	//	}
+	//}
+
+/************************************/
+
+/***************
+コイン、プレイヤー、それ以外に分けてそれぞれで当たり判定を確認する
+ *****************/
+
+	//コインとプレイヤーとそれ以外に分ける
+	std::vector<ObjectBase*> coin_list;
+	std::vector<ObjectBase*> other_list;
+	ObjectBase* player = nullptr;
+
+	//仕分け
+	for (const auto& object : object_list)
 	{
-		for (const auto& object2 : object_list)
-		{	
-			if (CheckHit(object1,object2))
-			{
-				object1->Hit(object2);
-			}
-		}
+		 //画面外のオブジェクトは弾く
+		 if (CheckInScreen(object, 100))
+		 {
+			 switch (object->GetObjectType())
+			 {
+			 case ObjectList::eCOIN:
+				 coin_list.push_back(object);
+				 break;
+			 case ObjectList::ePLAYER:
+				 player = object;
+				 break;
+			 default:
+				 other_list.push_back(object);
+				 break;
+			 }
+		 }
 	}
+
+	//コインの当たり判定
+	for (const auto& coin1 : coin_list)
+ {
+	 for (const auto& coin2 : coin_list)
+	 {
+		 if (CheckHit(coin1, coin2))
+		 {
+			 coin1->Hit(coin2);	
+		 }
+	 }
+ }
+
+	//それ以外の当たり判定
+	for (const auto& other1 : other_list)
+ {
+	 for (const auto& other2 : other_list)
+	 {
+		 if (CheckHit(other1, other2))
+		 {
+			 other1->Hit(other2);
+		 }
+	 }
+ }
+
+	//プレイヤーの当たり判定
+	for (const auto& object : object_list)
+	{
+		 if (player != object && CheckHit(player, object))
+		 {
+			 player->Hit(object);
+			 object->Hit(player);
+		 }
+	}
+
+ /************************************/
 }
 
 std::vector<ObjectBase*> ObjectManager::GetObjectList()const

@@ -145,7 +145,7 @@ float ShapeCollider::DistanceSqrf(const float t_x1, const float t_y1, const floa
 
 void ShapeCollider::Push(ShapeCollider* hit_object)
 {
-	float shot_rad = atan2f(hit_object->GetLocation().y - this->location.y, hit_object->GetLocation().x - this->location.x);
-	this->location.x -= cosf(shot_rad);
-	this->location.y -= sinf(shot_rad);
+	float move_rad = atan2f(hit_object->GetLocation().y - this->location.y, hit_object->GetLocation().x - this->location.x);
+	this->location.x -= cosf(move_rad);
+	this->location.y -= sinf(move_rad);
 }

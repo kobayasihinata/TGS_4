@@ -169,6 +169,8 @@ eSceneType InGameScene::Update(float _delta)
 			change_scene = eSceneType::eResult;
 		}
 
+		//描画の更新
+		MakeGameMainDraw();
 
 #ifdef _DEBUG
 
@@ -324,11 +326,10 @@ eSceneType InGameScene::Update(float _delta)
 				tutorial->StartTutoRequest(TutoType::tRule);
 			}
 		}
-
+		//描画の更新
+		MakeGameMainDraw();
 	}
 
-	//描画の更新
-	MakeGameMainDraw();
 	
 	//十分なデータがあれば、60フレーム毎に実行
 	if (UserData::coin_graph.size() >= 2 && (int)frame % 60 == 0)
@@ -347,6 +348,32 @@ void InGameScene::Draw()const
 	int old = GetFontSize();
 
 	DrawGraph(0, 0, gamemain_image, FALSE);
+
+	//一時停止フラグが立っていたら、ポーズ画面の描画
+	if (pause_flg)
+	{
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
+		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, true);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+		SetFontSize(72);
+		UserData::DrawStringCenter({ SCREEN_WIDTH / 2,SCREEN_HEIGHT / 2 }, "ポーズ中", 0xffffff);
+		SetFontSize(48);
+		if (back_title_flg)
+		{
+			DrawString(SCREEN_WIDTH / 2 - 200, SCREEN_HEIGHT / 2 + 100, "タイトルに戻りますか？", 0xffffff);
+			DrawString(SCREEN_WIDTH / 2 - 180, SCREEN_HEIGHT / 2 + 150, "いいえ", back_title_cursor == 0 ? 0xffff00 : 0xffffff);
+			DrawString(SCREEN_WIDTH / 2 + 120, SCREEN_HEIGHT / 2 + 150, "はい", back_title_cursor == 1 ? 0xffff00 : 0xffffff);
+			UserData::DrawCoin({ (float)SCREEN_WIDTH / 2 - 200 + (back_title_cursor * 300), SCREEN_HEIGHT / 2 + 185 }, 20, 227 + abs(((int)frame % 56 - 28)), 200);
+		}
+		else
+		{
+			DrawString(SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2 + 100, "再開", 0xffffff);
+			DrawString(SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2 + 150, "オプション", 0xffffff);
+			DrawString(SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2 + 200, "タイトル", 0xffffff);
+			UserData::DrawCoin({ (float)SCREEN_WIDTH / 2 - 80, (float)SCREEN_HEIGHT / 2 + (pause_cursor * 50) + 130 }, 20, 227 + abs(((int)frame % 56 - 28)), 200);
+		}
+	}
+
 	SetFontSize(old);
 }
 
@@ -464,30 +491,6 @@ void InGameScene::MakeGameMainDraw()
 		}
 	}
 
-	//一時停止フラグが立っていたら、ポーズ画面の描画
-	if (pause_flg)
-	{
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
-		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, true);
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
-		SetFontSize(72);
-		UserData::DrawStringCenter({ SCREEN_WIDTH / 2,SCREEN_HEIGHT / 2 }, "ポーズ中", 0xffffff);
-		SetFontSize(48);
-		if (back_title_flg)
-		{
-			DrawString(SCREEN_WIDTH / 2 - 200, SCREEN_HEIGHT / 2 +100, "タイトルに戻りますか？", 0xffffff);
-			DrawString(SCREEN_WIDTH / 2 - 180, SCREEN_HEIGHT / 2 + 150, "いいえ", back_title_cursor == 0 ? 0xffff00 : 0xffffff);
-			DrawString(SCREEN_WIDTH / 2 + 120, SCREEN_HEIGHT / 2 + 150, "はい", back_title_cursor == 1 ? 0xffff00 : 0xffffff);
-			UserData::DrawCoin({ (float)SCREEN_WIDTH / 2 - 200 + (back_title_cursor * 300), SCREEN_HEIGHT / 2 + 185 }, 20, 227 + abs(((int)frame % 56 - 28)), 200);
-		}
-		else
-		{
-			DrawString(SCREEN_WIDTH / 2-50, SCREEN_HEIGHT / 2 + 100, "再開", 0xffffff);
-			DrawString(SCREEN_WIDTH / 2-50, SCREEN_HEIGHT / 2 + 150, "オプション", 0xffffff);
-			DrawString(SCREEN_WIDTH / 2-50, SCREEN_HEIGHT / 2 + 200, "タイトル", 0xffffff);
-			UserData::DrawCoin({ (float)SCREEN_WIDTH / 2 - 80, (float)SCREEN_HEIGHT / 2 + (pause_cursor * 50) + 130 }, 20, 227 + abs(((int)frame % 56 - 28)), 200);
-		}
-	}
 	//遷移時アニメーションフラグが立っていたら、アニメーション処理
 	if (start_anim_flg)
 	{

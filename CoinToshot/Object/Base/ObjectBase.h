@@ -28,9 +28,6 @@ protected:
 	bool death_flg;						//死亡時の演出をしているか判断
 	int death_timer;					//死亡演出の時間測定
 public:
-	bool hit_flg[4];					//辺ごとの当たり判定格納
-
-public:
 	//コンストラクタ
 	ObjectBase() = default;
 	//デストラクタ	

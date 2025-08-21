@@ -78,13 +78,13 @@ void RankingScene::Draw()const
 		{
 			UserData::DrawNum({ 170, 200 + i * 60 }, UserData::ranking_data[i].num, (int)frame % 30 > 15 ? 0xffffff : rank_color[i]);
 			DrawFormatString(260, 200 + i * 60, (int)frame %30 >15 ? 0xffffff: rank_color[i], "%s", UserData::ranking_data[i].name.c_str());
-			UserData::DrawNum({ 640.f, 200.f + i * 60 }, UserData::ranking_data[i].coin, (int)frame % 30 > 15 ? 0xffffff : rank_color[i]);
+			UserData::DrawNum({ 780 - UserData::DrawNum({-1000,0},UserData::ranking_data[i].coin,0xffffff), 200.f + i * 60}, UserData::ranking_data[i].coin, (int)frame % 30 > 15 ? 0xffffff : rank_color[i]);
 		}									
 		else								
 		{									
 			UserData::DrawNum({ 170, 200 + i * 60 }, UserData::ranking_data[i].num, rank_color[i]);
 			DrawFormatString(260, 200 + i * 60, rank_color[i], "%s", UserData::ranking_data[i].name.c_str());
-			UserData::DrawNum({ 640, 200 + i * 60 }, UserData::ranking_data[i].coin, rank_color[i]);
+			UserData::DrawNum({ 780 - UserData::DrawNum({-1000,0},UserData::ranking_data[i].coin,0xffffff), 200 + i * 60 }, UserData::ranking_data[i].coin, rank_color[i]);
 		}
 	}
 }

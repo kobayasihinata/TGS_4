@@ -42,6 +42,8 @@ void GameSceneUI::Initialize()
 	ex_se = rm->GetSounds("Resource/Sounds/explsion_big.mp3");
 	lock_se = rm->GetSounds("Resource/Sounds/lock.mp3");
 	count_se = rm->GetSounds("Resource/Sounds/lock.mp3");
+	shine_image = rm->GetImages("Resource/Images/Effect/yellow_shine.png", 40, 8, 5, 96, 96);
+	now_shine_image = 0;
 }
 
 void GameSceneUI::Update()
@@ -78,40 +80,6 @@ void GameSceneUI::Update()
 		}
 	}
 
-	//一フレームに一個ずつ追加する処理
-	for (auto& wait_data : coin_wait_data)
-	{
-		coin_data.push_back(wait_data);
-		//追加したログは消す
-		coin_wait_data.erase(coin_wait_data.begin());
-		break;
-	}
-	//コイン増減ログ用
-	for (auto& coin_data : coin_data)
-	{
-		//時間を過ぎたら消す
-		if (++coin_data.life_count >= coin_data.life_span)
-		{
-			delete_coin_data.push_back(coin_data);
-		}
-	}
-
-	//オブジェクト配列から削除する処理
-	for (const auto& delete_data : delete_coin_data)
-	{
-		for (auto it = coin_data.begin(); it != coin_data.end();)
-		{
-			if (*it == delete_data)
-			{
-				it = coin_data.erase(it);
-				break;
-			}
-			else
-			{
-				++it;
-			}
-		}
-	}
 	//フラグが立っているなら、紙吹雪を生成
 	if (confetti_flg)
 	{
@@ -239,9 +207,13 @@ void GameSceneUI::Update()
 
 	if (rank_anim_flg)
 	{
-		if (++rank_timer > 180)
+		if (++rank_timer > RANKUP_TIMER)
 		{
 			rank_anim_flg = false;
+		}
+		if (++now_shine_image > 39)
+		{
+			now_shine_image = 0;
 		}
 	}
 	//弾種類見た目生成
@@ -364,28 +336,6 @@ void GameSceneUI::Draw()const
 	}
 	int i = 0;
 	int size = GetFontSize();
-	//coin_dataの描画
-	for (const auto coin_data : coin_data)
-	{
-		//フォントサイズ変更
-		//SetFontSize(ui_data.font_size);
-		//文字透過設定
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 - (255 / coin_data.life_span) * coin_data.life_count);
-
-		DrawFormatStringF(coin_data.location.x + 1.f,
-			coin_data.location.y + i + 1.f,
-			0x000000,
-			"%s",
-			coin_data.text.c_str()
-		);
-		DrawFormatStringF(coin_data.location.x,
-			coin_data.location.y + i,
-			coin_data.text_color,
-			"%s",
-			coin_data.text.c_str()
-		);
-		i += size;
-	}
 
 	//文字透過リセット
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
@@ -417,12 +367,6 @@ void GameSceneUI::SetUIData(Vector2D _location, string _text, int _text_color, f
 	data.text_color = _text_color;
 
 	ui_data.push_back(data);
-	//コインログは座標をコイン枚数表示位置に固定
-	if (_text[0] != 'H')
-	{
-		data.location = { SCREEN_WIDTH - 10 - GetDrawNStringWidth(_text.c_str(),_text.size()),40};
-		coin_wait_data.push_back(data);
-	}
 }
 
 ConfettiData GameSceneUI::GetConfettiData()const
@@ -551,7 +495,7 @@ void GameSceneUI::DrawPlayerUI()const
 		player_ui_loc.x + 525, player_ui_loc.y + 125,
 		player_ui_loc.x - width +210, player_ui_loc.y + 125,
 		0x666600, TRUE);
-	DrawFormatString(player_ui_loc.x - width +280, player_ui_loc.y+22, 0xffffff, "HP:%d", (int)(UserData::player_hp));
+	DrawFormatString(player_ui_loc.x - width +240, player_ui_loc.y+22, 0xffffff, "HP:%d", (int)(UserData::player_hp));
 	DrawFormatString(player_ui_loc.x - GetDrawFormatStringWidth("TIME:%d %d", (int)(UserData::timer/60), UserData::coin)+415, player_ui_loc.y+22, 0xffffff, "TIME:%d", (int)(UserData::timer/60));
 	
 	int coin_text_color = 0xffffff;
@@ -578,6 +522,8 @@ void GameSceneUI::DrawPlayerUI()const
 		coin_text_color,
 		"×%d", 
 		UserData::coin);
+
+	SetFontSize(48);
 
 	//ランキング描画
 	DrawRanking();
@@ -625,6 +571,7 @@ void GameSceneUI::DrawRanking()const
 	//新記録なら
 	if (now_rank > -1)
 	{
+		SetFontSize(36);
 		DrawString(SCREEN_WIDTH - GetDrawStringWidth("新記録！", strlen("新記録！")) - 145,
 			player_ui_loc.y + 70,
 			"新記録！",
@@ -638,23 +585,25 @@ void GameSceneUI::DrawRanking()const
 	//順位更新アニメーション
 	if (rank_anim_flg && old_rank_keep != -1 && now_rank != -1)
 	{
-		Vector2D r_loc = { 100.f,(float)SCREEN_HEIGHT - 200 };
-		int anim_1 = 60;	//ひとつ前の順位が表示されている時間
-		bool is_rankup = old_rank_keep < now_rank;	//falseならランキングが下がった処理
-		SetFontSize(64);
-		if (frame % 30 < 15)DrawStringF(r_loc.x, r_loc.y - 50, is_rankup || old_rank_keep == -1 ? "RANK DOWN..." : "RANK UP!!!", is_rankup ? 0x0000aa : 0xffffff);
-		//ランキング変動演出
-		if (rank_timer < anim_1)
+		if (rank_timer > RANKUP_TIMER - 30)
 		{
-			SetFontSize(48);
-			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 - rank_timer * 2);
-			DrawFormatStringF(r_loc.x, r_loc.y, rank_color[old_rank_keep], "%d位", old_rank_keep);
-			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 - (rank_timer - (RANKUP_TIMER-30)) * (255 / 30));
 		}
-		else
+		Vector2D r_loc = { 100,SCREEN_HEIGHT - 200 };
+		bool is_rankup = old_rank_keep < now_rank;	//falseならランキングが下がった処理
+		if (frame % 30 < 15)DrawStringF(r_loc.x, r_loc.y - 50, is_rankup || old_rank_keep == -1 ? "RANK DOWN..." : "RANK UP!!!", is_rankup ? 0x0000aa : 0xffffff);
+		//上位3位なら輝き
+		if (now_rank < 9)
 		{
-			SetFontSize(56);
-			DrawFormatStringF(r_loc.x, r_loc.y, rank_color[now_rank], "%d位", now_rank);
+			DrawRotaGraphF(r_loc.x + GetDrawFormatStringWidth("%d位 → ", old_rank_keep)+24, r_loc.y+24, 1.3f, 0, shine_image[now_shine_image], TRUE);
+		}
+		//ランキング変動演出
+		DrawFormatStringF(r_loc.x, r_loc.y, rank_color[old_rank_keep], "%d位", old_rank_keep);
+		DrawString(r_loc.x + GetDrawFormatStringWidth("%d位", old_rank_keep), r_loc.y, " → ", 0xffffff);
+		DrawFormatStringF(r_loc.x + GetDrawFormatStringWidth("%d位 → ", old_rank_keep), r_loc.y, rank_color[now_rank], "%d位", now_rank);
+		if (rank_timer > RANKUP_TIMER - 30)
+		{
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 		}
 	}
 }
