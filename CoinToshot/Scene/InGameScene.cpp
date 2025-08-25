@@ -28,7 +28,7 @@ void InGameScene::Initialize()
 	UserData::is_gamestop = false;
 	UserData::attraction_flg = false;
 	UserData::attraction_timer = 0;
-	UserData::bullet_type = 0;
+	UserData::now_bullet = 0;
 	UserData::invincible = 0;
 	UserData::is_clear = false;
 	UserData::can_bullet_change_flg = false;
@@ -74,8 +74,8 @@ void InGameScene::Initialize()
 	objects->CreateObject({ Vector2D{48,32},Vector2D{40,40},ePLAYER });
 
 	objects->CreateObject({ Vector2D{(float)(GetRand(1)* 2000 - 1000),(float)(GetRand(1)* 2000 - 1000)},Vector2D{100,100},eSLOT});
-	objects->CreateObject({ {200,200},{100,100},eSHOP});
-	objects->CreateObject({ {-200,200},{100,100},eSHOP});
+	objects->CreateObject({ {200,200},{160,120},eSHOP});
+	objects->CreateObject({ {-200,200},{160,120},eSHOP});
 	objects->CreateObject({ Vector2D{ 150, 30},Vector2D{40,40},eCOIN, 20.f});
 	objects->CreateObject({ {1050,0}, Vector2D{ ENEMY1_WIDTH,ENEMY1_HEIGHT }, eENEMY1});
 
@@ -126,7 +126,7 @@ eSceneType InGameScene::Update(float _delta)
 		UserData::coin_graph.push_back(UserData::coin);
 	}
 	//ˆêŽž’âŽ~ƒtƒ‰ƒOØ‚è‘Ö‚¦
-	if (InputPad::OnButton(XINPUT_BUTTON_START) && !tutorial->GetTutorialFlg() && !start_anim_flg)
+	if (InputPad::OnButton(XINPUT_BUTTON_START) && !tutorial->GetTutorialFlg() && !start_anim_flg && !shop_flg)
 	{
 		pause_flg = !pause_flg;
 	}
@@ -358,7 +358,6 @@ eSceneType InGameScene::Update(float _delta)
 
 void InGameScene::Draw()const
 {
-	int old = GetFontSize();
 
 	DrawGraph(0, 0, gamemain_image, FALSE);
 
@@ -398,7 +397,6 @@ void InGameScene::Draw()const
 		}
 	}
 
-	SetFontSize(old);
 }
 
 eSceneType InGameScene::GetNowSceneType()const

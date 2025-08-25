@@ -176,8 +176,7 @@ eSceneType TitleScene::Update(float _delta)
 }
 
 void TitleScene::Draw()const
-{
-	int old = GetFontSize();
+{	
 
 	//”wŒi‰æ‘œ•`‰æ
 	DrawGraph(0, 0, bg_image, TRUE);
@@ -242,8 +241,6 @@ void TitleScene::Draw()const
 		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, true);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 	}
-
-	SetFontSize(old);
 }
 
 void TitleScene::Finalize()

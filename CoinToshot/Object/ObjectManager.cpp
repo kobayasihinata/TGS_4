@@ -145,6 +145,7 @@ void ObjectManager::Draw()const
 	std::vector<ObjectBase*> enemy_list;	//敵格納
 	std::vector<ObjectBase*> facility_list;		//スロット格納
 	std::vector<EffectBase*> front_effect;	//オブジェクトの後ろに描画するエフェクト格納
+	ObjectBase* player = nullptr;						//プレイヤーを最前面で描画する
 
 	//オブジェクトの後ろに描画するエフェクト
 	for (const auto& effect : effect_list)
@@ -174,6 +175,10 @@ void ObjectManager::Draw()const
 			{
 				facility_list.push_back(object);
 			}
+			else if (object->GetObjectType() == ePLAYER)
+			{
+				player = object;
+			}
 			else
 			{
 				object->Draw();
@@ -187,11 +192,13 @@ void ObjectManager::Draw()const
 		enemy->Draw();
 	}
 
-	//スロット描画
+	//スロット、ショップ描画
 	for (const auto& facility : facility_list)
 	{
 		facility->Draw();
 	}
+	//プレイヤー描画
+	player->Draw();
 
 	//オブジェクトの前に描画するエフェクト
 	for (const auto& effect : front_effect)

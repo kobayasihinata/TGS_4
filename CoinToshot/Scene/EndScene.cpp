@@ -64,7 +64,6 @@ eSceneType EndScene::Update(float _delta)
 
 void EndScene::Draw()const
 {
-	int old = GetFontSize();
 	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x999900, TRUE);
 
 	SetFontSize(48);
@@ -80,7 +79,6 @@ void EndScene::Draw()const
 	UserData::DrawButtonAndString({ SCREEN_WIDTH / 2 +250,  SCREEN_HEIGHT-26}, XINPUT_BUTTON_B, ":É^ÉCÉgÉãÇ…ñﬂÇÈ", 0x444400);
 
 	UserData::DrawButtonAndString({ SCREEN_WIDTH / 2 - 350,  SCREEN_HEIGHT-26}, XINPUT_BUTTON_A, ":ëÅëóÇË", 0x444400);
-	SetFontSize(old);
 }
 
 void EndScene::Finalize()

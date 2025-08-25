@@ -13,7 +13,7 @@ void GameSceneUI::Initialize()
 	frame = 0;
 	bullet_image = MakeScreen(300, 225, TRUE);
 	lock_image = MakeScreen(60, 75, TRUE);
-	old_bullet_type = UserData::bullet_type;
+	old_bullet_type = UserData::get_bullet[UserData::now_bullet];
 	bullet_change_timer = 0;
 	change_anim_move = 300.f / PLATER_BULLET_CHANGE_CD;
 	change_anim_once = false;
@@ -141,17 +141,17 @@ void GameSceneUI::Update()
 	if (UserData::attraction_timer <= 0)max_attraction = 0;
 
 	//弾の種類が変わっているなら、アニメーションする
-	if (old_bullet_type != UserData::bullet_type)
+	if (old_bullet_type != UserData::get_bullet[UserData::now_bullet])
 	{
 		if (!change_anim_once)
 		{
-			move_dir = CheckMoveDirection(UserData::bullet_type, old_bullet_type);
+			move_dir = CheckMoveDirection(UserData::get_bullet[UserData::now_bullet], old_bullet_type);
 			change_anim_once = true;
 		}
 		//アニメーション終了条件
 		if (++bullet_change_timer >= PLATER_BULLET_CHANGE_CD)
 		{
-			old_bullet_type = UserData::bullet_type;
+			old_bullet_type = UserData::get_bullet[UserData::now_bullet];
 			bullet_change_timer = 0;
 		}
 	}
@@ -243,7 +243,6 @@ void GameSceneUI::Update()
 
 void GameSceneUI::Draw()const
 {
-	int old = GetFontSize();
 	//カメラ座標取得
 	Camera* camera = Camera::Get();
 
@@ -366,7 +365,6 @@ void GameSceneUI::Draw()const
 		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0xff0000, true);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 	}
-	SetFontSize(old);
 }
 
 void GameSceneUI::SetUIData(Vector2D _location, string _text, int _text_color, float _move, int _life_span)
@@ -401,7 +399,7 @@ void GameSceneUI::CreateBulletTypeImage()const
 
 	int draw_color;
 	//撃てない弾のUIは薄暗くする
-	if (pBullet[UserData::bullet_type].cost <= UserData::coin)
+	if (pBullet[UserData::get_bullet[UserData::now_bullet]].cost <= UserData::coin)
 	{
 		draw_color = 0xffffff;
 	}
@@ -416,26 +414,26 @@ void GameSceneUI::CreateBulletTypeImage()const
 	}
 
 	//弾変更が有れば変更前と変更後の箱を描画
-	if (old_bullet_type != UserData::bullet_type)
+	if (old_bullet_type != UserData::get_bullet[UserData::now_bullet])
 	{
 		//変更前と変更後を比べて、右にアニメーションするか左にアニメーションするか判断
 		if (move_dir)
 		{
 			//右移動
-			DrawBullet({ change_anim_move * bullet_change_timer - 300, GetRand(1)}, UserData::bullet_type);
+			DrawBullet({ change_anim_move * bullet_change_timer - 300, GetRand(1)}, UserData::get_bullet[UserData::now_bullet]);
 			DrawBullet({ change_anim_move * bullet_change_timer,  GetRand(1) }, old_bullet_type);
 		}
 		else
 		{
 			//左移動
 			DrawBullet({ change_anim_move * -bullet_change_timer,  GetRand(1) }, old_bullet_type);
-			DrawBullet({ (change_anim_move * -bullet_change_timer) + 300,  GetRand(1) }, UserData::bullet_type);
+			DrawBullet({ (change_anim_move * -bullet_change_timer) + 300,  GetRand(1) }, UserData::get_bullet[UserData::now_bullet]);
 		} 
 	}
 	//変更が無いなら通常の描画
 	else
 	{
-		DrawBullet({ 0, 0 }, UserData::bullet_type);
+		DrawBullet({ 0, 0 }, UserData::get_bullet[UserData::now_bullet]);
 	}
 
 	//文字大きさ設定
@@ -494,8 +492,6 @@ void GameSceneUI::DrawBullet(Vector2D _loc, int _type)const
 
 void GameSceneUI::DrawPlayerUI()const
 {
-	int old = GetFontSize();
-
 	SetFontSize(36);
 	int width = 200;
 	DrawQuadrangle(player_ui_loc.x - width+170, player_ui_loc.y,
@@ -548,7 +544,6 @@ void GameSceneUI::DrawPlayerUI()const
 		DrawString(75, 15, ": 一時停止", 0x000000);
 		UserData::DrawButtonImage({45, 30 }, XINPUT_BUTTON_START, 75);
 	}
-	SetFontSize(old);
 
 	//残り時間１０秒以下なら、カウントダウンを描画する
 	if (UserData::timer < 600 && UserData::timer > 0)

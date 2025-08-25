@@ -87,7 +87,6 @@ void Tutorial::Update()
 
 void Tutorial::Draw()const
 {
-	int old = GetFontSize();
 
 	//実行中のチュートリアルに応じて、処理をする
 	switch (now_tuto)
@@ -113,8 +112,6 @@ void Tutorial::Draw()const
 	default:
 		break;
 	}
-
-	SetFontSize(old);
 }
 
 bool Tutorial::StartTutoRequest(TutoType _type, ObjectBase* _obj)

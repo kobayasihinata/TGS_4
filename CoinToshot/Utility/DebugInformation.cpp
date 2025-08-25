@@ -16,7 +16,6 @@ void DebugInfomation::Update()
 void DebugInfomation::Draw()
 {
 #ifdef _DEBUG
-	int old = GetFontSize();
 	SetFontSize(12);
 	if (draw_flg)
 	{
@@ -37,7 +36,6 @@ void DebugInfomation::Draw()
 			i++;
 		}
 	}
-	SetFontSize(old);
 #endif // _DEBUG
 }
 

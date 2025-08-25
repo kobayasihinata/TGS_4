@@ -39,9 +39,8 @@ void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init
 	k_input = InputKey::Get();
 	tutorial = Tutorial::Get();
 
-	get_bullet.push_back(0);
-	get_bullet.push_back(1);
-	now_bullet = 0;
+	UserData::get_bullet.push_back(1);
+	UserData::now_bullet = 0;
 	bullet_change_cd = 0;
 	danger_once = false;
 	change_flg = false;
@@ -304,8 +303,6 @@ void Player::Update()
 
 void Player::Draw()const
 {
-	//フォントサイズ保存
-	int old = GetFontSize();
 
 	//吸い寄せエフェクト
 	if (UserData::attraction_flg)
@@ -393,10 +390,6 @@ void Player::Draw()const
 		DrawRotaGraphF(local_location.x, local_location.y, 1.f + (float)(change_timer/10.f), 0, player_image, TRUE);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 	}
-	//フォント大きさ元通り
-	SetFontSize(old);
-	DebugInfomation::Add("now_bullet", now_bullet);
-	DebugInfomation::Add("get_bullet", get_bullet[now_bullet]);
 }
 
 void Player::Hit(ObjectBase* hit_Object)
@@ -509,12 +502,12 @@ void Player::Control()
 	if (tutorial->GetTutoNowEnd(TutoType::tAttack) &&
 		UserData::CheckBulletButton())
 	{
-		if (UserData::coin >= pBullet[UserData::bullet_type].cost)
+		if (UserData::coin >= pBullet[UserData::get_bullet[UserData::now_bullet]].cost)
 		{
 			ShotBullet();
-			UserData::coin -= pBullet[UserData::bullet_type].cost;
+			UserData::coin -= pBullet[UserData::get_bullet[UserData::now_bullet]].cost;
 			ResourceManager::rPlaySound(shot_se, DX_PLAYTYPE_BACK);
-			std::string s = "-" + std::to_string(pBullet[UserData::bullet_type].cost);
+			std::string s = "-" + std::to_string(pBullet[UserData::get_bullet[UserData::now_bullet]].cost);
 			ingame->CreatePopUp(this->location, s, 0xff0000, -1);
 		}
 		//発射失敗SE
@@ -531,11 +524,10 @@ void Player::Control()
 		if (UserData::CheckBulletChangeButtonLeft())
 		{
 			CreatePlayerImage();
-			if (--now_bullet < 0)
+			if (--UserData::now_bullet < 0)
 			{
-				now_bullet = get_bullet.size() - 1;
+				UserData::now_bullet = UserData::get_bullet.size() - 1;
 			}
-				UserData::bullet_type = get_bullet[now_bullet];
 			bullet_change_cd = PLATER_BULLET_CHANGE_CD;
 			if (!CheckSoundMem(bullet_change_se))
 			{
@@ -547,11 +539,10 @@ void Player::Control()
 		{
 			CreatePlayerImage();
 
-			if (++now_bullet > get_bullet.size()-1)
+			if (++UserData::now_bullet > UserData::get_bullet.size()-1)
 			{
-				now_bullet = 0;
+				UserData::now_bullet = 0;
 			}
-			UserData::bullet_type = get_bullet[now_bullet];
 			bullet_change_cd = PLATER_BULLET_CHANGE_CD;
 			if (!CheckSoundMem(bullet_change_se))
 			{
@@ -595,18 +586,18 @@ void Player::Control()
 BulletData Player::GetBulletData(float _shot_rad)
 {
 	BulletData _data;
-	_data.damage = pBullet[UserData::bullet_type].damage;
+	_data.damage = pBullet[UserData::get_bullet[UserData::now_bullet]].damage;
 	_data.b_angle = _shot_rad;
-	_data.delete_time = pBullet[UserData::bullet_type].life_span;
-	_data.h_count = pBullet[UserData::bullet_type].h_count;
+	_data.delete_time = pBullet[UserData::get_bullet[UserData::now_bullet]].life_span;
+	_data.h_count = pBullet[UserData::get_bullet[UserData::now_bullet]].h_count;
 	_data.location = this->location;
-	_data.radius = pBullet[UserData::bullet_type].radius;
-	_data.speed = pBullet[UserData::bullet_type].speed;
+	_data.radius = pBullet[UserData::get_bullet[UserData::now_bullet]].radius;
+	_data.speed = pBullet[UserData::get_bullet[UserData::now_bullet]].speed;
 	_data.who = this;
-	_data.b_type = (BulletType)UserData::bullet_type;
+	_data.b_type = (BulletType)UserData::get_bullet[UserData::now_bullet];
 	for (int i = 0; i < 3; i++)
 	{
-		_data.color[i] = pBullet[UserData::bullet_type].color[i];
+		_data.color[i] = pBullet[UserData::get_bullet[UserData::now_bullet]].color[i];
 	}
 	return _data;
 }
@@ -614,12 +605,12 @@ BulletData Player::GetBulletData(float _shot_rad)
 void Player::ShotBullet()
 {
 	//一発以上撃つ弾種なら
-	if (pBullet[UserData::bullet_type].bullet_num > 1)
+	if (pBullet[UserData::get_bullet[UserData::now_bullet]].bullet_num > 1)
 	{
-		float t = (pBullet[UserData::bullet_type].space * pBullet[UserData::bullet_type].bullet_num) / 2;
-		for (int i = 0; i < pBullet[UserData::bullet_type].bullet_num; i++)
+		float t = (pBullet[UserData::get_bullet[UserData::now_bullet]].space * pBullet[UserData::get_bullet[UserData::now_bullet]].bullet_num) / 2;
+		for (int i = 0; i < pBullet[UserData::get_bullet[UserData::now_bullet]].bullet_num; i++)
 		{
-			manager->CreateAttack(GetBulletData(shot_rad - t + i * pBullet[UserData::bullet_type].space));
+			manager->CreateAttack(GetBulletData(shot_rad - t + i * pBullet[UserData::get_bullet[UserData::now_bullet]].space));
 		}
 	}
 	//単発なら
@@ -632,7 +623,7 @@ void Player::ShotBullet()
 void Player::DrawBulletOrbit(Vector2D _loc)const
 {
 	float span,start;
-	switch (UserData::bullet_type)
+	switch (UserData::get_bullet[UserData::now_bullet])
 	{
 		//普通タイプの矢印
 	case BulletType::bNormal:
@@ -643,9 +634,9 @@ void Player::DrawBulletOrbit(Vector2D _loc)const
 		break;
 		//拡散弾の矢印
 	case BulletType::bShotgun:
-		span = (pBullet[UserData::bullet_type].space * pBullet[UserData::bullet_type].bullet_num);
+		span = (pBullet[UserData::get_bullet[UserData::now_bullet]].space * pBullet[UserData::get_bullet[UserData::now_bullet]].bullet_num);
 		start = shot_rad + 1.55f - (span / 2);
-		for (float i = start; i <= start + span; i += pBullet[UserData::bullet_type].space)
+		for (float i = start; i <= start + span; i += pBullet[UserData::get_bullet[UserData::now_bullet]].space)
 		{
 			DrawRotaGraph(_loc.x + 40 * sinf(i), _loc.y - 40 * cosf(i), 1.0f, i, arrow_image, TRUE);
 		}
@@ -654,8 +645,8 @@ void Player::DrawBulletOrbit(Vector2D _loc)const
 	case BulletType::bExplosion:
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200 - (frame * 5) % 200);
 		DrawRotaGraph(_loc.x + 40 * sinf(shot_rad + 1.5f), _loc.y - 40 * cosf(shot_rad + 1.5f), 1.0f, shot_rad + 1.55f, arrow_image, TRUE);
-		DrawCircleAA(_loc.x + (pBullet[UserData::bullet_type].speed*pBullet[UserData::bullet_type].life_span) * sinf(shot_rad + 1.55f),
-			_loc.y - (pBullet[UserData::bullet_type].speed * pBullet[UserData::bullet_type].life_span) * cosf(shot_rad + 1.55f),
+		DrawCircleAA(_loc.x + (pBullet[UserData::get_bullet[UserData::now_bullet]].speed*pBullet[UserData::get_bullet[UserData::now_bullet]].life_span) * sinf(shot_rad + 1.55f),
+			_loc.y - (pBullet[UserData::get_bullet[UserData::now_bullet]].speed * pBullet[UserData::get_bullet[UserData::now_bullet]].life_span) * cosf(shot_rad + 1.55f),
 			(frame*5) % 200, 100, 0xff0000, true);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 		break;
@@ -669,7 +660,7 @@ void Player::CreateArrowImage()const
 	SetDrawScreen(arrow_image);
 	ClearDrawScreen();
 	//現在の弾の種類に応じて見た目を変更
-	switch (UserData::bullet_type)
+	switch (UserData::get_bullet[UserData::now_bullet])
 	{
 	case BulletType::bNormal:
 		for (int i = 1; i < 5; i++)

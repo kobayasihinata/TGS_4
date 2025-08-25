@@ -12,12 +12,17 @@ Shop::Shop(InGameScene* _ingame)
 	shop_cd = SHOP_COOLDOWN;
 
 	shop_cursor = 0;
+	for (int i = 0; i < ITEM_NUM; i++)
+	{
+		buy_count[i] = 0;
+	}
 
 	CreateItemImage();
 
 	ResourceManager* rm = ResourceManager::GetInstance();
+	shop_image = rm->GetImages("Resource/Images/Shop.png");
 
-	button_se = rm->GetSounds("Resource/Sounds/pop.wav");
+	button_se = rm->GetSounds("Resource/Sounds/Coin/Get.mp3");
 	cursor_se = rm->GetSounds("Resource/Sounds/cursor.mp3");
 	back_se = rm->GetSounds("Resource/Sounds/Hanahana/button.mp3");
 }
@@ -42,6 +47,14 @@ void Shop::Update()
 	//ショップ展開時の処理
 	if (shop_flg)
 	{
+		for (int i = 2; i < ITEM_NUM; i++)
+		{
+			//UserDataの所持中の弾を参照し、持っている弾を購入済みとする
+			if (std::find(UserData::get_bullet.begin(), UserData::get_bullet.end(), i) != UserData::get_bullet.end())
+			{
+				buy_count[i] = 1;
+			}
+		}
 		//カーソル移動処理
 		if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_RIGHT) || InputPad::GetPressedButton(L_STICK_RIGHT))
 		{
@@ -83,21 +96,21 @@ void Shop::Update()
 void Shop::Draw()const
 {
 	__super::Draw();
-
 	//ショップ本体描画
-	DrawBoxAA(local_location.x - (box_size.x/2),
-			  local_location.y - (box_size.y/2),
-			  local_location.x + (box_size.x/2),
-			  local_location.y + (box_size.y/2),
-		0x000000, true);
-	DrawString(local_location.x - 20, local_location.y, "Shop", 0xffffff);
+	//DrawBoxAA(local_location.x - (box_size.x/2),
+	//		  local_location.y - (box_size.y/2),
+	//		  local_location.x + (box_size.x/2),
+	//		  local_location.y + (box_size.y/2),
+	//	0x000000, false);
+	SetFontSize(24);
+	DrawRotaGraphF(local_location.x, local_location.y, 0.2f, 0, shop_image[0], true);
 	//クールダウン描画
 	if (shop_cd < SHOP_COOLDOWN)
 	{
-		DrawFormatStringF(local_location.x, local_location.y, 0xffffff, "%d", ((SHOP_COOLDOWN - shop_cd) / 60) + 1);
+		DrawFormatStringF(local_location.x, local_location.y-30, 0xffffff, "%d", ((SHOP_COOLDOWN - shop_cd) / 60) + 1);
 	}
 	int span = 200;
-	Vector2D shop_loc = { 300,400 };
+	Vector2D shop_loc = { 200,400 };
 	//ショップUI描画
 	if (shop_flg)
 	{
@@ -105,9 +118,17 @@ void Shop::Draw()const
 		for (int i = 0; i < ITEM_NUM; i++)
 		{
 			DrawGraph(shop_loc.x + (i * span), shop_loc.y, item_image[i][shop_cursor != i], false);
-			if (UserData::coin < item_list[i].price)
+			if (buy_count[i] >= item_list[i].buy_max)
 			{
-				DrawString(350 + (i * span), 550, "コイン不足!", 0xff0000);
+				DrawString(shop_loc.x + 70 + (i * span), shop_loc.y+150, "在庫なし", 0xff0000);
+			}
+			else if (UserData::coin < item_list[i].price)
+			{
+				DrawString(shop_loc.x + (i * span), shop_loc.y + 150, "コイン不足!", 0xff0000);
+			}
+			else
+			{
+				DrawFormatStringF(shop_loc.x + (i * span)+30, shop_loc.y + 150, 0x00ff00, "あと%dコ", item_list[i].buy_max - buy_count[i]);
 			}
 		}
 	}
@@ -135,22 +156,17 @@ void Shop::CreateItemImage()
 		for (int j = 0; j < 2; j++)
 		{
 			item_image[i][j] = MakeScreen(SHOP_ITEM_WIDTH, SHOP_ITEM_HEIGHT);
-			int color = j == 0 ? 0xffff00 : 0xaaaaaa;
-			//購入不可か
-			if (UserData::coin < item_list[i].price)
-			{
-				color = j == 0 ? 0x888800 : 0x666666;
-			}
+			int color = j == 0 ? item_list[i].text_color : 0xaaaaaa;
 			SetDrawScreen(item_image[i][j]);
 			ClearDrawScreen();
-			DrawBoxAA(0, 0, SHOP_ITEM_WIDTH, SHOP_ITEM_HEIGHT, 0x000000, true);
+			DrawBoxAA(0, 0, SHOP_ITEM_WIDTH, SHOP_ITEM_HEIGHT, color == 0x000000 ? 0xffffff : 0x000000, true);
 			DrawBoxAA(0, 0, SHOP_ITEM_WIDTH, SHOP_ITEM_HEIGHT, color, false);
 			SetFontSize(48);
 			DrawFormatString((span / 2) - (GetDrawStringWidth(item_list[i].name, strlen(item_list[i].name)) / 2), 20, color, "%s", item_list[i].name);
 			SetFontSize(24);
 			DrawFormatString((span / 2) - (GetDrawStringWidth(item_list[i].sub_text, strlen(item_list[i].sub_text)) / 2), 80, color, "%s", item_list[i].sub_text);
 			UserData::DrawCoin({ (span / 2) - (GetDrawFormatStringWidth("   × %d",item_list[i].price) / 2) , 135 }, 12);
-			DrawFormatString((span / 2) - (GetDrawFormatStringWidth(" × %d", item_list[i].price) / 2), 120, color, " × %d", item_list[i].price);
+			DrawFormatString((span / 2) - (GetDrawFormatStringWidth(" × %d", item_list[i].price) / 2), 120, 0xffff00, " × %d", item_list[i].price);
 			SetDrawScreen(DX_SCREEN_BACK);
 		}
 	}
@@ -161,7 +177,7 @@ void Shop::BuyItem(int cursor)
 	Vector2D rand = 0;
 	Vector2D rand_velocity = 0;
 	//購入できるだけのコインがあるか
-	if (UserData::coin >= item_list[cursor].price)
+	if (UserData::coin >= item_list[cursor].price && buy_count[cursor] < item_list[cursor].buy_max)
 	{
 		switch (cursor)
 		{
@@ -177,9 +193,22 @@ void Shop::BuyItem(int cursor)
 							  (camera->player_location.y - rand.y) / 10 };
 			manager->CreateObject(eMAGNET, rand, { 40,40 }, 20.f, rand_velocity);
 			break;
+		case 2: //強化弾
+			UserData::get_bullet.push_back(2);
+			break;
+		case 3: //爆発弾
+			UserData::get_bullet.push_back(3);
+			break;
+		case 4: //最強弾
+			UserData::get_bullet.push_back(4);
+			break;
 		}
 		//代金を引く
 		UserData::coin -= item_list[cursor].price;
+		//買ったアイテムのカウントを進める
+		buy_count[cursor] += 1;
+		//購入完了SE
+		ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
 		//ショップ終了
 		SetShop(false);
 	}

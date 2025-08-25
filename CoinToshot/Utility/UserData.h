@@ -48,7 +48,8 @@ public:
 	static bool is_dead;					//プレイヤーが死亡演出中か
 	static bool is_gamestop;				//false=ゲーム中 true=ゲーム終了
 	static int invincible;					//この数値が０以上なら、その時間だけプレイヤーを無敵にして、0に戻す
-	static int bullet_type;					//選択中の弾の種類
+	static std::vector<int> get_bullet;		//所持中の弾
+	static int now_bullet;					//現在の弾の位置
 	static bool attraction_flg;				//コイン吸い寄せ
 	static int attraction_timer;			//コイン吸い寄せ時間測定
 	static bool can_bullet_change_flg;		//弾種類変更可能か
@@ -56,6 +57,7 @@ public:
 	static std::vector<int> coin_graph;		//コインの増減保存用
 	static std::vector<ReplayData> replay;	//ハイライト保存場所
 	static std::vector<std::vector<int>> button_image;//ボタン画像格納
+
 	static int coin_image;					//黄色コイン画像格納
 	static int se_volume;					//SEの音量格納
 	static int se_volume_num;				//SEの音量強度格納

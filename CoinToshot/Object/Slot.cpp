@@ -151,7 +151,6 @@ void Slot::Draw()const
 			real_location.y + real_size.y,
 			0xffffff, false);
 
-		int old = GetFontSize();
 		SetFontSize(32);
 		for (int i = 0; i < 3; i++)
 		{
@@ -213,7 +212,6 @@ void Slot::Draw()const
 				manager->DrawButton({ local_location.x - 100,local_location.y }, R_STICK_DOWN);
 			}
 		}
-		SetFontSize(old);
 	}
 }
 
