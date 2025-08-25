@@ -16,6 +16,9 @@ void GameSceneUI::Initialize()
 	old_bullet_type = UserData::bullet_type;
 	bullet_change_timer = 0;
 	change_anim_move = 300.f / PLATER_BULLET_CHANGE_CD;
+	change_anim_once = false;
+	move_dir = false;
+
 	player_ui_loc = { SCREEN_WIDTH - 525,0 };
 	now_coin_num = 0;
 	old_coin_num = 0;
@@ -140,12 +143,22 @@ void GameSceneUI::Update()
 	//弾の種類が変わっているなら、アニメーションする
 	if (old_bullet_type != UserData::bullet_type)
 	{
+		if (!change_anim_once)
+		{
+			move_dir = CheckMoveDirection(UserData::bullet_type, old_bullet_type);
+			change_anim_once = true;
+		}
 		//アニメーション終了条件
 		if (++bullet_change_timer >= PLATER_BULLET_CHANGE_CD)
 		{
 			old_bullet_type = UserData::bullet_type;
 			bullet_change_timer = 0;
 		}
+	}
+	else
+	{
+		//方向決定リセット
+		change_anim_once = false;
 	}
 
 	//爆発音再生
@@ -406,7 +419,7 @@ void GameSceneUI::CreateBulletTypeImage()const
 	if (old_bullet_type != UserData::bullet_type)
 	{
 		//変更前と変更後を比べて、右にアニメーションするか左にアニメーションするか判断
-		if (CheckMoveDirection(UserData::bullet_type, old_bullet_type))
+		if (move_dir)
 		{
 			//右移動
 			DrawBullet({ change_anim_move * bullet_change_timer - 300, GetRand(1)}, UserData::bullet_type);
@@ -496,7 +509,7 @@ void GameSceneUI::DrawPlayerUI()const
 		player_ui_loc.x - width +210, player_ui_loc.y + 125,
 		0x666600, TRUE);
 	DrawFormatString(player_ui_loc.x - width +240, player_ui_loc.y+22, 0xffffff, "HP:%d", (int)(UserData::player_hp));
-	DrawFormatString(player_ui_loc.x - GetDrawFormatStringWidth("TIME:%d", (int)(UserData::timer/60))+345, player_ui_loc.y+22, 0xffffff, "TIME:%d", (int)(UserData::timer/60));
+	DrawFormatString(player_ui_loc.x - GetDrawFormatStringWidth("TIME:%d", (int)(UserData::timer/60))+325, player_ui_loc.y+22, 0xffffff, "TIME:%d", (int)(UserData::timer/60));
 	
 	int coin_text_color = 0xffffff;
 	//コイン加算時のアニメーション
@@ -555,9 +568,9 @@ void GameSceneUI::DrawPlayerUI()const
 bool GameSceneUI::CheckMoveDirection(int _now, int _old)const
 {
 	//右端から左端へ移動する時の判断
-	if (_now == 0 && _old == BULLET_NUM - 1)return false;
+	if (UserData::CheckBulletChangeButtonRight())return false;
 	//左端から右端へ移動する時の判断
-	if (_now == BULLET_NUM - 1 && _old == 0)return true;
+	if (UserData::CheckBulletChangeButtonLeft())return true;
 	//現在の項目が前の項目より小さいなら右
 	if (_now < _old)return true;
 	//現在の項目が前の項目より大きいなら左

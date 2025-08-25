@@ -44,6 +44,7 @@ private:
 	int button_se;			//ボタン停止SE
 	int bonus_se;			//ボーナスSE
 	bool bonus_se_play_once;//ボーナスSEを一回だけ再生
+
 public:
 	//コンストラクタ
 	Slot(InGameScene* _ingame);

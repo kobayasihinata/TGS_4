@@ -143,7 +143,7 @@ void ObjectManager::Update()
 void ObjectManager::Draw()const
 {
 	std::vector<ObjectBase*> enemy_list;	//敵格納
-	std::vector<ObjectBase*> slot_list;		//スロット格納
+	std::vector<ObjectBase*> facility_list;		//スロット格納
 	std::vector<EffectBase*> front_effect;	//オブジェクトの後ろに描画するエフェクト格納
 
 	//オブジェクトの後ろに描画するエフェクト
@@ -170,9 +170,9 @@ void ObjectManager::Draw()const
 			{
 				enemy_list.push_back(object);
 			}
-			else if (object->GetObjectType() == eSLOT)
+			else if (object->GetObjectType() == eSLOT || object->GetObjectType() == eSHOP)
 			{
-				slot_list.push_back(object);
+				facility_list.push_back(object);
 			}
 			else
 			{
@@ -188,9 +188,9 @@ void ObjectManager::Draw()const
 	}
 
 	//スロット描画
-	for (const auto& slot : slot_list)
+	for (const auto& facility : facility_list)
 	{
-		slot->Draw();
+		facility->Draw();
 	}
 
 	//オブジェクトの前に描画するエフェクト
@@ -240,8 +240,11 @@ void ObjectManager::CreateObject(int object_type, Vector2D init_location, Vector
 	case ObjectList::eSLOT:
 		create_object.push_back(ObjectInitData{ new Slot(ingame),object_type,init_location,init_size,init_radius });
 		break;
+	case ObjectList::eSHOP:
+		create_object.push_back(ObjectInitData{ new Shop(ingame),object_type,init_location,init_size,init_radius });
+		break;
 	case ObjectList::eMAGNET:
-		create_object.push_back(ObjectInitData{ new Magnet(),object_type,init_location,init_size,init_radius });
+		create_object.push_back(ObjectInitData{ new Magnet(init_velocity),object_type,init_location,init_size,init_radius });
 		break;
 	default:
 		break;

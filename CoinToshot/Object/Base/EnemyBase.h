@@ -113,7 +113,7 @@ public:
 			local_location.y - (box_size.y / 2) - 10,
 			local_location.x - (HPBAR_SIZE / 2) + (hp * (HPBAR_SIZE / max_hp)) + hpbar_move,
 			local_location.y - (box_size.y / 2),
-			rare_flg ? frame % 20 > 10 ? 0x00ffff : 0xffff00 : 0xcccc00,
+			rare_flg ? 0x00ffff : 0xcccc00,
 			true
 		);
 		//HPゲージ減少アニメーション

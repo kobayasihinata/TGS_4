@@ -62,6 +62,8 @@ private:
 	int old_bullet_type;	//弾種類変更用
 	int bullet_change_timer;//弾変更アニメーション時間測定
 	float change_anim_move;	//アニメーションの移動量格納
+	bool change_anim_once;	//移動方向を判断する処理を一度だけやる
+	bool move_dir;			//移動方向
 
 	Vector2D player_ui_loc;	//プレイヤー情報位置
 	int now_coin_num;		//現在のコイン枚数

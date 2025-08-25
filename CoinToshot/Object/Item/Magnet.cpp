@@ -3,8 +3,10 @@
 #include "../../Utility/UserData.h"
 #include "../../Scene/InGameScene.h"
 
-Magnet::Magnet()
+Magnet::Magnet(Vector2D _init_velocity)
 {
+	velocity = _init_velocity;
+
 	//画像読込
 	ResourceManager* rm = ResourceManager::GetInstance();
 	std::vector<int>tmp;
@@ -37,6 +39,8 @@ void Magnet::Finalize()
 
 void Magnet::Update()
 {
+	Move();
+
 	Animation();
 
 	//輝きアニメーション更新

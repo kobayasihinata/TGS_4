@@ -39,6 +39,9 @@ void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init
 	k_input = InputKey::Get();
 	tutorial = Tutorial::Get();
 
+	get_bullet.push_back(0);
+	get_bullet.push_back(1);
+	now_bullet = 0;
 	bullet_change_cd = 0;
 	danger_once = false;
 	change_flg = false;
@@ -392,6 +395,8 @@ void Player::Draw()const
 	}
 	//ƒtƒHƒ“ƒg‘å‚«‚³Œ³’Ê‚è
 	SetFontSize(old);
+	DebugInfomation::Add("now_bullet", now_bullet);
+	DebugInfomation::Add("get_bullet", get_bullet[now_bullet]);
 }
 
 void Player::Hit(ObjectBase* hit_Object)
@@ -525,31 +530,34 @@ void Player::Control()
 		//’e‚ÌŽí—Þ‚ð•Ï‚¦‚é
 		if (UserData::CheckBulletChangeButtonLeft())
 		{
-			if (--UserData::bullet_type < 0)
+			CreatePlayerImage();
+			if (--now_bullet < 0)
 			{
-				UserData::bullet_type = BULLET_NUM - 1;
+				now_bullet = get_bullet.size() - 1;
 			}
+				UserData::bullet_type = get_bullet[now_bullet];
 			bullet_change_cd = PLATER_BULLET_CHANGE_CD;
 			if (!CheckSoundMem(bullet_change_se))
 			{
 				ResourceManager::rPlaySound(bullet_change_se, DX_PLAYTYPE_BACK);
 			}
 			change_flg = true;
-			CreatePlayerImage();
 		}
 		else if (UserData::CheckBulletChangeButtonRight())
 		{
-			if (++UserData::bullet_type > BULLET_NUM - 1)
+			CreatePlayerImage();
+
+			if (++now_bullet > get_bullet.size()-1)
 			{
-				UserData::bullet_type = 0;
+				now_bullet = 0;
 			}
+			UserData::bullet_type = get_bullet[now_bullet];
 			bullet_change_cd = PLATER_BULLET_CHANGE_CD;
 			if (!CheckSoundMem(bullet_change_se))
 			{
 				ResourceManager::rPlaySound(bullet_change_se, DX_PLAYTYPE_BACK);
 			}
 			change_flg = true;
-			CreatePlayerImage();
 		}
 		else
 		{

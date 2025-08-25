@@ -1,9 +1,9 @@
 #pragma once
-#include "../Base/ObjectBase.h"
+#include "../Base/ActorBase.h"
 #include <vector>
 
 class Magnet :
-	public ObjectBase
+	public ActorBase
 {
 private:
 
@@ -13,7 +13,7 @@ private:
 	int magnet_se;					//取得時SE
 public:
 	//コンストラクタ
-	Magnet();
+	Magnet(Vector2D _init_velocity);
 	//デストラクタ
 	~Magnet();
 	//初期化処理

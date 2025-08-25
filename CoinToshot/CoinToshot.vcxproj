@@ -148,6 +148,7 @@
     <ClCompile Include="Object\Effect\Smoke.cpp" />
     <ClCompile Include="Object\Effect\Walk.cpp" />
     <ClCompile Include="Object\Item\Magnet.cpp" />
+    <ClCompile Include="Object\Shop.cpp" />
     <ClCompile Include="Object\Slot.cpp" />
     <ClCompile Include="Scene\EndScene.cpp" />
     <ClCompile Include="Scene\GameSceneUI.cpp" />
@@ -195,6 +196,7 @@
     <ClInclude Include="Object\Item\Magnet.h" />
     <ClInclude Include="Object\Player\Color.h" />
     <ClInclude Include="Object\Player\PlayerBullet.h" />
+    <ClInclude Include="Object\Shop.h" />
     <ClInclude Include="Object\Slot.h" />
     <ClInclude Include="Scene\EndScene.h" />
     <ClInclude Include="Scene\GameSceneUI.h" />

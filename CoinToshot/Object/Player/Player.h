@@ -20,6 +20,8 @@ private:
 	class Tutorial* tutorial;	//チュートリアル格納
 
 	//弾変更
+	std::vector<int> get_bullet;//所持中の弾
+	int now_bullet;				//現在の弾の位置
 	int bullet_change_cd;		//弾種類変更クールダウン測定
 	bool danger_once;			//危険SE再生
 	bool change_flg;			//アニメーション用

@@ -14,6 +14,7 @@
 #include "Item/Magnet.h"
 #include "Block.h"
 #include "Slot.h"
+#include "Shop.h"
 #include "../Utility/UserData.h"
 #include "../Scene/Camera/Camera.h"
 #include "Base/ObjectList.h"

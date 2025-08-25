@@ -35,6 +35,8 @@ void InGameScene::Initialize()
 	UserData::is_dead = false;
 	UserData::coin_graph.clear();
 
+	update_shop = nullptr;
+	shop_flg = false;
 	change_result_delay = -1;//0になったらリザルト遷移
 	change_result = false;
 	tuto_coin_count = 0;
@@ -72,6 +74,8 @@ void InGameScene::Initialize()
 	objects->CreateObject({ Vector2D{48,32},Vector2D{40,40},ePLAYER });
 
 	objects->CreateObject({ Vector2D{(float)(GetRand(1)* 2000 - 1000),(float)(GetRand(1)* 2000 - 1000)},Vector2D{100,100},eSLOT});
+	objects->CreateObject({ {200,200},{100,100},eSHOP});
+	objects->CreateObject({ {-200,200},{100,100},eSHOP});
 	objects->CreateObject({ Vector2D{ 150, 30},Vector2D{40,40},eCOIN, 20.f});
 	objects->CreateObject({ {1050,0}, Vector2D{ ENEMY1_WIDTH,ENEMY1_HEIGHT }, eENEMY1});
 
@@ -127,8 +131,8 @@ eSceneType InGameScene::Update(float _delta)
 		pause_flg = !pause_flg;
 	}
 
-	//一時停止フラグか遷移時アニメーションフラグが立っていたら更新しない
-	if ((!pause_flg && !start_anim_flg)|| !update_once)
+	//一時停止フラグか遷移時アニメーションフラグかショップ展開フラグが立っていたら更新しない
+	if (((!pause_flg && !start_anim_flg)|| !update_once )&& !shop_flg)
 	{
 		if (!CheckSoundMem(gamemain_bgm) && update_once && !UserData::is_gamestop)
 		{
@@ -150,6 +154,7 @@ eSceneType InGameScene::Update(float _delta)
 			
 			//オブジェクト更新
 			objects->Update();
+
 		}
 
 		//UI更新
@@ -304,6 +309,14 @@ eSceneType InGameScene::Update(float _delta)
 			}
 		}
 	}
+	//ショップ画面
+	else if (shop_flg)
+	{
+		if (update_shop != nullptr)
+		{
+			update_shop->Update();
+		}
+	}
 	//遷移アニメーション
 	else
 	{
@@ -349,12 +362,23 @@ void InGameScene::Draw()const
 
 	DrawGraph(0, 0, gamemain_image, FALSE);
 
-	//一時停止フラグが立っていたら、ポーズ画面の描画
-	if (pause_flg)
+	//一時停止フラグかショップ表示フラグが立っていたら背景を暗くする
+	if (pause_flg || shop_flg)
 	{
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
 		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, true);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+	}
+
+	//ショップ画面の描画
+	if (update_shop != nullptr)
+	{
+		update_shop->Draw();
+	}
+
+	//一時停止フラグが立っていたら、ポーズ画面の描画
+	if (pause_flg)
+	{
 		SetFontSize(72);
 		UserData::DrawStringCenter({ SCREEN_WIDTH / 2,SCREEN_HEIGHT / 2 }, "ポーズ中", 0xffffff);
 		SetFontSize(48);
@@ -975,4 +999,10 @@ void InGameScene::SaveReplay()
 		ClearDrawScreen();
 		UserData::replay.push_back({(600 - UserData::timer)/60 ,img ,"大量獲得" });
 	}
+}
+
+void InGameScene::SetShopFlg(bool _flg, ObjectBase* _shop)
+{ 
+	shop_flg = _flg; 
+	update_shop = _shop;	
 }

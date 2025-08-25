@@ -12,6 +12,7 @@ static enum ObjectList
 	eHEAL,
 	eBLOCK,
 	eSLOT,
+	eSHOP,
 	eATTACK,
 	eMAGNET,
 	eNULL,

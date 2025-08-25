@@ -29,7 +29,9 @@ private:
 	GameSceneUI* ui;			//ゲームメインUI
 	eSceneType change_scene;	//遷移先
 
-	ShapeCollider* test;
+	ObjectBase* update_shop;	//ショップ画面用
+	bool shop_flg;				//ショップ画面を表示するか
+
 	int change_result_delay;	//リザルト遷移までの遅延時間
 	bool change_result;			//リザルト遷移処理を開始するか
 	int tuto_coin_count;		//チュートリアル時に指定の枚数コインを発生させる
@@ -53,14 +55,14 @@ private:
 
 	bool pause_flg;				//一時停止判断
 	int pause_cursor;			//ポーズ画面のカーソル
-	bool back_title_flg;			//タイトル画面に戻るか確認する画面を表示するか判断
+	bool back_title_flg;		//タイトル画面に戻るか確認する画面を表示するか判断
 	int back_title_cursor;		//タイトル画面に戻るか確認
 	bool coin_spawn_once;		//最低保証コインのスポーン
 
 	int gamemain_bgm;			//BGM格納
 	int game_clear_se;			//ゲームクリアSE
 	int game_over_se;			//ゲームオーバーSE
-	int clap_se;				//拍手sE
+	int clap_se;				//拍手SE
 	int coin_se;				//コインSE
 	int cursor_se;				//カーソルSE
 	int enter_se;				//決定SE
@@ -181,6 +183,13 @@ public:
 	/// リザルトに表示するシーン判定
 	/// </summary>
 	void SaveReplay();
+
+	/// <summary>
+	/// ショップ画面を表示するか判断
+	/// </summary>
+	/// <param name="_flg">表示するかしないか</param>
+	/// <param name="_shop">表示するショップのポインタ</param>
+	void SetShopFlg(bool _flg, ObjectBase* _shop = nullptr);
 };
 
 
