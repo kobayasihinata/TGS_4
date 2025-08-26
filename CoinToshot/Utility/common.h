@@ -1,5 +1,5 @@
 #pragma once
-#define DEBUG_SKIP false			//デバッグ用チュートリアルスキップモード
+#define DEBUG_SKIP true			//デバッグ用チュートリアルスキップモード
 #define DEBUG_PLAYER false		//クリアと死をすぐ確認したい時用
 #define WINDOW_MODE true		//フルスクリーンかどうか
 
@@ -25,7 +25,8 @@
 
 #define RANKING_DATA 10			//登録するランキングデータの数
 
-#define HPBAR_SIZE 50			//HPゲージの幅
+#define HPBAR_WIDTH 50			//HPゲージの幅
+#define HPBAR_HEIGHT 10			//HPゲージの高さ
 
 #define FIRST_BONUS_TIME (DEFAULT_TIMELIMIT / 3) * 2	//時間経過ボーナス一回目の時間
 #define SECOND_BONUS_TIME (DEFAULT_TIMELIMIT / 3)	//時間経過ボーナス二回目の時間

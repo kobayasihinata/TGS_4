@@ -135,7 +135,7 @@ public:
 				_value = max_hp;
 			}
 			//減少アニメーション
-			hpbar_move += _value * (HPBAR_SIZE / max_hp);
+			hpbar_move += _value * (HPBAR_WIDTH / max_hp);
 
 			//ダメージSE
 			ResourceManager::rPlaySound(damage_se, DX_PLAYTYPE_BACK);

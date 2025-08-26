@@ -38,13 +38,15 @@ private:
 
 	int shop_cursor;			//購入アイテムを選ぶ
 	int buy_count[ITEM_NUM];		//購入回数を記録
+	int item_impact[ITEM_NUM];				//購入不可時の振動
 
 	int item_image[ITEM_NUM][2];	//表示画像格納
-	std::vector<int> shop_image;					//ショップ画像
+	std::vector<int> shop_image;	//ショップ画像
 
 	int cursor_se;					//カーソルSE
 	int button_se;					//ボタン効果音
-	int back_se;					//戻るボタン効果音
+	int cancel_se;					//キャンセル音
+	int back_se;					//戻る音
 
 
 public:

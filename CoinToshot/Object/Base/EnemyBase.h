@@ -101,33 +101,33 @@ public:
 		}
 #endif // _DEBUG
 		//HPゲージ内側
-		DrawBoxAA(local_location.x - (HPBAR_SIZE / 2),
+		DrawBoxAA(local_location.x - (HPBAR_WIDTH / 2),
 			local_location.y - (box_size.y / 2) - 10,
-			local_location.x + (HPBAR_SIZE / 2),
+			local_location.x + (HPBAR_WIDTH / 2),
 			local_location.y - (box_size.y / 2),
 			0x000000,
 			true
 		);
 		//HPゲージ本体
-		DrawBoxAA(local_location.x - (HPBAR_SIZE / 2),
+		DrawBoxAA(local_location.x - (HPBAR_WIDTH / 2),
 			local_location.y - (box_size.y / 2) - 10,
-			local_location.x - (HPBAR_SIZE / 2) + (hp * (HPBAR_SIZE / max_hp)) + hpbar_move,
+			local_location.x - (HPBAR_WIDTH / 2) + (hp * (HPBAR_WIDTH / max_hp)) + hpbar_move,
 			local_location.y - (box_size.y / 2),
 			rare_flg ? 0x00ffff : 0xcccc00,
 			true
 		);
 		//HPゲージ減少アニメーション
-		DrawBoxAA(local_location.x - (HPBAR_SIZE / 2) + (hp * (HPBAR_SIZE / max_hp)),
+		DrawBoxAA(local_location.x - (HPBAR_WIDTH / 2) + (hp * (HPBAR_WIDTH / max_hp)),
 			local_location.y - (box_size.y / 2) - 10,
-			local_location.x - (HPBAR_SIZE / 2) + (hp * (HPBAR_SIZE / max_hp)) + hpbar_move,
+			local_location.x - (HPBAR_WIDTH / 2) + (hp * (HPBAR_WIDTH / max_hp)) + hpbar_move,
 			local_location.y - (box_size.y / 2),
 			0xff0000,
 			true
 		);
 		//HPゲージ外枠
-		DrawBoxAA(local_location.x - (HPBAR_SIZE / 2),
+		DrawBoxAA(local_location.x - (HPBAR_WIDTH / 2),
 			local_location.y - (box_size.y / 2) - 10,
-			local_location.x + (HPBAR_SIZE / 2),
+			local_location.x + (HPBAR_WIDTH / 2),
 			local_location.y - (box_size.y / 2),
 			0xffffff,
 			false

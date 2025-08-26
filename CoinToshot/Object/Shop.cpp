@@ -15,6 +15,7 @@ Shop::Shop(InGameScene* _ingame)
 	for (int i = 0; i < ITEM_NUM; i++)
 	{
 		buy_count[i] = 0;
+		item_impact[i] = 0;
 	}
 
 	CreateItemImage();
@@ -24,7 +25,8 @@ Shop::Shop(InGameScene* _ingame)
 
 	button_se = rm->GetSounds("Resource/Sounds/Coin/Get.mp3");
 	cursor_se = rm->GetSounds("Resource/Sounds/cursor.mp3");
-	back_se = rm->GetSounds("Resource/Sounds/Hanahana/button.mp3");
+	cancel_se = rm->GetSounds("Resource/Sounds/lock.mp3");
+	back_se =   rm->GetSounds("Resource/Sounds/Hanahana/button.mp3");
 }
 
 Shop::~Shop()
@@ -47,6 +49,17 @@ void Shop::Update()
 	//ショップ展開時の処理
 	if (shop_flg)
 	{
+		for (int i = 0; i < ITEM_NUM; i++)
+		{
+			if (item_impact[i] > 0)
+			{
+				item_impact[i]--;
+			}
+			else
+			{
+				item_impact[i] = 0;
+			}
+		}
 		for (int i = 2; i < ITEM_NUM; i++)
 		{
 			//UserDataの所持中の弾を参照し、持っている弾を購入済みとする
@@ -81,6 +94,7 @@ void Shop::Update()
 		if (InputPad::OnButton(XINPUT_BUTTON_B))
 		{
 			SetShop(false);
+			ResourceManager::rPlaySound(back_se, DX_PLAYTYPE_BACK);
 		}
 	}
 	//ショップ非展開時の処理
@@ -103,32 +117,42 @@ void Shop::Draw()const
 	//		  local_location.y + (box_size.y/2),
 	//	0x000000, false);
 	SetFontSize(24);
-	DrawRotaGraphF(local_location.x, local_location.y, 0.2f, 0, shop_image[0], true);
 	//クールダウン描画
 	if (shop_cd < SHOP_COOLDOWN)
 	{
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 120);
+		DrawRotaGraphF(local_location.x, local_location.y, 0.2f, 0, shop_image[0], true);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 		DrawFormatStringF(local_location.x, local_location.y-30, 0xffffff, "%d", ((SHOP_COOLDOWN - shop_cd) / 60) + 1);
 	}
+	//通常描画
+	else
+	{
+		DrawRotaGraphF(local_location.x, local_location.y, 0.2f, 0, shop_image[0], true);
+	}
 	int span = 200;
-	Vector2D shop_loc = { 200,400 };
+	Vector2D shop_loc = { (SCREEN_WIDTH / 2) - (ITEM_NUM * span) / 2,300 };
 	//ショップUI描画
 	if (shop_flg)
 	{
+		SetFontSize(48);
 		DrawString(shop_loc.x, shop_loc.y - 100, "購入画面", 0xffffff);
+		SetFontSize(24);
 		for (int i = 0; i < ITEM_NUM; i++)
 		{
-			DrawGraph(shop_loc.x + (i * span), shop_loc.y, item_image[i][shop_cursor != i], false);
+			float shift = shop_cursor != i ? shop_loc.y : shop_loc.y - 5;
+			DrawGraphF(shop_loc.x + (i * span) + (float)GetRand(item_impact[i]) - (item_impact[i] / 2), shift, item_image[i][shop_cursor != i], false);
 			if (buy_count[i] >= item_list[i].buy_max)
 			{
-				DrawString(shop_loc.x + 70 + (i * span), shop_loc.y+150, "在庫なし", 0xff0000);
+				DrawString(shop_loc.x + 70 + (i * span), shift+150, "在庫なし", 0xff0000);
 			}
 			else if (UserData::coin < item_list[i].price)
 			{
-				DrawString(shop_loc.x + (i * span), shop_loc.y + 150, "コイン不足!", 0xff0000);
+				DrawString(shop_loc.x + (i * span), shift + 150, "コイン不足!", 0xff0000);
 			}
 			else
 			{
-				DrawFormatStringF(shop_loc.x + (i * span)+30, shop_loc.y + 150, 0x00ff00, "あと%dコ", item_list[i].buy_max - buy_count[i]);
+				DrawFormatStringF(shop_loc.x + (i * span)+30, shift + 150, 0x00ff00, "あと%dコ", item_list[i].buy_max - buy_count[i]);
 			}
 		}
 	}
@@ -166,7 +190,14 @@ void Shop::CreateItemImage()
 			SetFontSize(24);
 			DrawFormatString((span / 2) - (GetDrawStringWidth(item_list[i].sub_text, strlen(item_list[i].sub_text)) / 2), 80, color, "%s", item_list[i].sub_text);
 			UserData::DrawCoin({ (span / 2) - (GetDrawFormatStringWidth("   × %d",item_list[i].price) / 2) , 135 }, 12);
-			DrawFormatString((span / 2) - (GetDrawFormatStringWidth(" × %d", item_list[i].price) / 2), 120, 0xffff00, " × %d", item_list[i].price);
+			if (color == 0x000000)
+			{
+				DrawFormatString((span / 2) - (GetDrawFormatStringWidth(" × %d", item_list[i].price) / 2), 120, 0xaaaa00, " × %d", item_list[i].price);
+			}
+			else
+			{
+				DrawFormatString((span / 2) - (GetDrawFormatStringWidth(" × %d", item_list[i].price) / 2), 120, 0xffff00, " × %d", item_list[i].price);
+			}
 			SetDrawScreen(DX_SCREEN_BACK);
 		}
 	}
@@ -215,7 +246,8 @@ void Shop::BuyItem(int cursor)
 	//コインが無いなら失敗
 	else
 	{
-		ResourceManager::rPlaySound(back_se, DX_PLAYTYPE_BACK);
+		ResourceManager::rPlaySound(cancel_se, DX_PLAYTYPE_BACK);
+		item_impact[cursor] = 5;
 	}
 
 }

@@ -325,51 +325,62 @@ void Player::Draw()const
 		__super::Draw();
 	}
 
+	Vector2D bar_loc = { local_location.x - (HPBAR_WIDTH / 2),local_location.y - box_size.y - (HPBAR_HEIGHT / 2) };
 	if (hp > 0)
 	{
-		//HPゲージ内側
-		DrawBoxAA(local_location.x - (HPBAR_SIZE / 2),
-			local_location.y - (box_size.y / 2) - 10,
-			local_location.x + (HPBAR_SIZE / 2),
-			local_location.y - (box_size.y / 2),
-			0x000000,
-			true
-		);
-		//HPゲージ本体
-		DrawBoxAA(local_location.x - (HPBAR_SIZE / 2),
-			local_location.y - (box_size.y / 2) - 9,
-			local_location.x - (HPBAR_SIZE / 2) + (hp * (HPBAR_SIZE / max_hp)) + hpbar_move,
-			local_location.y - (box_size.y / 2) - 1,
-			hp > 3 ? 0x22ff00 : frame % (int)(10 * hp) > (10 * hp) / 2 ? 0xff1100 : 0xffcc00,
-			true
-		);
-		//HPゲージ減少アニメーション
-		DrawBoxAA(local_location.x - (HPBAR_SIZE / 2) + (hp * (HPBAR_SIZE / max_hp)),
-			local_location.y - (box_size.y / 2) - 9,
-			local_location.x - (HPBAR_SIZE / 2) + (hp * (HPBAR_SIZE / max_hp)) + hpbar_move,
-			local_location.y - (box_size.y / 2) - 1,
-			0xff0000,
-			true
-		);
-		//HPゲージ外枠
-		DrawBoxAA(local_location.x - (HPBAR_SIZE / 2),
-			local_location.y - (box_size.y / 2) - 10,
-			local_location.x + (HPBAR_SIZE / 2),
-			local_location.y - (box_size.y / 2),
-			0xffffff,
-			false
-		);
-		//HPゲージ限界突破見た目
-		if (UserData::player_hp > DEFAULT_HP)
+		//10HP毎にバーの段を変える
+		for (int i = 0; i <= (hp-1) / 10; i++)
 		{
-			for (int i = 0; i < UserData::player_hp - DEFAULT_HP; i++)
+			float shift = HPBAR_HEIGHT * ((hp-1) / 10) - (HPBAR_HEIGHT * i);
+			int line_hp = hp - (max_hp * i) > max_hp ? max_hp : hp - (max_hp * i);
+			//HPゲージ内側
+			DrawBoxAA(bar_loc.x,
+				bar_loc.y - shift,
+				bar_loc.x + HPBAR_WIDTH,
+				bar_loc.y + HPBAR_HEIGHT -shift,
+				0x000000,
+				true
+			);
+			//HPゲージ本体
+			DrawBoxAA(bar_loc.x,
+				bar_loc.y + 1 - shift,
+				bar_loc.x + (line_hp * (HPBAR_WIDTH / max_hp)) + hpbar_move,
+				bar_loc.y + HPBAR_HEIGHT - 1 - shift,
+				hp > 3 ? 0x22ff00 : frame % (int)(10 * hp) > (10 * hp) / 2 ? 0xff1100 : 0xffcc00,
+				true
+			);
+			if (i == (int)((hp - 1) / 10))
 			{
-				DrawBoxAA(local_location.x + (HPBAR_SIZE / 2)+ (i * 5),
-					local_location.y - (box_size.y / 2) - 9,
-					local_location.x + (HPBAR_SIZE / 2) + 5 + (i * 5),
-					local_location.y - (box_size.y / 2) - 1,
-					color[i % 7], true);
+				//HPゲージ減少アニメーション
+				DrawBoxAA(bar_loc.x + (line_hp * (HPBAR_WIDTH / max_hp)),
+					bar_loc.y + 1 - shift,
+					bar_loc.x + (line_hp * (HPBAR_WIDTH / max_hp)) + hpbar_move,
+					bar_loc.y + HPBAR_HEIGHT - 1 - shift,
+					0xff0000,
+					true
+				);
 			}
+			//HPゲージ外枠
+			DrawBoxAA(bar_loc.x,
+				bar_loc.y - shift,
+				bar_loc.x + HPBAR_WIDTH,
+				bar_loc.y + HPBAR_HEIGHT - shift,
+				0xffffff,
+				false
+			);
+			////HPゲージ限界突破見た目
+			//if (UserData::player_hp > DEFAULT_HP)
+			//{
+			//	for (int i = 0; i < UserData::player_hp - DEFAULT_HP; i++)
+			//	{
+			//		DrawBoxAA(local_location.x + (HPBAR_WIDTH / 2) + (i * 5),
+			//			local_location.y - (box_size.y / 2) - 9,
+			//			local_location.x + (HPBAR_WIDTH / 2) + 5 + (i * 5),
+			//			local_location.y - (box_size.y / 2) - 1,
+			//			color[i % 7], true);
+			//	}
+			//}
+
 		}
 		//HPピンチ表示
 		if (hp <= 3)
@@ -380,7 +391,7 @@ void Player::Draw()const
 				frame % (int)(10 * hp) > (10 * hp) / 2 ? 0xff1100 : 0xffcc00,
 				false);
 			SetFontSize(40);
-			DrawStringF(local_location.x-7, local_location.y - 75, "!", frame % (int)(10 * hp) > (10 * hp) / 2 ? 0xff1100 : 0xffcc00);
+			DrawStringF(local_location.x - 7, local_location.y - 75, "!", frame % (int)(10 * hp) > (10 * hp) / 2 ? 0xff1100 : 0xffcc00);
 		}
 	}
 
