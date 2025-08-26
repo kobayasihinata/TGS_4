@@ -8,6 +8,7 @@ using namespace std;
 #define STRING_SPAN 10		//項目同士の間隔
 #define BONUS_TEXT_TIMER 300	//時間経過ボーナス表示時間
 #define RANKUP_TIMER 180	//ランキング変動アニメーション時間
+#define NEW_BULLET_ANIM 240 //新弾獲得演出時間
 
 struct UIData
 {
@@ -64,6 +65,9 @@ private:
 	float change_anim_move;	//アニメーションの移動量格納
 	bool change_anim_once;	//移動方向を判断する処理を一度だけやる
 	bool move_dir;			//移動方向
+	int old_bullet_num;		//一フレーム前の弾の所持数
+	bool new_bullet_flg;	//新しい弾を獲得した時のアニメーション
+	int new_bullet_timer;	//新しい弾を獲得した時のアニメーション測定
 
 	Vector2D player_ui_loc;	//プレイヤー情報位置
 	int now_coin_num;		//現在のコイン枚数
@@ -139,4 +143,7 @@ public:
 
 	//ランキング描画の処理
 	void DrawRanking()const;
+
+	//新しい弾獲得演出が行われているか取得
+	bool GetNewBulletFlg()const { return new_bullet_flg; }
 };

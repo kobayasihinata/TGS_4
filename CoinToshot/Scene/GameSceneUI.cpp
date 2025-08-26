@@ -18,6 +18,9 @@ void GameSceneUI::Initialize()
 	change_anim_move = 300.f / PLATER_BULLET_CHANGE_CD;
 	change_anim_once = false;
 	move_dir = false;
+	old_bullet_num = 2;	//初期に所持している弾の種類数に合わせる
+	new_bullet_flg = false;
+	new_bullet_timer = 0;
 
 	player_ui_loc = { SCREEN_WIDTH - 525,0 };
 	now_coin_num = 0;
@@ -135,30 +138,55 @@ void GameSceneUI::Update()
 		}
 	}
 
+
 	//最大値の更新
 	if (UserData::attraction_timer > max_attraction)max_attraction = UserData::attraction_timer;
 	//ゲージのリセット
 	if (UserData::attraction_timer <= 0)max_attraction = 0;
 
-	//弾の種類が変わっているなら、アニメーションする
-	if (old_bullet_type != UserData::get_bullet[UserData::now_bullet])
+
+	//弾種類が増えているならアニメーション開始
+	if (old_bullet_num < UserData::get_bullet.size())
 	{
-		if (!change_anim_once)
+		new_bullet_flg = true;
+	}
+
+	//一フレーム前の弾所持数更新
+	old_bullet_num = UserData::get_bullet.size();
+
+	//新弾獲得演出中なら、アニメーションしない
+	if (!new_bullet_flg)
+	{
+		//弾の種類が変わっているなら、アニメーションする
+		if (old_bullet_type != UserData::get_bullet[UserData::now_bullet])
 		{
-			move_dir = CheckMoveDirection(UserData::get_bullet[UserData::now_bullet], old_bullet_type);
-			change_anim_once = true;
+			if (!change_anim_once)
+			{
+				move_dir = CheckMoveDirection(UserData::get_bullet[UserData::now_bullet], old_bullet_type);
+				change_anim_once = true;
+			}
+			//アニメーション終了条件
+			if (++bullet_change_timer >= PLATER_BULLET_CHANGE_CD)
+			{
+				old_bullet_type = UserData::get_bullet[UserData::now_bullet];
+				bullet_change_timer = 0;
+			}
 		}
-		//アニメーション終了条件
-		if (++bullet_change_timer >= PLATER_BULLET_CHANGE_CD)
+		else
 		{
-			old_bullet_type = UserData::get_bullet[UserData::now_bullet];
-			bullet_change_timer = 0;
+			//方向決定リセット
+			change_anim_once = false;
 		}
 	}
+	//新弾獲得演出
 	else
 	{
-		//方向決定リセット
-		change_anim_once = false;
+		//一定時間経過で演出終了
+		if (++new_bullet_timer > NEW_BULLET_ANIM)
+		{
+			new_bullet_timer = 0;
+			new_bullet_flg = false;
+		}
 	}
 
 	//爆発音再生
@@ -364,6 +392,12 @@ void GameSceneUI::Draw()const
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 120 - (damage_timer*5));
 		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0xff0000, true);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+	}
+
+	//弾獲得アニメーション
+	if (new_bullet_flg)
+	{
+		DrawString(300, 300, "弾獲得アニメーション", 0xffffff);
 	}
 }
 

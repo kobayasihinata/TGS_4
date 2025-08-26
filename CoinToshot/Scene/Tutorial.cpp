@@ -1,6 +1,7 @@
 #include "Tutorial.h"
 #include "../Utility/UserData.h"
 #include "../Utility/DebugInformation.h"
+#include "InGameScene.h"
 
 Tutorial* Tutorial::Get()
 {
@@ -114,6 +115,11 @@ void Tutorial::Draw()const
 	}
 }
 
+void Tutorial::GetInGame(InGameScene* _ingame)
+{
+	ingame = _ingame;
+}
+
 bool Tutorial::StartTutoRequest(TutoType _type, ObjectBase* _obj)
 {
 	//他のチュートリアルが実行中　もしくは既に一回行ったチュートリアルならリクエストは却下
@@ -156,6 +162,7 @@ void Tutorial::InitTuto(TutoType _type)
 		GenerateTextBox(text_box_size);
 		//表示中にゲームを停止状態に
 		tuto_stop_flg = true;
+		//ingame->SetZoom(tuto_object->GetLocation(), 5, 180, 10);
 		timer = 180;
 		break;
 	case TutoType::tAttack:

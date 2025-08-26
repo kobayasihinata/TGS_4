@@ -60,11 +60,19 @@ void Enemy1::Update()
 
 	//アニメーション
 	Animation();
-	
 	//プレイヤーと自身の距離が一定範囲で、照準チュートリアルが終わっていないなら、リクエストする
-	if (sqrtf(powf(location.x - camera->player_location.x, 2) + powf(location.y - camera->player_location.y, 2)) < 400)
+	if (!tutorial->GetTutoNowEnd(TutoType::tAim) && sqrtf(powf(location.x - camera->player_location.x, 2) + powf(location.y - camera->player_location.y, 2)) < 400)
 	{
-		tutorial->StartTutoRequest(TutoType::tAim,this);
+		//自身が画面内にいる時にプレイヤーと近づいたら、チュートリアル開始
+		if (manager->CheckInScreen(this, 0))
+		{
+			tutorial->StartTutoRequest(TutoType::tAim,this);
+		}
+		//自身が画面外にいる時にプレイヤーと近づいてしまった場合、自身を反対側に移動させる
+		else
+		{
+			this->location.x = camera->GetCameraLocation().x - 200;
+		}
 	}
 	//死亡演出フラグが立っているなら
 	if (death_flg)

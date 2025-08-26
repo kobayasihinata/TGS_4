@@ -59,6 +59,14 @@ private:
 	int back_title_cursor;		//タイトル画面に戻るか確認
 	bool coin_spawn_once;		//最低保証コインのスポーン
 
+	Vector2D now_gm_loc;		//ゲームメイン画像の現在位置
+	Vector2D goal_gm_loc;		//ゲームメイン画像のゴール位置
+	float now_gm_size;			//ゲームメイン画像の現在倍率
+	float goal_gm_size;			//ゲームメイン画像のゴール倍率
+	int zoom_time;				//何秒間ズームしたままでいるか
+	int zoom_time_count;		//何秒間ズームしたままでいるか測定
+	float zoom_speed;			//ズームの速度
+
 	int gamemain_bgm;			//BGM格納
 	int game_clear_se;			//ゲームクリアSE
 	int game_over_se;			//ゲームオーバーSE
@@ -190,6 +198,19 @@ public:
 	/// <param name="_flg">表示するかしないか</param>
 	/// <param name="_shop">表示するショップのポインタ</param>
 	void SetShopFlg(bool _flg, ObjectBase* _shop = nullptr);
+
+	/// <summary>
+	/// ゲームメイン画像のズーム処理
+	/// </summary>
+	void UpdateZoom();
+
+	/// <summary>
+	/// ズームの値を設定
+	/// </summary>
+	/// <param name="_loc">位置 画面中心座標が標準</param>
+	/// <param name="_size">大きさ 1が標準</param>
+	/// <param name="_time">拡大している時間</param>
+	void SetZoom(Vector2D _loc, float _size, int _time, float _speed);
 };
 
 

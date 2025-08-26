@@ -56,9 +56,15 @@ void InGameScene::Initialize()
 	camera = Camera::Get();
 	camera->player_location = 0;
 	tutorial = Tutorial::Get();
+	tutorial->GetInGame(this);
 	guide_loc = 0;
 	guide_local_loc = 0;
 	guide_size = 95;
+	goal_gm_loc = now_gm_loc = { SCREEN_WIDTH / 2,SCREEN_HEIGHT / 2 };
+	goal_gm_size = now_gm_size = 1.f;
+	zoom_time = 0;
+	zoom_time_count = 0; 
+	zoom_speed = 0;
 	//チュートリアルが完了していないなら初期コインは0枚、しているなら20枚
 	UserData::coin = tutorial->GetBasicTuto() ? 20 : 0;
 
@@ -140,7 +146,7 @@ eSceneType InGameScene::Update(float _delta)
 		}
 
 		//いずれかの時間停止フラグが立っていたらオブジェクトの動きはすべて止める
-		if (!UserData::is_gamestop && !tutorial->GetTutoStopFlg())
+		if (!UserData::is_gamestop && !tutorial->GetTutoStopFlg() && !ui->GetNewBulletFlg())
 		{
 			//一定時間立ったら移動チュートリアルをリクエスト
 			if (frame > 120)tutorial->StartTutoRequest(TutoType::tMove);
@@ -177,6 +183,12 @@ eSceneType InGameScene::Update(float _delta)
 		//描画の更新
 		MakeGameMainDraw();
 
+		//十分なデータがあれば、60フレーム毎に実行
+		if (UserData::coin_graph.size() >= 2 && (int)frame % 60 == 0)
+		{
+			//リプレイに保存するか判断
+			SaveReplay();
+		}
 #ifdef _DEBUG
 
 		//入力機能の取得
@@ -185,6 +197,7 @@ eSceneType InGameScene::Update(float _delta)
 		//デバッグ用
 		if (input->GetKeyState(KEY_INPUT_1) == eInputState::Pressed)
 		{
+			SetZoom({ GetRand(SCREEN_WIDTH),GetRand(SCREEN_HEIGHT) }, ((float)GetRand(100) / 100) + 1.f, 60 , GetRand(20));
 		}
 		if (input->GetKeyState(KEY_INPUT_2) == eInputState::Pressed)
 		{
@@ -343,13 +356,8 @@ eSceneType InGameScene::Update(float _delta)
 		MakeGameMainDraw();
 	}
 
-	
-	//十分なデータがあれば、60フレーム毎に実行
-	if (UserData::coin_graph.size() >= 2 && (int)frame % 60 == 0)
-	{
-		//リプレイに保存するか判断
-		SaveReplay();
-	}
+	//画面ズームの更新
+	UpdateZoom();
 
 	//遷移時一回だけ更新
 	update_once = true;
@@ -359,7 +367,7 @@ eSceneType InGameScene::Update(float _delta)
 void InGameScene::Draw()const
 {
 
-	DrawGraph(0, 0, gamemain_image, FALSE);
+	DrawRotaGraph(now_gm_loc.x, now_gm_loc.y, now_gm_size, 0, gamemain_image, FALSE);
 
 	//一時停止フラグかショップ表示フラグが立っていたら背景を暗くする
 	if (pause_flg || shop_flg)
@@ -1003,4 +1011,56 @@ void InGameScene::SetShopFlg(bool _flg, ObjectBase* _shop)
 { 
 	shop_flg = _flg; 
 	update_shop = _shop;	
+}
+
+void InGameScene::UpdateZoom()
+{
+	//ゴールの座標と倍率のどちらかでも、現在の数値と違っていたら、数値に合わせて移動や拡大を開始する
+	//開始した時点から時間を測定し、指定の時間経過したら初期位置、初期倍率にむけて移動を開始する
+	//{ SCREEN_WIDTH / 2,SCREEN_HEIGHT / 2 };←初期位置
+	if (now_gm_loc != goal_gm_loc)
+	{
+		now_gm_loc +=(goal_gm_loc - now_gm_loc) / zoom_speed;
+		//int型に丸めた時に座標が重なっていれば、完全に重なっているものとする
+		if ((int)now_gm_loc.x == (int)goal_gm_loc.x && (int)now_gm_loc.y == (int)goal_gm_loc.y)
+		{
+			now_gm_loc = goal_gm_loc;
+		}
+	}
+	if (now_gm_size != goal_gm_size)
+	{
+		now_gm_size += (goal_gm_size - now_gm_size) / zoom_speed;
+		//int型に丸めた時に座標が重なっていれば、完全に重なっているものとする
+		if ((int)(now_gm_size*100) == (int)(goal_gm_size*100))
+		{
+			now_gm_size = goal_gm_size;
+		}
+	}
+	//初期座標に居ない場合、時間を測定し、指定の時間を越していれば、初期座標をゴールとして移動開始
+	if ((int)now_gm_loc.x != SCREEN_WIDTH / 2 || (int)now_gm_loc.y != SCREEN_HEIGHT / 2 || now_gm_size != 1.f)
+	{
+		if (++zoom_time_count > zoom_time)
+		{
+			goal_gm_loc = { SCREEN_WIDTH / 2 ,SCREEN_HEIGHT / 2 };
+			goal_gm_size = 1.f;
+			zoom_time_count = 0;
+		}
+	}
+}
+
+void InGameScene::SetZoom(Vector2D _loc, float _size, int _time, float _speed)
+{
+	//画面外が映らないように調整
+	goal_gm_loc.x = _loc.x > (SCREEN_WIDTH / 2) * _size ? (SCREEN_WIDTH / 2) * _size : _loc.x;
+	goal_gm_loc.x = goal_gm_loc.x < (SCREEN_WIDTH / 2) / _size  ? (SCREEN_WIDTH / 2) / _size : goal_gm_loc.x;
+	goal_gm_loc.y = _loc.y > (SCREEN_HEIGHT / 2) * _size ? (SCREEN_HEIGHT / 2) * _size : _loc.y;
+	goal_gm_loc.y = goal_gm_loc.y < (SCREEN_HEIGHT / 2) / _size ? (SCREEN_HEIGHT / 2) / _size : goal_gm_loc.y;
+	//反転
+	goal_gm_loc.x = SCREEN_WIDTH - goal_gm_loc.x;
+	goal_gm_loc.y = SCREEN_HEIGHT - goal_gm_loc.y;
+	//1(通常倍率)を下回っていたら1にする
+	goal_gm_size = _size < 1.f ? 1.f : _size;
+	zoom_time = _time;
+	zoom_time_count = 0;
+	zoom_speed = _speed <= 0 ? 1 : _speed;
 }

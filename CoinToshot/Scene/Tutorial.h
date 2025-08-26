@@ -10,10 +10,13 @@
 #define FADE_TIME	 20	//チュートリアルテキストのフェードイン、アウトにかかるフレーム数
 #define TEXT_BOX	 32		//ひとつずつの画像大きさ
 
+class InGameScene;
+
 class Tutorial
 {
 private:
 	class Camera* camera;		//カメラポインタ格納(プレイヤーの情報を渡すためだけに取得)
+	InGameScene* ingame;		//現在のシーンのポインタを保存
 
 	bool tutorial_flg;	//チュートリアル中か判断
 	bool tuto_stop_flg;	//チュートリアルの為に、オブジェクトを止める必要があるか
@@ -67,7 +70,7 @@ public:
 	static Tutorial* Get();
 public:
 	//初期化(リセット)
-	void Initialize();
+	void Initialize();		//現在のシーンのポインタを保存
 
 	//更新
 	void Update();
@@ -75,6 +78,8 @@ public:
 	//描画
 	void Draw()const;
 
+	//ゲームメインのポインタを取得
+	void GetInGame(InGameScene* _ingame);
 	//チュートリアル中か取得
 	bool GetTutorialFlg()const { return tutorial_flg; }
 	//現在のチュートリアルを取得

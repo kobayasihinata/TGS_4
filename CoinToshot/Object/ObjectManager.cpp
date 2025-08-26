@@ -197,8 +197,12 @@ void ObjectManager::Draw()const
 	{
 		facility->Draw();
 	}
-	//プレイヤー描画
-	player->Draw();
+
+	if(player != nullptr)
+	{
+		//プレイヤー描画
+		player->Draw();
+	}
 
 	//オブジェクトの前に描画するエフェクト
 	for (const auto& effect : front_effect)
