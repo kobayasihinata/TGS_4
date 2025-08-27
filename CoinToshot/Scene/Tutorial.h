@@ -7,7 +7,7 @@
 #include "../Object/Base/ObjectBase.h"
 #include "Dxlib.h"
 
-#define FADE_TIME	 20	//チュートリアルテキストのフェードイン、アウトにかかるフレーム数
+#define FADE_TIME	 20		//チュートリアルテキストのフェードイン、アウトにかかるフレーム数
 #define TEXT_BOX	 32		//ひとつずつの画像大きさ
 
 class InGameScene;
@@ -150,4 +150,9 @@ public:
 	void UpdateSteal();
 	//コインを盗まれた時の説明描画
 	void DrawSteal()const;
+
+	//スロットの説明更新
+	void UpdateSlot();
+	//スロットの説明描画
+	void DrawSlot()const;
 };

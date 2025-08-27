@@ -195,7 +195,10 @@ void ObjectManager::Draw()const
 	//スロット、ショップ描画
 	for (const auto& facility : facility_list)
 	{
-		facility->Draw();
+		if (facility->GetObjectType() == eSLOT || !ingame->GetShopFlg())
+		{
+			facility->Draw();
+		}
 	}
 
 	if(player != nullptr)

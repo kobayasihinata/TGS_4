@@ -1,27 +1,38 @@
 #pragma once
 #include "Base/ObjectBase.h"
 
-#define SHOP_COOLDOWN    300 //再びショップを使えるようになる時間
-#define SHOP_ITEM_WIDTH	 195 //ショップUIのアイテム一つ辺りの幅
-#define SHOP_ITEM_HEIGHT 195 //ショップUIのアイテム一つ辺りの高さ
-#define ITEM_NUM 5			 //購入できるアイテムの総数
+#define SHOP_COOLDOWN    300	//再びショップを使えるようになる時間
+#define SHOP_ITEM_WIDTH	 240	//ショップUIのアイテム一つ辺りの幅
+#define SHOP_ITEM_HEIGHT 240	//ショップUIのアイテム一つ辺りの高さ
+#define START_ANIM_TIME  30		//アニメーション時間
+#define END_ANIM_TIME    30		//アニメーション時間
+#define ITEM_NUM         5		//購入できるアイテムの総数
 
 struct ItemList
 {
-	int text_color;		//文字色
 	char name[256];		//アイテム名
+	int text_color;		//文字色
 	char sub_text[256];	//説明
+	int subtext_color;	//説明の文字色
 	int price;			//値段
 	int buy_max;		//購入上限
 };
 
 static ItemList item_list[ITEM_NUM]
 {
-	{0x00ff00,"回復","HPを回復できる",5,5},
-	{0x00ffff,"磁石","コインを引き寄せる",10,3},
-	{0xffaa00,"強化弾","ほとんどの敵を一撃",20,1},
-	{0xff2222,"爆発弾","広範囲の爆発",100,1},
-	{0x000000,"最強弾","つよい",200,1},
+	{"回復",  0x00ff00,"HPを回復できる",    0x0aa00,  5,5},
+	{"磁石",  0x00ffff,"コインを引き寄せる",0x00aaaa, 10,3},
+	{"強化弾",0xffaa00,"ほとんどの敵を一撃",0xaa5500, 20,1},
+	{"爆発弾",0xff2222,"広範囲の爆発",		0xaa0000,100,1},
+	{"最強弾",0x000000,"つよい",			0x000000,200,1},
+};
+
+//一フレーム毎の位置
+static int anim_move[START_ANIM_TIME]
+{
+	1150,1100,1050,1000, 950, 900, 860, 820, 780, 740,
+	 700, 670, 640, 610, 580, 550, 530, 510, 490, 470,
+	 450, 440, 430, 410, 390, 385, 380, 385, 390, 400
 };
 
 class InGameScene;
@@ -39,6 +50,11 @@ private:
 	int shop_cursor;			//購入アイテムを選ぶ
 	int buy_count[ITEM_NUM];		//購入回数を記録
 	int item_impact[ITEM_NUM];				//購入不可時の振動
+
+	bool start_anim;		   //ショップを開いたアニメーション
+	int start_anim_timer;	   //アニメーション測定
+	bool end_anim;			   //ショップを閉じたアニメーション
+	int end_anim_timer;		   //アニメーション測定
 
 	int item_image[ITEM_NUM][2];	//表示画像格納
 	std::vector<int> shop_image;	//ショップ画像

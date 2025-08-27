@@ -81,6 +81,10 @@ void Tutorial::Update()
 		UpdateSteal();
 		UpdateTimeTuto();
 		break;
+	case TutoType::tSlot:
+		UpdateSlot();
+		UpdateTimeTuto();
+		break;
 	default:
 		break;
 	}
@@ -109,6 +113,9 @@ void Tutorial::Draw()const
 		break;
 	case TutoType::tSteal:
 		DrawSteal();
+		break;
+	case TutoType::tSlot:
+		DrawSlot();
 		break;
 	default:
 		break;
@@ -162,7 +169,7 @@ void Tutorial::InitTuto(TutoType _type)
 		GenerateTextBox(text_box_size);
 		//表示中にゲームを停止状態に
 		tuto_stop_flg = true;
-		//ingame->SetZoom(tuto_object->GetLocation(), 5, 180, 10);
+		ingame->SetZoom(tuto_object->GetLocalLocation(), 5, 180, 15);
 		timer = 180;
 		break;
 	case TutoType::tAttack:
@@ -185,6 +192,13 @@ void Tutorial::InitTuto(TutoType _type)
 		GenerateTextBox(text_box_size);
 		tuto_stop_flg = true;
 		timer = 240;
+		break;
+	case TutoType::tSlot:
+		text_box_loc = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 150 };
+		text_box_size = { 375, 150 };
+		GenerateTextBox(text_box_size);
+		tuto_stop_flg = true;
+		timer = 300;
 		break;
 	default:
 		break;
@@ -650,4 +664,25 @@ void Tutorial::DrawSteal()const
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 	tuto_object->Draw();
 	DrawCircleAA(tuto_object->GetLocalLocation().x, tuto_object->GetLocalLocation().y, tuto_object->GetSize().x * 1.5f, 100, 0xff0000, false);
+}
+
+void Tutorial::UpdateSlot()
+{
+
+}
+
+void Tutorial::DrawSlot()const
+{
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha - 150);
+	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, TRUE);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha);
+	DrawGraph(text_box_loc.x - text_box_size.x / 2, text_box_loc.y - text_box_size.y / 2, generate_text_box, TRUE);
+	SetFontSize(36);
+	DrawString(text_box_loc.x - (text_box_size.x / 2) + 15, text_box_loc.y - 40, "スロットを発見！", 0xffffff);
+	SetFontSize(30);
+	UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y + 10 }, "大当たりまで回し続けろ！", 0xffffff);
+	UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y + 40 }, "＊注意　１プレイ３コイン", 0xff0000);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+	tuto_object->Draw();
+	DrawCircleAA(tuto_object->GetLocalLocation().x, tuto_object->GetLocalLocation().y, tuto_object->GetSize().x, 100, 0xff0000, false);
 }

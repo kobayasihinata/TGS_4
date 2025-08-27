@@ -6,6 +6,8 @@
 Slot::Slot(InGameScene* _ingame)
 {
 	ingame = _ingame;
+	tutorial = Tutorial::Get();
+	camera = Camera::Get();
 
 	peka_flg = false;
 	can_stop = false;
@@ -60,6 +62,11 @@ void Slot::Update()
 	//描画位置更新
 	real_location = { local_location.x + (box_size.x / 2) - 110.f,local_location.y - 150.f };
 	hana_location = real_location;
+	//プレイヤーと自身の距離が一定範囲で、照準チュートリアルが終わっていないなら、リクエストする
+	if (!tutorial->GetTutoNowEnd(TutoType::tSlot) && sqrtf(powf(location.x - camera->player_location.x, 2) + powf(location.y - camera->player_location.y, 2)) < 300)
+	{
+		tutorial->StartTutoRequest(TutoType::tSlot, this);
+	}
 	//プレイヤーが触れている間だけリールが回る
 	if (can_stop)
 	{
@@ -133,6 +140,7 @@ void Slot::Draw()const
 		local_location.x + (box_size.x / 2),
 		local_location.y + (box_size.y / 2),
 		0xffffff, false);
+	SetFontSize(32);
 	UserData::DrawStringCenter(local_location, "7 7 7", 0xff0000);
 
 	//リールは回してる時だけ表示

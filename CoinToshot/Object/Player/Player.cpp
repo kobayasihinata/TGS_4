@@ -325,7 +325,7 @@ void Player::Draw()const
 		__super::Draw();
 	}
 
-	Vector2D bar_loc = { local_location.x - (HPBAR_WIDTH / 2),local_location.y - box_size.y - (HPBAR_HEIGHT / 2) };
+	Vector2D bar_loc = { local_location.x - (HPBAR_WIDTH / 2),local_location.y - (box_size.y/2) - (HPBAR_HEIGHT / 2) };
 	if (hp > 0)
 	{
 		//10HP–ˆ‚Éƒo[‚Ì’i‚ð•Ï‚¦‚é

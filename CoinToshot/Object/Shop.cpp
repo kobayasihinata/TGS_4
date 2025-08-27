@@ -18,6 +18,11 @@ Shop::Shop(InGameScene* _ingame)
 		item_impact[i] = 0;
 	}
 
+	start_anim = false;
+	start_anim_timer = 0;
+	end_anim = false;
+	end_anim_timer = 0;
+
 	CreateItemImage();
 
 	ResourceManager* rm = ResourceManager::GetInstance();
@@ -49,6 +54,24 @@ void Shop::Update()
 	//ショップ展開時の処理
 	if (shop_flg)
 	{
+		//アニメーション更新
+		if (start_anim)
+		{
+			if (++start_anim_timer >= START_ANIM_TIME)
+			{
+				start_anim = false;
+				start_anim_timer = 0;
+			}
+		}
+		if (end_anim)
+		{
+			if (++end_anim_timer >= END_ANIM_TIME)
+			{
+				end_anim = false;
+				end_anim_timer = 0;
+				SetShop(false);
+			}
+		}
 		for (int i = 0; i < ITEM_NUM; i++)
 		{
 			if (item_impact[i] > 0)
@@ -93,7 +116,7 @@ void Shop::Update()
 		//ショップを終わる
 		if (InputPad::OnButton(XINPUT_BUTTON_B))
 		{
-			SetShop(false);
+			end_anim = true;
 			ResourceManager::rPlaySound(back_se, DX_PLAYTYPE_BACK);
 		}
 	}
@@ -110,12 +133,6 @@ void Shop::Update()
 void Shop::Draw()const
 {
 	__super::Draw();
-	//ショップ本体描画
-	//DrawBoxAA(local_location.x - (box_size.x/2),
-	//		  local_location.y - (box_size.y/2),
-	//		  local_location.x + (box_size.x/2),
-	//		  local_location.y + (box_size.y/2),
-	//	0x000000, false);
 	SetFontSize(24);
 	//クールダウン描画
 	if (shop_cd < SHOP_COOLDOWN)
@@ -130,14 +147,24 @@ void Shop::Draw()const
 	{
 		DrawRotaGraphF(local_location.x, local_location.y, 0.2f, 0, shop_image[0], true);
 	}
-	int span = 200;
-	Vector2D shop_loc = { (SCREEN_WIDTH / 2) - (ITEM_NUM * span) / 2,300 };
+	int span = 250;
+	Vector2D shop_loc = { (SCREEN_WIDTH / 2) - (ITEM_NUM * span) / 2,anim_move[START_ANIM_TIME-1]};
+	//開始アニメーション
+	if (start_anim)
+	{
+		shop_loc.y = anim_move[start_anim_timer];
+	}
+	//終了アニメーション
+	if (end_anim)
+	{
+		shop_loc.y = anim_move[END_ANIM_TIME-1 - end_anim_timer];
+	}
 	//ショップUI描画
 	if (shop_flg)
 	{
-		SetFontSize(48);
+		SetFontSize(56);
 		DrawString(shop_loc.x, shop_loc.y - 100, "購入画面", 0xffffff);
-		SetFontSize(24);
+		SetFontSize(30);
 		for (int i = 0; i < ITEM_NUM; i++)
 		{
 			float shift = shop_cursor != i ? shop_loc.y : shop_loc.y - 5;
@@ -174,21 +201,22 @@ void Shop::Damage(float _value, Vector2D _attack_loc, int _knock_back)
 
 void Shop::CreateItemImage()
 {
-	int span = 200;
+	int span = 250;
 	for (int i = 0; i < ITEM_NUM; i++)
 	{
 		for (int j = 0; j < 2; j++)
 		{
 			item_image[i][j] = MakeScreen(SHOP_ITEM_WIDTH, SHOP_ITEM_HEIGHT);
 			int color = j == 0 ? item_list[i].text_color : 0xaaaaaa;
+			int sub_color = j == 0 ? item_list[i].subtext_color : 0xaaaaaa;
 			SetDrawScreen(item_image[i][j]);
 			ClearDrawScreen();
 			DrawBoxAA(0, 0, SHOP_ITEM_WIDTH, SHOP_ITEM_HEIGHT, color == 0x000000 ? 0xffffff : 0x000000, true);
 			DrawBoxAA(0, 0, SHOP_ITEM_WIDTH, SHOP_ITEM_HEIGHT, color, false);
-			SetFontSize(48);
+			SetFontSize(56);
 			DrawFormatString((span / 2) - (GetDrawStringWidth(item_list[i].name, strlen(item_list[i].name)) / 2), 20, color, "%s", item_list[i].name);
-			SetFontSize(24);
-			DrawFormatString((span / 2) - (GetDrawStringWidth(item_list[i].sub_text, strlen(item_list[i].sub_text)) / 2), 80, color, "%s", item_list[i].sub_text);
+			SetFontSize(30);
+			DrawFormatString((span / 2) - (GetDrawStringWidth(item_list[i].sub_text, strlen(item_list[i].sub_text)) / 2), 80, sub_color, "%s", item_list[i].sub_text);
 			UserData::DrawCoin({ (span / 2) - (GetDrawFormatStringWidth("   × %d",item_list[i].price) / 2) , 135 }, 12);
 			if (color == 0x000000)
 			{
@@ -279,6 +307,7 @@ void Shop::SetShop(bool _flg)
 	{
 		ingame->SetShopFlg(true, this);
 		shop_flg = true;
+		start_anim = true;
 	}
 	//終了
 	else

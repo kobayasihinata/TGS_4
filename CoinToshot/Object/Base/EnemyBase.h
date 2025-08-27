@@ -7,7 +7,7 @@ class EnemyBase :
 	public ActorBase
 {
 protected:
-	class Camera* camera;	//カメラポインタ格納(プレイヤーの情報を渡すためだけに取得)
+	class Camera* camera;	//カメラポインタ格納
 	float move_speed;		//移動速度
 	int hit_damage;			//プレイヤーに与えるダメージ量
 

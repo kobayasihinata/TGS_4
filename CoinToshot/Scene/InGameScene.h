@@ -200,6 +200,12 @@ public:
 	void SetShopFlg(bool _flg, ObjectBase* _shop = nullptr);
 
 	/// <summary>
+	/// ショップ画面表示中か取得
+	/// </summary>
+	/// <returns></returns>
+	bool GetShopFlg() { return shop_flg; }
+
+	/// <summary>
 	/// ゲームメイン画像のズーム処理
 	/// </summary>
 	void UpdateZoom();
@@ -210,6 +216,7 @@ public:
 	/// <param name="_loc">位置 画面中心座標が標準</param>
 	/// <param name="_size">大きさ 1が標準</param>
 	/// <param name="_time">拡大している時間</param>
+	/// <param name="_speed">拡大する速度</param>
 	void SetZoom(Vector2D _loc, float _size, int _time, float _speed);
 };
 

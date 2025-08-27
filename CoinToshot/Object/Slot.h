@@ -1,5 +1,7 @@
 #pragma once
 #include "Base/ObjectBase.h"
+#include "../Scene/Tutorial.h"
+#include "../Scene/Camera/Camera.h"
 
 #define REEL_NUM 9		//リールの要素数
 #define PEKA 30			//光る確率 〇分の１
@@ -21,6 +23,8 @@ class Slot :
 {
 private:
 	InGameScene* ingame;		//現在のシーンのポインタを保存
+	class Tutorial* tutorial;	//チュートリアル格納
+	class Camera* camera;	//カメラポインタ格納
 
 	int frame;		//フレーム測定
 	bool can_stop;	//プレイヤーが触れている間だけリールに触れる

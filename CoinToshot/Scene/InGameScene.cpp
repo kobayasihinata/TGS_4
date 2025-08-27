@@ -197,7 +197,7 @@ eSceneType InGameScene::Update(float _delta)
 		//ÉfÉoÉbÉOóp
 		if (input->GetKeyState(KEY_INPUT_1) == eInputState::Pressed)
 		{
-			SetZoom({ GetRand(SCREEN_WIDTH),GetRand(SCREEN_HEIGHT) }, ((float)GetRand(100) / 100) + 1.f, 60 , GetRand(20));
+			SetZoom({ input->GetMouseCursor().x,input->GetMouseCursor().y }, /*((float)GetRand(100) / 100) + 1.f*/3, 60 , GetRand(20));
 		}
 		if (input->GetKeyState(KEY_INPUT_2) == eInputState::Pressed)
 		{
@@ -1050,16 +1050,17 @@ void InGameScene::UpdateZoom()
 
 void InGameScene::SetZoom(Vector2D _loc, float _size, int _time, float _speed)
 {
+	//1(í èÌî{ó¶)Çâ∫âÒÇ¡ÇƒÇ¢ÇΩÇÁ1Ç…Ç∑ÇÈ
+	goal_gm_size = _size < 1.f ? 1.f : _size;
+	Vector2D loc = { _loc.x * 2 - (SCREEN_WIDTH / 2),_loc.y * 2 - (SCREEN_HEIGHT / 2) };
 	//âÊñ äOÇ™âfÇÁÇ»Ç¢ÇÊÇ§Ç…í≤êÆ
-	goal_gm_loc.x = _loc.x > (SCREEN_WIDTH / 2) * _size ? (SCREEN_WIDTH / 2) * _size : _loc.x;
-	goal_gm_loc.x = goal_gm_loc.x < (SCREEN_WIDTH / 2) / _size  ? (SCREEN_WIDTH / 2) / _size : goal_gm_loc.x;
-	goal_gm_loc.y = _loc.y > (SCREEN_HEIGHT / 2) * _size ? (SCREEN_HEIGHT / 2) * _size : _loc.y;
-	goal_gm_loc.y = goal_gm_loc.y < (SCREEN_HEIGHT / 2) / _size ? (SCREEN_HEIGHT / 2) / _size : goal_gm_loc.y;
+	goal_gm_loc.x = loc.x > (SCREEN_WIDTH / 2) * goal_gm_size ? (SCREEN_WIDTH / 2) * goal_gm_size : loc.x;
+	goal_gm_loc.x = goal_gm_loc.x < (SCREEN_WIDTH / 2) / goal_gm_size ? (SCREEN_WIDTH / 2) / goal_gm_size : goal_gm_loc.x;
+	goal_gm_loc.y = loc.y > (SCREEN_HEIGHT / 2) * goal_gm_size ? (SCREEN_HEIGHT / 2) * goal_gm_size : loc.y;
+	goal_gm_loc.y = goal_gm_loc.y < (SCREEN_HEIGHT / 2) / goal_gm_size ? (SCREEN_HEIGHT / 2) / goal_gm_size : goal_gm_loc.y;
 	//îΩì]
 	goal_gm_loc.x = SCREEN_WIDTH - goal_gm_loc.x;
 	goal_gm_loc.y = SCREEN_HEIGHT - goal_gm_loc.y;
-	//1(í èÌî{ó¶)Çâ∫âÒÇ¡ÇƒÇ¢ÇΩÇÁ1Ç…Ç∑ÇÈ
-	goal_gm_size = _size < 1.f ? 1.f : _size;
 	zoom_time = _time;
 	zoom_time_count = 0;
 	zoom_speed = _speed <= 0 ? 1 : _speed;
