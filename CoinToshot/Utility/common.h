@@ -1,7 +1,7 @@
 #pragma once
-#define DEBUG_SKIP false			//デバッグ用チュートリアルスキップモード
+#define DEBUG_SKIP true			//デバッグ用チュートリアルスキップモード
 #define DEBUG_PLAYER false		//クリアと死をすぐ確認したい時用
-#define WINDOW_MODE false		//ウィンドウモードかどうか
+#define WINDOW_MODE true		//ウィンドウモードかどうか
 
 #define SE_MAX 13000	//SE音量の上限
 #define BGM_MAX 11000	//BGM音量の上限
@@ -10,8 +10,7 @@
 
 #define SCREEN_WIDTH  (WINDOW_MODE ? 1280 : 1920) 	//画面横幅
 #define SCREEN_HEIGHT (WINDOW_MODE ? 720 : 1080) 	//画面高さ
-//#define SCREEN_WIDTH  1920 	//画面横幅
-//#define SCREEN_HEIGHT 1080	//画面高さ
+
 #define STAGE_SIZE 2000			//ステージの大きさ（中心から上下左右に2000pxずつ)
 
 #define DEFAULT_TIMELIMIT 18000	//制限時間初期値(フレーム単位)

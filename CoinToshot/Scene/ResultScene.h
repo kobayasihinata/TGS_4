@@ -95,6 +95,8 @@ private:
 	int cursor_se;		//カーソルSE
 	int disp_se;		//項目表示SE
 	int coin_se;		//コイン加算SE
+	int throw_se;				//投げるSE
+
 public:
 	ResultScene();
 	virtual ~ResultScene();

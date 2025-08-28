@@ -29,7 +29,7 @@ Slot::Slot(InGameScene* _ingame)
 
 	//ì«Ç›çûÇ›
 	ResourceManager* rm = ResourceManager::GetInstance();
-
+	slot_image = rm->GetImages("Resource/Images/Slot.png");
 	//SEì«Ç›çûÇ›
 	reel_se = rm->GetSounds("Resource/Sounds/Hanahana/reel.mp3");
 	button_se = rm->GetSounds("Resource/Sounds/Hanahana/button.mp3");
@@ -130,18 +130,7 @@ void Slot::Draw()const
 {
 	__super::Draw();
 
-	DrawBoxAA(local_location.x - (box_size.x / 2),
-		local_location.y - (box_size.y / 2),
-		local_location.x + (box_size.x / 2),
-		local_location.y + (box_size.y / 2),
-		0x000000, true);
-	DrawBoxAA(local_location.x - (box_size.x / 2),
-		local_location.y - (box_size.y / 2),
-		local_location.x + (box_size.x / 2),
-		local_location.y + (box_size.y / 2),
-		0xffffff, false);
-	SetFontSize(32);
-	UserData::DrawStringCenter(local_location, "7 7 7", 0xff0000);
+	DrawRotaGraphF(local_location.x, local_location.y, 0.1, 0, slot_image[0], true);
 
 	//ÉäÅ[ÉãÇÕâÒÇµÇƒÇÈéûÇæÇØï\é¶
 	if (can_stop)

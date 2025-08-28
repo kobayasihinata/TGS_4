@@ -443,6 +443,7 @@ void GameSceneUI::CreateBulletTypeImage()const
 		//撃てない旨を伝える
 		if (frame % 30 >= 15)
 		{
+			SetFontSize(32);
 			DrawString(150 - GetDrawFormatStringWidth("コイン不足！") / 2, 160, "コイン不足！", 0xff0000);
 		}
 	}

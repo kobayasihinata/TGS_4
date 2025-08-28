@@ -36,6 +36,8 @@ ResultScene::ResultScene()
 	//クリアかゲームオーバーかでSEを変える
 	disp_se = UserData::is_clear ? rm->GetSounds("Resource/Sounds/Coin/Get.mp3"): rm->GetSounds("Resource/Sounds/bishi.wav");
 	coin_se = rm->GetSounds("Resource/Sounds/Coin/Get.mp3");
+	throw_se = rm->GetSounds("Resource/Sounds/Coin/Throw.mp3");
+
 	if (!CheckSoundMem(result_bgm))
 	{
 		ResourceManager::rPlaySound(result_bgm, DX_PLAYTYPE_LOOP);
@@ -521,7 +523,7 @@ eSceneType ResultScene::EnterName()
 	//Aボタンを押して文字の追加(現在の入力と画面内の文字の合計が10文字未満なら)
 	if (InputPad::OnButton(XINPUT_BUTTON_A))
 	{
-		ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
+		ResourceManager::rPlaySound(throw_se, DX_PLAYTYPE_BACK);
 		CreateMoveString(key[current_y][current_x], 
 			{ key_box_loc.x + (current_x * 60),key_box_loc.y + (current_y * 60) }, 
 			{ name_string_loc.x + 100,name_string_loc.y + 25 },

@@ -15,6 +15,7 @@ protected:
 	std::vector<int> shine_image;	//オーラ画像格納
 	int now_shine_image;			//現在描画オーラ画像
 
+	int item_spawn_se;			//レアアイテム生成SE
 	int death_se;				//死亡時SE
 public:
 
@@ -36,6 +37,7 @@ public:
 			ResourceManager* rm = ResourceManager::GetInstance();
 			std::vector<int>tmp;
 			shine_image = rm->GetImages("Resource/Images/Effect/yellow_shine.png", 40, 8, 5, 96, 96);
+			item_spawn_se = rm->GetSounds("Resource/Sounds/成功音.mp3");
 			now_shine_image = 0;
 		}
 	}

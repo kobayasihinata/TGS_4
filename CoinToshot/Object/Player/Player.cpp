@@ -39,8 +39,6 @@ void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init
 	k_input = InputKey::Get();
 	tutorial = Tutorial::Get();
 
-	UserData::get_bullet.push_back(1);
-	UserData::now_bullet = 0;
 	bullet_change_cd = 0;
 	danger_once = false;
 	change_flg = false;

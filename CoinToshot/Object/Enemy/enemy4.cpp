@@ -36,6 +36,7 @@ Enemy4::Enemy4(InGameScene* _ingame)
 
 	//SE読み込み
 	death_se = rm->GetSounds("Resource/Sounds/Enemy/death.mp3");
+	steal_se = rm->GetSounds("Resource/Sounds/Enemy/steal.mp3");
 }
 
 Enemy4::~Enemy4()
@@ -132,10 +133,8 @@ void Enemy4::Update()
 			}
 			//エフェクト
 			manager->CreateEffect(elExplosion, this->location);
-			//SE再生
-			ResourceManager::rPlaySound(death_se, DX_PLAYTYPE_BACK);
 
-			//レア個体ならアイテム生成
+			//レア個体ならアイテム生成＆アイテムSE再生
 			if (rare_flg)
 			{
 				//回復か磁石
@@ -153,6 +152,14 @@ void Enemy4::Update()
 						this->location,
 						Vector2D{40, 40});
 				}
+				//SE再生
+				ResourceManager::rPlaySound(item_spawn_se, DX_PLAYTYPE_BACK);
+			}
+			//レアでないなら通常のSE再生
+			else
+			{
+				//SE再生
+				ResourceManager::rPlaySound(death_se, DX_PLAYTYPE_BACK);
 			}
 		}
 	}
@@ -186,6 +193,7 @@ void Enemy4::Hit(ObjectBase* hit_object)
 
 		std::string s = "-" + std::to_string(coin_num);
 		ingame->CreatePopUp(this->location, s, 0xff0000, -1);
+		ResourceManager::rPlaySound(steal_se, DX_PLAYTYPE_BACK);
 
 		//コインを盗まれた時のチュートリアルをリクエストする
 		tutorial->StartTutoRequest(TutoType::tSteal, this);

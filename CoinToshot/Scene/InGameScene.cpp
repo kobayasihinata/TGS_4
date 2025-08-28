@@ -34,6 +34,8 @@ void InGameScene::Initialize()
 	UserData::can_bullet_change_flg = false;
 	UserData::is_dead = false;
 	UserData::coin_graph.clear();
+	UserData::get_bullet = { 0,1 };
+	UserData::now_bullet = 0;
 
 	update_shop = nullptr;
 	shop_flg = false;
@@ -90,6 +92,8 @@ void InGameScene::Initialize()
 
 	//背景の自動生成
 	CreateBackGround();
+	//ボーナス描画の生成
+	CreateBonusDraw();
 
 	//ゲームメインで使う画像、音源の事前読み込み
 	LoadGameMainResource();
@@ -197,7 +201,11 @@ eSceneType InGameScene::Update(float _delta)
 		//デバッグ用
 		if (input->GetKeyState(KEY_INPUT_1) == eInputState::Pressed)
 		{
-			SetZoom({ input->GetMouseCursor().x,input->GetMouseCursor().y }, /*((float)GetRand(100) / 100) + 1.f*/3, 60 , GetRand(20));
+			SetZoom({ SCREEN_WIDTH/2,input->GetMouseCursor().y }, /*((float)GetRand(100) / 100) + 1.f*/3, 60 , GetRand(20));
+		}
+		if (input->GetMouseState(MOUSE_INPUT_1)==eInputState::Pressed)
+		{
+			SetZoom({ input->GetMouseCursor().x,input->GetMouseCursor().y }, 4, 60, 20);
 		}
 		if (input->GetKeyState(KEY_INPUT_2) == eInputState::Pressed)
 		{
@@ -451,6 +459,8 @@ void InGameScene::LoadGameMainResource()
 	cursor_se = rm->GetSounds("Resource/Sounds/cursor.mp3");
 	enter_se = rm->GetSounds("Resource/Sounds/Coin/Get.mp3");
 	back_se = rm->GetSounds("Resource/Sounds/Hanahana/button.mp3");
+	throw_se = rm->GetSounds("Resource/Sounds/Coin/Throw.mp3");
+	cheers_se = rm->GetSounds("Resource/Sounds/歓声と拍手1.mp3");
 
 	//他のオブジェクトが使うSE
 	rm->GetSounds("Resource/Sounds/Enemy/death.mp3");
@@ -549,25 +559,11 @@ void InGameScene::MakeGameMainDraw()
 		SetFontSize(72);
 		if (UserData::timer < SECOND_BONUS_TIME)
 		{
-			DrawFormatString(SCREEN_WIDTH / 2 - GetDrawStringWidth("2/3 経過ボーナス！", strlen("2/3 経過ボーナス！")) / 2 + 1,
-				SCREEN_HEIGHT / 2 - 200 + 1,
-				0x555500,
-				"2/3 経過ボーナス！");
-			DrawFormatString(SCREEN_WIDTH / 2 - GetDrawStringWidth("2/3 経過ボーナス！", strlen("2/3 経過ボーナス！")) / 2,
-				SCREEN_HEIGHT / 2 - 200,
-				0xffffff,
-				"2/3 経過ボーナス！");
+			DrawGraph(0, 0, second_bonus_image,true);
 		}
 		else if (UserData::timer < FIRST_BONUS_TIME)
 		{
-			DrawFormatString(SCREEN_WIDTH / 2 - GetDrawStringWidth("1/3 経過ボーナス！", strlen("1/3 経過ボーナス！")) / 2 + 1,
-				SCREEN_HEIGHT / 2 - 200 + 1,
-				0xffff00,
-				"1/3 経過ボーナス！");
-			DrawFormatString(SCREEN_WIDTH / 2 - GetDrawStringWidth("1/3 経過ボーナス！", strlen("1/3 経過ボーナス！")) / 2,
-				SCREEN_HEIGHT / 2 - 200,
-				0xffffff,
-				"1/3 経過ボーナス！");
+			DrawGraph(0, 0, first_bonus_image, true);
 		}
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 	}
@@ -885,7 +881,11 @@ void InGameScene::BonusCoinUpdate()
 								   ((camera_center.y - rand.y) + (GetRand(SCREEN_HEIGHT - 200) - (SCREEN_HEIGHT - 200) / 2)) / 10 };
 		objects->CreateObject(eCOIN, rand, { 40,40 }, 20.f, rand_velocity);
 		bonus_timer = TIME_BONUS;
-		ResourceManager::rPlaySound(coin_se, DX_PLAYTYPE_BACK);
+		ResourceManager::rPlaySound(throw_se, DX_PLAYTYPE_BACK);
+		if (!CheckSoundMem(cheers_se))
+		{
+			ResourceManager::rPlaySound(cheers_se, DX_PLAYTYPE_BACK);
+		}
 	}
 
 	//ボーナスコイン表示時間
@@ -893,6 +893,45 @@ void InGameScene::BonusCoinUpdate()
 	{
 		bonus_timer = 0;
 	}
+}
+
+void InGameScene::CreateBonusDraw()
+{
+	first_bonus_image = MakeScreen(SCREEN_WIDTH, SCREEN_HEIGHT,TRUE);
+	second_bonus_image = MakeScreen(SCREEN_WIDTH, SCREEN_HEIGHT,TRUE);
+
+	SetFontSize(72);
+
+	SetDrawScreen(first_bonus_image);
+	ClearDrawScreen();
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
+	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0xffff55, true);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+	DrawFormatString(SCREEN_WIDTH / 2 - GetDrawStringWidth("1/3 経過ボーナス！", strlen("1/3 経過ボーナス！")) / 2 + 1,
+		SCREEN_HEIGHT / 2 - 200 + 1,
+		0xffff00,
+		"1/3 経過ボーナス！");
+	DrawFormatString(SCREEN_WIDTH / 2 - GetDrawStringWidth("1/3 経過ボーナス！", strlen("1/3 経過ボーナス！")) / 2,
+		SCREEN_HEIGHT / 2 - 200,
+		0xffffff,
+		"1/3 経過ボーナス！");
+
+	SetDrawScreen(second_bonus_image);
+	ClearDrawScreen();
+
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
+	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0xffff55, true);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+	DrawFormatString(SCREEN_WIDTH / 2 - GetDrawStringWidth("2/3 経過ボーナス！", strlen("2/3 経過ボーナス！")) / 2 + 1,
+		SCREEN_HEIGHT / 2 - 200 + 1,
+		0x555500,
+		"2/3 経過ボーナス！");
+	DrawFormatString(SCREEN_WIDTH / 2 - GetDrawStringWidth("2/3 経過ボーナス！", strlen("2/3 経過ボーナス！")) / 2,
+		SCREEN_HEIGHT / 2 - 200,
+		0xffffff,
+		"2/3 経過ボーナス！");
+
+	SetDrawScreen(DX_SCREEN_BACK);
 }
 
 void InGameScene::TutorialUpdate()

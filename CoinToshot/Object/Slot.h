@@ -49,6 +49,9 @@ private:
 	int bonus_se;			//ボーナスSE
 	bool bonus_se_play_once;//ボーナスSEを一回だけ再生
 
+	std::vector<int> slot_image;			//スロット画像
+
+
 public:
 	//コンストラクタ
 	Slot(InGameScene* _ingame);

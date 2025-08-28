@@ -13,6 +13,7 @@ private:
 	int coin_num;	//持っているコイン
 	bool steal_flg;	//コインを盗んだか
 
+	int steal_se;		//盗んだ時のSE
 public:
 	//コンストラクタ
 	Enemy4(InGameScene* _ingame);

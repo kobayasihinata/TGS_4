@@ -67,6 +67,8 @@ private:
 	int zoom_time_count;		//何秒間ズームしたままでいるか測定
 	float zoom_speed;			//ズームの速度
 
+	int first_bonus_image;		//3/1ボーナス画像
+	int second_bonus_image;		//3/2ボーナス画像
 	int gamemain_bgm;			//BGM格納
 	int game_clear_se;			//ゲームクリアSE
 	int game_over_se;			//ゲームオーバーSE
@@ -75,7 +77,8 @@ private:
 	int cursor_se;				//カーソルSE
 	int enter_se;				//決定SE
 	int back_se;				//戻るボタンSE
-
+	int throw_se;				//投げるSE
+	int cheers_se;				//歓声SE
 
 public:
 	InGameScene();
@@ -176,6 +179,11 @@ public:
 	/// ボーナスコイン更新
 	/// </summary>
 	void BonusCoinUpdate();
+
+	/// <summary>
+	/// ボーナス描画作成
+	/// </summary>
+	void CreateBonusDraw();
 
 	/// <summary>
 	/// チュートリアル用更新
