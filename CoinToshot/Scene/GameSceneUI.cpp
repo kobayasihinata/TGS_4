@@ -9,6 +9,7 @@
 void GameSceneUI::Initialize()
 {
 	tutorial = Tutorial::Get();
+	camera = Camera::Get();
 
 	frame = 0;
 	bullet_image = MakeScreen(300, 225, TRUE);
@@ -257,6 +258,12 @@ void GameSceneUI::Update()
 			now_shine_image = 0;
 		}
 	}
+
+	player_ui_loc.x = SCREEN_WIDTH - 525 + camera->GetRandImpact();
+	player_ui_loc.y = camera->GetRandImpact();
+
+	DebugInfomation::Add("impact", camera->impact);
+
 	//’eŽí—ÞŒ©‚½–Ú¶¬
 	CreateBulletTypeImage();
 
@@ -350,7 +357,7 @@ void GameSceneUI::Draw()const
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 125);
 	}
 	//’e‚ÌŽí—Þ•`‰æ
-	DrawRotaGraph(SCREEN_WIDTH / 2, 112, 1.0f, 0, bullet_image, TRUE);
+	DrawRotaGraph(SCREEN_WIDTH / 2 +camera->GetRandImpact(), 112+camera->GetRandImpact(), 1.0f, 0, bullet_image, TRUE);
 
 	SetFontSize(36);
 

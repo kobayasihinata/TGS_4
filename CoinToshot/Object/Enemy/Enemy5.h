@@ -21,6 +21,9 @@ private:
 	std::vector<BlockData> block_data;	//攻撃を防いだ時にエフェクトを出す用
 	std::vector<BlockData> delete_block_data;	//攻撃を防いだ時にエフェクトを出す用
 
+	int block_se;	//防御SE
+
+
 public:
 	//コンストラクタ
 	Enemy5();

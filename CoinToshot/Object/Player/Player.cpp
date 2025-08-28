@@ -417,6 +417,8 @@ void Player::Damage(float _value, Vector2D _attack_loc, int _knock_back)
 		damage_stop = true;
 		//ˆê’èƒtƒŒ[ƒ€–³“G
 		damage_timer = PLAYER_DAMAGE_CD;
+		//ƒJƒƒ‰U“®
+		camera->impact = 20;
 	}
 }
 

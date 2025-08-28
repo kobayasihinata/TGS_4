@@ -27,6 +27,7 @@ Enemy5::Enemy5()
 
 	//SE“Ç‚Ýž‚Ý
 	death_se = rm->GetSounds("Resource/Sounds/Enemy/death.mp3");
+	block_se = rm->GetSounds("Resource/Sounds/Enemy/block.mp3");
 }
 
 Enemy5::~Enemy5()
@@ -186,5 +187,6 @@ void Enemy5::Damage(float _value, Vector2D _attack_loc, int _knock_back)
 	data.block_anim_timer = 20;
 	data.attack_loc = _attack_loc;
 	block_data.push_back(data);
+	ResourceManager::rPlaySound(block_se, DX_PLAYTYPE_BACK);
 }
 

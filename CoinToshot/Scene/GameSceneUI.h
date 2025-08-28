@@ -1,5 +1,6 @@
 #pragma once
 #include "../Utility/UserData.h"
+#include "../Scene/Camera/Camera.h"
 #include "Tutorial.h"
 #include <vector>
 #include <string>
@@ -58,6 +59,7 @@ private:
 	int max_attraction;		//吸い寄せバー表示用
 
 	class Tutorial* tutorial;	//チュートリアル格納
+	class Camera* camera;	//カメラポインタ格納
 
 	int bullet_image;		//弾種類表示
 	int old_bullet_type;	//弾種類変更用

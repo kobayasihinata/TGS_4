@@ -25,7 +25,15 @@ void Camera::Update()
 	{
 		camera_location = { -SCREEN_WIDTH / 2 + 48, -SCREEN_HEIGHT / 2 + 32 };
 	}
-
+	//カメラ振動値が1以上なら減らす
+	if (impact >= 1)
+	{
+		impact--;
+	}
+	else
+	{
+		impact = 0;
+	}
 	//カメラX座標が画面左端以下なら
 	if (camera_location.x <= -STAGE_SIZE)
 	{
@@ -55,4 +63,9 @@ void Camera::Update()
 void Camera::Update(Vector2D _loc)
 {
 	camera_location = _loc;
+}
+
+int Camera::GetRandImpact()const
+{
+	return GetRand(impact) - (impact / 2);
 }

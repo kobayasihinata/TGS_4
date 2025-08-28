@@ -687,7 +687,7 @@ ObjectList InGameScene::GetRandEnemy()
 	//コインが0～69ならenemy1をスポーン
 	if (coin < 70)
 	{
-		return GetEnemy(eENEMY1, 100);
+		return GetEnemy(eENEMY5, 100);
 	}
 	//コインが70～150ならenemy1と2をランダムでスポーン
 	if (coin < 150)
