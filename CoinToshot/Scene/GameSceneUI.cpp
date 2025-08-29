@@ -404,7 +404,21 @@ void GameSceneUI::Draw()const
 	//弾獲得アニメーション
 	if (new_bullet_flg)
 	{
-		DrawString(300, 300, "弾獲得アニメーション", 0xffffff);
+		//白くなっていく
+		if (new_bullet_timer < 30)
+		{
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, (new_bullet_timer * (255/30)));
+		}
+		//白が消える
+		if (new_bullet_timer > NEW_BULLET_ANIM / 2 && new_bullet_timer < NEW_BULLET_ANIM / 2 +30)
+		{
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, (new_bullet_timer * (255 / 30)));
+		}
+		DrawBox(SCREEN_WIDTH / 2 - 112,
+			0,
+			SCREEN_WIDTH / 2 + 112,
+			225, 0xffffffff, true);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 	}
 }
 

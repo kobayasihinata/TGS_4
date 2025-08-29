@@ -201,7 +201,7 @@ eSceneType InGameScene::Update(float _delta)
 		//デバッグ用
 		if (input->GetKeyState(KEY_INPUT_1) == eInputState::Pressed)
 		{
-			SetZoom({ SCREEN_WIDTH/2,input->GetMouseCursor().y }, /*((float)GetRand(100) / 100) + 1.f*/3, 60 , GetRand(20));
+			SetZoom({ SCREEN_WIDTH / 2,SCREEN_HEIGHT/2 }, 3, 60, 20);
 		}
 		if (input->GetMouseState(MOUSE_INPUT_1)==eInputState::Pressed)
 		{
@@ -412,6 +412,12 @@ void InGameScene::Draw()const
 			UserData::DrawCoin({ (float)SCREEN_WIDTH / 2 - 80, (float)SCREEN_HEIGHT / 2 + (pause_cursor * 50) + 130 }, 20, 227 + abs(((int)frame % 56 - 28)), 200);
 		}
 	}
+		DrawBox(0, 0, SCREEN_WIDTH / 5, SCREEN_HEIGHT / 5, 0x000000, true);
+		DrawBoxAA((goal_gm_loc.x / 5) - ((SCREEN_WIDTH / 5) / 2 / goal_gm_size),
+			      (goal_gm_loc.y / 5) - ((SCREEN_HEIGHT / 5) / 2 / goal_gm_size),
+			      (goal_gm_loc.x / 5) + ((SCREEN_WIDTH / 5) / 2 / goal_gm_size),
+			      (goal_gm_loc.y / 5) + ((SCREEN_HEIGHT / 5) / 2 / goal_gm_size),
+			      0xff0000, false);
 
 }
 
@@ -1059,7 +1065,7 @@ void InGameScene::UpdateZoom()
 	//{ SCREEN_WIDTH / 2,SCREEN_HEIGHT / 2 };←初期位置
 	if (now_gm_loc != goal_gm_loc)
 	{
-		now_gm_loc +=(goal_gm_loc - now_gm_loc) / zoom_speed;
+		now_gm_loc += (goal_gm_loc - now_gm_loc) / zoom_speed;
 		//int型に丸めた時に座標が重なっていれば、完全に重なっているものとする
 		if ((int)now_gm_loc.x == (int)goal_gm_loc.x && (int)now_gm_loc.y == (int)goal_gm_loc.y)
 		{
@@ -1070,7 +1076,7 @@ void InGameScene::UpdateZoom()
 	{
 		now_gm_size += (goal_gm_size - now_gm_size) / zoom_speed;
 		//int型に丸めた時に座標が重なっていれば、完全に重なっているものとする
-		if ((int)(now_gm_size*100) == (int)(goal_gm_size*100))
+		if ((int)(now_gm_size * 500) == (int)(goal_gm_size * 500))
 		{
 			now_gm_size = goal_gm_size;
 		}
@@ -1091,12 +1097,18 @@ void InGameScene::SetZoom(Vector2D _loc, float _size, int _time, float _speed)
 {
 	//1(通常倍率)を下回っていたら1にする
 	goal_gm_size = _size < 1.f ? 1.f : _size;
-	Vector2D loc = { _loc.x * 2 - (SCREEN_WIDTH / 2),_loc.y * 2 - (SCREEN_HEIGHT / 2) };
+	Vector2D loc = { (float)(_loc.x - (SCREEN_WIDTH / 2)),
+					 (float)(_loc.y - (SCREEN_HEIGHT / 2)) };
+	loc = _loc;
+	Vector2D move_max = { SCREEN_WIDTH -  (SCREEN_WIDTH / 2 /goal_gm_size) ,SCREEN_HEIGHT - (SCREEN_HEIGHT / 2/ goal_gm_size) };
+	Vector2D move_min = { (SCREEN_WIDTH / 2 / goal_gm_size) ,(SCREEN_HEIGHT / 2 / goal_gm_size) };
+
 	//画面外が映らないように調整
-	goal_gm_loc.x = loc.x > (SCREEN_WIDTH / 2) * goal_gm_size ? (SCREEN_WIDTH / 2) * goal_gm_size : loc.x;
-	goal_gm_loc.x = goal_gm_loc.x < (SCREEN_WIDTH / 2) / goal_gm_size ? (SCREEN_WIDTH / 2) / goal_gm_size : goal_gm_loc.x;
-	goal_gm_loc.y = loc.y > (SCREEN_HEIGHT / 2) * goal_gm_size ? (SCREEN_HEIGHT / 2) * goal_gm_size : loc.y;
-	goal_gm_loc.y = goal_gm_loc.y < (SCREEN_HEIGHT / 2) / goal_gm_size ? (SCREEN_HEIGHT / 2) / goal_gm_size : goal_gm_loc.y;
+	goal_gm_loc.x = loc.x > move_max.x ? move_max.x : loc.x;
+	goal_gm_loc.y = loc.y > move_max.y ? move_max.y : loc.y;
+	goal_gm_loc.x = goal_gm_loc.x < move_min.x ? move_min.x : goal_gm_loc.x;
+	goal_gm_loc.y = goal_gm_loc.y < move_min.y ? move_min.y : goal_gm_loc.y;
+
 	//反転
 	goal_gm_loc.x = SCREEN_WIDTH - goal_gm_loc.x;
 	goal_gm_loc.y = SCREEN_HEIGHT - goal_gm_loc.y;
