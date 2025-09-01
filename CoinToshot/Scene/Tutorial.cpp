@@ -164,8 +164,8 @@ void Tutorial::InitTuto(TutoType _type)
 		break;
 	case TutoType::tAim:
 		//テキスト量に合った大きさの箱画像を生成
-		text_box_loc = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 150 };
-		text_box_size = { 450, 150 };
+		text_box_loc = { SCREEN_WIDTH / 2, 100 };
+		text_box_size = { 450, 200 };
 		GenerateTextBox(text_box_size);
 		//表示中にゲームを停止状態に
 		tuto_stop_flg = true;
@@ -448,14 +448,15 @@ void Tutorial::UpdateAim()
 }
 void Tutorial::DrawAim()const
 {
+	Vector2D obj_loc = tuto_object->GetLocalLocation();
 	//説明のテキストボックス
 	if (timer > 0)
 	{
 		SetFontSize(36);
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha - 150);
-		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, TRUE);
+		//SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha - 150);
+		//DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, TRUE);
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha);
-		DrawGraph(text_box_loc.x - text_box_size.x / 2, text_box_loc.y - text_box_size.y / 2, generate_text_box, TRUE);
+		DrawGraph(text_box_loc.x - text_box_size.x/2, text_box_loc.y - text_box_size.y / 2, generate_text_box, TRUE);
 		SetFontSize(48);
 		DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 20, "敵に照準を合わせよう", 0xffffff);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
@@ -463,38 +464,38 @@ void Tutorial::DrawAim()const
 	//実践のターゲット
 	else
 	{
-		UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y - 50 }, "右スティック：照準", 0xffffff);
-		DrawRotaGraphF(text_box_loc.x, text_box_loc.y + 50, 1.f, 0, UserData::button_image[1][r_stick[stick_anim]], TRUE);
+		UserData::DrawStringCenter({SCREEN_WIDTH/2,SCREEN_HEIGHT/2 - 200 }, "右スティック：照準", 0xffffff);
+		DrawRotaGraphF(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 100, 1.f, 0, UserData::button_image[1][r_stick[stick_anim]], TRUE);
 		//照準
 		if (aim_timer > 0)
 		{
-			DrawBoxAA(tuto_object->GetLocalLocation().x - 30,
-				tuto_object->GetLocalLocation().y       - 70,
-				tuto_object->GetLocalLocation().x       - 30 + (50.f / 30) * (aim_timer % 30),
-				tuto_object->GetLocalLocation().y       - 40,
+			DrawBoxAA(obj_loc.x - 30,
+				obj_loc.y       - 70,
+				obj_loc.x       - 30 + (50.f / 30) * (aim_timer % 30),
+				obj_loc.y       - 40,
 				0xffaa00, TRUE);
-			DrawBoxAA(tuto_object->GetLocalLocation().x - 30,
-				tuto_object->GetLocalLocation().y       - 70,
-				tuto_object->GetLocalLocation().x       + 30,
-				tuto_object->GetLocalLocation().y       - 40,
+			DrawBoxAA(obj_loc.x - 30,
+				obj_loc.y       - 70,
+				obj_loc.x       + 30,
+				obj_loc.y       - 40,
 				0xffffff, FALSE);
-			DrawFormatString(tuto_object->GetLocalLocation().x + 1, tuto_object->GetLocalLocation().y - 79, 0x000000, "%d", 3 - (aim_timer / 30));
-			DrawFormatString(tuto_object->GetLocalLocation().x, tuto_object->GetLocalLocation().y - 80, 0xff0000, "%d", 3 - (aim_timer / 30));
+			DrawFormatString(obj_loc.x + 1, obj_loc.y - 79, 0x000000, "%d", 3 - (aim_timer / 30));
+			DrawFormatString(obj_loc.x, obj_loc.y - 80, 0xff0000, "%d", 3 - (aim_timer / 30));
 		}
 		//照準合わせ成功描画
 		if (aim_success_flg)
 		{
-			DrawBoxAA(tuto_object->GetLocalLocation().x - 30,
-				tuto_object->GetLocalLocation().y - 70,
-				tuto_object->GetLocalLocation().x + 30,
-				tuto_object->GetLocalLocation().y - 40,
+			DrawBoxAA(obj_loc.x - 30,
+				obj_loc.y - 70,
+				obj_loc.x + 30,
+				obj_loc.y - 40,
 				0xffaa00, TRUE);
-			DrawBoxAA(tuto_object->GetLocalLocation().x - 30,
-				tuto_object->GetLocalLocation().y - 70,
-				tuto_object->GetLocalLocation().x + 30,
-				tuto_object->GetLocalLocation().y - 40,
+			DrawBoxAA(obj_loc.x - 30,
+				obj_loc.y - 70,
+				obj_loc.x + 30,
+				obj_loc.y - 40,
 				0xffffff, FALSE);
-			DrawString(tuto_object->GetLocalLocation().x - 30, tuto_object->GetLocalLocation().y - 80, "nice!", aim_success_timer % 30 > 15 ? 0xaaaa00 : 0xffff00);
+			DrawString(obj_loc.x - 30, obj_loc.y - 80, "nice!", aim_success_timer % 30 > 15 ? 0xaaaa00 : 0xffff00);
 		}
 	}
 }

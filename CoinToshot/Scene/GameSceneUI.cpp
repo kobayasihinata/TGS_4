@@ -5,11 +5,13 @@
 #include "../Utility/DebugInformation.h"
 #include "../Object/Player/PlayerBullet.h"
 #include "RankColor.h"
+#include "../Scene/InGameScene.h"
 
-void GameSceneUI::Initialize()
+void GameSceneUI::Initialize(InGameScene* _ingame)
 {
 	tutorial = Tutorial::Get();
 	camera = Camera::Get();
+	ingame = _ingame;
 
 	frame = 0;
 	bullet_image = MakeScreen(300, 225, TRUE);
@@ -22,6 +24,7 @@ void GameSceneUI::Initialize()
 	old_bullet_num = 2;	//初期に所持している弾の種類数に合わせる
 	new_bullet_flg = false;
 	new_bullet_timer = 0;
+	new_bullet_fade = 0;
 
 	player_ui_loc = { SCREEN_WIDTH - 525,0 };
 	now_coin_num = 0;
@@ -49,6 +52,9 @@ void GameSceneUI::Initialize()
 	ex_se = rm->GetSounds("Resource/Sounds/explsion_big.mp3");
 	lock_se = rm->GetSounds("Resource/Sounds/lock.mp3");
 	count_se = rm->GetSounds("Resource/Sounds/lock.mp3");
+	unlock_se = rm->GetSounds("Resource/Sounds/Direction/成功音.mp3");
+	unlock2_se = rm->GetSounds("Resource/Sounds/Direction/大勢で拍手.mp3");
+
 	shine_image = rm->GetImages("Resource/Images/Effect/yellow_shine.png", 40, 8, 5, 96, 96);
 	now_shine_image = 0;
 }
@@ -150,6 +156,7 @@ void GameSceneUI::Update()
 	if (old_bullet_num < UserData::get_bullet.size())
 	{
 		new_bullet_flg = true;
+		ingame->SetZoom({ SCREEN_WIDTH / 2,0 }, 2, NEW_BULLET_ANIM, 30);
 	}
 
 	//一フレーム前の弾所持数更新
@@ -172,6 +179,7 @@ void GameSceneUI::Update()
 				old_bullet_type = UserData::get_bullet[UserData::now_bullet];
 				bullet_change_timer = 0;
 			}
+
 		}
 		else
 		{
@@ -187,6 +195,24 @@ void GameSceneUI::Update()
 		{
 			new_bullet_timer = 0;
 			new_bullet_flg = false;
+		}
+		//透明度の値を上げる
+		if (new_bullet_timer <= NEW_BULLET_ANIM_FADE)
+		{
+			new_bullet_fade += (255.f / NEW_BULLET_ANIM_FADE);
+		}
+		//透明度の値を下げる
+		if (new_bullet_timer > NEW_BULLET_ANIM_1 && new_bullet_timer <= NEW_BULLET_ANIM_1 + NEW_BULLET_ANIM_FADE)
+		{
+			new_bullet_fade -= (255.f / NEW_BULLET_ANIM_FADE);
+		}
+		//弾の種類を変える
+		if (new_bullet_timer >= NEW_BULLET_ANIM_1 &&UserData::now_bullet != UserData::get_bullet.size()-1)
+		{
+			UserData::now_bullet = UserData::get_bullet.size()-1;
+			old_bullet_type = UserData::get_bullet[UserData::now_bullet];
+			ResourceManager::rPlaySound(unlock_se, DX_PLAYTYPE_BACK);
+			ResourceManager::rPlaySound(unlock2_se, DX_PLAYTYPE_BACK);
 		}
 	}
 
@@ -400,25 +426,23 @@ void GameSceneUI::Draw()const
 		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0xff0000, true);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 	}
-
 	//弾獲得アニメーション
 	if (new_bullet_flg)
 	{
-		//白くなっていく
-		if (new_bullet_timer < 30)
-		{
-			SetDrawBlendMode(DX_BLENDMODE_ALPHA, (new_bullet_timer * (255/30)));
-		}
-		//白が消える
-		if (new_bullet_timer > NEW_BULLET_ANIM / 2 && new_bullet_timer < NEW_BULLET_ANIM / 2 +30)
-		{
-			SetDrawBlendMode(DX_BLENDMODE_ALPHA, (new_bullet_timer * (255 / 30)));
-		}
-		DrawBox(SCREEN_WIDTH / 2 - 112,
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)new_bullet_fade);
+		DrawBox(SCREEN_WIDTH / 2 - 150,
 			0,
-			SCREEN_WIDTH / 2 + 112,
-			225, 0xffffffff, true);
+			SCREEN_WIDTH / 2 + 150,
+			150, 0xffffff, true);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+		if (new_bullet_timer > NEW_BULLET_ANIM_1)
+		{
+			DrawCircle(SCREEN_WIDTH / 2, 
+				75,
+				(new_bullet_timer - NEW_BULLET_ANIM_1) * 10,
+				0xffffff,false);
+			UserData::DrawStringCenter({ SCREEN_WIDTH / 2,160 }, "新しい弾をゲット！", new_bullet_timer % 30 > 15 ? 0xffffff : 0xff0000);
+		}
 	}
 }
 
@@ -454,7 +478,7 @@ void GameSceneUI::CreateBulletTypeImage()const
 
 	int draw_color;
 	//撃てない弾のUIは薄暗くする
-	if (pBullet[UserData::get_bullet[UserData::now_bullet]].cost <= UserData::coin)
+	if (pBullet[UserData::get_bullet[UserData::now_bullet]].cost <= UserData::coin || new_bullet_flg)
 	{
 		draw_color = 0xffffff;
 	}
@@ -531,7 +555,7 @@ void GameSceneUI::CreateConfettiImage()
 void GameSceneUI::DrawBullet(Vector2D _loc, int _type)const
 {
 	//撃てない弾のUIは薄暗くする
-	int draw_color = pBullet[_type].cost <= UserData::coin ? GetColor(pBullet[_type].color[0], pBullet[_type].color[1], pBullet[_type].color[2]) : 0xaaaa55;
+	int draw_color = pBullet[_type].cost <= UserData::coin || new_bullet_flg? GetColor(pBullet[_type].color[0], pBullet[_type].color[1], pBullet[_type].color[2]) : 0xaaaa55;
 
 	//弾の種類描画
 	DrawBox(_loc.x, _loc.y, _loc.x + 300, _loc.y + 150, 0x777722, true);

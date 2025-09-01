@@ -23,8 +23,8 @@ static ItemList item_list[ITEM_NUM]
 	{"回復",  0x00ff00,"HPを回復できる",    0x0aa00,  5,5},
 	{"磁石",  0x00ffff,"コインを引き寄せる",0x00aaaa, 10,3},
 	{"強化弾",0xffaa00,"ほとんどの敵を一撃",0xaa5500, 20,1},
-	{"爆発弾",0xff2222,"広範囲の爆発",		0xaa0000,100,1},
-	{"最強弾",0x000000,"つよい",			0x000000,200,1},
+	{"爆発弾",0xff2222,"広範囲の爆発",		0xaa0000,10,1},
+	{"最強弾",0x000000,"つよい",			0x000000,20,1},
 };
 
 //一フレーム毎の位置
@@ -59,11 +59,12 @@ private:
 	int item_image[ITEM_NUM][2];	//表示画像格納
 	std::vector<int> shop_image;	//ショップ画像
 
+	int start_se;					//入店時SE
 	int cursor_se;					//カーソルSE
 	int button_se;					//ボタン効果音
 	int cancel_se;					//キャンセル音
 	int back_se;					//戻る音
-
+	int throw_se;					//投げるSE
 
 public:
 	//コンストラクタ

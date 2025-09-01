@@ -37,7 +37,7 @@ public:
 			ResourceManager* rm = ResourceManager::GetInstance();
 			std::vector<int>tmp;
 			shine_image = rm->GetImages("Resource/Images/Effect/yellow_shine.png", 40, 8, 5, 96, 96);
-			item_spawn_se = rm->GetSounds("Resource/Sounds/¬Œ÷‰¹.mp3");
+			item_spawn_se = rm->GetSounds("Resource/Sounds/Direction/¬Œ÷‰¹.mp3");
 			now_shine_image = 0;
 		}
 	}

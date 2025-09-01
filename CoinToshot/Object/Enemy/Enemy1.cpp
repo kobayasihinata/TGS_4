@@ -64,12 +64,12 @@ void Enemy1::Update()
 	if (!tutorial->GetTutoNowEnd(TutoType::tAim) && sqrtf(powf(location.x - camera->player_location.x, 2) + powf(location.y - camera->player_location.y, 2)) < 400)
 	{
 		//自身が画面内にいる時にプレイヤーと近づいたら、チュートリアル開始
-		if (manager->CheckInScreen(this, 0))
+		if (manager->CheckInScreen(this, -40))
 		{
 			tutorial->StartTutoRequest(TutoType::tAim,this);
 		}
 		//自身が画面外にいる時にプレイヤーと近づいてしまった場合、自身を反対側に移動させる
-		else
+		else if(!manager->CheckInScreen(this, 40))
 		{
 			this->location.x = camera->GetCameraLocation().x - 200;
 		}

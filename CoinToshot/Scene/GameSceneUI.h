@@ -10,6 +10,8 @@ using namespace std;
 #define BONUS_TEXT_TIMER 300	//時間経過ボーナス表示時間
 #define RANKUP_TIMER 180	//ランキング変動アニメーション時間
 #define NEW_BULLET_ANIM 240 //新弾獲得演出時間
+#define NEW_BULLET_ANIM_FADE 30 //新弾獲得フェードイン、フェードアウト時間
+#define NEW_BULLET_ANIM_1 (NEW_BULLET_ANIM/2) //フェードアウト開始時間
 
 struct UIData
 {
@@ -61,6 +63,9 @@ private:
 	class Tutorial* tutorial;	//チュートリアル格納
 	class Camera* camera;	//カメラポインタ格納
 
+	//ゲームメインポインタ
+	InGameScene* ingame;
+
 	int bullet_image;		//弾種類表示
 	int old_bullet_type;	//弾種類変更用
 	int bullet_change_timer;//弾変更アニメーション時間測定
@@ -70,6 +75,7 @@ private:
 	int old_bullet_num;		//一フレーム前の弾の所持数
 	bool new_bullet_flg;	//新しい弾を獲得した時のアニメーション
 	int new_bullet_timer;	//新しい弾を獲得した時のアニメーション測定
+	float new_bullet_fade;	//新しい弾を獲得した時のアニメーション透明度格納
 
 	Vector2D player_ui_loc;	//プレイヤー情報位置
 	int now_coin_num;		//現在のコイン枚数
@@ -94,9 +100,13 @@ private:
 	int ex_anim_timer;			//アニメーション用
 	int now_image;				//アニメーション用
 	std::vector<int> ex_anim;	//爆発アニメーション
+
 	int ex_se;					//爆発音
 	int lock_se;				//使用不可SE
 	int count_se;				//カウントダウンSE
+	int unlock_se;				//弾解放演出SE
+	int unlock2_se;				//弾解放演出SE
+	int charge_se;				//弾解放演出SE
 
 	//ポップアップ表示用
 	std::vector<UIData> ui_data;
@@ -113,7 +123,7 @@ public:
 	bool confetti_flg;	//紙吹雪を生成するか判断
 public:
 	//初期化
-	void Initialize();
+	void Initialize(InGameScene* _ingame);
 	//更新
 	void Update();
 	//描画

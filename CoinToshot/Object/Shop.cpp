@@ -28,10 +28,12 @@ Shop::Shop(InGameScene* _ingame)
 	ResourceManager* rm = ResourceManager::GetInstance();
 	shop_image = rm->GetImages("Resource/Images/Shop.png");
 
-	button_se = rm->GetSounds("Resource/Sounds/Coin/Get.mp3");
+	start_se  = rm->GetSounds("Resource/Sounds/Shop/入店チャイム.mp3");
+	button_se = rm->GetSounds("Resource/Sounds/Shop/金額表示.mp3");
 	cursor_se = rm->GetSounds("Resource/Sounds/cursor.mp3");
 	cancel_se = rm->GetSounds("Resource/Sounds/lock.mp3");
-	back_se =   rm->GetSounds("Resource/Sounds/Hanahana/button.mp3");
+	back_se   = rm->GetSounds("Resource/Sounds/Hanahana/button.mp3");
+	throw_se  = rm->GetSounds("Resource/Sounds/Coin/Throw.mp3");
 }
 
 Shop::~Shop()
@@ -308,6 +310,7 @@ void Shop::SetShop(bool _flg)
 		ingame->SetShopFlg(true, this);
 		shop_flg = true;
 		start_anim = true;
+		ResourceManager::rPlaySound(start_se, DX_PLAYTYPE_BACK);
 	}
 	//終了
 	else

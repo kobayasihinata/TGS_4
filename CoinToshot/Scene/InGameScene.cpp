@@ -76,7 +76,7 @@ void InGameScene::Initialize()
 
 	//UI生成
 	ui = new GameSceneUI();
-	ui->Initialize();
+	ui->Initialize(this);
 
 	//プレイヤー生成
 	objects->CreateObject({ Vector2D{48,32},Vector2D{40,40},ePLAYER });
@@ -99,7 +99,7 @@ void InGameScene::Initialize()
 	LoadGameMainResource();
 
 	//BGMを初めから再生するための処理
-	ResourceManager::rPlaySound(gamemain_bgm, DX_PLAYTYPE_LOOP, TRUE);
+	ResourceManager::rPlaySound(gamemain_bgm,DX_PLAYTYPE_LOOP,TRUE);
 	StopSoundMem(gamemain_bgm);
 }
 
@@ -205,7 +205,7 @@ eSceneType InGameScene::Update(float _delta)
 		}
 		if (input->GetMouseState(MOUSE_INPUT_1)==eInputState::Pressed)
 		{
-			SetZoom({ input->GetMouseCursor().x,input->GetMouseCursor().y }, 4, 60, 20);
+			SetZoom({ input->GetMouseCursor().x,input->GetMouseCursor().y }, UserData::variable, 60, 20);
 		}
 		if (input->GetKeyState(KEY_INPUT_2) == eInputState::Pressed)
 		{
@@ -227,13 +227,14 @@ eSceneType InGameScene::Update(float _delta)
 	//ポーズ画面
 	else if (pause_flg)
 	{
+		if (!CheckSoundMem(gamemain_bgm))
+		{
+			ResourceManager::rPlaySound(gamemain_bgm, DX_PLAYTYPE_LOOP, false);
+		}
 		//タイトル画面に戻る確認画面が出ていなければポーズ更新
 		if (!back_title_flg)
 		{
-			if (CheckSoundMem(gamemain_bgm))
-			{
-				StopSoundMem(gamemain_bgm);
-			}
+
 			//下入力で項目下移動
 			if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_DOWN) || InputPad::GetPressedButton(L_STICK_DOWN))
 			{
@@ -262,6 +263,10 @@ eSceneType InGameScene::Update(float _delta)
 					pause_flg = false;
 					break;
 				case 1: //オプション
+					if (CheckSoundMem(gamemain_bgm))
+					{
+						StopSoundMem(gamemain_bgm);
+					}
 					UserData::old_scene = this;
 					return eSceneType::eOption;
 					break;
@@ -412,12 +417,18 @@ void InGameScene::Draw()const
 			UserData::DrawCoin({ (float)SCREEN_WIDTH / 2 - 80, (float)SCREEN_HEIGHT / 2 + (pause_cursor * 50) + 130 }, 20, 227 + abs(((int)frame % 56 - 28)), 200);
 		}
 	}
-		DrawBox(0, 0, SCREEN_WIDTH / 5, SCREEN_HEIGHT / 5, 0x000000, true);
-		DrawBoxAA((goal_gm_loc.x / 5) - ((SCREEN_WIDTH / 5) / 2 / goal_gm_size),
-			      (goal_gm_loc.y / 5) - ((SCREEN_HEIGHT / 5) / 2 / goal_gm_size),
-			      (goal_gm_loc.x / 5) + ((SCREEN_WIDTH / 5) / 2 / goal_gm_size),
-			      (goal_gm_loc.y / 5) + ((SCREEN_HEIGHT / 5) / 2 / goal_gm_size),
-			      0xff0000, false);
+	//ズームデバッグ表示
+	//DrawBox(0, 0, SCREEN_WIDTH / 5, SCREEN_HEIGHT / 5, 0x000000, true);
+	//DrawBoxAA((goal_gm_loc.x / 5) - ((SCREEN_WIDTH / 5) / 2 / goal_gm_size),
+	//	      (goal_gm_loc.y / 5) - ((SCREEN_HEIGHT / 5) / 2 / goal_gm_size),
+	//	      (goal_gm_loc.x / 5) + ((SCREEN_WIDTH / 5) / 2 / goal_gm_size),
+	//	      (goal_gm_loc.y / 5) + ((SCREEN_HEIGHT / 5) / 2 / goal_gm_size),
+	//	      0xff0000, false);
+	//照準チュートリアル描画
+	if (tutorial->GetNowTutorial() == TutoType::tAim)
+	{
+		tutorial->Draw();
+	}
 
 }
 
@@ -466,7 +477,7 @@ void InGameScene::LoadGameMainResource()
 	enter_se = rm->GetSounds("Resource/Sounds/Coin/Get.mp3");
 	back_se = rm->GetSounds("Resource/Sounds/Hanahana/button.mp3");
 	throw_se = rm->GetSounds("Resource/Sounds/Coin/Throw.mp3");
-	cheers_se = rm->GetSounds("Resource/Sounds/歓声と拍手1.mp3");
+	cheers_se = rm->GetSounds("Resource/Sounds/Direction/歓声と拍手1.mp3");
 
 	//他のオブジェクトが使うSE
 	rm->GetSounds("Resource/Sounds/Enemy/death.mp3");
@@ -474,6 +485,8 @@ void InGameScene::LoadGameMainResource()
 	rm->GetSounds("Resource/Sounds/Hanahana/big.mp3");
 	rm->GetSounds("Resource/Sounds/shot.mp3");
 	rm->GetSounds("Resource/Sounds/Player/Heal.mp3");
+	rm->GetSounds("Resource/Sounds/Shop/金額表示.mp3");
+	rm->GetSounds("Resource/Sounds/Shop/入店チャイム.mp3");
 
 
 }
@@ -573,8 +586,8 @@ void InGameScene::MakeGameMainDraw()
 		}
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 	}
-	//チュートリアルフラグが立っていたら、チュートリアル描画
-	if (tutorial->GetTutorialFlg())
+	//チュートリアルフラグが立っていたら、チュートリアル描画(照準チュートリアルの描画は別で)
+	if (tutorial->GetTutorialFlg() && tutorial->GetNowTutorial() != TutoType::tAim)
 	{
 		tutorial->Draw();
 	}
@@ -940,6 +953,7 @@ void InGameScene::CreateBonusDraw()
 	SetDrawScreen(DX_SCREEN_BACK);
 }
 
+
 void InGameScene::TutorialUpdate()
 {
 	//移動チュートリアルが終わっていたらコイン投げ入れ
@@ -950,6 +964,7 @@ void InGameScene::TutorialUpdate()
 		Vector2D rand_velocity = { ((camera_center.x - rand.x) + (GetRand(SCREEN_WIDTH - 200) - (SCREEN_WIDTH - 200) / 2)) / 10,
 								   ((camera_center.y - rand.y) + (GetRand(SCREEN_HEIGHT - 200) - (SCREEN_HEIGHT - 200) / 2)) / 10 };
 		objects->CreateObject(eCOIN, rand, { 40,40 }, 20.f, rand_velocity);
+		ResourceManager::rPlaySound(throw_se, DX_PLAYTYPE_BACK);
 	}
 	DebugInfomation::Add("move", tutorial->GetIsEndTutorial(TutoType::tMove));
 	BonusCoinUpdate();
@@ -993,6 +1008,7 @@ void InGameScene::TutorialUpdate()
 				objects->CreateObject(eHEAL, rand, { 40,40 }, 20.f, rand_velocity);
 				tuto_heal_once = true;
 				tuto_heal_timer = 0;
+				ResourceManager::rPlaySound(throw_se, DX_PLAYTYPE_BACK);
 			}
 		}
 		//HPが回復したらリセット
@@ -1095,23 +1111,32 @@ void InGameScene::UpdateZoom()
 
 void InGameScene::SetZoom(Vector2D _loc, float _size, int _time, float _speed)
 {
-	//1(通常倍率)を下回っていたら1にする
-	goal_gm_size = _size < 1.f ? 1.f : _size;
-	Vector2D loc = { (float)(_loc.x - (SCREEN_WIDTH / 2)),
-					 (float)(_loc.y - (SCREEN_HEIGHT / 2)) };
-	loc = _loc;
-	Vector2D move_max = { SCREEN_WIDTH -  (SCREEN_WIDTH / 2 /goal_gm_size) ,SCREEN_HEIGHT - (SCREEN_HEIGHT / 2/ goal_gm_size) };
-	Vector2D move_min = { (SCREEN_WIDTH / 2 / goal_gm_size) ,(SCREEN_HEIGHT / 2 / goal_gm_size) };
+	////1(通常倍率)を下回っていたら1にする
+	//goal_gm_size = _size < 1.f ? 1.f : _size;
+	//Vector2D loc = _loc;
+	//Vector2D move_max = { SCREEN_WIDTH -  (SCREEN_WIDTH / 2 /goal_gm_size) ,SCREEN_HEIGHT - (SCREEN_HEIGHT / 2/ goal_gm_size) };
+	//Vector2D move_min = { (SCREEN_WIDTH / 2 / goal_gm_size) ,(SCREEN_HEIGHT / 2 / goal_gm_size) };
+
+	////反転
+	//goal_gm_loc.x = SCREEN_WIDTH - goal_gm_loc.x;
+	//goal_gm_loc.y = SCREEN_HEIGHT - goal_gm_loc.y;
 
 	//画面外が映らないように調整
-	goal_gm_loc.x = loc.x > move_max.x ? move_max.x : loc.x;
-	goal_gm_loc.y = loc.y > move_max.y ? move_max.y : loc.y;
-	goal_gm_loc.x = goal_gm_loc.x < move_min.x ? move_min.x : goal_gm_loc.x;
-	goal_gm_loc.y = goal_gm_loc.y < move_min.y ? move_min.y : goal_gm_loc.y;
+	//goal_gm_loc.x = loc.x > move_max.x ? move_max.x : loc.x;
+	//goal_gm_loc.y = loc.y > move_max.y ? move_max.y : loc.y;
+	//goal_gm_loc.x = goal_gm_loc.x < move_min.x ? move_min.x : goal_gm_loc.x;
+	//goal_gm_loc.y = goal_gm_loc.y < move_min.y ? move_min.y : goal_gm_loc.y;
 
-	//反転
-	goal_gm_loc.x = SCREEN_WIDTH - goal_gm_loc.x;
-	goal_gm_loc.y = SCREEN_HEIGHT - goal_gm_loc.y;
+	goal_gm_size =2;
+	//goal_gm_size = _size < 1.f ? 1.f : _size;
+	const float scale = goal_gm_size/2;
+	const float baseX = SCREEN_WIDTH ;
+	const float baseY = SCREEN_HEIGHT;
+
+	goal_gm_loc.x = (baseX - _loc.x) * scale;
+	goal_gm_loc.y = (baseY - _loc.y) * scale;
+
+
 	zoom_time = _time;
 	zoom_time_count = 0;
 	zoom_speed = _speed <= 0 ? 1 : _speed;
