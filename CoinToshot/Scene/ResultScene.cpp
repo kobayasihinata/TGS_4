@@ -422,27 +422,45 @@ void ResultScene::Draw()const
 					0xaaaaaa);
 			}
 		}
+		int color;
 		for (auto& coin_graph : UserData::coin_graph)
 		{
+			color = 0x000000;
+			//ğŒ‚ÅF‚ğ•Ï‚¦‚é
+			if (g_old - coin_graph > 50)
+			{
+				//‹}‚É–‡”‚ªŒ¸‚Á‚½‹æŠÔ‚ÍÔ
+				color = 0xff0000;
+			}
+			if (coin_graph - g_old > 50)
+			{
+				//‹}‚É–‡”‚ª‘‚¦‚½‹æŠÔ‚Í—Î
+				color = 0x00aa00;
+			}
 			DrawLineAA(graph_loc.x + (g_count - 1) * graph_space,
 				graph_loc.y + GRAPH_HEIGHT - g_old/(5000/ GRAPH_HEIGHT),
 				graph_loc.x + g_count * graph_space,
 				graph_loc.y + GRAPH_HEIGHT - coin_graph / (5000 / GRAPH_HEIGHT),
-				0x000000, TRUE);
+				color, TRUE);
 			g_old = coin_graph;
 			g_count++;
-			//for (int i = 0; i < UserData::replay.size(); i++)
-			//{
-			//	//ƒŠƒvƒŒƒC‚Ì•b”‚Æˆê’v‚µ‚Ä‚¢‚é‚È‚ç•`‰æ
-			//	if (UserData::replay[i].time == g_count)
-			//	{
-			//		DrawRotaGraph(graph_loc.x + g_count * graph_space,
-			//			graph_loc.y + GRAPH_HEIGHT - coin_graph / (5000 / GRAPH_HEIGHT),
-			//			0.3f,
-			//			0.f,
-			//			UserData::replay[i].image, TRUE);
-			//	}
-			//}
+			for (int i = 0; i < UserData::replay.size(); i++)
+			{
+				//ƒŠƒvƒŒƒC‚Ì•b”‚Æˆê’v‚µ‚Ä‚¢‚é‚È‚ç•`‰æ
+				if (UserData::replay[i].time == g_count)
+				{
+					DrawRotaGraph(graph_loc.x + g_count * graph_space,
+						graph_loc.y + GRAPH_HEIGHT - coin_graph,
+						0.2f,
+						0.f,
+						UserData::replay[i].image, TRUE);
+					DrawFormatString(graph_loc.x + g_count * graph_space,
+						graph_loc.y + GRAPH_HEIGHT - coin_graph,
+						0x000000,
+						"%s",
+						UserData::replay[i].text);
+				}
+			}
 		}
 		if (graph_timer > 120)
 		{

@@ -107,6 +107,7 @@ private:
 	int unlock_se;				//弾解放演出SE
 	int unlock2_se;				//弾解放演出SE
 	int charge_se;				//弾解放演出SE
+	int rank_down_se;			//ランキング降格SE
 
 	//ポップアップ表示用
 	std::vector<UIData> ui_data;

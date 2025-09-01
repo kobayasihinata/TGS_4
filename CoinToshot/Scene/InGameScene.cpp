@@ -73,13 +73,14 @@ void InGameScene::Initialize()
 	//オブジェクト管理クラス生成
 	objects = new ObjectManager();
 	objects->Initialize(this);
+	
+	//プレイヤー生成
+	objects->CreateObject({ Vector2D{48,32},Vector2D{40,40},ePLAYER });
 
 	//UI生成
 	ui = new GameSceneUI();
 	ui->Initialize(this);
 
-	//プレイヤー生成
-	objects->CreateObject({ Vector2D{48,32},Vector2D{40,40},ePLAYER });
 
 	objects->CreateObject({ Vector2D{(float)(GetRand(1)* 2000 - 1000),(float)(GetRand(1)* 2000 - 1000)},Vector2D{100,100},eSLOT});
 	objects->CreateObject({ {200,200},{160,120},eSHOP});
@@ -1050,7 +1051,7 @@ void InGameScene::UpdateGuideLoc()
 
 void InGameScene::SaveReplay()
 {
-	//一区間のメダルの差枚が＋１００枚なら、良い場面として保存
+	//一区間のメダルの差枚が＋50枚なら、良い場面として保存
 	int num1 = UserData::coin_graph.back();
 	int num2 = UserData::coin_graph[UserData::coin_graph.size() - 2];
 
@@ -1065,6 +1066,16 @@ void InGameScene::SaveReplay()
 		SetDrawScreen(DX_SCREEN_BACK);
 		ClearDrawScreen();
 		UserData::replay.push_back({(600 - UserData::timer)/60 ,img ,"大量獲得" });
+	}
+	if (num2 - num1 > 50)
+	{
+		int img = MakeScreen(SCREEN_WIDTH, SCREEN_HEIGHT);
+		SetDrawScreen(img);
+		ClearDrawScreen();
+		DrawGraph(0, 0, gamemain_image, FALSE);
+		SetDrawScreen(DX_SCREEN_BACK);
+		ClearDrawScreen();
+		UserData::replay.push_back({ (600 - UserData::timer) / 60 ,img ,"大量失点" });
 	}
 }
 

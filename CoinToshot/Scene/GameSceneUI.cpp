@@ -33,10 +33,8 @@ void GameSceneUI::Initialize(InGameScene* _ingame)
 	second_bonus_timer = 0;
 	rank_anim_flg = false;
 	rank_timer = 0;
-	old_rank = 0;
 	old_rank_keep = 0;
-
-	now_rank = -1; //0から順に一位、二位なので11を入れておく
+	old_rank = now_rank = -1;
 	damage_timer = 0;
 	con_spawn = 1;
 	//ロックの画像生成
@@ -54,6 +52,7 @@ void GameSceneUI::Initialize(InGameScene* _ingame)
 	count_se = rm->GetSounds("Resource/Sounds/lock.mp3");
 	unlock_se = rm->GetSounds("Resource/Sounds/Direction/成功音.mp3");
 	unlock2_se = rm->GetSounds("Resource/Sounds/Direction/大勢で拍手.mp3");
+	rank_down_se = rm->GetSounds("Resource/Sounds/Direction/スタジアムの歓声2.mp3");
 
 	shine_image = rm->GetImages("Resource/Images/Effect/yellow_shine.png", 40, 8, 5, 96, 96);
 	now_shine_image = 0;
@@ -271,6 +270,8 @@ void GameSceneUI::Update()
 		rank_anim_flg = true;
 		rank_timer = 0;
 		old_rank_keep = old_rank;
+
+		ResourceManager::rPlaySound(now_rank < old_rank ? unlock2_se : rank_down_se, DX_PLAYTYPE_BACK);
 	}
 
 	if (rank_anim_flg)
@@ -383,7 +384,14 @@ void GameSceneUI::Draw()const
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 125);
 	}
 	//弾の種類描画
-	DrawRotaGraph(SCREEN_WIDTH / 2 +camera->GetRandImpact(), 112+camera->GetRandImpact(), 1.0f, 0, bullet_image, TRUE);
+	if (new_bullet_flg && new_bullet_timer < NEW_BULLET_ANIM_1)
+	{
+		DrawRotaGraph(SCREEN_WIDTH / 2 +camera->GetRandImpact()+ GetRand(10) - 5, 112+camera->GetRandImpact()+ GetRand(10) - 5, 1.0f, 0, bullet_image, TRUE);
+	}
+	else
+	{
+		DrawRotaGraph(SCREEN_WIDTH / 2 + camera->GetRandImpact(), 112 + camera->GetRandImpact(), 1.0f, 0, bullet_image, TRUE);
+	}
 
 	SetFontSize(36);
 
@@ -671,24 +679,40 @@ void GameSceneUI::DrawRanking()const
 			now_rank);
 	}
 	//順位更新アニメーション
-	if (rank_anim_flg && old_rank_keep != -1 && now_rank != -1)
+	if (rank_anim_flg)
 	{
+		SetFontSize(48);
 		if (rank_timer > RANKUP_TIMER - 30)
 		{
 			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 - (rank_timer - (RANKUP_TIMER-30)) * (255 / 30));
 		}
-		Vector2D r_loc = { 100,SCREEN_HEIGHT - 200 };
-		bool is_rankup = old_rank_keep < now_rank;	//falseならランキングが下がった処理
-		if (frame % 30 < 15)DrawStringF(r_loc.x, r_loc.y - 50, is_rankup || old_rank_keep == -1 ? "RANK DOWN..." : "RANK UP!!!", is_rankup ? 0x0000aa : 0xffffff);
+		Vector2D r_loc = { (SCREEN_WIDTH / 2) - 100,(SCREEN_HEIGHT / 2) + 200 };
+		bool is_rankup = old_rank_keep > now_rank;	//falseならランキングが下がった処理
+		if (frame % 30 < 15)DrawStringF(r_loc.x, r_loc.y - 50, is_rankup || old_rank_keep == -1 ? "RANK UP!!!" : "RANK DOWN...", is_rankup || old_rank_keep == -1 ? 0xffffff : 0x0000aa);
 		//上位3位なら輝き
-		if (now_rank < 9)
+		if (now_rank < 4 && is_rankup)
 		{
 			DrawRotaGraphF(r_loc.x + GetDrawFormatStringWidth("%d位 → ", old_rank_keep)+24, r_loc.y+24, 1.3f, 0, shine_image[now_shine_image], TRUE);
 		}
 		//ランキング変動演出
-		DrawFormatStringF(r_loc.x, r_loc.y, rank_color[old_rank_keep], "%d位", old_rank_keep);
+		if (old_rank_keep != -1)
+		{
+			DrawFormatStringF(r_loc.x, r_loc.y, rank_color[old_rank_keep-1], "%d位", old_rank_keep);
+
+		}
+		else
+		{
+			DrawStringF(r_loc.x, r_loc.y, "圏外", 0x000000);
+		}
 		DrawString(r_loc.x + GetDrawFormatStringWidth("%d位", old_rank_keep), r_loc.y, " → ", 0xffffff);
-		DrawFormatStringF(r_loc.x + GetDrawFormatStringWidth("%d位 → ", old_rank_keep), r_loc.y, rank_color[now_rank], "%d位", now_rank);
+		if (now_rank != -1)
+		{
+			DrawFormatStringF(r_loc.x + GetDrawFormatStringWidth("%d位 → ", old_rank_keep), r_loc.y, rank_color[now_rank-1], "%d位", now_rank);
+		}
+		else
+		{
+			DrawStringF(r_loc.x + GetDrawFormatStringWidth("%d位 → ", old_rank_keep), r_loc.y, "圏外", 0x000000);
+		}
 		if (rank_timer > RANKUP_TIMER - 30)
 		{
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);

@@ -168,6 +168,17 @@ void Enemy4::Update()
 void Enemy4::Draw()const
 {
 	__super::Draw();
+	//“‚ÝŒã‚È‚ç’ˆÓ•\Ž¦
+	if (steal_flg)
+	{
+		DrawTriangleAA(local_location.x, local_location.y - 80,
+			local_location.x + 30, local_location.y - 30,
+			local_location.x - 30, local_location.y - 30,
+			frame % 10 > 5 ? 0x000000 : 0xffff00,
+			false);
+		SetFontSize(40);
+		DrawStringF(local_location.x - 7, local_location.y - 75, "!", frame % 10 > 5 ? 0x000000 : 0xffff00);
+	}
 }
 
 void Enemy4::Hit(ObjectBase* hit_object)
