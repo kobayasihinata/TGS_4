@@ -679,7 +679,7 @@ void Tutorial::DrawSlot()const
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha);
 	DrawGraph(text_box_loc.x - text_box_size.x / 2, text_box_loc.y - text_box_size.y / 2, generate_text_box, TRUE);
 	SetFontSize(36);
-	DrawString(text_box_loc.x - (text_box_size.x / 2) + 15, text_box_loc.y - 40, "スロットを発見！", 0xffffff);
+	UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y - 40 }, "スロットを発見！", 0xffffff);
 	SetFontSize(30);
 	UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y + 10 }, "大当たりまで回し続けろ！", 0xffffff);
 	UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y + 40 }, "＊注意　１プレイ３コイン", 0xff0000);

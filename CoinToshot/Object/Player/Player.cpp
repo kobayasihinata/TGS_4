@@ -408,18 +408,18 @@ void Player::Hit(ObjectBase* hit_Object)
 
 void Player::Damage(float _value, Vector2D _attack_loc, int _knock_back)
 {
-	////ダメージ後無敵でないならダメージを受ける
-	//if (!damage_flg && !death_flg)
-	//{
-	//	__super::Damage(_value, _attack_loc, _knock_back);
-	//	UserData::player_hp = hp;
-	//	damage_flg = true;
-	//	damage_stop = true;
-	//	//一定フレーム無敵
-	//	damage_timer = PLAYER_DAMAGE_CD;
-	//	//カメラ振動
-	//	camera->impact = 20;
-	//}
+	//ダメージ後無敵でないならダメージを受ける
+	if (!damage_flg && !death_flg)
+	{
+		__super::Damage(_value, _attack_loc, _knock_back);
+		UserData::player_hp = hp;
+		damage_flg = true;
+		damage_stop = true;
+		//一定フレーム無敵
+		damage_timer = PLAYER_DAMAGE_CD;
+		//カメラ振動
+		camera->impact = 20;
+	}
 }
 
 void Player::Death()

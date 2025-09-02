@@ -271,7 +271,15 @@ void GameSceneUI::Update()
 		rank_timer = 0;
 		old_rank_keep = old_rank;
 
-		ResourceManager::rPlaySound(now_rank < old_rank ? unlock2_se : rank_down_se, DX_PLAYTYPE_BACK);
+		//Œ»İ‚Ìƒ‰ƒ“ƒN‚Ì•û‚ª‚‚¢‚È‚ç—Ç‚¢SE
+		if ((now_rank < old_rank && now_rank != -1) || old_rank == -1)
+		{    
+			ResourceManager::rPlaySound(unlock2_se, DX_PLAYTYPE_BACK);
+		}
+		else
+		{
+			ResourceManager::rPlaySound(rank_down_se, DX_PLAYTYPE_BACK);
+		}
 	}
 
 	if (rank_anim_flg)
@@ -690,7 +698,7 @@ void GameSceneUI::DrawRanking()const
 		bool is_rankup = old_rank_keep > now_rank;	//false‚È‚çƒ‰ƒ“ƒLƒ“ƒO‚ª‰º‚ª‚Á‚½ˆ—
 		if (frame % 30 < 15)DrawStringF(r_loc.x, r_loc.y - 50, is_rankup || old_rank_keep == -1 ? "RANK UP!!!" : "RANK DOWN...", is_rankup || old_rank_keep == -1 ? 0xffffff : 0x0000aa);
 		//ãˆÊ3ˆÊ‚È‚ç‹P‚«
-		if (now_rank < 4 && is_rankup)
+		if (now_rank < 4 && is_rankup && now_rank != -1)
 		{
 			DrawRotaGraphF(r_loc.x + GetDrawFormatStringWidth("%dˆÊ ¨ ", old_rank_keep)+24, r_loc.y+24, 1.3f, 0, shine_image[now_shine_image], TRUE);
 		}

@@ -82,10 +82,11 @@ void InGameScene::Initialize()
 	ui->Initialize(this);
 
 
-	objects->CreateObject({ Vector2D{(float)(GetRand(1)* 2000 - 1000),(float)(GetRand(1)* 2000 - 1000)},Vector2D{100,100},eSLOT});
-	objects->CreateObject({ {200,200},{160,120},eSHOP});
-	objects->CreateObject({ {-200,200},{160,120},eSHOP});
-	objects->CreateObject({ Vector2D{ 150, 30},Vector2D{40,40},eCOIN, 20.f});
+	objects->CreateObject({ {-1000,-1000},{100,100},eSLOT});
+	objects->CreateObject({ {1000,1000},{100,100},eSLOT});
+	objects->CreateObject({ {-1000,1000},{160,120},eSHOP});
+	objects->CreateObject({ {1000,-1000},{160,120},eSHOP});
+	objects->CreateObject({ Vector2D{ 200, 30},Vector2D{40,40},eCOIN, 20.f});
 	objects->CreateObject({ {1050,0}, Vector2D{ ENEMY1_WIDTH,ENEMY1_HEIGHT }, eENEMY1});
 
 	gamemain_image = MakeScreen(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -707,7 +708,7 @@ ObjectList InGameScene::GetRandEnemy()
 	//コインが0～69ならenemy1をスポーン
 	if (coin < 70)
 	{
-		return GetEnemy(eENEMY5, 100);
+		return GetEnemy(eENEMY1, 100);
 	}
 	//コインが70～150ならenemy1と2をランダムでスポーン
 	if (coin < 150)
