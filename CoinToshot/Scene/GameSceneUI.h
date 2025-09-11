@@ -100,6 +100,8 @@ private:
 	int ex_anim_timer;			//アニメーション用
 	int now_image;				//アニメーション用
 	std::vector<int> ex_anim;	//爆発アニメーション
+	int rank_image[2];			//ランクアップ演出格納
+	int rank_num_image[11];		//ランキングの数字画像			
 
 	int ex_se;					//爆発音
 	int lock_se;				//使用不可SE
@@ -144,6 +146,9 @@ public:
 
 	//紙吹雪８種類生成
 	void CreateConfettiImage();
+
+	//ランキング画像生成
+	void CreateRankingImage();
 
 	//弾情報描画
 	void DrawBullet(Vector2D _loc, int _type)const;

@@ -37,11 +37,14 @@ void GameSceneUI::Initialize(InGameScene* _ingame)
 	old_rank = now_rank = -1;
 	damage_timer = 0;
 	con_spawn = 1;
+
 	//ロックの画像生成
 	CreateLockImage();
-
 	//紙吹雪の画像生成
 	CreateConfettiImage();
+	//ランキング画像の生成
+	CreateRankingImage();
+
 	ex_se_once = ex_anim_once = tutorial->GetBasicTuto();
 	ex_anim_timer = 0;
 	now_image = 0;
@@ -568,6 +571,55 @@ void GameSceneUI::CreateConfettiImage()
 	SetDrawScreen(DX_SCREEN_BACK);
 }
 
+void GameSceneUI::CreateRankingImage()
+{
+	int rank_width = 400;
+	int rank_height = 150;
+	int num_width = 100;
+	int num_height = 75;
+
+	for (int i = 0; i < 2; i++)
+	{
+		rank_image[i] = MakeScreen(rank_width, rank_height, TRUE);
+	}
+	for (int i = 0; i < 11; i++)
+	{
+		rank_num_image[i] = MakeScreen(num_width, num_height,TRUE);
+	}
+	SetFontSize(48);
+
+	//ランクアップ
+	SetDrawScreen(rank_image[0]);
+	ClearDrawScreen();
+	//DrawBox(0, 0, rank_width, rank_height, 0xff0000, FALSE);
+	DrawStringF(rank_width / 2 - GetDrawStringWidth("RANK UP!!!", strlen("RANK UP!!!")) / 2, 10, "RANK UP!!!", 0xffffff);
+	DrawString(rank_width / 2 - GetDrawStringWidth(" → ", strlen(" → ")) / 2, 80, " → ", 0xffffff);
+
+	//ランクダウン
+	SetDrawScreen(rank_image[1]);
+	ClearDrawScreen();
+	//DrawBox(0, 0, rank_width, rank_height, 0xff0000, FALSE);
+	DrawStringF(rank_width / 2 - GetDrawStringWidth("RANK DOWN...", strlen("RANK DOWN...")) / 2, 10, "RANK DOWN...", 0x0000aa);
+	DrawString(rank_width / 2 - GetDrawStringWidth(" → ", strlen(" → ")) / 2, 80, " → ", 0xffffff);
+
+	//ランキング圏外
+	SetDrawScreen(rank_num_image[0]);
+	ClearDrawScreen();
+	//DrawBox(0, 0, num_width, num_height, 0xff0000, FALSE);
+	DrawStringF(num_width / 2 - GetDrawStringWidth("圏外", strlen("圏外")) / 2, 0, "圏外", 0x000000);
+
+	//数字
+	for (int i = 1; i < 11; i++)
+	{
+		SetDrawScreen(rank_num_image[i]);
+		ClearDrawScreen();
+		//DrawBox(0, 0, num_width, num_height, 0xff0000, FALSE);
+		DrawFormatStringF(num_width / 2 - GetDrawFormatStringWidth("%d位", i)/2, 0, rank_color[i - 1], "%d位", i);
+	}
+
+	SetDrawScreen(DX_SCREEN_BACK);
+}
+
 void GameSceneUI::DrawBullet(Vector2D _loc, int _type)const
 {
 	//撃てない弾のUIは薄暗くする
@@ -689,37 +741,35 @@ void GameSceneUI::DrawRanking()const
 	//順位更新アニメーション
 	if (rank_anim_flg)
 	{
-		SetFontSize(48);
 		if (rank_timer > RANKUP_TIMER - 30)
 		{
 			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 - (rank_timer - (RANKUP_TIMER-30)) * (255 / 30));
 		}
-		Vector2D r_loc = { (SCREEN_WIDTH / 2) - 100,(SCREEN_HEIGHT / 2) + 200 };
+		Vector2D r_loc = { (SCREEN_WIDTH / 2) - 130,(SCREEN_HEIGHT / 2) + 200 };
 		bool is_rankup = old_rank_keep > now_rank;	//falseならランキングが下がった処理
-		if (frame % 30 < 15)DrawStringF(r_loc.x, r_loc.y - 50, is_rankup || old_rank_keep == -1 ? "RANK UP!!!" : "RANK DOWN...", is_rankup || old_rank_keep == -1 ? 0xffffff : 0x0000aa);
+		if (frame % 30 < 15)DrawGraphF(r_loc.x, r_loc.y, is_rankup || old_rank_keep == -1 ? rank_image[0] : rank_image[1], TRUE);
 		//上位3位なら輝き
 		if (now_rank < 4 && is_rankup && now_rank != -1)
 		{
-			DrawRotaGraphF(r_loc.x + GetDrawFormatStringWidth("%d位 → ", old_rank_keep)+24, r_loc.y+24, 1.3f, 0, shine_image[now_shine_image], TRUE);
+			DrawRotaGraphF(r_loc.x + 300, r_loc.y + 117, 1.3f, 0, shine_image[now_shine_image], TRUE);
 		}
 		//ランキング変動演出
 		if (old_rank_keep != -1)
 		{
-			DrawFormatStringF(r_loc.x, r_loc.y, rank_color[old_rank_keep-1], "%d位", old_rank_keep);
+			DrawGraphF(r_loc.x+50, r_loc.y + 80, rank_num_image[old_rank_keep], TRUE);
 
 		}
 		else
 		{
-			DrawStringF(r_loc.x, r_loc.y, "圏外", 0x000000);
+			DrawGraphF(r_loc.x + 50, r_loc.y + 80, rank_num_image[0], TRUE);
 		}
-		DrawString(r_loc.x + GetDrawFormatStringWidth("%d位", old_rank_keep), r_loc.y, " → ", 0xffffff);
 		if (now_rank != -1)
 		{
-			DrawFormatStringF(r_loc.x + GetDrawFormatStringWidth("%d位 → ", old_rank_keep), r_loc.y, rank_color[now_rank-1], "%d位", now_rank);
+			DrawGraphF(r_loc.x + 250, r_loc.y + 80, rank_num_image[now_rank], TRUE);
 		}
 		else
 		{
-			DrawStringF(r_loc.x + GetDrawFormatStringWidth("%d位 → ", old_rank_keep), r_loc.y, "圏外", 0x000000);
+			DrawGraphF(r_loc.x + 250, r_loc.y + 80, rank_num_image[0], TRUE);
 		}
 		if (rank_timer > RANKUP_TIMER - 30)
 		{
