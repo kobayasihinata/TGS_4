@@ -572,24 +572,61 @@ void Player::Control()
 
 #ifdef _DEBUG
 	//左キーで左移動
-	if (k_input->GetKeyState(KEY_INPUT_LEFT) == eInputState::Held)
+	if (k_input->GetKeyState(KEY_INPUT_A) == eInputState::Held)
 	{
-		velocity.x = -10;
+		velocity.x = -PLAYER_SPEED;
 	}
 	//右キーで右移動
-	if (k_input->GetKeyState(KEY_INPUT_RIGHT) == eInputState::Held)
+	if (k_input->GetKeyState(KEY_INPUT_D) == eInputState::Held)
 	{
-		velocity.x = 10;
+		velocity.x = PLAYER_SPEED;
 	}
 	//上キーで上移動
-	if (k_input->GetKeyState(KEY_INPUT_UP) == eInputState::Held)
+	if (k_input->GetKeyState(KEY_INPUT_W) == eInputState::Held)
 	{
-		velocity.y = -10;
+		velocity.y = -PLAYER_SPEED;
 	}
 	//下キーで下移動
-	if (k_input->GetKeyState(KEY_INPUT_DOWN) == eInputState::Held)
+	if (k_input->GetKeyState(KEY_INPUT_S) == eInputState::Held)
 	{
-		velocity.y = 10;
+		velocity.y = PLAYER_SPEED;
+	}
+
+	//照準チュートリアルが完了している　もしくは照準チュートリアル中ならマウスカーソルに応じて照準角度を変更する
+	if (tutorial->GetTutoNowEnd(TutoType::tAim) &&
+		(k_input->GetMouseState(MOUSE_INPUT_RIGHT) == eInputState::Held))
+	{
+		//カーソルを動かした事を格納する
+		if (!aim_once_flg)aim_once_flg = true;
+		//前の傾きを保存する
+		old_shot_rad = shot_rad;
+		//右スティックの傾きで発射角度を決める (-1.55f = ずれ調整)
+		tutorial->player_aim_rad = shot_rad = atan2f(k_input->GetMouseCursor().x - this->local_location.x, (k_input->GetMouseCursor().y - this->local_location.y) * -1) - 1.55f;
+
+		//角度が一定以上変更されていたらSEを鳴らす
+		if (fabsf(old_shot_rad - shot_rad) > 0.01f && frame % 4 == 0)
+		{
+			ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
+		}
+	}
+
+	if (tutorial->GetTutoNowEnd(TutoType::tAttack) &&
+		(k_input->GetMouseState(MOUSE_INPUT_LEFT) == eInputState::Pressed || 
+		 k_input->GetMouseState(0x0003) == eInputState::Pressed))
+	{
+		if (UserData::coin >= pBullet[UserData::get_bullet[UserData::now_bullet]].cost)
+		{
+			ShotBullet();
+			UserData::coin -= pBullet[UserData::get_bullet[UserData::now_bullet]].cost;
+			ResourceManager::rPlaySound(shot_se, DX_PLAYTYPE_BACK);
+			std::string s = "-" + std::to_string(pBullet[UserData::get_bullet[UserData::now_bullet]].cost);
+			ingame->CreatePopUp(this->location, s, 0xff0000, -1);
+		}
+		//発射失敗SE
+		else
+		{
+			ResourceManager::rPlaySound(not_shoot_se, DX_PLAYTYPE_BACK);
+		}
 	}
 #endif // _DEBUG
 }

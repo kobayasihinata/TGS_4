@@ -205,24 +205,21 @@ eSceneType InGameScene::Update(float _delta)
 		{
 			SetZoom({ SCREEN_WIDTH / 2,SCREEN_HEIGHT/2 }, 3, 60, 20);
 		}
-		if (input->GetMouseState(MOUSE_INPUT_1)==eInputState::Pressed)
-		{
-			SetZoom({ input->GetMouseCursor().x,input->GetMouseCursor().y }, UserData::variable, 60, 20);
-		}
 		if (input->GetKeyState(KEY_INPUT_2) == eInputState::Pressed)
 		{
 		
 		}
 		if (input->GetKeyState(KEY_INPUT_3) == eInputState::Pressed)
 		{
-			tutorial->StartTutoRequest(TutoType::tAim);
+			//tutorial->StartTutoRequest(TutoType::tAim);
 		}
 
 		if (InputPad::OnButton(XINPUT_BUTTON_A))
 		{
 			//objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{40,40},eHEAL });
-			objects->CreateObject({ Vector2D{ 150, 30 },Vector2D{40,40},eCOIN, 20.f });  
+			/*objects->CreateObject({ Vector2D{ 150, 30 },Vector2D{40,40},eCOIN, 20.f });  */
 		}
+
 #endif // _DEBUG
 
 	}
@@ -367,6 +364,18 @@ eSceneType InGameScene::Update(float _delta)
 				tutorial->StartTutoRequest(TutoType::tRule);
 			}
 		}
+#ifdef _DEBUG
+
+		//入力機能の取得
+		InputKey* input = InputKey::Get();
+
+		if (input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed)
+		{
+			start_anim_flg = false;
+			tutorial->StartTutoRequest(TutoType::tRule);
+		}
+
+#endif // _DEBUG
 		//描画の更新
 		MakeGameMainDraw();
 	}

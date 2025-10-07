@@ -33,11 +33,14 @@ void SceneManager::Initialize()
 
 	SetWindowIconID(101);
 
+
 	//DXライブラリの初期化
 	if (DxLib_Init() == -1)
 	{
 		throw("DXライブラリが初期化出来ませんでした\n");
 	}
+
+	SetMouseDispFlag(TRUE);
 
 	//裏画面から描画を始める
 	SetDrawScreen(DX_SCREEN_BACK);
@@ -83,12 +86,12 @@ void SceneManager::Update()
 		//ボタンアニメーション更新
 		UserData::Update();
 
-		//デバッグ用変数の更新
-		if (input->GetMouseState(MOUSE_INPUT_RIGHT) == eInputState::Pressed)
-		{
-			UserData::variable_change = !UserData::variable_change;
-			UserData::variable_loc = { (float)input->GetMouseCursor().x,(float)input->GetMouseCursor().y };
-		}
+		////デバッグ用変数の更新
+		//if (input->GetMouseState(MOUSE_INPUT_RIGHT) == eInputState::Pressed)
+		//{
+		//	UserData::variable_change = !UserData::variable_change;
+		//	UserData::variable_loc = { (float)input->GetMouseCursor().x,(float)input->GetMouseCursor().y };
+		//}
 		//変数変更処理
 		if (UserData::variable_change)
 		{

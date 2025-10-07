@@ -45,14 +45,27 @@ void TitleScene::Initialize()
 
 eSceneType TitleScene::Update(float _delta)
 {
-	
+#ifdef _DEBUG
+
+	//入力機能の取得
+	InputKey* input = InputKey::Get();
+
+#endif // _DEBUG
+
 	//アニメーション中なら操作不可
 	if (!start_anim_flg)
 	{
 		if (!tuto_reset_flg)
 		{
+#ifdef _DEBUG
+			//下入力で項目下移動
+			if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_DOWN) || 
+				InputPad::GetPressedButton(L_STICK_DOWN) ||
+				input->GetKeyState(KEY_INPUT_S) == eInputState::Pressed)
+#else
 			//下入力で項目下移動
 			if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_DOWN) || InputPad::GetPressedButton(L_STICK_DOWN))
+#endif 
 			{
 				if (++current_num >= ITEM_NUM)
 				{
@@ -60,8 +73,15 @@ eSceneType TitleScene::Update(float _delta)
 				}
 				ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 			}
+#ifdef _DEBUG
+			//上入力で項目上移動
+			if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_UP) ||
+				InputPad::GetPressedButton(L_STICK_UP) ||
+				input->GetKeyState(KEY_INPUT_W) == eInputState::Pressed)
+#else
 			//上入力で項目上移動
 			if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_UP) || InputPad::GetPressedButton(L_STICK_UP))
+#endif 
 			{
 				if (--current_num < 0)
 				{
@@ -69,8 +89,14 @@ eSceneType TitleScene::Update(float _delta)
 				}
 				ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 			}
+#ifdef _DEBUG
+			//AボタンorSpaceで決定
+			if (InputPad::OnButton(XINPUT_BUTTON_A) ||
+				input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed)
+#else
 			//Aボタンで決定
 			if (InputPad::OnButton(XINPUT_BUTTON_A))
+#endif 
 			{
 				ResourceManager::rPlaySound(enter_se, DX_PLAYTYPE_BACK);
 				switch (current_num)
@@ -109,8 +135,15 @@ eSceneType TitleScene::Update(float _delta)
 		//チュートリアルをリセットするか選ばせる所
 		else
 		{
+#ifdef _DEBUG
 			//右入力で項目右移動
-			if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_RIGHT) || InputPad::GetPressedButton(L_STICK_RIGHT))
+			if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_RIGHT) ||
+				InputPad::GetPressedButton(L_STICK_RIGHT) ||
+				input->GetKeyState(KEY_INPUT_D) == eInputState::Pressed)
+#else
+				//右入力で項目右移動
+				if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_RIGHT) || InputPad::GetPressedButton(L_STICK_RIGHT))
+#endif 
 			{
 				if (++tuto_current_num >= 2)
 				{
@@ -118,8 +151,15 @@ eSceneType TitleScene::Update(float _delta)
 				}
 				ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 			}
+#ifdef _DEBUG
+			//左入力で項目左移動
+			if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_LEFT) ||
+				InputPad::GetPressedButton(L_STICK_LEFT) ||
+				input->GetKeyState(KEY_INPUT_A) == eInputState::Pressed)
+#else
 			//左入力で項目左移動
 			if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_LEFT) || InputPad::GetPressedButton(L_STICK_LEFT))
+#endif 
 			{
 				if (--tuto_current_num < 0)
 				{
@@ -127,8 +167,14 @@ eSceneType TitleScene::Update(float _delta)
 				}
 				ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 			}
+#ifdef _DEBUG
+			//AボタンorSpaceで決定
+			if (InputPad::OnButton(XINPUT_BUTTON_A) ||
+				input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed)
+#else
 			//Aボタンで決定
 			if (InputPad::OnButton(XINPUT_BUTTON_A))
+#endif 
 			{
 				ResourceManager::rPlaySound(enter_se, DX_PLAYTYPE_BACK);
 				switch (tuto_current_num)
@@ -157,21 +203,15 @@ eSceneType TitleScene::Update(float _delta)
 		{
 			start_anim_flg = false;
 		}
+#ifdef _DEBUG
+		//AボタンorSpaceで決定
+		if (input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed)
+		{
+			start_anim_flg = false;
+		}
+#endif 
 	}
 	
-
-#ifdef _DEBUG
-
-	//入力機能の取得
-	InputKey* input = InputKey::Get();
-
-	//1キーでインゲーム画面に遷移する
-	if (input->GetKeyState(KEY_INPUT_1) == eInputState::Pressed)
-	{
-		return eSceneType::eInGame;
-	}
-
-#endif // _DEBUG
 	return __super::Update(_delta);
 }
 
