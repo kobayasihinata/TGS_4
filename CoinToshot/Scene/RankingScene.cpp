@@ -32,25 +32,26 @@ void RankingScene::Initialize()
 
 eSceneType RankingScene::Update(float _delta)
 {
-
-	//Bボタンでタイトルに戻る
-	if (InputPad::OnButton(XINPUT_BUTTON_B))
-	{
-		ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
-		return eSceneType::eTitle;
-	}
-
 #ifdef _DEBUG
 
 	//入力機能の取得
 	InputKey* input = InputKey::Get();
 
-	//1キーでインゲーム画面に遷移する
-	if (input->GetKeyState(KEY_INPUT_1) == eInputState::Pressed)
-	{
-		return eSceneType::eInGame;
-	}
 #endif // _DEBUG
+
+#ifdef _DEBUG
+	//AボタンorSpaceで決定
+	if (InputPad::OnButton(XINPUT_BUTTON_B) ||
+		input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed)
+#else
+	//Aボタンで決定
+	if (InputPad::OnButton(XINPUT_BUTTON_B))
+#endif 
+	{
+		ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
+		return eSceneType::eTitle;
+	}
+
 	return __super::Update(_delta);
 }
 
