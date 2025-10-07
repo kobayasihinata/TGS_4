@@ -442,71 +442,97 @@ void Player::Death()
 
 void Player::Control()
 {
-	//左スティックの傾きが一定以上なら移動する
-	if (fabsf(InputPad::TipLStick(STICKL_X)) > 0.1f)
+	//キーマウ操作なら処理しない
+	if (UserData::control_type != 2)
 	{
-		//加速の上限値を越さないように加算する
-		if (fabsf(velocity.x) < PLAYER_SPEED)
+		//左スティックの傾きが一定以上なら移動する
+		if (fabsf(InputPad::TipLStick(STICKL_X)) > 0.1f)
 		{
-			velocity.x = InputPad::TipLStick(STICKL_X) * PLAYER_SPEED;
-			//移動したい方向保存
-			move_velocity.x = velocity.x;
+			//加速の上限値を越さないように加算する
+			if (fabsf(velocity.x) < PLAYER_SPEED)
+			{
+				velocity.x = InputPad::TipLStick(STICKL_X) * PLAYER_SPEED;
+				//移動したい方向保存
+				move_velocity.x = velocity.x;
+			}
+		}
+		if (fabsf(InputPad::TipLStick(STICKL_Y)) > 0.1f)
+		{
+			//加速の上限値を越さないように加算する
+			if (fabsf(velocity.y) < PLAYER_SPEED)
+			{
+				velocity.y = -InputPad::TipLStick(STICKL_Y) * PLAYER_SPEED;
+				//移動したい方向保存
+				move_velocity.y = velocity.y;
+			}
+		}
+
+		//照準チュートリアルが完了している　もしくは照準チュートリアル中なら右スティックの傾きが一定以上なら角度を変更する
+		if (tutorial->GetTutoNowEnd(TutoType::tAim) &&
+			(fabsf(InputPad::TipRStick(STICKL_X)) > 0.3f || fabsf(InputPad::TipRStick(STICKL_Y)) > 0.3f))
+		{
+			//カーソルを動かした事を格納する
+			if (!aim_once_flg)aim_once_flg = true;
+			//前の傾きを保存する
+			old_shot_rad = shot_rad;
+			//右スティックの傾きで発射角度を決める (-1.55f = ずれ調整)
+			tutorial->player_aim_rad = shot_rad = atan2f(InputPad::TipRStick(STICKL_X), InputPad::TipRStick(STICKL_Y)) - 1.55f;
+
+			//角度が一定以上変更されていたらSEを鳴らす
+			if (fabsf(old_shot_rad - shot_rad) > 0.01f && frame % 4 == 0)
+			{
+				ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
+			}
 		}
 	}
-	if (fabsf(InputPad::TipLStick(STICKL_Y)) > 0.1f)
+	//キーマウ操作なら実行する
+	else
 	{
-		//加速の上限値を越さないように加算する
-		if (fabsf(velocity.y) < PLAYER_SPEED)
+		//照準チュートリアルが完了している　もしくは照準チュートリアル中ならマウスカーソルに応じて照準角度を変更する
+		if (tutorial->GetTutoNowEnd(TutoType::tAim) &&
+			(k_input->GetMouseState(MOUSE_INPUT_RIGHT) == eInputState::Held))
 		{
-			velocity.y = -InputPad::TipLStick(STICKL_Y) * PLAYER_SPEED;
-			//移動したい方向保存
-			move_velocity.y = velocity.y;
+			//カーソルを動かした事を格納する
+			if (!aim_once_flg)aim_once_flg = true;
+			//前の傾きを保存する
+			old_shot_rad = shot_rad;
+			//右スティックの傾きで発射角度を決める (-1.55f = ずれ調整)
+			tutorial->player_aim_rad = shot_rad = atan2f(k_input->GetMouseCursor().x - this->local_location.x, (k_input->GetMouseCursor().y - this->local_location.y) * -1) - 1.55f;
+
+			//角度が一定以上変更されていたらSEを鳴らす
+			if (fabsf(old_shot_rad - shot_rad) > 0.01f && frame % 4 == 0)
+			{
+				ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
+			}
 		}
 	}
 
-	//十字キーでの移動
-	if (InputPad::OnPressed(XINPUT_BUTTON_DPAD_UP))
+	//十字ボタン、WASDでの移動
+	if (UserData::CheckPlayerMove(UP))
 	{
 		velocity.y = -PLAYER_SPEED;
 		//移動したい方向保存
 		move_velocity.y = velocity.y;
 	}
-	else if (InputPad::OnPressed(XINPUT_BUTTON_DPAD_DOWN))
+	else if (UserData::CheckPlayerMove(DOWN))
 	{
 		velocity.y = PLAYER_SPEED;
 		//移動したい方向保存
 		move_velocity.y = velocity.y;
 	}
-	if (InputPad::OnPressed(XINPUT_BUTTON_DPAD_RIGHT))
+	if (UserData::CheckPlayerMove(RIGHT))
 	{
 		velocity.x = PLAYER_SPEED;
 		//移動したい方向保存
 		move_velocity.x = velocity.x;
 	}
-	else if (InputPad::OnPressed(XINPUT_BUTTON_DPAD_LEFT))
+	else if (UserData::CheckPlayerMove(LEFT))
 	{
 		velocity.x = -PLAYER_SPEED;
 		//移動したい方向保存
 		move_velocity.x = velocity.x;
 	}
 
-	//照準チュートリアルが完了している　もしくは照準チュートリアル中なら右スティックの傾きが一定以上なら角度を変更する
-	if (tutorial->GetTutoNowEnd(TutoType::tAim)&&
-		(fabsf(InputPad::TipRStick(STICKL_X)) > 0.3f || fabsf(InputPad::TipRStick(STICKL_Y)) > 0.3f))
-	{
-		//カーソルを動かした事を格納する
-		if (!aim_once_flg)aim_once_flg = true;
-		//前の傾きを保存する
-		old_shot_rad = shot_rad;
-		//右スティックの傾きで発射角度を決める (-1.55f = ずれ調整)
-		tutorial->player_aim_rad = shot_rad = atan2f(InputPad::TipRStick(STICKL_X), InputPad::TipRStick(STICKL_Y)) - 1.55f;
-		
-		//角度が一定以上変更されていたらSEを鳴らす
-		if (fabsf(old_shot_rad - shot_rad) > 0.01f && frame % 4==0)
-		{
-			ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
-		}
-	}
 
 	//攻撃チュートリアルが完了している　もしくは攻撃チュートリアル中ならコイン消費で弾を発射する
 
@@ -571,63 +597,7 @@ void Player::Control()
 	}
 
 #ifdef _DEBUG
-	//左キーで左移動
-	if (k_input->GetKeyState(KEY_INPUT_A) == eInputState::Held)
-	{
-		velocity.x = -PLAYER_SPEED;
-	}
-	//右キーで右移動
-	if (k_input->GetKeyState(KEY_INPUT_D) == eInputState::Held)
-	{
-		velocity.x = PLAYER_SPEED;
-	}
-	//上キーで上移動
-	if (k_input->GetKeyState(KEY_INPUT_W) == eInputState::Held)
-	{
-		velocity.y = -PLAYER_SPEED;
-	}
-	//下キーで下移動
-	if (k_input->GetKeyState(KEY_INPUT_S) == eInputState::Held)
-	{
-		velocity.y = PLAYER_SPEED;
-	}
 
-	//照準チュートリアルが完了している　もしくは照準チュートリアル中ならマウスカーソルに応じて照準角度を変更する
-	if (tutorial->GetTutoNowEnd(TutoType::tAim) &&
-		(k_input->GetMouseState(MOUSE_INPUT_RIGHT) == eInputState::Held))
-	{
-		//カーソルを動かした事を格納する
-		if (!aim_once_flg)aim_once_flg = true;
-		//前の傾きを保存する
-		old_shot_rad = shot_rad;
-		//右スティックの傾きで発射角度を決める (-1.55f = ずれ調整)
-		tutorial->player_aim_rad = shot_rad = atan2f(k_input->GetMouseCursor().x - this->local_location.x, (k_input->GetMouseCursor().y - this->local_location.y) * -1) - 1.55f;
-
-		//角度が一定以上変更されていたらSEを鳴らす
-		if (fabsf(old_shot_rad - shot_rad) > 0.01f && frame % 4 == 0)
-		{
-			ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
-		}
-	}
-
-	if (tutorial->GetTutoNowEnd(TutoType::tAttack) &&
-		(k_input->GetMouseState(MOUSE_INPUT_LEFT) == eInputState::Pressed || 
-		 k_input->GetMouseState(0x0003) == eInputState::Pressed))
-	{
-		if (UserData::coin >= pBullet[UserData::get_bullet[UserData::now_bullet]].cost)
-		{
-			ShotBullet();
-			UserData::coin -= pBullet[UserData::get_bullet[UserData::now_bullet]].cost;
-			ResourceManager::rPlaySound(shot_se, DX_PLAYTYPE_BACK);
-			std::string s = "-" + std::to_string(pBullet[UserData::get_bullet[UserData::now_bullet]].cost);
-			ingame->CreatePopUp(this->location, s, 0xff0000, -1);
-		}
-		//発射失敗SE
-		else
-		{
-			ResourceManager::rPlaySound(not_shoot_se, DX_PLAYTYPE_BACK);
-		}
-	}
 #endif // _DEBUG
 }
 

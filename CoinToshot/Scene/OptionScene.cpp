@@ -28,7 +28,8 @@ OptionScene::OptionScene()
 		}
 	}
 	end_cursor = 0;
-
+	cont_type = UserData::control_type;
+	check_change_flg = false;
 	//BGM、SE読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
 	button_se = rm->GetSounds("Resource/Sounds/pop.wav");
@@ -320,27 +321,54 @@ void OptionScene::ControlUpdate()
 	//Bボタンで項目の選択を解除
 	if (InputPad::OnButton(XINPUT_BUTTON_B))
 	{
-		current_item = OptionItem::oNull;
-		ResourceManager::rPlaySound(back_se, DX_PLAYTYPE_BACK);
-	}
-	//操作タイプの変更
-	if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_LEFT) ||
-		InputPad::GetPressedButton(L_STICK_LEFT))
-	{
-		if (--UserData::control_type < 0)
+		//操作タイプの変更があるなら
+		if (UserData::control_type != cont_type)
 		{
-			UserData::control_type = 1;
+			check_change_flg = true;
 		}
-		ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
-	}
-	if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_RIGHT) ||
-		InputPad::GetPressedButton(L_STICK_RIGHT))
-	{
-		if (++UserData::control_type > 1)
+		else
 		{
-			UserData::control_type = 0;
+			current_item = OptionItem::oNull;
+			ResourceManager::rPlaySound(back_se, DX_PLAYTYPE_BACK);
 		}
-		ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
+	}
+	//変更確認画面
+	if (check_change_flg)
+	{
+		//Bボタンで項目の選択を解除
+		//if (InputPad::OnButton(XINPUT_BUTTON_B))
+		//{
+		//	check_change_flg = false;
+		//}
+		//Aボタンで操作タイプ変更&設定画面終了
+		if (InputPad::OnButton(XINPUT_BUTTON_A))
+		{
+			UserData::control_type = cont_type;
+			current_item = OptionItem::oNull;
+			ResourceManager::rPlaySound(back_se, DX_PLAYTYPE_BACK);
+		}
+	}
+	else
+	{
+		//操作タイプの変更
+		if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_LEFT) ||
+			InputPad::GetPressedButton(L_STICK_LEFT))
+		{
+			if (--cont_type < 0)
+			{
+				cont_type = 2;
+			}
+			ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
+		}
+		if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_RIGHT) ||
+			InputPad::GetPressedButton(L_STICK_RIGHT))
+		{
+			if (++cont_type > 2)
+			{
+				cont_type = 0;
+			}
+			ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
+		}
 	}
 }
 
@@ -353,7 +381,7 @@ void OptionScene::ControlDraw()const
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 	Vector2D cont_text_loc = { 700,300 };
-	DrawFormatString(cont_text_loc.x, cont_text_loc.y - 120, 0x000000, "操作タイプ : %d", UserData::control_type);
+	DrawFormatString(cont_text_loc.x, cont_text_loc.y - 120, 0x000000, "操作タイプ : %d",cont_type);
 	DrawTriangleAA(cont_text_loc.x - 70, cont_text_loc.y - 80,
 		cont_text_loc.x - 30, cont_text_loc.y - 100,
 		cont_text_loc.x - 30, cont_text_loc.y - 60,
@@ -363,7 +391,7 @@ void OptionScene::ControlDraw()const
 		cont_text_loc.x +380, cont_text_loc.y - 60,
 		(InputPad::OnPressed(XINPUT_BUTTON_DPAD_RIGHT) || InputPad::OnPressed(L_STICK_RIGHT)) ? 0xffffff : 0x000000, true);
 
-	switch (UserData::control_type)
+	switch (cont_type)
 	{
 		//LBRB発射 トリガー変更
 	case 0:
@@ -382,6 +410,10 @@ void OptionScene::ControlDraw()const
 		UserData::DrawButtonImage({ cont_text_loc.x + 60,cont_text_loc.y + 70 }, XINPUT_BUTTON_RIGHT_SHOULDER, 72);
 		DrawStringF(cont_text_loc.x + 90, cont_text_loc.y + 40, ":弾の種類変更", 0x000000);
 		break;
+		//B発射 LBRB変更
+	case 2:
+		DrawStringF(cont_text_loc.x + 30, cont_text_loc.y - 40, "キーマウ", 0x000000);
+		break;
 	default:
 		break;
 	}
@@ -394,5 +426,14 @@ void OptionScene::ControlDraw()const
 	UserData::DrawButtonImage({ _loc.x + 180,_loc.y}, XINPUT_BUTTON_DPAD_LEFT, 72);
 	DrawStringF(_loc.x + 210, _loc.y - 30, ":操作タイプ変更", 0x444400);
 	UserData::DrawButtonAndString({ _loc.x + 170,  _loc.y + 70 }, XINPUT_BUTTON_B, ":戻る", 0x444400);
+
+	//操作タイプ変更確認画面
+	if (check_change_flg)
+	{
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
+		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, true);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+		UserData::DrawStringCenter({ SCREEN_WIDTH,SCREEN_HEIGHT }, "確認画面", 0xffffff);
+	}
 }
 

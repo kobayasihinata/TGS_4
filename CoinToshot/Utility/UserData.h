@@ -4,10 +4,16 @@
 #include "Vector2D.h"
 #include "common.h"
 #include "InputPad.h"
+#include "InputKey.h"
 #include "../Scene/SceneBase.h"
 
 #include <string>
 using namespace std;
+
+#define UP 0
+#define DOWN 1
+#define RIGHT 2
+#define LEFT 3
 
 struct RankingData
 {
@@ -35,6 +41,7 @@ class UserData
 private:
 	static int frame;			//フレーム測定
 	static int now_button;		//ボタンアニメーション用
+	static InputKey* input;
 public:
 
 	static RankingData ranking_data[RANKING_DATA];	//ランキングデータ格納
@@ -98,10 +105,19 @@ public:
 	//黄色のコイン描画(メモリ節約の為)
 	static void DrawDefaultCoin(Vector2D _loc, float _radius);
 
-	//弾発射に割り当てられたボタンが押されているか確認
+	//カーソル移動に割り当てられたボタンorキーが押されているか確認 _dir = 確認する方向
+	static bool CheckCursorMove(int _dir);
+
+	//プレイヤー移動に割り当てられたボタンorキーが押されているか確認 _dir = 確認する方向
+	static bool CheckPlayerMove(int _dir);
+
+	//決定に割り当てられたボタンが押されているか確認
+	static bool CheckEnter();
+
+	//弾発射に割り当てられたボタンorキーが押されているか確認
 	static bool CheckBulletButton();
 
-	//弾変更に割り当てられたボタンが押されているか確認
+	//弾変更に割り当てられたボタンorキーが押されているか確認
 	static bool CheckBulletChangeButtonRight();
 	static bool CheckBulletChangeButtonLeft();
 

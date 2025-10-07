@@ -5,9 +5,11 @@
 #include "../Object/Base/ObjectList.h"
 #include "common.h"
 #include "../Utility/ResourceManager.h"
+
 //private
 int UserData::frame = 0;			//フレーム測定
 int UserData::now_button = 0;		//ボタンアニメーション用
+InputKey* UserData::input = InputKey::Get();
 
 //public
 RankingData UserData::ranking_data[RANKING_DATA]{ 0 };	//ランキングデータ格納
@@ -176,6 +178,164 @@ void UserData::DrawDefaultCoin(Vector2D _loc, float _radius)
 	DrawRotaGraphF(_loc.x, _loc.y, _radius / 20.f, 0.f, coin_image, TRUE);
 }
 
+bool UserData::CheckCursorMove(int _dir)
+{
+	switch (_dir)
+	{
+	case UP:
+		switch (control_type)
+		{
+			//上ボタン
+		case 0:
+		case 1:
+			return InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_UP) || InputPad::GetPressedButton(L_STICK_UP);
+			break;
+
+			//Wキー
+		case 2:
+			return input->GetKeyState(KEY_INPUT_W) == eInputState::Pressed;
+			break;
+		}
+		break;
+	case DOWN:
+		switch (control_type)
+		{
+			//下ボタン
+		case 0:
+		case 1:
+			return InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_DOWN) || InputPad::GetPressedButton(L_STICK_DOWN);
+			break;
+
+			//Sキー
+		case 2:
+			return input->GetKeyState(KEY_INPUT_S) == eInputState::Pressed;
+			break;
+		}
+		break;
+	case RIGHT:
+		switch (control_type)
+		{
+			//右ボタン
+		case 0:
+		case 1:
+			return InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_RIGHT) || InputPad::GetPressedButton(L_STICK_RIGHT);
+			break;
+
+			//Dキー
+		case 2:
+			return input->GetKeyState(KEY_INPUT_D) == eInputState::Pressed;
+			break;
+		}
+		break;
+	case LEFT:
+		switch (control_type)
+		{
+			//左ボタン
+		case 0:
+		case 1:
+			return InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_LEFT) || InputPad::GetPressedButton(L_STICK_LEFT);
+			break;
+
+			//Aキー
+		case 2:
+			return input->GetKeyState(KEY_INPUT_A) == eInputState::Pressed;
+			break;
+		}
+		break;
+	default:
+		break;
+	}
+	return false;
+}
+
+bool UserData::CheckPlayerMove(int _dir)
+{
+	switch (_dir)
+	{
+	case UP:
+		switch (control_type)
+		{
+			//上ボタン
+		case 0:
+		case 1:
+			return InputPad::OnPressed(XINPUT_BUTTON_DPAD_UP) || InputPad::OnPressed(L_STICK_UP);
+			break;
+
+			//Wキー
+		case 2:
+			return input->GetKeyState(KEY_INPUT_W) == eInputState::Held;
+			break;
+		}
+		break;
+	case DOWN:
+		switch (control_type)
+		{
+			//下ボタン
+		case 0:
+		case 1:
+			return InputPad::OnPressed(XINPUT_BUTTON_DPAD_DOWN) || InputPad::OnPressed(L_STICK_DOWN);
+			break;
+
+			//Sキー
+		case 2:
+			return input->GetKeyState(KEY_INPUT_S) == eInputState::Held;
+			break;
+		}
+		break;
+	case RIGHT:
+		switch (control_type)
+		{
+			//右ボタン
+		case 0:
+		case 1:
+			return InputPad::OnPressed(XINPUT_BUTTON_DPAD_RIGHT) || InputPad::OnPressed(L_STICK_RIGHT);
+			break;
+
+			//Dキー
+		case 2:
+			return input->GetKeyState(KEY_INPUT_D) == eInputState::Held;
+			break;
+		}
+		break;
+	case LEFT:
+		switch (control_type)
+		{
+			//左ボタン
+		case 0:
+		case 1:
+			return InputPad::OnPressed(XINPUT_BUTTON_DPAD_LEFT) || InputPad::OnPressed(L_STICK_LEFT);
+			break;
+
+			//Aキー
+		case 2:
+			return input->GetKeyState(KEY_INPUT_A) == eInputState::Held;
+			break;
+		}
+		break;
+	default:
+		break;
+	}
+	return false;
+}
+
+bool UserData::CheckEnter()
+{
+	switch (control_type)
+	{
+		//Aボタン
+	case 0:
+	case 1:
+		return InputPad::OnButton(XINPUT_BUTTON_A);
+		break;
+
+		//スペースキー
+	case 2:
+		return input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed;
+		break;
+	}
+	return false;
+}
+
 bool UserData::CheckBulletButton()
 {
 	switch (control_type)
@@ -189,7 +349,13 @@ bool UserData::CheckBulletButton()
 	case 1:
 		return InputPad::OnButton(XINPUT_BUTTON_B);
 		break;
+		//左クリックor右クリックしながら左クリック
+	case 2:
+		return (input->GetMouseState(MOUSE_INPUT_LEFT) == eInputState::Pressed ||
+			input->GetMouseState(0x0003) == eInputState::Pressed);
+		break;
 	}
+	return false;
 }
 
 bool UserData::CheckBulletChangeButtonRight()
@@ -205,6 +371,11 @@ bool UserData::CheckBulletChangeButtonRight()
 	case 1:
 		return InputPad::OnButton(XINPUT_BUTTON_RIGHT_SHOULDER);
 		break;
+
+		//Eキー（仮）
+	case 2:
+		return input->GetKeyState(KEY_INPUT_E) == eInputState::Pressed;
+		break;
 	}
 }
 bool UserData::CheckBulletChangeButtonLeft()
@@ -219,6 +390,11 @@ bool UserData::CheckBulletChangeButtonLeft()
 		//LB
 	case 1:
 		return InputPad::OnButton(XINPUT_BUTTON_LEFT_SHOULDER);
+		break;
+
+		//Qキー（仮）
+	case 2:
+		return input->GetKeyState(KEY_INPUT_Q) == eInputState::Pressed;
 		break;
 	}
 }
