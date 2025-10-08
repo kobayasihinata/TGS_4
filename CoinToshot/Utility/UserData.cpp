@@ -336,9 +336,10 @@ bool UserData::CheckEnter()
 		return InputPad::OnButton(XINPUT_BUTTON_A);
 		break;
 
-		//スペースキー
+		//スペースキー or 左クリック
 	case 2:
-		return input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed;
+		return input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed ||
+			   input->GetMouseState(MOUSE_INPUT_LEFT) == eInputState::Pressed;
 		break;
 	}
 	return false;
@@ -354,9 +355,10 @@ bool UserData::CheckCancel()
 		return InputPad::OnButton(XINPUT_BUTTON_B);
 		break;
 
-		//エスケープキー
+		//エスケープキー or 右クリック
 	case 2:
-		return input->GetKeyState(KEY_INPUT_ESCAPE) == eInputState::Pressed;
+		return input->GetKeyState(KEY_INPUT_ESCAPE) == eInputState::Pressed ||
+			input->GetMouseState(MOUSE_INPUT_RIGHT) == eInputState::Pressed;
 		break;
 	}
 	return false;
@@ -442,6 +444,11 @@ bool UserData::CheckBulletChangeButtonLeft()
 		return input->GetKeyState(KEY_INPUT_Q) == eInputState::Pressed;
 		break;
 	}
+}
+bool UserData::CheckCursor(Vector2D _loc, Vector2D _size)
+{
+	Vector2D cursor = { input->GetMouseCursor().x ,input->GetMouseCursor().y };
+	return cursor >= _loc && cursor <= _loc + _size;
 }
 
 void UserData::DrawVariable()

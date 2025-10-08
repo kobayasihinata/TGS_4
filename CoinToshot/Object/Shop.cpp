@@ -54,6 +54,8 @@ void Shop::Finalize()
 
 void Shop::Update()
 {
+	//リセット
+	can_shop_flg = false;
 	//ショップ展開時の処理
 	if (shop_flg)
 	{
@@ -136,7 +138,7 @@ void Shop::Update()
 void Shop::Draw()const
 {
 	__super::Draw();
-	SetFontSize(24);
+	SetFontSize(36);
 	//クールダウン描画
 	if (shop_cd < SHOP_COOLDOWN)
 	{
@@ -150,9 +152,9 @@ void Shop::Draw()const
 	{
 		DrawRotaGraphF(local_location.x, local_location.y, 0.2f, 0, shop_image[0], true);
 		//プレイヤーが被っていたらUI表示
-		if (can_shop_flg)
+		if (can_shop_flg && !shop_flg)
 		{
-			UserData::DrawButtonAndString({ local_location.x,local_location.y - 100 }, XINPUT_BUTTON_A, ":ショップ", 0xffff00);
+			UserData::DrawButtonAndString({ local_location.x - 100,local_location.y - 100 }, XINPUT_BUTTON_A, ":ショップ", 0xffff00);
 		}
 	}
 	int span = 250;
@@ -203,10 +205,6 @@ void Shop::Hit(ObjectBase* hit_object)
 		{
 			SetShop(true);
 		}
-	}
-	else
-	{
-		can_shop_flg = false;
 	}
 }
 

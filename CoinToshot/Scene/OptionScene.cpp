@@ -463,6 +463,9 @@ void OptionScene::ControlDraw()const
 	//操作タイプ変更確認画面
 	if (check_change_flg)
 	{
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
+		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, true);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 		DrawString(SCREEN_WIDTH / 2 - 200, SCREEN_HEIGHT / 2 + 100, "操作方法を変更しますか？", 0xffffff);
 		DrawString(SCREEN_WIDTH / 2 - 180, SCREEN_HEIGHT / 2 + 150, "いいえ", cont_type_cursor == 0 ? 0xffff00 : 0xffffff);
 		DrawString(SCREEN_WIDTH / 2 + 120, SCREEN_HEIGHT / 2 + 150, "はい", cont_type_cursor == 1 ? 0xffff00 : 0xffffff);

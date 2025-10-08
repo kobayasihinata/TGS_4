@@ -21,11 +21,13 @@ public:
 	//代入オペレーター	
 	Vector2D& operator = (const Vector2D& location);
 
-	//等価演算オペレーター
+	//比較演算オペレーター
 	bool operator == (const Vector2D& location);
-
-	//不等価演算オペレーター
 	bool operator != (const Vector2D& location);
+	bool operator > (const Vector2D& location);
+	bool operator >= (const Vector2D& location);
+	bool operator < (const Vector2D& location);
+	bool operator <= (const Vector2D& location);
 
 	//加算オペレーター
 	const Vector2D operator + (const Vector2D& location)const;

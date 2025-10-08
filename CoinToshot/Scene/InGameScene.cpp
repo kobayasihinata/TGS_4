@@ -358,7 +358,7 @@ eSceneType InGameScene::Update(float _delta)
 		//遷移アニメーション早送り
 		if (
 			(UserData::control_type != 2 && InputPad::OnPressed(XINPUT_BUTTON_A)) ||
-			(UserData::control_type == 2 && input->InputKey::GetKeyState(KEY_INPUT_SPACE) == eInputState::Held)
+			(UserData::control_type == 2 && (input->InputKey::GetKeyState(KEY_INPUT_SPACE) == eInputState::Held || input->GetMouseState(MOUSE_INPUT_LEFT) == eInputState::Held))
 			)
 		{
 			start_anim_timer++;

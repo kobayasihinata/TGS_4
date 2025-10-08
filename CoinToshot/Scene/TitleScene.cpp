@@ -20,6 +20,8 @@ TitleScene::TitleScene()
 	current_num = 0;
 	bg_image = CreateBackGround();
 
+	menu_loc = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 };
+	menu_size = { 300,72 };
 	//SE読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
 	cursor_se = rm->GetSounds("Resource/Sounds/cursor.mp3");
@@ -68,6 +70,18 @@ eSceneType TitleScene::Update(float _delta)
 					current_num = ITEM_NUM - 1;
 				}
 				ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
+			}
+
+			//マウスカーソルの位置に合わせて項目変更(キーマウ操作なら)
+			if (UserData::control_type == 2)
+			{
+				for (int i = 0; i < ITEM_NUM; i++)
+				{
+					if (UserData::CheckCursor({ menu_loc.x,menu_loc.y + (i * menu_size.y) }, menu_size))
+					{
+						current_num = i;
+					}
+				}
 			}
 			//決定ボタン
 			if (UserData::CheckEnter())
@@ -128,6 +142,8 @@ eSceneType TitleScene::Update(float _delta)
 				}
 				ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 			}
+			//マウスカーソルの位置に合わせて項目変更(キーマウ操作なら)
+
 			//決定ボタン
 			if (UserData::CheckEnter())
 			{
@@ -175,25 +191,24 @@ void TitleScene::Draw()const
 	UserData::DrawStringCenter({ SCREEN_WIDTH / 2 -2,48 }, "CoinToShot", 0xffffff);
 	UserData::DrawStringCenter({ SCREEN_WIDTH / 2,50 }, "CoinToShot", 0xddbb00);
 
-	int size = 72;
-	SetFontSize(size);
+	SetFontSize(menu_size.y);
 	
 	for (int i = 0; i < ITEM_NUM; i++)
 	{
-		DrawFormatString(SCREEN_WIDTH / 2 + 2, SCREEN_HEIGHT / 2 + (i * size) + 2, 0xbbbb00, "%s", item_text[i]);
+		DrawFormatString(menu_loc.x + 2, menu_loc.y + (i * menu_size.y) + 2, 0xbbbb00, "%s", item_text[i]);
 		//カーソルと項目の描画
 		if (current_num == i)
 		{
-			UserData::DrawCoin({ (float)SCREEN_WIDTH / 2 - 30, (float)SCREEN_HEIGHT / 2 + (i * size) + size/2 }, 20,227+abs(((int)frame%56 - 28)),200 );
+			UserData::DrawCoin({ menu_loc.x - 30, menu_loc.y + (i * menu_size.y) + menu_size.y /2 }, 20,227+abs(((int)frame%56 - 28)),200 );
 			//	DrawCircle(SCREEN_WIDTH / 2 - 30, SCREEN_HEIGHT / 2 + (i * 30)+15, 15, 0x00ff00, true);
 			//項目の描画
-			DrawFormatString(SCREEN_WIDTH / 2-1, SCREEN_HEIGHT / 2 + (i * size)-1, GetColor(227 + abs(((int)frame % 56 - 28)), 200,0), "%s", item_text[i]);
+			DrawFormatString(menu_loc .x-1, menu_loc.y + (i * menu_size.y)-1, GetColor(227 + abs(((int)frame % 56 - 28)), 200,0), "%s", item_text[i]);
 		}
 		//項目のみの描画
 		else
 		{
 			//項目の描画
-			DrawFormatString(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + (i * size), 0xffffff, "%s", item_text[i]);
+			DrawFormatString(menu_loc.x, menu_loc.y + (i * menu_size.y), 0xffffff, "%s", item_text[i]);
 		}
 	}
 

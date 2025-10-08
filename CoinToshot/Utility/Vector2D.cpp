@@ -39,6 +39,23 @@ bool Vector2D::operator != (const Vector2D& location)
 {
 	return (this->x != location.x || this->y != location.y);
 }
+bool Vector2D::operator > (const Vector2D& location)
+{
+	return (this->x > location.x && this->y > location.y);
+}
+bool Vector2D::operator >= (const Vector2D& location)
+{
+	return (this->x >= location.x && this->y >= location.y);
+}
+bool Vector2D::operator < (const Vector2D& location)
+{
+	return (this->x < location.x && this->y < location.y);
+}
+bool Vector2D::operator <= (const Vector2D& location)
+{
+	return (this->x <= location.x && this->y <= location.y);
+}
+
 
 const Vector2D Vector2D::operator + (const Vector2D& location)const
 {

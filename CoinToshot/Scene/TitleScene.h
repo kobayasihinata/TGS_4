@@ -32,7 +32,8 @@ private:
 	int tuto_current_num;	//チュートリアルスキップ時の項目
 
 	int current_num;		//選択されている項目
-
+	Vector2D menu_loc;		//項目の座標
+	Vector2D menu_size;		//項目一つずつの大きさ
 	int bg_image;			//背景画像格納
 
 	int title_bgm;				//タイトルBGM

@@ -40,7 +40,7 @@ void SceneManager::Initialize()
 		throw("DXライブラリが初期化出来ませんでした\n");
 	}
 
-	SetMouseDispFlag(TRUE);
+	//SetMouseDispFlag(TRUE);
 
 	//裏画面から描画を始める
 	SetDrawScreen(DX_SCREEN_BACK);
@@ -173,11 +173,27 @@ void SceneManager::Finalize()
 
 void SceneManager::Draw()const
 {
+	//入力機能のインスタンス取得する処理
+	InputKey* input = InputKey::Get();
+	Vector2D mouse = { input->GetMouseCursor().x, input->GetMouseCursor().y };
 	//画面の初期化
 	ClearDrawScreen();
 
 	//シーンの描画処理
 	current_scene->Draw();
+
+	//キーマウ操作ならカーソル描画
+	if (UserData::control_type == 2)
+	{
+		//マウスカーソル描画
+		DrawCircle(mouse.x, mouse.y, 20, 0xffff00, false);
+		DrawCircle(mouse.x + 1, mouse.y + 1, 20, 0x000000, false);
+		DrawCircle(mouse.x, mouse.y, 10, 0xffff00, false);
+		DrawCircle(mouse.x + 1, mouse.y + 1, 10, 0x000000, false);
+		DrawLine(mouse.x - 24, mouse.y, mouse.x + 24, mouse.y, 0xffff00);
+		DrawLine(mouse.x, mouse.y - 24, mouse.x, mouse.y + 24, 0xffff00);
+	}
+
 
 	//デバッグ表示の描画
 	DebugInfomation::Draw();

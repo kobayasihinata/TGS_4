@@ -128,6 +128,8 @@ public:
 	static bool CheckBulletChangeButtonRight();
 	static bool CheckBulletChangeButtonLeft();
 
+	//マウスカーソルが指定した範囲内にあるか確認
+	static bool CheckCursor(Vector2D _loc, Vector2D _size);
 	//可変の変数描画
 	static void DrawVariable();
 
