@@ -8,6 +8,7 @@ Shop::Shop(InGameScene* _ingame)
 	camera = Camera::Get();
 	ingame = _ingame;
 
+	can_shop_flg = false;
 	shop_flg = false;
 	shop_cd = SHOP_COOLDOWN;
 
@@ -94,7 +95,7 @@ void Shop::Update()
 			}
 		}
 		//カーソル移動処理
-		if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_RIGHT) || InputPad::GetPressedButton(L_STICK_RIGHT))
+		if (UserData::CheckCursorMove(RIGHT))
 		{
 			if (++shop_cursor >= ITEM_NUM)
 			{
@@ -102,7 +103,7 @@ void Shop::Update()
 			}
 			ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 		}
-		if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_LEFT) || InputPad::GetPressedButton(L_STICK_LEFT))
+		if (UserData::CheckCursorMove(LEFT))
 		{
 			if (--shop_cursor < 0)
 			{
@@ -111,12 +112,12 @@ void Shop::Update()
 			ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 		}
 		//購入処理
-		if (InputPad::OnButton(XINPUT_BUTTON_A))
+		if (UserData::CheckEnter())
 		{
 			BuyItem(shop_cursor);
 		}
 		//ショップを終わる
-		if (InputPad::OnButton(XINPUT_BUTTON_B))
+		if (UserData::CheckCancel())
 		{
 			end_anim = true;
 			ResourceManager::rPlaySound(back_se, DX_PLAYTYPE_BACK);
@@ -148,6 +149,11 @@ void Shop::Draw()const
 	else
 	{
 		DrawRotaGraphF(local_location.x, local_location.y, 0.2f, 0, shop_image[0], true);
+		//プレイヤーが被っていたらUI表示
+		if (can_shop_flg)
+		{
+			UserData::DrawButtonAndString({ local_location.x,local_location.y - 100 }, XINPUT_BUTTON_A, ":ショップ", 0xffff00);
+		}
 	}
 	int span = 250;
 	Vector2D shop_loc = { (SCREEN_WIDTH / 2) - (ITEM_NUM * span) / 2,anim_move[START_ANIM_TIME-1]};
@@ -189,10 +195,18 @@ void Shop::Draw()const
 
 void Shop::Hit(ObjectBase* hit_object)
 {
-	//プレイヤーに触れたらショップ展開
+	//プレイヤーに触れた&決定キーでショップ展開
 	if (shop_cd >= SHOP_COOLDOWN && hit_object->GetObjectType() == ePLAYER)
 	{
-		SetShop(true);
+		can_shop_flg = true;
+		if (UserData::CheckEnter())
+		{
+			SetShop(true);
+		}
+	}
+	else
+	{
+		can_shop_flg = false;
 	}
 }
 
@@ -256,12 +270,15 @@ void Shop::BuyItem(int cursor)
 			break;
 		case 2: //強化弾
 			UserData::get_bullet.push_back(2);
+			UserData::get_bullet_cd.push_back(0);
 			break;
 		case 3: //爆発弾
 			UserData::get_bullet.push_back(3);
+			UserData::get_bullet_cd.push_back(0);
 			break;
 		case 4: //最強弾
 			UserData::get_bullet.push_back(4);
+			UserData::get_bullet_cd.push_back(0);
 			break;
 		}
 		//代金を引く

@@ -24,6 +24,7 @@ bool UserData::is_gamestop = false;
 int UserData::invincible = 0;					
 int UserData::now_bullet = 0;
 std::vector<int> UserData::get_bullet = { 0 };
+std::vector<int> UserData::get_bullet_cd = { 0 };
 bool UserData::attraction_flg = false;
 int UserData::attraction_timer = 0;
 bool UserData::can_bullet_change_flg = false;
@@ -73,6 +74,13 @@ void UserData::Update()
 			now_button = 0;
 		}
 		frame = 0;
+	}
+	for (auto& get_bullet_cd : get_bullet_cd)
+	{
+		if (get_bullet_cd > 0)
+		{
+			get_bullet_cd--;
+		}
 	}
 }
 
@@ -336,6 +344,42 @@ bool UserData::CheckEnter()
 	return false;
 }
 
+bool UserData::CheckCancel()
+{
+	switch (control_type)
+	{
+		//Bボタン
+	case 0:
+	case 1:
+		return InputPad::OnButton(XINPUT_BUTTON_B);
+		break;
+
+		//エスケープキー
+	case 2:
+		return input->GetKeyState(KEY_INPUT_ESCAPE) == eInputState::Pressed;
+		break;
+	}
+	return false;
+}
+
+bool UserData::CheckPause()
+{
+	switch (control_type)
+	{
+		//STARTボタン
+	case 0:
+	case 1:
+		return InputPad::OnButton(XINPUT_BUTTON_START);
+		break;
+
+		//エスケープキー
+	case 2:
+		return input->GetKeyState(KEY_INPUT_ESCAPE) == eInputState::Pressed;
+		break;
+	}
+	return false;
+}
+
 bool UserData::CheckBulletButton()
 {
 	switch (control_type)
@@ -378,6 +422,7 @@ bool UserData::CheckBulletChangeButtonRight()
 		break;
 	}
 }
+
 bool UserData::CheckBulletChangeButtonLeft()
 {
 	switch (control_type)

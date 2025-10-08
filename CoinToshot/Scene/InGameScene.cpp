@@ -35,6 +35,7 @@ void InGameScene::Initialize()
 	UserData::is_dead = false;
 	UserData::coin_graph.clear();
 	UserData::get_bullet = { 0,1 };
+	UserData::get_bullet_cd = { 0,0 };
 	UserData::now_bullet = 0;
 
 	update_shop = nullptr;
@@ -43,6 +44,7 @@ void InGameScene::Initialize()
 	change_result = false;
 	tuto_coin_count = 0;
 	pause_flg = false;
+	pause_timer = 0;
 	pause_cursor = 0;
 	back_title_flg = false;
 	back_title_cursor = 0;
@@ -138,9 +140,10 @@ eSceneType InGameScene::Update(float _delta)
 		UserData::coin_graph.push_back(UserData::coin);
 	}
 	//一時停止フラグ切り替え
-	if (InputPad::OnButton(XINPUT_BUTTON_START) && !tutorial->GetTutorialFlg() && !start_anim_flg && !shop_flg)
+	if (UserData::CheckPause() && !tutorial->GetTutorialFlg() && !start_anim_flg && !shop_flg)
 	{
 		pause_flg = !pause_flg;
+		pause_timer = 0;
 	}
 
 	//一時停止フラグか遷移時アニメーションフラグかショップ展開フラグが立っていたら更新しない
@@ -226,6 +229,8 @@ eSceneType InGameScene::Update(float _delta)
 	//ポーズ画面
 	else if (pause_flg)
 	{
+		//時間測定
+		pause_timer++;
 		if (!CheckSoundMem(gamemain_bgm))
 		{
 			ResourceManager::rPlaySound(gamemain_bgm, DX_PLAYTYPE_LOOP, false);
@@ -235,7 +240,7 @@ eSceneType InGameScene::Update(float _delta)
 		{
 
 			//下入力で項目下移動
-			if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_DOWN) || InputPad::GetPressedButton(L_STICK_DOWN))
+			if (UserData::CheckCursorMove(DOWN))
 			{
 				if (++pause_cursor >= 3)
 				{
@@ -244,7 +249,7 @@ eSceneType InGameScene::Update(float _delta)
 				ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 			}
 			//上入力で項目上移動
-			if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_UP) || InputPad::GetPressedButton(L_STICK_UP))
+			if (UserData::CheckCursorMove(UP))
 			{
 				if (--pause_cursor < 0)
 				{
@@ -253,7 +258,7 @@ eSceneType InGameScene::Update(float _delta)
 				ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 			}
 			//Aボタンでカーソルが合っているところの処理を実行
-			if (InputPad::OnButton(XINPUT_BUTTON_A))
+			if (UserData::CheckEnter())
 			{
 				ResourceManager::rPlaySound(enter_se, DX_PLAYTYPE_BACK);
 				switch (pause_cursor)
@@ -278,8 +283,8 @@ eSceneType InGameScene::Update(float _delta)
 				}
 
 			}
-			//Bボタンでゲームに戻る
-			if (InputPad::OnButton(XINPUT_BUTTON_B))
+			//キャンセルボタンでゲームに戻る
+			if (pause_timer > 5 && UserData::CheckCancel())
 			{
 				ResourceManager::rPlaySound(enter_se, DX_PLAYTYPE_BACK);
 				pause_flg = false;
@@ -289,8 +294,7 @@ eSceneType InGameScene::Update(float _delta)
 		else
 		{
 			//左右入力で終了のカーソル移動
-			if (InputPad::OnButton(XINPUT_BUTTON_DPAD_LEFT) ||
-				InputPad::OnButton(L_STICK_LEFT))
+			if (UserData::CheckCursorMove(LEFT))
 			{
 				if (--back_title_cursor < 0)
 				{
@@ -298,8 +302,7 @@ eSceneType InGameScene::Update(float _delta)
 				}
 				ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 			}
-			if (InputPad::OnButton(XINPUT_BUTTON_DPAD_RIGHT) ||
-				InputPad::OnButton(L_STICK_RIGHT))
+			if (UserData::CheckCursorMove(RIGHT))
 			{
 				if (++back_title_cursor > 1)
 				{
@@ -307,14 +310,14 @@ eSceneType InGameScene::Update(float _delta)
 				}
 				ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 			}
-			//Bボタンで項目の選択を解除
-			if (InputPad::OnButton(XINPUT_BUTTON_B))
+			//キャンセルボタンで項目の選択を解除
+			if (UserData::CheckCancel())
 			{
 				back_title_flg = false;
 				ResourceManager::rPlaySound(back_se, DX_PLAYTYPE_BACK);
 			}
-			//Aボタンでカーソルが合っている場所ごとの処理
-			if (InputPad::OnButton(XINPUT_BUTTON_A))
+			//決定ボタンでカーソルが合っている場所ごとの処理
+			if (UserData::CheckEnter())
 			{
 				switch (back_title_cursor)
 				{
@@ -345,13 +348,18 @@ eSceneType InGameScene::Update(float _delta)
 	//遷移アニメーション
 	else
 	{
+		InputKey* input = InputKey::Get();
+
 		//BGMを止める
 		if (CheckSoundMem(gamemain_bgm))
 		{
 			StopSoundMem(gamemain_bgm);
 		}
 		//遷移アニメーション早送り
-		if (InputPad::OnPressed(XINPUT_BUTTON_A))
+		if (
+			(UserData::control_type != 2 && InputPad::OnPressed(XINPUT_BUTTON_A)) ||
+			(UserData::control_type == 2 && input->InputKey::GetKeyState(KEY_INPUT_SPACE) == eInputState::Held)
+			)
 		{
 			start_anim_timer++;
 		}
@@ -364,18 +372,6 @@ eSceneType InGameScene::Update(float _delta)
 				tutorial->StartTutoRequest(TutoType::tRule);
 			}
 		}
-#ifdef _DEBUG
-
-		//入力機能の取得
-		InputKey* input = InputKey::Get();
-
-		if (input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed)
-		{
-			start_anim_flg = false;
-			tutorial->StartTutoRequest(TutoType::tRule);
-		}
-
-#endif // _DEBUG
 		//描画の更新
 		MakeGameMainDraw();
 	}
@@ -963,7 +959,6 @@ void InGameScene::CreateBonusDraw()
 
 	SetDrawScreen(DX_SCREEN_BACK);
 }
-
 
 void InGameScene::TutorialUpdate()
 {

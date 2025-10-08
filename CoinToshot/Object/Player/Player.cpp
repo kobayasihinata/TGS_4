@@ -539,9 +539,10 @@ void Player::Control()
 	if (tutorial->GetTutoNowEnd(TutoType::tAttack) &&
 		UserData::CheckBulletButton())
 	{
-		if (UserData::coin >= pBullet[UserData::get_bullet[UserData::now_bullet]].cost)
+		if (UserData::get_bullet_cd[UserData::get_bullet[UserData::now_bullet]] <= 0 && UserData::coin >= pBullet[UserData::get_bullet[UserData::now_bullet]].cost)
 		{
 			ShotBullet();
+			UserData::get_bullet_cd[UserData::get_bullet[UserData::now_bullet]] = pBullet[UserData::get_bullet[UserData::now_bullet]].cooldown;
 			UserData::coin -= pBullet[UserData::get_bullet[UserData::now_bullet]].cost;
 			ResourceManager::rPlaySound(shot_se, DX_PLAYTYPE_BACK);
 			std::string s = "-" + std::to_string(pBullet[UserData::get_bullet[UserData::now_bullet]].cost);

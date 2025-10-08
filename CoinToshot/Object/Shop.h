@@ -44,6 +44,7 @@ private:
 	class Camera* camera;		//カメラ格納
 	InGameScene* ingame;		//現在のシーンのポインタを保存
 
+	bool can_shop_flg;			//プレイヤーがショップと被って居るか確認
 	bool shop_flg;				//ショップ画面を表示するか判断
 	int shop_cd;				//再びショップを使えるようになる時間測定
 

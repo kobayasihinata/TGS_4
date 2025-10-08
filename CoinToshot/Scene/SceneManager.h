@@ -8,6 +8,7 @@ private:
 	SceneBase* current_scene;	//現在シーン情報のポインタ
 	bool is_finalize;
 
+	int end_timer;		//ESC長押しで終了
 public:
 	SceneManager();
 	~SceneManager();

@@ -56,6 +56,7 @@ public:
 	static bool is_gamestop;				//false=ゲーム中 true=ゲーム終了
 	static int invincible;					//この数値が０以上なら、その時間だけプレイヤーを無敵にして、0に戻す
 	static std::vector<int> get_bullet;		//所持中の弾
+	static std::vector<int> get_bullet_cd;	//所持中の弾のクールダウン
 	static int now_bullet;					//現在の弾の位置
 	static bool attraction_flg;				//コイン吸い寄せ
 	static int attraction_timer;			//コイン吸い寄せ時間測定
@@ -113,6 +114,12 @@ public:
 
 	//決定に割り当てられたボタンが押されているか確認
 	static bool CheckEnter();
+
+	//キャンセルに割り当てられたボタンが押されているか確認
+	static bool CheckCancel();
+
+	//ポーズに割り当てられたボタンが押されているか確認
+	static bool CheckPause();
 
 	//弾発射に割り当てられたボタンorキーが押されているか確認
 	static bool CheckBulletButton();

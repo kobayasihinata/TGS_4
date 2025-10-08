@@ -26,38 +26,36 @@ void EndScene::Initialize()
 
 eSceneType EndScene::Update(float _delta)
 {
+	InputKey* input = InputKey::Get();
 
-	//3秒立ったらゲーム終了
-
+	//一定時間たったらゲーム終了
 	if (frame >= END_TIMER)
 	{
 		return eSceneType::eNull;
 	}
-	//Bボタンでタイトルに戻る
-	if (InputPad::OnButton(XINPUT_BUTTON_B))
+	//キャンセルボタンでタイトルに戻る
+	if (UserData::CheckCancel())
 	{
 		ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
 		return eSceneType::eTitle;
 	}
 	//Aボタンでカウントを早める
-	if (release_button && InputPad::OnPressed(XINPUT_BUTTON_A))
+	if (release_button && 
+		(UserData::control_type != 2 && InputPad::OnPressed(XINPUT_BUTTON_A)) ||
+		(UserData::control_type == 2 && input->InputKey::GetKeyState(KEY_INPUT_SPACE) == eInputState::Held)
+		)
 	{
 		frame += 6;
 	}
 	//↑タイトルからの遷移後すぐにカウントを早めないようにする
-	if (InputPad::OnRelease(XINPUT_BUTTON_A))
+	if (
+		(UserData::control_type != 2 && InputPad::OnRelease(XINPUT_BUTTON_A)) ||
+		(UserData::control_type == 2 && input->InputKey::GetKeyState(KEY_INPUT_SPACE) == eInputState::Released)
+		)
 	{
 		release_button = true;
 	}
 #ifdef _DEBUG
-	//入力機能の取得
-	InputKey* input = InputKey::Get();
-
-	//1キーでタイトル画面に遷移する
-	if (input->GetKeyState(KEY_INPUT_1) == eInputState::Pressed)
-	{
-		return eSceneType::eTitle;
-	}
 #endif // _DEBUG
 	return __super::Update(_delta);
 }

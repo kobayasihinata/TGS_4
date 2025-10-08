@@ -71,14 +71,9 @@ eSceneType ResultScene::Update(float _delta)
 	{
 	case DispScene::dIsClear:	//ゲームクリアかオーバーか表示
 		start_anim_timer++;
-#ifdef _DEBUG
-		//AボタンorSpaceで決定
-		if (InputPad::OnButton(XINPUT_BUTTON_A) ||
-			input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed)
-#else
-		//Aボタンで決定
-		if (InputPad::OnButton(XINPUT_BUTTON_A))
-#endif 
+
+		//決定
+		if (UserData::CheckEnter())
 		{
 			//演出が終了していたらボーナス加算演出開始
 			if (start_anim_timer > START_ANIM_TIME)
@@ -104,14 +99,8 @@ eSceneType ResultScene::Update(float _delta)
 			//SE再生
 			disp_se_once = false;
 		}
-#ifdef _DEBUG
-		//AボタンorSpaceで決定
-		if (InputPad::OnButton(XINPUT_BUTTON_A) ||
-			input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed)
-#else
-		//Aボタンで決定
-		if (InputPad::OnButton(XINPUT_BUTTON_A))
-#endif 
+		//決定
+		if (UserData::CheckEnter())
 		{
 			//演出が終了していたらボーナス加算演出開始
 			if (result_anim_timer > RESULT_ANIM_TIME)
@@ -154,14 +143,8 @@ eSceneType ResultScene::Update(float _delta)
 			}
 
 		}
-#ifdef _DEBUG
-		//AボタンorSpaceで決定
-		if (InputPad::OnButton(XINPUT_BUTTON_A) ||
-			input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed)
-#else
-		//Aボタンで決定
-		if (InputPad::OnButton(XINPUT_BUTTON_A))
-#endif 
+		//決定
+		if (UserData::CheckEnter())
 		{
 			//演出が終了していたら遷移
 			if (bonus_anim_timer > BONUS_ANIM_TIME)
@@ -180,14 +163,8 @@ eSceneType ResultScene::Update(float _delta)
 	case DispScene::dGraphDisp:
 		//測定
 		graph_timer++;
-#ifdef _DEBUG
-		//AボタンorSpaceで決定
-		if (InputPad::OnButton(XINPUT_BUTTON_A) ||
-			input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed)
-#else
-		//Aボタンで決定
-		if (InputPad::OnButton(XINPUT_BUTTON_A))
-#endif 
+		//決定
+		if (UserData::CheckEnter())
 		{
 			ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
 			//演出が終了していれば遷移
@@ -516,22 +493,10 @@ eSceneType ResultScene::GetNowSceneType()const
 
 eSceneType ResultScene::EnterName()
 {
-#ifdef _DEBUG
-
-	//入力機能の取得
 	InputKey* input = InputKey::Get();
 
-#endif // _DEBUG
-
-#ifdef _DEBUG
 	//左入力で項目左移動
-	if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_LEFT) ||
-		InputPad::GetPressedButton(L_STICK_LEFT) ||
-		input->GetKeyState(KEY_INPUT_A) == eInputState::Pressed)
-#else
-	//左入力で項目左移動
-	if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_LEFT) || InputPad::GetPressedButton(L_STICK_LEFT))
-#endif 
+	if (UserData::CheckCursorMove(LEFT))
 	{
 		//空白が選択されなくなるまで繰り返す(空白を飛ばす)
 		do{
@@ -543,15 +508,8 @@ eSceneType ResultScene::EnterName()
 		} while (key[current_y][current_x] == ' ');
 		ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 	}
-#ifdef _DEBUG
 	//右入力で項目右移動
-	if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_RIGHT) ||
-		InputPad::GetPressedButton(L_STICK_RIGHT) ||
-		input->GetKeyState(KEY_INPUT_D) == eInputState::Pressed)
-#else
-	//右入力で項目右移動
-	if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_RIGHT) || InputPad::GetPressedButton(L_STICK_RIGHT))
-#endif 
+	if (UserData::CheckCursorMove(RIGHT))
 	{
 		//空白が選択されなくなるまで繰り返す(空白を飛ばす)
 		do {
@@ -563,15 +521,8 @@ eSceneType ResultScene::EnterName()
 		} while (key[current_y][current_x] == ' ');
 		ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 	}
-#ifdef _DEBUG
 	//上入力で項目上移動
-	if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_UP) ||
-		InputPad::GetPressedButton(L_STICK_UP) ||
-		input->GetKeyState(KEY_INPUT_W) == eInputState::Pressed)
-#else
-	//上入力で項目上移動
-	if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_UP) || InputPad::GetPressedButton(L_STICK_UP))
-#endif 
+	if (UserData::CheckCursorMove(UP))
 	{
 		//空白が選択されなくなるまで繰り返す(空白を飛ばす)
 		do {
@@ -583,15 +534,8 @@ eSceneType ResultScene::EnterName()
 		} while (key[current_y][current_x] == ' ');
 		ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 	}
-#ifdef _DEBUG
 	//下入力で項目下移動
-	if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_DOWN) ||
-		InputPad::GetPressedButton(L_STICK_DOWN) ||
-		input->GetKeyState(KEY_INPUT_S) == eInputState::Pressed)
-#else
-	//下入力で項目下移動
-	if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_DOWN) || InputPad::GetPressedButton(L_STICK_DOWN))
-#endif 
+	if (UserData::CheckCursorMove(DOWN))
 	{
 		//空白が選択されなくなるまで繰り返す(空白を飛ばす)
 		do {
@@ -603,14 +547,8 @@ eSceneType ResultScene::EnterName()
 		} while (key[current_y][current_x] == ' ');
 		ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 	}
-#ifdef _DEBUG
-	//AボタンorSpaceで文字の追加(現在の入力と画面内の文字の合計が10文字未満なら)
-	if (InputPad::OnButton(XINPUT_BUTTON_A) ||
-		input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed)
-#else
 	//Aボタンを押して文字の追加(現在の入力と画面内の文字の合計が10文字未満なら)
-	if (InputPad::OnButton(XINPUT_BUTTON_A))
-#endif 
+	if (UserData::CheckEnter())
 	{
 		ResourceManager::rPlaySound(throw_se, DX_PLAYTYPE_BACK);
 		CreateMoveString(key[current_y][current_x], 
@@ -619,15 +557,11 @@ eSceneType ResultScene::EnterName()
 			{ 700,100 }, 
 			true);
 	}
-#ifdef _DEBUG
-	//Bボタンを押して一文字消す(現在の入力が0文字より大きいなら)
-	if (name.size() > 0 &&
-		(InputPad::OnButton(XINPUT_BUTTON_B) ||
-		input->GetKeyState(KEY_INPUT_BACK) == eInputState::Pressed))
-#else
-	//Bボタンを押して一文字消す(現在の入力が0文字より大きいなら)
-	if (name.size() > 0 && InputPad::OnButton(XINPUT_BUTTON_B))
-#endif 
+	//Bボタン(キーはback space)を押して一文字消す(現在の入力が0文字より大きいなら)
+	if (
+		(UserData::control_type != 2 && InputPad::OnButton(XINPUT_BUTTON_B)) || 
+		(UserData::control_type == 2 && input->InputKey::GetKeyState(KEY_INPUT_BACK)==eInputState::Pressed)
+	    )
 	{
 		//現在のテキスト幅を計算
 		int size = 0;
@@ -642,16 +576,11 @@ eSceneType ResultScene::EnterName()
 		ResourceManager::rPlaySound(erase_se, DX_PLAYTYPE_BACK);
 	}
 
-
-#ifdef _DEBUG
-	//STARTボタンで入力終了(一文字以上入力されているなら)
-		if (name.size() > 0 && 
-			InputPad::OnButton(XINPUT_BUTTON_START) ||
-			input->GetKeyState(KEY_INPUT_RETURN) == eInputState::Pressed)
-#else
-	//STARTボタンで入力終了(一文字以上入力されているなら)
-	if (name.size() > 0 && InputPad::OnButton(XINPUT_BUTTON_START))
-#endif 
+	//STARTボタン(キーはEnter)を押して入力終了
+	if (
+		(UserData::control_type != 2 && InputPad::OnButton(XINPUT_BUTTON_START)) ||
+		(UserData::control_type == 2 && input->InputKey::GetKeyState(KEY_INPUT_RETURN) == eInputState::Pressed)
+		)
 	{
 		UserData::my_ranking_data.name = name.c_str();
 		UserData::my_ranking_data.coin = UserData::coin;

@@ -8,7 +8,7 @@
 #include "../Utility/FpsController.h"
 #include "../Utility/UserData.h"
 
-SceneManager::SceneManager() : current_scene(nullptr), is_finalize(false)
+SceneManager::SceneManager() : current_scene(nullptr), is_finalize(false), end_timer(0)
 {}
 
 SceneManager::~SceneManager()
@@ -137,9 +137,16 @@ void SceneManager::Update()
 		}
 
 		//強制終了ボタン
-		if (input->GetKeyState(KEY_INPUT_ESCAPE) == eInputState::Pressed)
+		if (input->GetKeyState(KEY_INPUT_ESCAPE) == eInputState::Held)
 		{
-			break;
+			if (++end_timer > 60)
+			{
+				break;
+			}
+		}
+		else
+		{
+			end_timer = 0;
 		}
 	}
 }
@@ -181,7 +188,12 @@ void SceneManager::Draw()const
 		UserData::DrawVariable();
 	}
 
-
+	//ESC長押し終了処理
+	if (end_timer > 0)
+	{
+		SetFontSize(12);
+		DrawFormatString(0, 0, 0xffffff, "%d",60 - end_timer);
+	}
 	//裏画面の内容を表画面に反映する
 	ScreenFlip();
 }

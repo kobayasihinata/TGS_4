@@ -32,21 +32,9 @@ void RankingScene::Initialize()
 
 eSceneType RankingScene::Update(float _delta)
 {
-#ifdef _DEBUG
 
-	//入力機能の取得
-	InputKey* input = InputKey::Get();
-
-#endif // _DEBUG
-
-#ifdef _DEBUG
-	//AボタンorSpaceで決定
-	if (InputPad::OnButton(XINPUT_BUTTON_B) ||
-		input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed)
-#else
 	//Aボタンで決定
-	if (InputPad::OnButton(XINPUT_BUTTON_B))
-#endif 
+	if (UserData::CheckEnter())
 	{
 		ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
 		return eSceneType::eTitle;
@@ -61,7 +49,7 @@ void RankingScene::Draw()const
 	UserData::DrawCoin({ SCREEN_WIDTH +100, SCREEN_HEIGHT / 2 }, 900);
 	SetFontSize(48);
 
-	UserData::DrawButtonAndString({ SCREEN_WIDTH / 2 - 25,  SCREEN_HEIGHT - 64 }, XINPUT_BUTTON_B, ":タイトルに戻る", 0xffff00);
+	UserData::DrawButtonAndString({ SCREEN_WIDTH / 2 - 50,  SCREEN_HEIGHT - 64 }, XINPUT_BUTTON_A, ":タイトルに戻る", 0xffff00);
 
 	DrawString(161, 151,"No", 0xffffff);
 	DrawString(160, 150,"No", 0x000000);

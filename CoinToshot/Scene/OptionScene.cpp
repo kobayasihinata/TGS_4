@@ -28,6 +28,8 @@ OptionScene::OptionScene()
 		}
 	}
 	end_cursor = 0;
+	cont_type_timer = 0;
+	cont_type_cursor = 0;
 	cont_type = UserData::control_type;
 	check_change_flg = false;
 	//BGM、SE読み込み
@@ -79,7 +81,7 @@ eSceneType OptionScene::Update(float _delta)
 		break;
 	case OptionItem::oNull:
 		//下入力で項目下移動
-		if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_DOWN) || InputPad::GetPressedButton(L_STICK_DOWN))
+		if (UserData::CheckCursorMove(DOWN))
 		{
 			if (++cursor >= OPTION_NUM)
 			{
@@ -88,7 +90,7 @@ eSceneType OptionScene::Update(float _delta)
 			ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 		}
 		//上入力で項目上移動
-		if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_UP) || InputPad::GetPressedButton(L_STICK_UP))
+		if (UserData::CheckCursorMove(UP))
 		{
 			if (--cursor < 0)
 			{
@@ -97,13 +99,13 @@ eSceneType OptionScene::Update(float _delta)
 			ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 		}
 		//Aボタンで現在選択している項目に移動
-		if (InputPad::OnButton(XINPUT_BUTTON_A))
+		if (UserData::CheckEnter())
 		{
 			ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
 			current_item = cursor;
 		}
 		//Bボタンでオプション終了画面
-		if (InputPad::OnButton(XINPUT_BUTTON_B))
+		if (UserData::CheckCancel())
 		{
 			ResourceManager::rPlaySound(back_se, DX_PLAYTYPE_BACK);
 			current_item = OptionItem::oEnd;
@@ -178,13 +180,13 @@ eSceneType OptionScene::GetNowSceneType()const
 void OptionScene::VolumeUpdate()
 {
 	//Bボタンで項目の選択を解除
-	if (InputPad::OnButton(XINPUT_BUTTON_B))
+	if (UserData::CheckCancel())
 	{
 		current_item = OptionItem::oNull;
 		ResourceManager::rPlaySound(back_se, DX_PLAYTYPE_BACK);
 	}
 	//下入力で項目下移動
-	if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_DOWN) || InputPad::GetPressedButton(L_STICK_DOWN))
+	if (UserData::CheckCursorMove(DOWN))
 	{
 		if (++volume_cursor >= 2)
 		{
@@ -193,7 +195,7 @@ void OptionScene::VolumeUpdate()
 		ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 	}
 	//上入力で項目上移動
-	if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_UP) || InputPad::GetPressedButton(L_STICK_UP))
+	if (UserData::CheckCursorMove(UP))
 	{
 		if (--volume_cursor < 0)
 		{
@@ -203,8 +205,7 @@ void OptionScene::VolumeUpdate()
 	}
 
 	//左右入力でカーソルを合わせた所の音量を調節
-	if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_LEFT) ||
-		InputPad::GetPressedButton(L_STICK_LEFT))
+	if (UserData::CheckCursorMove(LEFT))
 	{
 		switch (volume_cursor)
 		{
@@ -237,8 +238,7 @@ void OptionScene::VolumeUpdate()
 			break;
 		}
 	}
-	if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_RIGHT) ||
-		InputPad::GetPressedButton(L_STICK_RIGHT))
+	if (UserData::CheckCursorMove(RIGHT))
 	{
 		switch (volume_cursor)
 		{
@@ -319,7 +319,7 @@ void OptionScene::VolumeDraw()const
 void OptionScene::ControlUpdate()
 {
 	//Bボタンで項目の選択を解除
-	if (InputPad::OnButton(XINPUT_BUTTON_B))
+	if (UserData::CheckCancel() || UserData::CheckEnter())
 	{
 		//操作タイプの変更があるなら
 		if (UserData::control_type != cont_type)
@@ -333,26 +333,60 @@ void OptionScene::ControlUpdate()
 		}
 	}
 	//変更確認画面
-	if (check_change_flg)
+	if (check_change_flg && ++cont_type_timer > 5)
 	{
-		//Bボタンで項目の選択を解除
-		//if (InputPad::OnButton(XINPUT_BUTTON_B))
-		//{
-		//	check_change_flg = false;
-		//}
-		//Aボタンで操作タイプ変更&設定画面終了
-		if (InputPad::OnButton(XINPUT_BUTTON_A))
+		//左右入力で終了のカーソル移動
+		if (UserData::CheckCursorMove(LEFT))
 		{
-			UserData::control_type = cont_type;
-			current_item = OptionItem::oNull;
+			if (--cont_type_cursor < 0)
+			{
+				cont_type_cursor = 1;
+			}
+			ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
+		}
+		if (UserData::CheckCursorMove(RIGHT))
+		{
+			if (++cont_type_cursor > 1)
+			{
+				cont_type_cursor = 0;
+			}
+			ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
+		}
+		//キャンセルボタンで項目の選択を解除
+		if (UserData::CheckCancel())
+		{
+			check_change_flg = false;
+			cont_type_timer = 0;
 			ResourceManager::rPlaySound(back_se, DX_PLAYTYPE_BACK);
+		}
+		//決定ボタンでカーソルが合っている場所ごとの処理
+		if (UserData::CheckEnter())
+		{
+			switch (cont_type_cursor)
+			{
+				//カーソル左で変更画面に戻る
+			case 0:
+				check_change_flg = false;
+				cont_type_timer = 0;
+				ResourceManager::rPlaySound(back_se, DX_PLAYTYPE_BACK);
+				break;
+				//カーソル右で操作タイプ変更&設定画面終了
+			case 1:
+				UserData::control_type = cont_type;
+				current_item = OptionItem::oNull;
+				ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
+				check_change_flg = false;
+				cont_type_timer = 0;
+				break;
+			default:
+				break;
+			}
 		}
 	}
 	else
 	{
 		//操作タイプの変更
-		if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_LEFT) ||
-			InputPad::GetPressedButton(L_STICK_LEFT))
+		if (UserData::CheckCursorMove(LEFT))
 		{
 			if (--cont_type < 0)
 			{
@@ -360,8 +394,7 @@ void OptionScene::ControlUpdate()
 			}
 			ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 		}
-		if (InputPad::GetPressedButton(XINPUT_BUTTON_DPAD_RIGHT) ||
-			InputPad::GetPressedButton(L_STICK_RIGHT))
+		if (UserData::CheckCursorMove(RIGHT))
 		{
 			if (++cont_type > 2)
 			{
@@ -385,11 +418,11 @@ void OptionScene::ControlDraw()const
 	DrawTriangleAA(cont_text_loc.x - 70, cont_text_loc.y - 80,
 		cont_text_loc.x - 30, cont_text_loc.y - 100,
 		cont_text_loc.x - 30, cont_text_loc.y - 60,
-		(InputPad::OnPressed(XINPUT_BUTTON_DPAD_LEFT) || InputPad::OnPressed(L_STICK_LEFT)) ? 0xffffff : 0x000000, true);
+		UserData::CheckCursorMove(LEFT) ? 0xffffff : 0x000000, true);
 	DrawTriangleAA(cont_text_loc.x + 420, cont_text_loc.y - 80,
 		cont_text_loc.x +380, cont_text_loc.y - 100,
 		cont_text_loc.x +380, cont_text_loc.y - 60,
-		(InputPad::OnPressed(XINPUT_BUTTON_DPAD_RIGHT) || InputPad::OnPressed(L_STICK_RIGHT)) ? 0xffffff : 0x000000, true);
+		UserData::CheckCursorMove(RIGHT) ? 0xffffff : 0x000000, true);
 
 	switch (cont_type)
 	{
@@ -430,10 +463,10 @@ void OptionScene::ControlDraw()const
 	//操作タイプ変更確認画面
 	if (check_change_flg)
 	{
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
-		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, true);
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
-		UserData::DrawStringCenter({ SCREEN_WIDTH,SCREEN_HEIGHT }, "確認画面", 0xffffff);
+		DrawString(SCREEN_WIDTH / 2 - 200, SCREEN_HEIGHT / 2 + 100, "操作方法を変更しますか？", 0xffffff);
+		DrawString(SCREEN_WIDTH / 2 - 180, SCREEN_HEIGHT / 2 + 150, "いいえ", cont_type_cursor == 0 ? 0xffff00 : 0xffffff);
+		DrawString(SCREEN_WIDTH / 2 + 120, SCREEN_HEIGHT / 2 + 150, "はい", cont_type_cursor == 1 ? 0xffff00 : 0xffffff);
+		UserData::DrawCoin({ (float)SCREEN_WIDTH / 2 - 200 + (cont_type_cursor * 300), SCREEN_HEIGHT / 2 + 185 }, 20, 227 + abs(((int)frame % 56 - 28)), 200);
 	}
 }
 

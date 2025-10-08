@@ -54,6 +54,7 @@ private:
 	int start_anim_timer;		//遷移時アニメーション測定
 
 	bool pause_flg;				//一時停止判断
+	bool pause_timer;			//一時停止の時間測定
 	int pause_cursor;			//ポーズ画面のカーソル
 	bool back_title_flg;		//タイトル画面に戻るか確認する画面を表示するか判断
 	int back_title_cursor;		//タイトル画面に戻るか確認

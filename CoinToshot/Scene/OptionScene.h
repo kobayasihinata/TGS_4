@@ -32,6 +32,8 @@ private:
 
 	int end_cursor;		//オプション終了の確認画面のカーソル
 
+	int cont_type_timer;	//時間測定用
+	int cont_type_cursor;	//操作変更確認画面のカーソル
 	int cont_type;	//操作タイプ一時保存用
 	bool check_change_flg;	//操作タイプ変更確認
 
