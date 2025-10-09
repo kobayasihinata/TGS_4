@@ -9,6 +9,7 @@ Attack::Attack(BulletData _bullet_data)
 	object = _bullet_data.who;
 	time = _bullet_data.delete_time;
 	count_up = 0;
+	speed = _bullet_data.speed;
 	move_velocity.x = _bullet_data.speed * cosf(_bullet_data.b_angle);
 	move_velocity.y = _bullet_data.speed * sinf(_bullet_data.b_angle);
 	angle = _bullet_data.b_angle;
@@ -48,6 +49,21 @@ void Attack::Finalize()
 
 void Attack::Update()
 {
+	//(デバッグ)近くの敵に向けて方向を変える
+	ObjectBase* near_enemy = manager->CheckNearEnemy(this, old_hit_object);
+	//敵が一体も居ないなら上に飛んでいく
+	if (near_enemy == nullptr)
+	{
+		move_velocity.x = 0;
+		move_velocity.y = -speed;
+	}
+	else
+	{
+		float shot_rad = atan2f(near_enemy->GetLocation().y - this->location.y, near_enemy->GetLocation().x - this->location.x);
+		move_velocity.x = speed * cosf(shot_rad);
+		move_velocity.y = speed * sinf(shot_rad);
+	}
+
 	//一定時間経過したら自身を削除する
 	if (++count_up > time)
 	{
@@ -142,6 +158,7 @@ void Attack::Hit(ObjectBase* hit_object)
 			manager->DeleteObject(this);
 		}
 		manager->CreateEffect(elHit, hit_object->GetLocation(), true, 0x000000, false, 30);
+
 	}
 }
 

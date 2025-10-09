@@ -546,3 +546,29 @@ bool ObjectManager::CheckHit(ObjectBase* _object1, ObjectBase* _object2)const
 	//同じオブジェクトを参照していなくて、当たり判定が被っていたら真を返す
 	return _object1 != _object2 && _object1->CheckHit(_object2);
 }
+
+ObjectBase* ObjectManager::CheckNearEnemy(ObjectBase* _obj, ObjectBase* _ignore)
+{
+	ObjectBase* ret = nullptr;
+	float ret_distance = 100000;
+	float obj_distance;
+	for (const auto& object_list : object_list)
+	{
+		//測定対象か調べる
+		if (object_list->IsEnemy() &&
+			!object_list->GetDeathFlg() && 
+			CheckInScreen(object_list,0) &&
+			object_list != ret && 
+			object_list != _ignore)
+		{
+			//距離を比較して、近い方を戻り値に入れる
+			obj_distance = sqrt(powf(_obj->GetLocation().x - object_list->GetLocation().x, 2) + powf(_obj->GetLocation().y - object_list->GetLocation().y, 2));
+			if (obj_distance < ret_distance)
+			{
+				ret = object_list;
+				ret_distance = obj_distance;
+			}
+		}
+	}
+	return ret;
+}

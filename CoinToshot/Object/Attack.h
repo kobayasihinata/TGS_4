@@ -12,6 +12,7 @@ private:
 	class Camera* camera;		//ƒJƒƒ‰ƒ|ƒCƒ“ƒ^Ši”[
 	float damage;				//UŒ‚—Í‚ğŠi”[
 	float angle;				//Šp“x‚ğ•Û‘¶
+	float speed;				//‘¬“x‚ğ•Û‘¶
 	int time;					//‘¶İ‚Å‚«‚éŠÔ
 	int count_up;				//¶¬‚³‚ê‚Ä‚©‚ç‚ÌŠÔ‘ª’è
 	Vector2D move_velocity;		//ˆÚ“®•ûŒü

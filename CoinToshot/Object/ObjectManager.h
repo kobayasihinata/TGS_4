@@ -117,5 +117,8 @@ public:
 
 	//当たり判定のチェック
 	bool CheckHit(ObjectBase* _object1, ObjectBase* _object2)const;
+
+	//指定したオブジェクトから最も近い敵のポインタを返す _obj = 指定のオブジェクト _ignore = 無視するオブジェクト
+	ObjectBase* CheckNearEnemy(ObjectBase* _obj, ObjectBase* _ignore);
 };
 
