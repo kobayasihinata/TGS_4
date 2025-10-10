@@ -12,7 +12,7 @@
 #include "Item/Coin.h"
 #include "Item/Heal.h"
 #include "Item/Magnet.h"
-#include "Block.h"
+#include "Box.h"
 #include "Slot.h"
 #include "Shop.h"
 #include "../Utility/UserData.h"

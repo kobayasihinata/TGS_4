@@ -10,7 +10,7 @@ static enum ObjectList
 	eENEMY5,
 	eCOIN,
 	eHEAL,
-	eBLOCK,
+	eBOX,
 	eSLOT,
 	eSHOP,
 	eATTACK,

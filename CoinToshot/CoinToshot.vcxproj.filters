@@ -90,7 +90,7 @@
     <ClCompile Include="Object\Attack.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Object\Block.cpp">
+    <ClCompile Include="Object\Box.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Object\Player\Player.cpp">
@@ -230,7 +230,7 @@
     <ClInclude Include="Object\Attack.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Object\Block.h">
+    <ClInclude Include="Object\Box.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Object\Player\Player.h">

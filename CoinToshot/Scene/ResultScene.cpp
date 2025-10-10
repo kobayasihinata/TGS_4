@@ -548,7 +548,7 @@ eSceneType ResultScene::EnterName()
 		ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 	}
 	//Aボタンを押して文字の追加(現在の入力と画面内の文字の合計が10文字未満なら)
-	if (UserData::CheckEnter())
+	if (name.size() < 10 && UserData::CheckEnter())
 	{
 		ResourceManager::rPlaySound(throw_se, DX_PLAYTYPE_BACK);
 		CreateMoveString(key[current_y][current_x], 
@@ -559,6 +559,7 @@ eSceneType ResultScene::EnterName()
 	}
 	//Bボタン(キーはback space)を押して一文字消す(現在の入力が0文字より大きいなら)
 	if (
+		name.size() > 0 &&
 		(UserData::control_type != 2 && InputPad::OnButton(XINPUT_BUTTON_B)) || 
 		(UserData::control_type == 2 && input->InputKey::GetKeyState(KEY_INPUT_BACK)==eInputState::Pressed)
 	    )
@@ -578,6 +579,7 @@ eSceneType ResultScene::EnterName()
 
 	//STARTボタン(キーはEnter)を押して入力終了
 	if (
+		name.size() > 0 &&
 		(UserData::control_type != 2 && InputPad::OnButton(XINPUT_BUTTON_START)) ||
 		(UserData::control_type == 2 && input->InputKey::GetKeyState(KEY_INPUT_RETURN) == eInputState::Pressed)
 		)

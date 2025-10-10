@@ -68,7 +68,7 @@ void Shop::Update()
 				start_anim_timer = 0;
 			}
 		}
-		if (end_anim)
+		else if (end_anim)
 		{
 			if (++end_anim_timer >= END_ANIM_TIME)
 			{
@@ -77,52 +77,55 @@ void Shop::Update()
 				SetShop(false);
 			}
 		}
-		for (int i = 0; i < ITEM_NUM; i++)
+		else
 		{
-			if (item_impact[i] > 0)
+			for (int i = 0; i < ITEM_NUM; i++)
 			{
-				item_impact[i]--;
+				if (item_impact[i] > 0)
+				{
+					item_impact[i]--;
+				}
+				else
+				{
+					item_impact[i] = 0;
+				}
 			}
-			else
+			for (int i = 2; i < ITEM_NUM; i++)
 			{
-				item_impact[i] = 0;
+				//UserData‚ÌŠŽ’†‚Ì’e‚ðŽQÆ‚µAŽ‚Á‚Ä‚¢‚é’e‚ðw“üÏ‚Ý‚Æ‚·‚é
+				if (std::find(UserData::get_bullet.begin(), UserData::get_bullet.end(), i) != UserData::get_bullet.end())
+				{
+					buy_count[i] = 1;
+				}
 			}
-		}
-		for (int i = 2; i < ITEM_NUM; i++)
-		{
-			//UserData‚ÌŠŽ’†‚Ì’e‚ðŽQÆ‚µAŽ‚Á‚Ä‚¢‚é’e‚ðw“üÏ‚Ý‚Æ‚·‚é
-			if (std::find(UserData::get_bullet.begin(), UserData::get_bullet.end(), i) != UserData::get_bullet.end())
+			//ƒJ[ƒ\ƒ‹ˆÚ“®ˆ—
+			if (UserData::CheckCursorMove(RIGHT))
 			{
-				buy_count[i] = 1;
+				if (++shop_cursor >= ITEM_NUM)
+				{
+					shop_cursor = 0;
+				}
+				ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 			}
-		}
-		//ƒJ[ƒ\ƒ‹ˆÚ“®ˆ—
-		if (UserData::CheckCursorMove(RIGHT))
-		{
-			if (++shop_cursor >= ITEM_NUM)
+			if (UserData::CheckCursorMove(LEFT))
 			{
-				shop_cursor = 0;
+				if (--shop_cursor < 0)
+				{
+					shop_cursor = ITEM_NUM - 1;
+				}
+				ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 			}
-			ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
-		}
-		if (UserData::CheckCursorMove(LEFT))
-		{
-			if (--shop_cursor < 0)
+			//w“üˆ—
+			if (UserData::CheckEnter())
 			{
-				shop_cursor = ITEM_NUM - 1;
+				BuyItem(shop_cursor);
 			}
-			ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
-		}
-		//w“üˆ—
-		if (UserData::CheckEnter())
-		{
-			BuyItem(shop_cursor);
-		}
-		//ƒVƒ‡ƒbƒv‚ðI‚í‚é
-		if (UserData::CheckCancel())
-		{
-			end_anim = true;
-			ResourceManager::rPlaySound(back_se, DX_PLAYTYPE_BACK);
+			//ƒVƒ‡ƒbƒv‚ðI‚í‚é
+			if (UserData::CheckCancel())
+			{
+				end_anim = true;
+				ResourceManager::rPlaySound(back_se, DX_PLAYTYPE_BACK);
+			}
 		}
 	}
 	//ƒVƒ‡ƒbƒv”ñ“WŠJŽž‚Ìˆ—
@@ -145,7 +148,7 @@ void Shop::Draw()const
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 120);
 		DrawRotaGraphF(local_location.x, local_location.y, 0.2f, 0, shop_image[0], true);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
-		DrawFormatStringF(local_location.x, local_location.y-30, 0xffffff, "%d", ((SHOP_COOLDOWN - shop_cd) / 60) + 1);
+		DrawFormatStringF(local_location.x - 50, local_location.y-30, 0xffffff, "•Â“X’†...(%d•b)", ((SHOP_COOLDOWN - shop_cd) / 60) + 1);
 	}
 	//’Êí•`‰æ
 	else

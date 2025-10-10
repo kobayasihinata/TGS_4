@@ -652,13 +652,20 @@ void InGameScene::SpawnItem()
 {
 	DebugInfomation::Add("frame", frame);
 
+	//マップの中心に定期的にコインをスポーン
 	if ((int)frame % 60 == 0)
 	{
 		objects->CreateObject({ Vector2D{(float)(GetRand(100)),(float)(GetRand(100))},Vector2D{40,40},eCOIN, 20.f });
 	}
+	//マップの中心にキラキラエフェクト
 	if ((int)frame % 10 == 0)
 	{
 		objects->CreateEffect(elShine, { (float)(GetRand(100)),(float)(GetRand(100)) }, TRUE, 0xffff00);
+	}
+	//マップ内のどこかにランダムで箱をスポーン
+	if ((int)frame % 60 == 0)
+	{
+		objects->CreateObject({ Vector2D{(float)(GetRand(3800)-1900),(float)(GetRand(3800) - 1900)},Vector2D{80,80},eBOX, 20.f });
 	}
 }
 void InGameScene::SpawnEnemy()

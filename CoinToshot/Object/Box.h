@@ -1,16 +1,20 @@
 #pragma once
-#include "Base/ObjectBase.h"
+#include "Base/ActorBase.h"
 
-class Block :
-	public ObjectBase
+#define ITEM_DROP 30  //レアドロップ確率
+
+class Box :
+	public ActorBase
 {
 private:
-
+	int death_se;				//死亡時SE
+	int item_spawn_se;			//レアアイテム生成SE
+	
 public:
 	//コンストラクタ
-	Block();
+	Box();
 	//デストラクタ
-	~Block();
+	~Box();
 	//初期化処理
 	void Initialize(ObjectManager* _manager, int _object_type, Vector2D init_location = Vector2D(0.0f), Vector2D init_size = 40.0f, float init_radius = 0.f)override;
 	//終了時処理

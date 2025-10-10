@@ -248,8 +248,8 @@ void ObjectManager::CreateObject(int object_type, Vector2D init_location, Vector
 	case ObjectList::eHEAL:
 		create_object.push_back(ObjectInitData{ new Heal(ingame,init_velocity),object_type,init_location,init_size,init_radius });
 		break;
-	case ObjectList::eBLOCK:
-		create_object.push_back(ObjectInitData{ new Block(),object_type,init_location,init_size,init_radius });
+	case ObjectList::eBOX:
+		create_object.push_back(ObjectInitData{ new Box(),object_type,init_location,init_size,init_radius });
 		break;
 	case ObjectList::eSLOT:
 		create_object.push_back(ObjectInitData{ new Slot(ingame),object_type,init_location,init_size,init_radius });

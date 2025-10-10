@@ -90,7 +90,7 @@ void Attack::Update()
 		}
 
 		//消滅エフェクト
-		manager->CreateEffect(elRipples, this->location, true, ripple_color, false,45);
+		manager->CreateEffect(elRipples, this->location, true, ripple_color, false, 45);
 	}
 
 	//波紋を生成
@@ -133,7 +133,7 @@ void Attack::Hit(ObjectBase* hit_object)
 		return;
 	}
 
-	//攻撃同士が当たった場合か、落ちてるコインと当たった場合、無視
+	//攻撃同士が当たった場合か、落ちてるコインと当たった場合、スキップ
 	if (hit_object->GetObjectType() == eATTACK || hit_object->GetObjectType() == eCOIN)
 	{
 		return;
@@ -154,8 +154,8 @@ void Attack::Hit(ObjectBase* hit_object)
 		manager->CreateEffect(elHit, hit_object->GetLocation(), true, 0x000000, false, 30);
 	}
 
-	//攻撃したのがプレイヤーで、敵に攻撃が当たっているなら
-	if (object->GetObjectType() == ePLAYER && hit_object->IsEnemy())
+	//攻撃したのがプレイヤーで、敵か箱に攻撃が当たっているなら
+	if (object->GetObjectType() == ePLAYER && (hit_object->IsEnemy() || hit_object->GetObjectType()== eBOX))
 	{
 		//ダメージ
 		hit_object->Damage(damage, this->location);

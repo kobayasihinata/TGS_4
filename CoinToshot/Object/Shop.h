@@ -1,7 +1,7 @@
 #pragma once
 #include "Base/ObjectBase.h"
 
-#define SHOP_COOLDOWN    300	//再びショップを使えるようになる時間
+#define SHOP_COOLDOWN    600	//再びショップを使えるようになる時間
 #define SHOP_ITEM_WIDTH	 240	//ショップUIのアイテム一つ辺りの幅
 #define SHOP_ITEM_HEIGHT 240	//ショップUIのアイテム一つ辺りの高さ
 #define START_ANIM_TIME  30		//アニメーション時間
