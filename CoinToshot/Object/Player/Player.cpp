@@ -539,10 +539,10 @@ void Player::Control()
 	if (tutorial->GetTutoNowEnd(TutoType::tAttack) &&
 		UserData::CheckBulletButton())
 	{
-		if (UserData::get_bullet_cd[UserData::get_bullet[UserData::now_bullet]] <= 0 && UserData::coin >= pBullet[UserData::get_bullet[UserData::now_bullet]].cost)
+		if (UserData::get_bullet_cd[UserData::now_bullet] <= 0 && UserData::coin >= pBullet[UserData::get_bullet[UserData::now_bullet]].cost)
 		{
 			ShotBullet();
-			UserData::get_bullet_cd[UserData::get_bullet[UserData::now_bullet]] = pBullet[UserData::get_bullet[UserData::now_bullet]].cooldown;
+			UserData::get_bullet_cd[UserData::now_bullet] = pBullet[UserData::get_bullet[UserData::now_bullet]].cooldown;
 			UserData::coin -= pBullet[UserData::get_bullet[UserData::now_bullet]].cost;
 			ResourceManager::rPlaySound(shot_se, DX_PLAYTYPE_BACK);
 			std::string s = "-" + std::to_string(pBullet[UserData::get_bullet[UserData::now_bullet]].cost);
@@ -648,6 +648,7 @@ void Player::DrawBulletOrbit(Vector2D _loc)const
 	case BulletType::bNormal:
 	case BulletType::bStrong:
 	case BulletType::bStrongest:
+	case BulletType::bTracking:
 		DrawRotaGraph(_loc.x + 40 * sinf(shot_rad + 1.5f), _loc.y - 40 * cosf(shot_rad + 1.5f), 1.0f, shot_rad + 1.55f, arrow_image, TRUE);
 
 		break;
@@ -731,6 +732,24 @@ void Player::CreateArrowImage()const
 						70, 30 + (i * 20) - (frame % 20),
 						50, 10 + (i * 20) - (frame % 20),
 						0xffaa00, TRUE);
+		}
+		//文字透過リセット
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+		break;
+	case BulletType::bTracking:
+		for (int i = 1; i < 5; i++)
+		{
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, (i * 200) - ((frame % 20) * 10));
+			DrawQuadrangleAA(50, (i * 20) - (frame % 20),
+				35, 25 + (i * 20) - (frame % 20),
+				30, 30 + (i * 20) - (frame % 20),
+				50, 10 + (i * 20) - (frame % 20),
+				0xff00ff, TRUE);
+			DrawQuadrangleAA(50, (i * 20) - (frame % 20),
+				65, 25 + (i * 20) - (frame % 20),
+				60, 30 + (i * 20) - (frame % 20),
+				50, 10 + (i * 20) - (frame % 20),
+				0xff00ff, TRUE);
 		}
 		//文字透過リセット
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);

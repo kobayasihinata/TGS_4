@@ -6,7 +6,7 @@
 #define SHOP_ITEM_HEIGHT 240	//ショップUIのアイテム一つ辺りの高さ
 #define START_ANIM_TIME  30		//アニメーション時間
 #define END_ANIM_TIME    30		//アニメーション時間
-#define ITEM_NUM         5		//購入できるアイテムの総数
+#define ITEM_NUM         6		//購入できるアイテムの総数
 
 struct ItemList
 {
@@ -23,6 +23,7 @@ static ItemList item_list[ITEM_NUM]
 	{"回復",  0x00ff00,"HPを回復できる",    0x0aa00,  50,5},
 	{"磁石",  0x00ffff,"コインを引き寄せる",0x00aaaa, 50,3},
 	{"強化弾",0xffaa00,"ほとんどの敵を一撃",0xaa5500, 50,1}, 
+	{"追尾弾",0xff00ff,"オートエイム",		0xaa00aa, 50,1}, 
 	{"爆発弾",0xff2222,"広範囲の爆発",		0xaa0000, 80,1},
 	{"最強弾",0x000000,"つよい",			0x000000,150,1},
 };

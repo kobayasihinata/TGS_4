@@ -49,19 +49,28 @@ void Attack::Finalize()
 
 void Attack::Update()
 {
-	//(デバッグ)近くの敵に向けて方向を変える
-	ObjectBase* near_enemy = manager->CheckNearEnemy(this, old_hit_object);
-	//敵が一体も居ないなら上に飛んでいく
-	if (near_enemy == nullptr)
+	//追尾弾処理
+	if (count_up > 30 && bullet_type == BulletType::bTracking)
 	{
-		move_velocity.x = 0;
-		move_velocity.y = -speed;
-	}
-	else
-	{
-		float shot_rad = atan2f(near_enemy->GetLocation().y - this->location.y, near_enemy->GetLocation().x - this->location.x);
-		move_velocity.x = speed * cosf(shot_rad);
-		move_velocity.y = speed * sinf(shot_rad);
+		//近くの敵に向けて方向を変える
+		ObjectBase* near_enemy = manager->CheckNearEnemy(this, old_hit_object);
+		//敵が一体も居ないならプレイヤー追尾
+		if (near_enemy == nullptr)
+		{
+			if (count_up % 30 == 0)
+			{
+				float shot_rad = atan2f(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x);
+				move_velocity.x = speed * cosf(shot_rad);
+				move_velocity.y = speed * sinf(shot_rad);
+				old_hit_object = nullptr;
+			}
+		}
+		else
+		{
+			float shot_rad = atan2f(near_enemy->GetLocation().y - this->location.y, near_enemy->GetLocation().x - this->location.x);
+			move_velocity.x = speed * cosf(shot_rad);
+			move_velocity.y = speed * sinf(shot_rad);
+		}
 	}
 
 	//一定時間経過したら自身を削除する

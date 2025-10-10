@@ -1,6 +1,6 @@
 #pragma once
 
-#define BULLET_NUM 5	//’e‚Ìí—Ş
+#define BULLET_NUM 6	//’e‚Ìí—Ş
 
 //ƒvƒŒƒCƒ„[‚Ì’e‚É•K—v‚Èî•ñ
 struct PlayerBullet
@@ -22,12 +22,13 @@ struct PlayerBullet
 //’e‚Ìƒf[ƒ^
 static PlayerBullet pBullet[BULLET_NUM]
 {
-	//name    cos   dam  spe   rad   h_c  life  cd  num space
-	{"’Êí’e",   1,	  1.f, 10.f, 20.f,   100, 1200,  1, 1,    0,{255,255,255}},
-	{"ŠgU’e",   5,   2.f, 10.f, 20.f,   1,  30,  30, 5, 0.3f,{0,255,255}},
-	{"‹­‰»’e",  10,   7.f, 15.f, 30.f,   5, 180, 10, 1,    0,{255,127,0}},
-	{"”š”­’e",  30,   3.f, 10.f, 10.f, 100,  20, 10, 1,	   0,{255,0,0}},
-	{"Å‹­’e", 100,  20.f, 25.f, 40.f, 100, 360,180, 1,    0,{0,0,0}},
+	//name     cos   dam   spe   rad   h_c  life  cd  num space
+	{"’Êí’e",   1,	 1.f, 10.f, 20.f,   1,  120,  1,  1,    0,{255,255,255}},
+	{"ŠgU’e",   5,  2.f, 10.f, 20.f,   1,   30, 20,  5, 0.3f,{0,255,255}},
+	{"‹­‰»’e",  10,  7.f, 15.f, 30.f,   5,  180, 10,  1,    0,{255,127,0}},
+	{"’Ç”ö’e",  10,  1.f,  7.f, 15.f,  13, 1200, 30,  1,    0,{255,0,255}},
+	{"”š”­’e",  30,  3.f, 10.f, 10.f, 100,   20, 40,  1,	0,{255,0,0}},
+	{"Å‹­’e", 100, 20.f, 25.f, 40.f, 100,  360,180,  1,    0,{0,0,0}},
 };
 
 //ƒf[ƒ^‚Æ“¯‚¶‡”Ô
@@ -35,7 +36,7 @@ static enum BulletType {
 	bNormal=0,
 	bShotgun,
 	bStrong,
+	bTracking,
 	bExplosion,
 	bStrongest,
-
 };

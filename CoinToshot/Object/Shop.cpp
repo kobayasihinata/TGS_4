@@ -270,12 +270,16 @@ void Shop::BuyItem(int cursor)
 			UserData::get_bullet.push_back(2);
 			UserData::get_bullet_cd.push_back(0);
 			break;
-		case 3: //”š”­’e
+		case 3: //’Ç”ö’e
 			UserData::get_bullet.push_back(3);
 			UserData::get_bullet_cd.push_back(0);
 			break;
-		case 4: //Å‹­’e
+		case 4: //”š”­’e
 			UserData::get_bullet.push_back(4);
+			UserData::get_bullet_cd.push_back(0);
+			break;
+		case 5: //Å‹­’e
+			UserData::get_bullet.push_back(5);
 			UserData::get_bullet_cd.push_back(0);
 			break;
 		}
