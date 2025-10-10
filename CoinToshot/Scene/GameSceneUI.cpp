@@ -16,7 +16,7 @@ void GameSceneUI::Initialize(InGameScene* _ingame)
 	frame = 0;
 	bullet_image = MakeScreen(300, 225, TRUE);
 	lock_image = MakeScreen(60, 75, TRUE);
-	old_bullet_type = UserData::get_bullet[UserData::now_bullet];
+	old_bullet_type = UserData::now_bullet;
 	bullet_change_timer = 0;
 	change_anim_move = 300.f / PLATER_BULLET_CHANGE_CD;
 	change_anim_once = false;
@@ -168,17 +168,17 @@ void GameSceneUI::Update()
 	if (!new_bullet_flg)
 	{
 		//弾の種類が変わっているなら、アニメーションする
-		if (old_bullet_type != UserData::get_bullet[UserData::now_bullet])
+		if (UserData::get_bullet[old_bullet_type] != UserData::get_bullet[UserData::now_bullet])
 		{
 			if (!change_anim_once)
 			{
-				move_dir = CheckMoveDirection(UserData::get_bullet[UserData::now_bullet], old_bullet_type);
+				move_dir = CheckMoveDirection(UserData::get_bullet[UserData::now_bullet], UserData::get_bullet[old_bullet_type]);
 				change_anim_once = true;
 			}
 			//アニメーション終了条件
 			if (++bullet_change_timer >= PLATER_BULLET_CHANGE_CD)
 			{
-				old_bullet_type = UserData::get_bullet[UserData::now_bullet];
+				old_bullet_type = UserData::now_bullet;
 				bullet_change_timer = 0;
 			}
 
@@ -211,8 +211,8 @@ void GameSceneUI::Update()
 		//弾の種類を変える
 		if (new_bullet_timer >= NEW_BULLET_ANIM_1 &&UserData::now_bullet != UserData::get_bullet.size()-1)
 		{
-			UserData::now_bullet = UserData::get_bullet.size()-1;
-			old_bullet_type = UserData::get_bullet[UserData::now_bullet];
+			UserData::now_bullet = UserData::get_bullet.size() - 1;
+			old_bullet_type = UserData::now_bullet;
 			ResourceManager::rPlaySound(unlock_se, DX_PLAYTYPE_BACK);
 			ResourceManager::rPlaySound(unlock2_se, DX_PLAYTYPE_BACK);
 		}
@@ -513,26 +513,26 @@ void GameSceneUI::CreateBulletTypeImage()const
 	}
 
 	//弾変更が有れば変更前と変更後の箱を描画
-	if (old_bullet_type != UserData::get_bullet[UserData::now_bullet])
+	if (UserData::get_bullet[old_bullet_type] != UserData::get_bullet[UserData::now_bullet])
 	{
 		//変更前と変更後を比べて、右にアニメーションするか左にアニメーションするか判断
 		if (move_dir)
 		{
 			//右移動
-			DrawBullet({ change_anim_move * bullet_change_timer - 300, GetRand(1)}, UserData::get_bullet[UserData::now_bullet]);
-			DrawBullet({ change_anim_move * bullet_change_timer,  GetRand(1) }, old_bullet_type);
+			DrawBullet({ change_anim_move * bullet_change_timer - 300, GetRand(1)}, UserData::get_bullet[UserData::now_bullet], UserData::get_bullet_cd[UserData::now_bullet]);
+			DrawBullet({ change_anim_move * bullet_change_timer,  GetRand(1) }, UserData::get_bullet[old_bullet_type], UserData::get_bullet_cd[old_bullet_type]);
 		}
 		else
 		{
 			//左移動
-			DrawBullet({ change_anim_move * -bullet_change_timer,  GetRand(1) }, old_bullet_type);
-			DrawBullet({ (change_anim_move * -bullet_change_timer) + 300,  GetRand(1) }, UserData::get_bullet[UserData::now_bullet]);
+			DrawBullet({ change_anim_move * -bullet_change_timer,  GetRand(1) }, UserData::get_bullet[old_bullet_type], UserData::get_bullet_cd[old_bullet_type]);
+			DrawBullet({ (change_anim_move * -bullet_change_timer) + 300,  GetRand(1) }, UserData::get_bullet[UserData::now_bullet],UserData::get_bullet_cd[UserData::now_bullet]);
 		} 
 	}
 	//変更が無いなら通常の描画
 	else
 	{
-		DrawBullet({ 0, 0 }, UserData::get_bullet[UserData::now_bullet]);
+		DrawBullet({ 0, 0 }, UserData::get_bullet[UserData::now_bullet], UserData::get_bullet_cd[UserData::now_bullet]);
 	}
 
 	//文字大きさ設定
@@ -620,7 +620,7 @@ void GameSceneUI::CreateRankingImage()
 	SetDrawScreen(DX_SCREEN_BACK);
 }
 
-void GameSceneUI::DrawBullet(Vector2D _loc, int _type)const
+void GameSceneUI::DrawBullet(Vector2D _loc, int _type, int _cd)const
 {
 	//撃てない弾のUIは薄暗くする
 	int draw_color = pBullet[_type].cost <= UserData::coin || new_bullet_flg? GetColor(pBullet[_type].color[0], pBullet[_type].color[1], pBullet[_type].color[2]) : 0xaaaa55;
@@ -636,6 +636,15 @@ void GameSceneUI::DrawBullet(Vector2D _loc, int _type)const
 	UserData::DrawCoin({ _loc.x + 115, _loc.y + 120 }, 25);
 	DrawFormatString(_loc.x + 135, _loc.y + 110, draw_color, " - %d", pBullet[_type].cost);
 	//DrawFormatString(_loc.x + 90, _loc.y + 70, draw_color, "power:%d", (int)pBullet[_type].damage);
+	
+	//弾のクールダウン描画
+	if (_cd > 0)
+	{
+		pBullet[_type].life_span;
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 120);
+		DrawBoxAA(_loc.x, _loc.y, _loc.x + (300.f / pBullet[_type].cooldown) * _cd, _loc.y + 150, 0x000000, true);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+	}
 }
 
 void GameSceneUI::DrawPlayerUI()const

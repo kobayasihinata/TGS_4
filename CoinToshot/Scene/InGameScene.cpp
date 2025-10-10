@@ -542,7 +542,9 @@ void InGameScene::MakeGameMainDraw()
 			SetFontSize(72);
 			DrawBox((SCREEN_WIDTH / 2) - 300, (SCREEN_HEIGHT / 2) - 75, (SCREEN_WIDTH / 2) + 300, (SCREEN_HEIGHT / 2) + 75, 0x000000, true);
 			DrawBox((SCREEN_WIDTH / 2) - 300, (SCREEN_HEIGHT / 2) - 75, (SCREEN_WIDTH / 2) + 300, (SCREEN_HEIGHT / 2) + 75, 0xffffff, false);
-			DrawString((SCREEN_WIDTH / 2) - 200, (SCREEN_HEIGHT / 2) - 45, "GameClear!", 0xffffff);
+			UserData::DrawStringCenter({ (SCREEN_WIDTH / 2), (SCREEN_HEIGHT / 2) - 55 }, "GameEnd!", 0xffffff);
+			SetFontSize(36);
+			UserData::DrawStringCenter({ (SCREEN_WIDTH / 2), (SCREEN_HEIGHT / 2) + 20 }, "Ç±ÇÃå„åãâ î≠ï\ÅI", 0xffffff);
 		}
 		else
 		{
@@ -553,7 +555,9 @@ void InGameScene::MakeGameMainDraw()
 			SetFontSize(72);
 			DrawBox((SCREEN_WIDTH / 2) - 300, (SCREEN_HEIGHT / 2) - 75, (SCREEN_WIDTH / 2) + 300, (SCREEN_HEIGHT / 2) + 75, 0x000000, true);
 			DrawBox((SCREEN_WIDTH / 2) - 300, (SCREEN_HEIGHT / 2) - 75, (SCREEN_WIDTH / 2) + 300, (SCREEN_HEIGHT / 2) + 75, 0xffffff, false);
-			DrawString((SCREEN_WIDTH / 2) - 200, (SCREEN_HEIGHT / 2) - 45, "GameOver...", 0xaaaaaa);
+			UserData::DrawStringCenter({ (SCREEN_WIDTH / 2), (SCREEN_HEIGHT / 2) - 55 }, "GameEnd...", 0xffffff);
+			SetFontSize(36);
+			UserData::DrawStringCenter({ (SCREEN_WIDTH / 2), (SCREEN_HEIGHT / 2) + 20 }, "Ç±ÇÃå„åãâ î≠ï\", 0xffffff);
 		}
 	}
 

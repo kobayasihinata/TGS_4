@@ -151,7 +151,7 @@ public:
 	void CreateRankingImage();
 
 	//’eî•ñ•`‰æ
-	void DrawBullet(Vector2D _loc, int _type)const;
+	void DrawBullet(Vector2D _loc, int _type, int _cd)const;
 
 	//ƒvƒŒƒCƒ„[î•ñ•`‰æ
 	void DrawPlayerUI()const;
