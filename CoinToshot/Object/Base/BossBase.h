@@ -32,8 +32,6 @@ public:
 	virtual void Update()override
 	{
 		__super::Update();
-
-		MovetoPlayer();
 	}
 
 	virtual void Draw()const override

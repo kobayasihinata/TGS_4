@@ -164,10 +164,10 @@ void ObjectManager::Draw()const
 	for (const auto& object : object_list)
 	{
 		//画面内にあるオブジェクトだけ描画
-		if (CheckInScreen(object, 50))
+		if (CheckInScreen(object, 50) || object->IsBoss())
 		{
 			//敵だけ後から描画（見やすさのために）
-			if (object->IsEnemy())
+			if (object->IsEnemy() || object->IsBoss())
 			{
 				enemy_list.push_back(object);
 			}

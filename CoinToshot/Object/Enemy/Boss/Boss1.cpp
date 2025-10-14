@@ -12,6 +12,12 @@ Boss1::Boss1(InGameScene* _ingame)
 	//指定したドロップ量から±1の間でランダムにコインをドロップ
 	drop_coin = BOSS1_DROPCOIN + (GetRand(2) - 1);
 
+	cooldown_timer = 0;
+	rush_flg = false;
+	rush_timer = 0;
+	rush_radian = 0;
+	rush_num = 0;
+	rush_num_count = 0;
 
 	//画像読込
 	ResourceManager* rm = ResourceManager::GetInstance();
@@ -56,6 +62,9 @@ void Boss1::Update()
 	
 	//HPゲージ表示
 	ingame->SetBossHp("Boss1", hp, max_hp, hpbar_move);
+
+	//突進処理
+	Rush();
 
 	//死亡演出フラグが立っているなら
 	if (death_flg)
@@ -104,12 +113,29 @@ void Boss1::Update()
 void Boss1::Draw()const
 {
 	__super::Draw();
-	Vector2D::DrawBoxV2(local_location - (box_size / 2), local_location + (box_size / 2), 0xff0000, false);
+	
+	if (rush_flg)
+	{
+		DrawLineAA(local_location.x,
+			local_location.y,
+			local_location.x + RUSH_SPEED*9* cos(rush_radian),
+			local_location.y + RUSH_SPEED*9* sin(rush_radian), 0xff0000);
+	}
 }
 
-void Boss1::Hit(ObjectBase* hit_Object)
+void Boss1::Hit(ObjectBase* hit_object)
 {
-	__super::Hit(hit_Object);
+	__super::Hit(hit_object);
+
+	if (abs(velocity.x) > BOSS1_SPEED*2 && abs(velocity.y) > BOSS1_SPEED*2)
+	{
+		//自身が生きていて、敵に当たったらダメージを与える
+		if (!this->death_flg &&
+			hit_object->IsEnemy())
+		{
+			hit_object->Damage(hit_damage, this->location);
+		}
+	}
 }
 
 void Boss1::Damage(float _value, Vector2D _attack_loc, int _knock_back)
@@ -120,3 +146,64 @@ void Boss1::Damage(float _value, Vector2D _attack_loc, int _knock_back)
 
 }
 
+void Boss1::Rush()
+{
+	//突進中でなければプレイヤーに向けて移動する
+	if (!rush_flg)
+	{
+		MovetoPlayer();
+	}
+
+	//突進回数決定
+	SetRushNum();
+
+	//突進開始までの時間計測
+	if (!rush_flg && ++cooldown_timer >= RUSH_SPAN)
+	{
+		rush_flg = true;
+		cooldown_timer = 0;
+	}
+	if (rush_flg)
+	{
+		if (++rush_timer < 120)
+		{
+			//直前までプレイヤーに方向を定める
+			if (rush_timer < 100)
+			{
+				rush_radian = atan2(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x);
+			}
+		}
+		//一定時間経過で発射
+		else
+		{
+			//移動の上限値設定
+			velocity.x += RUSH_SPEED * cos(rush_radian);
+			velocity.y += RUSH_SPEED * sin(rush_radian);
+
+			//指定の回数突進が終わったらフラグを下げる
+			if (++rush_num_count >= rush_num)
+			{
+				rush_flg = false;
+				rush_num_count = 0;
+			}
+			rush_timer = 0;
+		}
+	}
+}
+
+void Boss1::SetRushNum()
+{
+	//HP残量に応じて突進回数を変える
+	if (hp > (float)BOSS1_HP / 3 * 2)
+	{
+		rush_num = 1;
+	}
+	else if (hp > (float)BOSS1_HP / 3)
+	{
+		rush_num = 2;
+	}
+	else
+	{
+		rush_num = 3;
+	}
+}

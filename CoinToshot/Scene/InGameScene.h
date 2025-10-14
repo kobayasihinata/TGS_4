@@ -245,6 +245,13 @@ public:
 	/// <param name="_hp_max">体力最大値</param>
 	/// <param name="_hp_move">ゲージ減少アニメーション</param>
 	void SetBossHp(const char* _name, float _hp, float _hp_max, float _hp_move);
+
+	/// <summary>
+	/// ボス登場演出
+	/// </summary>
+	/// <param name="_spawn_loc">ボスの座標（絶対座標）</param>
+	/// <param name="_anim_time">アニメーション時間</param>
+	void SetBossSpawnAnim(Vector2D _spawn_loc, int _anim_time);
 };
 
 
