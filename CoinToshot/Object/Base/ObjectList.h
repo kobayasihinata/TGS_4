@@ -8,6 +8,7 @@ static enum ObjectList
 	eENEMY3,
 	eENEMY4,
 	eENEMY5,
+	eBOSS1,
 	eCOIN,
 	eHEAL,
 	eBOX,

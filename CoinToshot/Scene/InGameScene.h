@@ -19,6 +19,13 @@
 //ボーナスアニメーション
 #define TIME_BONUS 60	//文字表示時間
 
+struct BossHp
+{
+	char* name;		//ボス名
+	float hp;		//表示HP
+	float max_hp;	//HP最大値
+	float hp_move;	//減少アニメーション用
+};
 
 class InGameScene : public SceneBase
 {
@@ -67,6 +74,8 @@ private:
 	int zoom_time;				//何秒間ズームしたままでいるか
 	int zoom_time_count;		//何秒間ズームしたままでいるか測定
 	float zoom_speed;			//ズームの速度
+
+	std::vector<BossHp> boss_hp;//ボスの体力表示用
 
 	int first_bonus_image;		//3/1ボーナス画像
 	int second_bonus_image;		//3/2ボーナス画像
@@ -227,6 +236,15 @@ public:
 	/// <param name="_time">拡大している時間</param>
 	/// <param name="_speed">拡大する速度</param>
 	void SetZoom(Vector2D _loc, float _size, int _time, float _speed);
+
+	/// <summary>
+	/// 表示するボスの情報を格納する
+	/// </summary>
+	/// <param name="_name">ボス名</param>
+	/// <param name="_hp">体力</param>
+	/// <param name="_hp_max">体力最大値</param>
+	/// <param name="_hp_move">ゲージ減少アニメーション</param>
+	void SetBossHp(const char* _name, float _hp, float _hp_max, float _hp_move);
 };
 
 

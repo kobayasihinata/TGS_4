@@ -95,6 +95,11 @@ public:
 			   object_type == eENEMY4 ||
 			   object_type == eENEMY5;
 	}
+	//ボスオブジェクトか判断
+	bool IsBoss()const
+	{
+		return object_type == eBOSS1;
+	}
 	//アニメーション処理(基本的なループ用)
 	virtual void Animation()
 	{

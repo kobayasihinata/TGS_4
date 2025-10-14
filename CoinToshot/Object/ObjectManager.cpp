@@ -242,6 +242,9 @@ void ObjectManager::CreateObject(int object_type, Vector2D init_location, Vector
 	case ObjectList::eENEMY5:
 		create_object.push_back(ObjectInitData{ new Enemy5(),object_type,init_location,init_size,init_radius });
 		break;
+	case ObjectList::eBOSS1:
+		create_object.push_back(ObjectInitData{ new Boss1(ingame),object_type,init_location,init_size,init_radius });
+		break;
 	case ObjectList::eCOIN:
 		create_object.push_back(ObjectInitData{ new Coin(ingame,init_velocity),object_type,init_location,init_size,init_radius });
 		break;

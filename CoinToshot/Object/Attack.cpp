@@ -155,7 +155,7 @@ void Attack::Hit(ObjectBase* hit_object)
 	}
 
 	//攻撃したのがプレイヤーで、敵か箱に攻撃が当たっているなら
-	if (object->GetObjectType() == ePLAYER && (hit_object->IsEnemy() || hit_object->GetObjectType()== eBOX))
+	if (object->GetObjectType() == ePLAYER && (hit_object->IsEnemy() || hit_object->IsBoss() || hit_object->GetObjectType()== eBOX))
 	{
 		//ダメージ
 		hit_object->Damage(damage, this->location);

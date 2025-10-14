@@ -1,7 +1,7 @@
 #pragma once
 #define DEBUG_SKIP true			//デバッグ用チュートリアルスキップモード
 #define DEBUG_PLAYER false		//クリアと死をすぐ確認したい時用
-#define WINDOW_MODE false		//ウィンドウモードかどうか
+#define WINDOW_MODE true		//ウィンドウモードかどうか
 
 #define SE_MAX 13000	//SE音量の上限
 #define BGM_MAX 11000	//BGM音量の上限
@@ -86,3 +86,12 @@
 #define ENEMY5_SPEED 0.2f		//敵５速度
 #define ENEMY5_DAMAGE 2			//敵５与ダメ
 #define ENEMY5_DROPCOIN 30		//敵５コインドロップ量
+
+#define BOSS_BAR_SIZE 500		//ボスHPゲージ幅
+
+#define BOSS1_HP 30				//ボス１HP
+#define BOSS1_WIDTH 100			//ボス１幅
+#define BOSS1_HEIGHT 100		//ボス１高さ
+#define BOSS1_SPEED 1.f			//ボス１速度
+#define BOSS1_DAMAGE 3			//ボス１与ダメ
+#define BOSS1_DROPCOIN 100		//ボス１コインドロップ量

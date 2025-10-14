@@ -90,6 +90,7 @@ void InGameScene::Initialize()
 	objects->CreateObject({ {1000,-1000},{160,120},eSHOP});
 	objects->CreateObject({ Vector2D{ 200, 30},Vector2D{40,40},eCOIN, 20.f});
 	objects->CreateObject({ {1050,0}, Vector2D{ ENEMY1_WIDTH,ENEMY1_HEIGHT }, eENEMY1});
+	objects->CreateObject({ {150,0}, Vector2D{ BOSS1_WIDTH,BOSS1_HEIGHT }, eBOSS1});
 
 	gamemain_image = MakeScreen(SCREEN_WIDTH, SCREEN_HEIGHT);
 	flower_image = MakeScreen(191, 191);
@@ -130,6 +131,9 @@ void InGameScene::Finalize()
 eSceneType InGameScene::Update(float _delta)
 {
 	change_scene = __super::Update(_delta);
+
+	//ボスHP表示用変数リセット
+	boss_hp.clear();
 
 	//チュートリアル更新
 	tutorial->Update();
@@ -188,6 +192,9 @@ eSceneType InGameScene::Update(float _delta)
 		{
 			change_scene = eSceneType::eResult;
 		}
+
+		std::string a = "boss1";
+		SetBossHp(a.c_str(), 100, 100, 0);
 
 		//描画の更新
 		MakeGameMainDraw();
@@ -379,6 +386,7 @@ eSceneType InGameScene::Update(float _delta)
 	//画面ズームの更新
 	UpdateZoom();
 
+
 	//遷移時一回だけ更新
 	update_once = true;
 	return change_scene;
@@ -530,6 +538,48 @@ void InGameScene::MakeGameMainDraw()
 	//UI描画
 	ui->Draw();
 
+	Vector2D hpbar_loc = { SCREEN_WIDTH / 2,SCREEN_HEIGHT-50 }; 
+	Vector2D hp_bar_size = { BOSS_BAR_SIZE,30 };
+	int count = 0;
+	//ボスHP描画
+	for (const auto boss : boss_hp)
+	{
+		hpbar_loc.y -= count * (hp_bar_size.y + 40);
+		count++;
+		UserData::DrawStringCenter({ hpbar_loc.x,hpbar_loc.y - hp_bar_size.y-20 }, boss.name, 0xffffff);
+		//HPゲージ内側
+		DrawBoxAA(hpbar_loc.x - (hp_bar_size.x / 2),
+			hpbar_loc.y - (hp_bar_size.y / 2),
+			hpbar_loc.x + (hp_bar_size.x / 2),
+			hpbar_loc.y + (hp_bar_size.y / 2),
+			0x000000,
+			true);
+
+		//HPゲージ本体
+		DrawBoxAA(hpbar_loc.x - (hp_bar_size.x / 2),
+			hpbar_loc.y - (hp_bar_size.y / 2),
+			hpbar_loc.x - (hp_bar_size.x / 2) + (boss.hp * (hp_bar_size.x / boss.max_hp)) + boss.hp_move,
+			hpbar_loc.y + (hp_bar_size.y / 2),
+			0xcccc00,
+			true);
+
+		//HPゲージ減少アニメーション
+		DrawBoxAA(hpbar_loc.x - (hp_bar_size.x / 2) + (boss.hp * (hp_bar_size.x / boss.max_hp)),
+			hpbar_loc.y - (hp_bar_size.y / 2),
+			hpbar_loc.x - (hp_bar_size.x / 2) + (boss.hp * (hp_bar_size.x / boss.max_hp)) + boss.hp_move,
+			hpbar_loc.y + (hp_bar_size.y / 2),
+			0xff0000,
+			true);
+
+		//HPゲージ外枠
+		DrawBoxAA(hpbar_loc.x - (hp_bar_size.x / 2),
+			hpbar_loc.y - (hp_bar_size.y / 2),
+			hpbar_loc.x + (hp_bar_size.x / 2),
+			hpbar_loc.y + (hp_bar_size.y / 2),
+			0xffffff,
+			false);
+
+	}
 	//ゲームオーバーかクリアか表示
 	if (UserData::is_gamestop)
 	{
@@ -605,7 +655,7 @@ void InGameScene::MakeGameMainDraw()
 	//最低保証コインが出た時のメッセージ
 	if (coin_spawn_once)
 	{
-		SetFontSize(18);
+		SetFontSize(24);
 		DrawString((SCREEN_WIDTH / 2) + 100, (SCREEN_HEIGHT / 2) + 20, "あきらめないで！", (int)frame % 30 > 15 ? 0xcccc00 : 0xffff00);
 	}
 	SetDrawScreen(DX_SCREEN_BACK);
@@ -1167,4 +1217,9 @@ void InGameScene::SetZoom(Vector2D _loc, float _size, int _time, float _speed)
 	zoom_time = _time;
 	zoom_time_count = 0;
 	zoom_speed = _speed <= 0 ? 1 : _speed;
+}
+
+void InGameScene::SetBossHp(const char* _name, float _hp, float _hp_max, float _hp_move)
+{
+	boss_hp.push_back(BossHp{ (char*)_name,_hp,_hp_max,_hp_move });
 }
