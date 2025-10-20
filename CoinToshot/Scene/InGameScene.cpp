@@ -363,11 +363,16 @@ eSceneType InGameScene::Update(float _delta)
 		objects->UpdateBossAnim(now_anim_boss);
 
 		MakeGameMainDraw();
-		//一定時間経過でアニメーション終了
+
+		//アニメーション終了後一定時間は止まったまま、カメラはプレイヤーに返す
 		if (++boss_anim_count > boss_anim_timer)
 		{
-			boss_anim_flg = false;
 			camera->camera_gaze_location = 0;
+		}
+		//一定時間経過でアニメーション処理全終了
+		if (boss_anim_count > boss_anim_timer + 60)
+		{
+			boss_anim_flg = false;
 		}
 	}
 	//遷移アニメーション
