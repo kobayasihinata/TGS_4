@@ -214,6 +214,25 @@ void ObjectManager::Draw()const
 	}
 }
 
+void ObjectManager::UpdateBossAnim(ObjectBase* _now_anim_boss)
+{
+	//オブジェクト相対座標更新処理
+	for (const auto& object_list : object_list)
+	{
+		object_list->SetLocalLocation(camera->GetCameraLocation());	//ここでカメラ座標を渡せるようにする
+	}
+	//エフェクト相対座標更新処理
+	for (const auto& effect_list : effect_list)
+	{
+		effect_list->SetLocalLocation(camera->GetCameraLocation());	//ここでカメラ座標を渡せるようにする
+	}
+	//ボス更新
+	if (_now_anim_boss != nullptr)
+	{
+		_now_anim_boss->Update();
+	}
+}
+
 void ObjectManager::CreateObject(int object_type, Vector2D init_location, Vector2D init_size, float init_radius, Vector2D init_velocity)
 {
 	Player* p;

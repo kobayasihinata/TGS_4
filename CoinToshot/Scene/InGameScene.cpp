@@ -69,6 +69,12 @@ void InGameScene::Initialize()
 	zoom_time = 0;
 	zoom_time_count = 0; 
 	zoom_speed = 0;
+
+	boss_anim_flg = false;
+	boss_anim_count = 0;
+	boss_anim_timer = 0;
+	now_anim_boss = nullptr;
+
 	//チュートリアルが完了していないなら初期コインは0枚、しているなら20枚
 	UserData::coin = tutorial->GetBasicTuto() ? 20 : 0;
 
@@ -90,7 +96,6 @@ void InGameScene::Initialize()
 	objects->CreateObject({ {1000,-1000},{160,120},eSHOP});
 	objects->CreateObject({ Vector2D{ 200, 30},Vector2D{40,40},eCOIN, 20.f});
 	objects->CreateObject({ {1050,0}, Vector2D{ ENEMY1_WIDTH,ENEMY1_HEIGHT }, eENEMY1});
-	objects->CreateObject({ {150,0}, Vector2D{ BOSS1_WIDTH,BOSS1_HEIGHT }, eBOSS1});
 
 	gamemain_image = MakeScreen(SCREEN_WIDTH, SCREEN_HEIGHT);
 	flower_image = MakeScreen(191, 191);
@@ -144,14 +149,14 @@ eSceneType InGameScene::Update(float _delta)
 		UserData::coin_graph.push_back(UserData::coin);
 	}
 	//一時停止フラグ切り替え
-	if (UserData::CheckPause() && !tutorial->GetTutorialFlg() && !start_anim_flg && !shop_flg)
+	if (UserData::CheckPause() && !tutorial->GetTutorialFlg())
 	{
 		pause_flg = !pause_flg;
 		pause_timer = 0;
 	}
 
 	//一時停止フラグか遷移時アニメーションフラグかショップ展開フラグが立っていたら更新しない
-	if (((!pause_flg && !start_anim_flg)|| !update_once )&& !shop_flg)
+	if (((!pause_flg && !start_anim_flg)|| !update_once )&& !shop_flg && !boss_anim_flg)
 	{
 		if (!CheckSoundMem(gamemain_bgm) && update_once && !UserData::is_gamestop)
 		{
@@ -193,9 +198,6 @@ eSceneType InGameScene::Update(float _delta)
 			change_scene = eSceneType::eResult;
 		}
 
-		std::string a = "boss1";
-		SetBossHp(a.c_str(), 100, 100, 0);
-
 		//描画の更新
 		MakeGameMainDraw();
 
@@ -217,7 +219,7 @@ eSceneType InGameScene::Update(float _delta)
 		}
 		if (input->GetKeyState(KEY_INPUT_2) == eInputState::Pressed)
 		{
-		
+			objects->CreateObject({ {150,0}, Vector2D{ BOSS1_WIDTH,BOSS1_HEIGHT }, eBOSS1 });
 		}
 		if (input->GetKeyState(KEY_INPUT_3) == eInputState::Pressed)
 		{
@@ -245,7 +247,6 @@ eSceneType InGameScene::Update(float _delta)
 		//タイトル画面に戻る確認画面が出ていなければポーズ更新
 		if (!back_title_flg)
 		{
-
 			//下入力で項目下移動
 			if (UserData::CheckCursorMove(DOWN))
 			{
@@ -350,6 +351,23 @@ eSceneType InGameScene::Update(float _delta)
 		if (update_shop != nullptr)
 		{
 			update_shop->Update();
+		}
+	}
+	//ボス登場アニメーション
+	else if (boss_anim_flg)
+	{
+		//カメラ更新
+		camera->Update();
+
+		//座標のみ更新
+		objects->UpdateBossAnim(now_anim_boss);
+
+		MakeGameMainDraw();
+		//一定時間経過でアニメーション終了
+		if (++boss_anim_count > boss_anim_timer)
+		{
+			boss_anim_flg = false;
+			camera->camera_gaze_location = 0;
 		}
 	}
 	//遷移アニメーション
@@ -535,8 +553,6 @@ void InGameScene::MakeGameMainDraw()
 		DrawRotaGraphF(guide_local_loc.x, guide_local_loc.y, 0.5f, 0.f, flower_image, false);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 	}
-	//UI描画
-	ui->Draw();
 
 	Vector2D hpbar_loc = { SCREEN_WIDTH / 2,SCREEN_HEIGHT-50 }; 
 	Vector2D hp_bar_size = { BOSS_BAR_SIZE,30 };
@@ -544,7 +560,6 @@ void InGameScene::MakeGameMainDraw()
 	//ボスHP描画
 	for (const auto boss : boss_hp)
 	{
-		hpbar_loc.y -= count * (hp_bar_size.y + 40);
 		count++;
 		UserData::DrawStringCenter({ hpbar_loc.x,hpbar_loc.y - hp_bar_size.y-20 }, boss.name, 0xffffff);
 		//HPゲージ内側
@@ -578,8 +593,13 @@ void InGameScene::MakeGameMainDraw()
 			hpbar_loc.y + (hp_bar_size.y / 2),
 			0xffffff,
 			false);
-
+		//座標をずらす
+		hpbar_loc.y -= (hp_bar_size.y + 40);
 	}
+
+	//UI描画
+	ui->Draw();
+
 	//ゲームオーバーかクリアか表示
 	if (UserData::is_gamestop)
 	{
@@ -1222,4 +1242,14 @@ void InGameScene::SetZoom(Vector2D _loc, float _size, int _time, float _speed)
 void InGameScene::SetBossHp(const char* _name, float _hp, float _hp_max, float _hp_move)
 {
 	boss_hp.push_back(BossHp{ (char*)_name,_hp,_hp_max,_hp_move });
+}
+
+void InGameScene::SetBossSpawnAnim(ObjectBase* _boss, Vector2D _spawn_loc, int _anim_time)
+{
+	now_anim_boss = _boss;
+	boss_anim_flg = true;
+	boss_anim_timer = _anim_time;
+	boss_anim_count = 0;
+	camera->camera_gaze_location = _spawn_loc;
+	SetZoom({ SCREEN_WIDTH / 2,SCREEN_HEIGHT / 2 }, 2, boss_anim_timer, 30);
 }

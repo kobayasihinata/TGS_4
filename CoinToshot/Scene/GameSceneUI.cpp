@@ -754,7 +754,7 @@ void GameSceneUI::DrawRanking()const
 		{
 			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 - (rank_timer - (RANKUP_TIMER-30)) * (255 / 30));
 		}
-		Vector2D r_loc = { (SCREEN_WIDTH / 2) - 130,(SCREEN_HEIGHT / 2) + 200 };
+		Vector2D r_loc = { (SCREEN_WIDTH / 2) - 180,(SCREEN_HEIGHT / 2) + 150 };
 		bool is_rankup = old_rank_keep > now_rank;	//false‚È‚çƒ‰ƒ“ƒLƒ“ƒO‚ª‰º‚ª‚Á‚½ˆ—
 		if (frame % 30 < 15)DrawGraphF(r_loc.x, r_loc.y, is_rankup || old_rank_keep == -1 ? rank_image[0] : rank_image[1], TRUE);
 		//ãˆÊ3ˆÊ‚È‚ç‹P‚«

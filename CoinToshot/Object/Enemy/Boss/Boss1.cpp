@@ -32,6 +32,7 @@ Boss1::Boss1(InGameScene* _ingame)
 
 	//SE読み込み
 	death_se = rm->GetSounds("Resource/Sounds/Enemy/death.mp3");
+	this->SetLocalLocation(camera->GetCameraLocation());
 }
 
 Boss1::~Boss1()
@@ -54,8 +55,19 @@ void Boss1::Update()
 {
 	__super::Update();
 
-	//移動
-	Move();
+	//一回だけアニメーション実行
+	if (!anim_once)
+	{
+		ingame->SetBossSpawnAnim(this,this->location, BOSS_ANIM);
+		anim_once = true;
+	}
+
+	//登場アニメーション中は動かない
+	if (!anim_flg)
+	{
+		//移動
+		Move();
+	}
 
 	//アニメーション
 	Animation();

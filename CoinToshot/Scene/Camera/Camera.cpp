@@ -17,9 +17,20 @@ void Camera::Update()
 	//チュートリアルが終わっていないならカメラは固定
 	if (tutorial != nullptr && tutorial->GetBasicTuto())
 	{
-		//カメラ座標更新
-		camera_location.x -= (camera_location.x - (player_location.x - (SCREEN_WIDTH / 2))) / 10;
-		camera_location.y -= (camera_location.y - (player_location.y - (SCREEN_HEIGHT / 2))) / 10;
+		//プレイヤー以外に見る場所があるならそこにカメラを移動
+		if ((int)camera_gaze_location.x != 0 || (int)camera_gaze_location.y != 0)
+		{
+			//カメラ座標更新
+			camera_location.x -= (camera_location.x - (camera_gaze_location.x - (SCREEN_WIDTH / 2))) / 10;
+			camera_location.y -= (camera_location.y - (camera_gaze_location.y - (SCREEN_HEIGHT / 2))) / 10;
+		}
+		//プレイヤーの座標にカメラを移動
+		else
+		{
+			//カメラ座標更新
+			camera_location.x -= (camera_location.x - (player_location.x - (SCREEN_WIDTH / 2))) / 10;
+			camera_location.y -= (camera_location.y - (player_location.y - (SCREEN_HEIGHT / 2))) / 10;
+		}
 	}
 	else
 	{

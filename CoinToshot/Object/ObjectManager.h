@@ -85,6 +85,9 @@ public:
 	//描画
 	void Draw()const;
 
+	//オブジェクトの相対座標のみ更新
+	void UpdateBossAnim(ObjectBase* _now_anim_boss);
+
 	//オブジェクトの生成
 	void CreateObject(int object_type, Vector2D init_location = 0.0f, Vector2D init_size = 40.0f, float init_radius = 0.f,Vector2D init_velocity = 0.f);
 	//オブジェクトの生成(オブジェクトデータ用のオーバーロード)

@@ -77,6 +77,11 @@ private:
 
 	std::vector<BossHp> boss_hp;//ボスの体力表示用
 
+	bool boss_anim_flg;			//ボス生成アニメーション
+	int boss_anim_count;		//ボスのアニメーション時間
+	int boss_anim_timer;		//ボスのアニメーション測定
+	ObjectBase* now_anim_boss;	//現在アニメーションしているボス
+
 	int first_bonus_image;		//3/1ボーナス画像
 	int second_bonus_image;		//3/2ボーナス画像
 	int gamemain_bgm;			//BGM格納
@@ -249,9 +254,9 @@ public:
 	/// <summary>
 	/// ボス登場演出
 	/// </summary>
-	/// <param name="_spawn_loc">ボスの座標（絶対座標）</param>
+	/// <param name="_spawn_loc">ボスの座標（相対座標）</param>
 	/// <param name="_anim_time">アニメーション時間</param>
-	void SetBossSpawnAnim(Vector2D _spawn_loc, int _anim_time);
+	void SetBossSpawnAnim(ObjectBase* _boss,Vector2D _spawn_loc, int _anim_time);
 };
 
 

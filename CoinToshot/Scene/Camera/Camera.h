@@ -14,8 +14,9 @@ private:
 
 public:
 	Vector2D player_location;		//プレイヤー座標格納用
+	Vector2D camera_gaze_location;	//カメラが見ている座標格納
 	class Tutorial* tutorial;		//チュートリアル格納
-	int impact = 0;						//カメラ揺れ
+	int impact = 0;					//カメラ揺れ
 
 private:
 	//コンストラクタをprivateにすることで、

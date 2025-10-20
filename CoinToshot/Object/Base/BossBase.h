@@ -3,6 +3,7 @@
 #include "../../Scene/Camera/Camera.h"
 #include <vector>
 
+#define BOSS_ANIM 180	//登場アニメーション時間
 class BossBase :
 	public ActorBase
 {
@@ -10,6 +11,10 @@ protected:
 	class Camera* camera;	//カメラポインタ格納
 	float move_speed;		//移動速度
 	int hit_damage;			//プレイヤーに与えるダメージ量
+
+	bool anim_once;			//一回だけ実行
+	bool anim_flg;			//登場アニメーション中か
+	int anim_timer;			//登場アニメーション時間測定
 
 	int death_se;			//死亡時SE
 public:
@@ -20,8 +25,12 @@ public:
 		camera = Camera::Get();
 		move_speed = 0.f;
 		hit_damage = 0;
+		anim_once = false;
+		anim_flg = true;	//生成された瞬間にアニメーションが開始するので真
+		anim_timer = 0;
 		drop_coin = 0;
 		drop_coin_count = 0;
+		death_se = 0;
 	}
 
 	virtual void Initialize(ObjectManager* _manager, int _object_type, Vector2D init_location = 0.0f, Vector2D init_size = 40.0f, float init_radius = 0.f)override
@@ -32,6 +41,12 @@ public:
 	virtual void Update()override
 	{
 		__super::Update();
+
+		//登場アニメーション時間測定
+		if (anim_flg && ++anim_timer > BOSS_ANIM)
+		{
+			anim_flg = false;
+		}
 	}
 
 	virtual void Draw()const override
