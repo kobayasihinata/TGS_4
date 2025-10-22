@@ -89,9 +89,20 @@
 
 #define BOSS_BAR_SIZE 500		//ボスHPゲージ幅
 
-#define BOSS1_HP 30				//ボス１HP
+#define BOSS1_HP 40				//ボス１HP
 #define BOSS1_WIDTH 100			//ボス１幅
 #define BOSS1_HEIGHT 100		//ボス１高さ
 #define BOSS1_SPEED 1.f			//ボス１速度
-#define BOSS1_DAMAGE 3			//ボス１与ダメ
+#define BOSS1_DAMAGE 2			//ボス１与ダメ
 #define BOSS1_DROPCOIN 100		//ボス１コインドロップ量
+
+#define BOSS2_HP 30				//ボス２HP
+#define BOSS2_WIDTH 100			//ボス２幅
+#define BOSS2_HEIGHT 100		//ボス２高さ
+#define BOSS2_SPEED 1.f			//ボス２速度
+#define BOSS2_DAMAGE 3			//ボス２与ダメ
+#define BOSS2_ATTACK_SPAN 180	//ボス２攻撃周期
+#define BOSS2_ATTACK_SPEED 8	//ボス２弾速度
+#define BOSS2_ATTACK_LIMIT 500	//ボス２弾残留時間
+#define BOSS2_PLAYER_DISTANCE 400//ボス２プレイヤーとの間合い
+#define BOSS2_DROPCOIN 130		//ボス２コインドロップ量

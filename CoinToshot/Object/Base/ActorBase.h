@@ -104,12 +104,27 @@ public:
 		//自身が生きてる且つプレイヤーではなく、相手が生きていて、攻撃とアイテムとボス以外なら
 		if (!(this->death_flg) && 
 			this->object_type != ePLAYER &&
+			!this->IsBoss() && 
 			!hit_object->GetDeathFlg() &&
 			hit_object->GetObjectType() != ObjectList::eATTACK &&
 			hit_object->GetObjectType() != ObjectList::eCOIN &&
 			hit_object->GetObjectType() != ObjectList::eHEAL &&
-			hit_object->GetObjectType() != ObjectList::eMAGNET && 
-			!hit_object->IsBoss())
+			hit_object->GetObjectType() != ObjectList::eMAGNET )
+		{
+			//当たらなくなるまで繰り返す
+			while (this->CheckHit(hit_object))
+			{
+				//オブジェクトを押す
+				Push(hit_object);
+			}
+			return;
+		}
+
+		//ボス同士も押す
+		if (!(this->death_flg) &&
+			this->IsBoss() &&
+			!hit_object->GetDeathFlg() &&
+			hit_object->IsBoss())
 		{
 			//当たらなくなるまで繰り返す
 			while (this->CheckHit(hit_object))

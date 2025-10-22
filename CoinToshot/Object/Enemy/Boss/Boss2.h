@@ -1,11 +1,15 @@
 #pragma once
-#include "../Base/EnemyBase.h"
-#include "../Base/BulletData.h"
+#include "../../Base/BossBase.h"
+#include "../../Base/BulletData.h"
 
-class Enemy3 :
-	public EnemyBase
+#define RUSH_SPAN  300	//突撃の頻度
+#define RUSH_SPEED 100	//突撃の速度
+class Boss2 :
+	public BossBase
 {
 private:
+	InGameScene* ingame;		//現在のシーンのポインタを保存
+
 	//攻撃発射関連
 	float shot_rad;				//発射角度
 	bool shot_once;				//一回だけ撃つ
@@ -13,9 +17,9 @@ private:
 
 public:
 	//コンストラクタ
-	Enemy3();
+	Boss2(InGameScene* _ingame);
 	//デストラクタ
-	~Enemy3();
+	~Boss2();
 	//初期化処理
 	void Initialize(ObjectManager* _manager, int _object_type, Vector2D init_location = Vector2D(0.0f), Vector2D init_size = 40.0f, float init_radius = 0.f)override;
 	//終了時処理
@@ -29,10 +33,13 @@ public:
 	//ダメージ処理
 	void Damage(float _value, Vector2D _attack_loc, int _knock_back = KNOCK_BACK)override;
 
-	// <summary>
+	//弾を撃つ関連の処理
+	void Bullet();
+	
 	// 弾を発射するための情報をまとめる
-	// </summary>
-	// <returns>弾を発射するための情報</returns>
 	BulletData GetBulletData();
+
+	//プレイヤーの周囲を回る
+	void MoveAround();
 };
 

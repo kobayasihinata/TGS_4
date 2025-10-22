@@ -207,8 +207,8 @@ eSceneType InGameScene::Update(float _delta)
 			//リプレイに保存するか判断
 			SaveReplay();
 		}
-#ifdef _DEBUG
 
+////////////////////////////////////////////////////
 		//入力機能の取得
 		InputKey* input = InputKey::Get();
 
@@ -223,7 +223,7 @@ eSceneType InGameScene::Update(float _delta)
 		}
 		if (input->GetKeyState(KEY_INPUT_3) == eInputState::Pressed)
 		{
-			//tutorial->StartTutoRequest(TutoType::tAim);
+			objects->CreateObject({ {150,0}, Vector2D{ BOSS2_WIDTH,BOSS2_HEIGHT }, eBOSS2 });
 		}
 
 		if (InputPad::OnButton(XINPUT_BUTTON_A))
@@ -231,8 +231,7 @@ eSceneType InGameScene::Update(float _delta)
 			//objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{40,40},eHEAL });
 			/*objects->CreateObject({ Vector2D{ 150, 30 },Vector2D{40,40},eCOIN, 20.f });  */
 		}
-
-#endif // _DEBUG
+//////////////////////////////////////////////////
 
 	}
 	//ポーズ画面

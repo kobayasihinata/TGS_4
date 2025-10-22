@@ -10,6 +10,7 @@
 #include "Enemy/Enemy4.h"
 #include "Enemy/Enemy5.h"
 #include "Enemy/Boss/Boss1.h"
+#include "Enemy/Boss/Boss2.h"
 #include "Item/Coin.h"
 #include "Item/Heal.h"
 #include "Item/Magnet.h"

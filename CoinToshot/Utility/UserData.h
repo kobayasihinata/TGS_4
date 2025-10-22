@@ -135,5 +135,8 @@ public:
 
 	//“™•”š•`‰æ –ß‚è’l=‚±‚ÌŠÖ”‚Å•`‰æ‚µ‚½‡Œv‚Ì•¶š•
 	static int DrawNum(Vector2D _loc, int _num, int _color);
+
+	//2“_ŠÔ‚Ì‹——£‚ğ‹‚ß‚é
+	static float Distance(Vector2D _loc1, Vector2D _loc2);
 };
 

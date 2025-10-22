@@ -83,7 +83,7 @@ void Boss1::Update()
 	{
 		//死亡アニメーションを表示
 		image_line = 1;
-		anim_span = 3;
+		anim_span = 5;
 
 		//死にながらコインをまき散らす
 		if (++death_timer % 20 == 0 && drop_coin_count < drop_coin)

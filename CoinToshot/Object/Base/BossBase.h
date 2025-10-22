@@ -14,7 +14,7 @@ protected:
 
 	bool anim_once;			//一回だけ実行
 	bool anim_flg;			//登場アニメーション中か
-	int anim_timer;			//登場アニメーション時間測定
+	int boss_anim_timer;			//登場アニメーション時間測定
 
 	int death_se;			//死亡時SE
 public:
@@ -27,7 +27,7 @@ public:
 		hit_damage = 0;
 		anim_once = false;
 		anim_flg = true;	//生成された瞬間にアニメーションが開始するので真
-		anim_timer = 0;
+		boss_anim_timer = 0;
 		drop_coin = 0;
 		drop_coin_count = 0;
 		death_se = 0;
@@ -43,7 +43,7 @@ public:
 		__super::Update();
 
 		//登場アニメーション時間測定
-		if (anim_flg && ++anim_timer > BOSS_ANIM)
+		if (anim_flg && ++boss_anim_timer > BOSS_ANIM)
 		{
 			anim_flg = false;
 		}

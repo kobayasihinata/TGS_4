@@ -478,3 +478,8 @@ int UserData::DrawNum(Vector2D _loc, int _num ,int _color)
 	}
 	return a.size() * (GetFontSize() * 0.7f);
 }
+
+float UserData::Distance(Vector2D _loc1, Vector2D _loc2)
+{
+	return std::sqrt(std::pow(_loc2.x - _loc1.x, 2) + std::pow(_loc2.y - _loc1.y, 2));
+}
