@@ -13,7 +13,7 @@ Boss1::Boss1(InGameScene* _ingame)
 	drop_coin = BOSS1_DROPCOIN + (GetRand(2) - 1);
 
 	cooldown_timer = 0;
-	rush_flg = false;
+	rush_flg = true;	//登場した瞬間に突進を始める
 	rush_timer = 0;
 	rush_radian = 0;
 	rush_num = 0;
@@ -29,10 +29,6 @@ Boss1::Boss1(InGameScene* _ingame)
 	//tmp = rm->GetImages("Resource/Images/Player/Run2.png", 12, 12, 1, 64, 64);
 	//animation_image.push_back(tmp);
 	image = animation_image[0][0];
-
-	//SE読み込み
-	death_se = rm->GetSounds("Resource/Sounds/Enemy/death.mp3");
-	this->SetLocalLocation(camera->GetCameraLocation());
 }
 
 Boss1::~Boss1()
@@ -86,7 +82,7 @@ void Boss1::Update()
 		anim_span = 5;
 
 		//死にながらコインをまき散らす
-		if (++death_timer % 20 == 0 && drop_coin_count < drop_coin)
+		if (++death_timer % 10 == 0 && drop_coin_count < drop_coin)
 		{
 			Vector2D rand = { (float)(GetRand(this->GetSize().x) - this->GetSize().x / 2),(float)(GetRand(this->GetSize().y) - this->GetSize().y / 2) };
 			manager->CreateObject(
@@ -105,7 +101,7 @@ void Boss1::Update()
 			//演出中に出せなかったコインをまとめてドロップ
 			for (int i = drop_coin_count; i < drop_coin; i++)
 			{
-				Vector2D rand = { (float)(GetRand(25) - 12),(float)(GetRand(25) - 12) };
+				Vector2D rand = { (float)(GetRand(50) - 25),(float)(GetRand(50) - 25) };
 				manager->CreateObject(
 					eCOIN,
 					this->location + rand,
@@ -113,11 +109,36 @@ void Boss1::Update()
 					20.f,
 					rand);
 			}
-			//エフェクト
-			manager->CreateEffect(elExplosion, this->location);
+			for (int i = 0; i < 3; i++)
+			{
+				Vector2D rand = { (float)(GetRand(25) - 12),(float)(GetRand(25) - 12) };
+				//回復か磁石
+				if (GetRand(50 - UserData::player_hp) > 10)
+				{
+					manager->CreateObject(
+						eHEAL,
+						this->location + rand,
+						Vector2D{40, 40},
+						20.f,
+						rand);
+				}
+				else
+				{
+					manager->CreateObject(
+						eMAGNET,
+						this->location + rand,
+						Vector2D{40, 40},
+						20.f,
+						rand);
+				}
+			}
 
 			//SE再生
+			ResourceManager::rPlaySound(item_spawn_se, DX_PLAYTYPE_BACK);
 			ResourceManager::rPlaySound(death_se, DX_PLAYTYPE_BACK);
+
+			//エフェクト
+			manager->CreateEffect(elExplosion, this->location);
 		}
 	}
 }

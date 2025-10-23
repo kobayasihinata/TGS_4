@@ -167,7 +167,7 @@ void ObjectManager::Draw()const
 		if (CheckInScreen(object, 50) || object->IsBoss())
 		{
 			//“G‚¾‚¯Œã‚©‚ç•`‰æiŒ©‚â‚·‚³‚Ì‚½‚ß‚Éj
-			if (object->IsEnemy() || object->IsBoss())
+			if (object->IsEnemy() || object->IsBoss() || object->GetObjectType() == eATTACK)
 			{
 				enemy_list.push_back(object);
 			}

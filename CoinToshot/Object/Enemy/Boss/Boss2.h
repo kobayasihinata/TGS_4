@@ -10,11 +10,13 @@ class Boss2 :
 private:
 	InGameScene* ingame;		//現在のシーンのポインタを保存
 
+	bool boss_move_flg;			//移動するか判断
+
 	//攻撃発射関連
 	float shot_rad;				//発射角度
 	bool shot_once;				//一回だけ撃つ
 	int shot_span;				//発射間隔
-
+	float shot_speed;			//弾速度
 public:
 	//コンストラクタ
 	Boss2(InGameScene* _ingame);

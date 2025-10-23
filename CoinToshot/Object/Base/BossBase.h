@@ -17,6 +17,7 @@ protected:
 	int boss_anim_timer;			//登場アニメーション時間測定
 
 	int death_se;			//死亡時SE
+	int item_spawn_se;		//アイテム生成SE
 public:
 
 	BossBase()
@@ -31,6 +32,11 @@ public:
 		drop_coin = 0;
 		drop_coin_count = 0;
 		death_se = 0;
+
+		//SE読み込み
+		ResourceManager* rm = ResourceManager::GetInstance();
+		death_se = rm->GetSounds("Resource/Sounds/Enemy/death.mp3");
+		item_spawn_se = rm->GetSounds("Resource/Sounds/Direction/成功音.mp3");
 	}
 
 	virtual void Initialize(ObjectManager* _manager, int _object_type, Vector2D init_location = 0.0f, Vector2D init_size = 40.0f, float init_radius = 0.f)override

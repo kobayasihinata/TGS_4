@@ -9,9 +9,12 @@ Boss2::Boss2(InGameScene* _ingame)
 	move_speed = BOSS2_SPEED;
 	max_hp = hp = BOSS2_HP;
 	hit_damage = BOSS2_DAMAGE;
-	shot_span = BOSS2_ATTACK_SPAN + (GetRand(60) - 30);
+	shot_span = BOSS2_ATTACK_SPAN;
+	shot_speed = BOSS2_ATTACK_SPEED;
 	//指定したドロップ量から±1の間でランダムにコインをドロップ
 	drop_coin = BOSS2_DROPCOIN + (GetRand(2) - 1);
+
+	boss_move_flg = false;
 
 	//画像読込
 	ResourceManager* rm = ResourceManager::GetInstance();
@@ -26,10 +29,6 @@ Boss2::Boss2(InGameScene* _ingame)
 	image = animation_image[0][0];
 
 	shot_once = false;
-
-	//SE読み込み
-	death_se = rm->GetSounds("Resource/Sounds/Enemy/death.mp3");
-	this->SetLocalLocation(camera->GetCameraLocation());
 }
 
 Boss2::~Boss2()
@@ -59,8 +58,15 @@ void Boss2::Update()
 		anim_once = true;
 	}
 
-	//プレイヤーに向けて移動する
-	MoveAround();
+	//HPが半分を切ったら、移動開始
+	if (!boss_move_flg && hp < BOSS2_HP / 2)
+	{
+		boss_move_flg = true;
+	}
+	if (boss_move_flg)
+	{
+		MoveAround();
+	}
 
 	//登場アニメーション中は動かない
 	if (!anim_flg)
@@ -113,11 +119,35 @@ void Boss2::Update()
 					20.f,
 					rand);
 			}
+			for (int i = 0; i < 3; i++)
+			{
+				Vector2D rand = { (float)(GetRand(25) - 12),(float)(GetRand(25) - 12) };
+				//回復か磁石
+				if (GetRand(50 - UserData::player_hp) > 10)
+				{
+					manager->CreateObject(
+						eHEAL,
+						this->location + rand,
+						Vector2D{ 40, 40 },
+						20.f,
+						rand);
+				}
+				else
+				{
+					manager->CreateObject(
+						eMAGNET,
+						this->location + rand,
+						Vector2D{ 40, 40 },
+						20.f,
+						rand);
+				}
+			}
+			//SE再生
+			ResourceManager::rPlaySound(item_spawn_se, DX_PLAYTYPE_BACK);
+			ResourceManager::rPlaySound(death_se, DX_PLAYTYPE_BACK);
+
 			//エフェクト
 			manager->CreateEffect(elExplosion, this->location);
-
-			//SE再生
-			ResourceManager::rPlaySound(death_se, DX_PLAYTYPE_BACK);
 		}
 	}
 }
@@ -144,12 +174,23 @@ void Boss2::Damage(float _value, Vector2D _attack_loc, int _knock_back)
 
 void Boss2::Bullet()
 {
+	//プレイヤーとの距離を参照して、弾の速度と頻度を変える
+	if (UserData::Distance(camera->player_location, this->location) > SCREEN_WIDTH/1.5)
+	{
+		shot_span = (int)(BOSS2_ATTACK_SPAN/5);
+		shot_speed = (BOSS2_ATTACK_SPEED * 3);
+	}
+	else
+	{
+		shot_span = BOSS2_ATTACK_SPAN;
+		shot_speed = BOSS2_ATTACK_SPEED;
+	}
+
 	//投擲アニメーションが一周したら通常アニメーションに戻す
 	if (image_line == 1 && anim_end_flg)
 	{
 		image_line = 0;
 	}
-
 	//投擲アニメーションが指定の画像まで再生されたら、弾を発射する
 	if (!shot_once && image_line == 1 && image_num == 4)
 	{
@@ -180,7 +221,7 @@ BulletData Boss2::GetBulletData()
 	_data.h_count = 1;
 	_data.location = this->location;
 	_data.radius = 15;
-	_data.speed = BOSS2_ATTACK_SPEED;
+	_data.speed = shot_speed;
 	_data.who = this;
 	_data.b_type = BulletType::bNormal;
 	_data.color[0] = 200;
@@ -195,7 +236,7 @@ void Boss2::MoveAround()
 	if (!this->death_flg)
 	{
 		//移動速度を、HPが少ないほど速くする
-		move_speed = (BOSS2_HP - hp)/3 + 1;
+		move_speed = ((BOSS2_HP / 2) - hp) / 2 + 1;
 		double radian;
 		//プレイヤーと離れていたら、プレイヤーに向けて移動
 		if (UserData::Distance(camera->player_location, this->location) > BOSS2_PLAYER_DISTANCE+30)
