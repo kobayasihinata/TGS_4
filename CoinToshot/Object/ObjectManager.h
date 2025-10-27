@@ -125,5 +125,16 @@ public:
 
 	//指定したオブジェクトから最も近い敵のポインタを返す _obj = 指定のオブジェクト _ignore = 無視するオブジェクト
 	ObjectBase* CheckNearEnemy(ObjectBase* _obj, ObjectBase* _ignore);
+
+	//オブジェクトのY座標の比較
+	bool CompareLocY(const ObjectBase* &_obj1, const ObjectBase* &_obj2)
+	{
+		//_obj1が無いなら、_obj2の方が大きいと返す
+		if (_obj1 == nullptr)return false;
+		//_obj2が無いなら、_obj1の方が大きいと返す
+		if (_obj2 == nullptr)return true;
+		//obj2の方が大きいなら、真を返す
+		return _obj1->GetLocation().y < _obj2->GetLocation().y;
+	}
 };
 

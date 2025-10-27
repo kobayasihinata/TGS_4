@@ -312,7 +312,7 @@ void Player::Draw()const
 	}
 
 	//カーソルを動かせる状態なら表示
-	if (aim_once_flg)
+	if (aim_once_flg && !death_flg)
 	{
 		//弾の軌道描画
 		DrawBulletOrbit(local_location);

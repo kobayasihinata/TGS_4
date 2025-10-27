@@ -69,6 +69,7 @@ public:
 
 	virtual void Draw()const override
 	{
+
 		//‰æ‘œ•`‰æ
 		if (image != 0)
 		{

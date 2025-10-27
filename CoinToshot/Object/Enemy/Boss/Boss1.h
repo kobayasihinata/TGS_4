@@ -8,6 +8,8 @@ class Boss1 :
 {
 private:
 	InGameScene* ingame;		//現在のシーンのポインタを保存
+
+	Vector2D target_loc;		//突進先の座標
 	int cooldown_timer;			//突撃後の時間測定
 	bool rush_flg;				//突進モーションフラグ
 	int  rush_timer;			//突進時間測定

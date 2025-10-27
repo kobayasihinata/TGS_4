@@ -56,11 +56,12 @@ void Coin::Draw()const
 {
 	__super::Draw();
 
+	float shift = abs((frame % 60) - 30)/5;	
 	//‘å‚«‚³‚É‚æ‚Á‚ÄŒy—Ê•`‰æ‚©•’Ê•`‰æ‚©•Ï‚¦‚é
 	if (radius < 100)
 	{
 		//¬‚³‚¢ƒRƒCƒ“‚ğŒy—Ê•`‰æ
-		UserData::DrawDefaultCoin(local_location, radius);
+		UserData::DrawDefaultCoin({ local_location.x,local_location.y + shift }, radius);
 	}
 	else
 	{

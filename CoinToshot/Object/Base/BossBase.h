@@ -96,7 +96,8 @@ public:
 		if (!this->death_flg &&
 			hit_object->GetObjectType() == ePLAYER)
 		{
-			hit_object->Damage(hit_damage, this->location);
+			//ノックバック量を自身の速度に応じて増加させる
+			hit_object->Damage(hit_damage, this->location ,10 + fabs(velocity.x) + fabs(velocity.y));
 		}
 
 	}

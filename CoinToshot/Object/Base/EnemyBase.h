@@ -70,6 +70,7 @@ public:
 
 	virtual void Draw()const override
 	{
+
 		//レア個体なら、オーラの描画をする
 		if (rare_flg)
 		{

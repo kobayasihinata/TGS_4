@@ -1,6 +1,7 @@
 #include "ObjectManager.h"
 #include "Base/ShapeCollider.h"
 #include "../Scene/InGameScene.h"
+#include <algorithm>
 
 void ObjectManager::Initialize(InGameScene* _ingame)
 {
@@ -84,6 +85,8 @@ void ObjectManager::Update()
 	//削除したオブジェクトは消去
 	delete_object.clear();
 
+	//std::sort(object_list.begin(), object_list.end(), CompareLocY);
+
 	//オブジェクト更新処理
 	for (const auto& object_list : object_list)
 	{
@@ -160,6 +163,31 @@ void ObjectManager::Draw()const
 		}
 	}
 
+	//影の描画
+	for (const auto& object : object_list)
+	{
+		//画面内のオブジェクトだけ
+		if (CheckInScreen(object, 50))
+		{
+			if (object->GetObjectType() != eSHOP &&
+				object->GetObjectType() != eSLOT &&
+				object->GetObjectType() != eBOX &&
+				object->GetObjectType() != eCOIN)
+			{
+				//影
+				SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
+				DrawOval(object->GetLocalLocation().x, object->GetLocalLocation().y + object->GetSize().y - (object->GetSize().y / 4), object->GetSize().x / 2, 10, 0x000000, true);
+				SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+			}
+			else
+			{
+				//影
+				SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
+				DrawOval(object->GetLocalLocation().x, object->GetLocalLocation().y + object->GetSize().y/2, object->GetSize().x / 2, 10, 0x000000, true);
+				SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+			}
+		}
+	}
 	//描画
 	for (const auto& object : object_list)
 	{

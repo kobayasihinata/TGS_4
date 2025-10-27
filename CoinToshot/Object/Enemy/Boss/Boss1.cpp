@@ -12,8 +12,9 @@ Boss1::Boss1(InGameScene* _ingame)
 	//指定したドロップ量から±1の間でランダムにコインをドロップ
 	drop_coin = BOSS1_DROPCOIN + (GetRand(2) - 1);
 
+	target_loc = 0;
 	cooldown_timer = 0;
-	rush_flg = true;	//登場した瞬間に突進を始める
+	rush_flg = false;
 	rush_timer = 0;
 	rush_radian = 0;
 	rush_num = 0;
@@ -22,12 +23,15 @@ Boss1::Boss1(InGameScene* _ingame)
 	//画像読込
 	ResourceManager* rm = ResourceManager::GetInstance();
 	std::vector<int>tmp;
-	tmp = rm->GetImages("Resource/Images/Enemy1/Enemy1_Walk.png", 24, 5, 5, 96, 96);
+	tmp = rm->GetImages("Resource/Images/Boss1/Boss1_Walk1.png", 24, 5, 5, 96, 96);
 	animation_image.push_back(tmp);
-	tmp = rm->GetImages("Resource/Images/Enemy1/Enemy1_Death.png", 15, 5, 3, 96, 96);
+	tmp = rm->GetImages("Resource/Images/Boss1/Boss1_Idle1.png", 18, 5, 4, 96, 96);
 	animation_image.push_back(tmp);
-	//tmp = rm->GetImages("Resource/Images/Player/Run2.png", 12, 12, 1, 64, 64);
-	//animation_image.push_back(tmp);
+	tmp = rm->GetImages("Resource/Images/Boss1/Boss1_Sliding1.png", 6, 5, 2, 96, 96);
+	animation_image.push_back(tmp);
+	tmp = rm->GetImages("Resource/Images/Boss1/Boss1_Death1.png", 15, 5, 3, 96, 96);
+	animation_image.push_back(tmp);
+
 	image = animation_image[0][0];
 }
 
@@ -55,14 +59,36 @@ void Boss1::Update()
 	if (!anim_once)
 	{
 		ingame->SetBossSpawnAnim(this,this->location, BOSS_ANIM);
+		target_loc = this->location;
+		this->location += 600;
+		SetLocalLocation(camera->GetCameraLocation());
+		rush_flg = true;
+		rush_timer = 60;
 		anim_once = true;
 	}
 
 	//登場アニメーション中は動かない
 	if (!anim_flg)
 	{
+		//プレイヤーをターゲットとする
+		target_loc = camera->player_location;
+
 		//移動
 		Move();
+	}
+	//登場アニメーション
+	else
+	{
+		//突進中は移動可能
+		if ((fabs(velocity.x) > BOSS1_SPEED * 2 || fabs(velocity.y) > BOSS1_SPEED * 2))
+		{
+			//移動
+			Move();
+		}
+		else
+		{
+			image_line = 1;
+		}
 	}
 
 	//アニメーション
@@ -78,8 +104,11 @@ void Boss1::Update()
 	if (death_flg)
 	{
 		//死亡アニメーションを表示
-		image_line = 1;
+		image_line = 3;
 		anim_span = 5;
+
+		//突進していたらやめる
+		rush_flg = false;
 
 		//死にながらコインをまき散らす
 		if (++death_timer % 10 == 0 && drop_coin_count < drop_coin)
@@ -160,20 +189,21 @@ void Boss1::Hit(ObjectBase* hit_object)
 {
 	__super::Hit(hit_object);
 
-	if (abs(velocity.x) > BOSS1_SPEED*2 && abs(velocity.y) > BOSS1_SPEED*2)
+	//自身が生きていて、タックル中で、敵に当たったらダメージを与える
+	if ((fabs(velocity.x) > BOSS1_SPEED * 2 || fabs(velocity.y) > BOSS1_SPEED * 2) &&
+		!this->death_flg &&
+		hit_object->IsEnemy())
 	{
-		//自身が生きていて、敵に当たったらダメージを与える
-		if (!this->death_flg &&
-			hit_object->IsEnemy())
-		{
-			hit_object->Damage(hit_damage, this->location);
-		}
+		hit_object->Damage(hit_damage, this->location, 10 + fabs(velocity.x) + fabs(velocity.y));
 	}
 }
 
 void Boss1::Damage(float _value, Vector2D _attack_loc, int _knock_back)
 {
+
+	//ボスの速度に応じてノックバック量を変える
 	__super::Damage(_value, _attack_loc, _knock_back);
+
 	//減少アニメーション
 	hpbar_move += _value * (BOSS_BAR_SIZE / max_hp);
 
@@ -185,6 +215,19 @@ void Boss1::Rush()
 	if (!rush_flg)
 	{
 		MovetoPlayer();
+
+		//一定速度より速いなら、アニメーションを切り替える
+		if (abs(velocity.x) > BOSS1_SPEED * 2 || abs(velocity.y) > BOSS1_SPEED * 2)
+		{
+			//スライディング
+			image_line = 2;
+		}
+		else
+		{
+			//歩き
+			image_line = 0;
+		}
+
 	}
 
 	//突進回数決定
@@ -198,12 +241,23 @@ void Boss1::Rush()
 	}
 	if (rush_flg)
 	{
+		//一定速度より速いなら、アニメーションを切り替える
+		if (abs(velocity.x) > BOSS1_SPEED * 2 || abs(velocity.y) > BOSS1_SPEED * 2)
+		{
+			//スライディング
+			image_line = 2;
+		}
 		if (++rush_timer < 120)
 		{
 			//直前までプレイヤーに方向を定める
 			if (rush_timer < 100)
 			{
-				rush_radian = atan2(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x);
+				rush_radian = atan2(target_loc.y - this->location.y, target_loc.x - this->location.x);
+			}
+			//突進チャージ中＆移動していなければ、停止アニメーション
+			if (fabs(velocity.x) < 0.1f && fabs(velocity.y) < 0.1f)
+			{
+				image_line = 1;
 			}
 		}
 		//一定時間経過で発射

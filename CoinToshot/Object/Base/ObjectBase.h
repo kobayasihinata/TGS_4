@@ -127,4 +127,11 @@ public:
 			image = animation_image[image_line][image_num];
 		}
 	}
+
+	Vector2D GetImageSize()const
+	{
+		Vector2D ret;
+		GetGraphSizeF(image, &ret.x, &ret.y);
+		return ret;
+	}
 };
