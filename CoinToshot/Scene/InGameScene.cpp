@@ -225,7 +225,10 @@ eSceneType InGameScene::Update(float _delta)
 		{
 			objects->CreateObject({ {150,0}, Vector2D{ BOSS2_WIDTH,BOSS2_HEIGHT }, eBOSS2 });
 		}
-
+		if (input->GetKeyState(KEY_INPUT_4) == eInputState::Pressed)
+		{
+			objects->CreateObject({ {150,0}, Vector2D{ BOSS3_WIDTH,BOSS3_HEIGHT }, eBOSS3 });
+		}
 		if (InputPad::OnButton(XINPUT_BUTTON_A))
 		{
 			//objects->CreateObject({ Vector2D{(float)GetRand(200),(float)GetRand(200)},Vector2D{40,40},eHEAL });

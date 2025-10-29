@@ -106,3 +106,12 @@
 #define BOSS2_ATTACK_LIMIT 500	//ボス２弾残留時間
 #define BOSS2_PLAYER_DISTANCE 400//ボス２プレイヤーとの間合い
 #define BOSS2_DROPCOIN 130		//ボス２コインドロップ量
+
+#define BOSS3_HP 100				//ボス３HP
+#define BOSS3_WIDTH 40			//ボス３幅
+#define BOSS3_HEIGHT 40			//ボス３高さ
+#define BOSS3_SPEED 3.f			//ボス３速度
+#define BOSS3_DAMAGE 3			//ボス３与ダメ
+#define BOSS3_ATTACK_SPAN 180	//ボス３攻撃周期
+#define BOSS3_PLAYER_DISTANCE 400//ボス３プレイヤーとの間合い
+#define BOSS3_DROPCOIN 300		//ボス３コインドロップ量

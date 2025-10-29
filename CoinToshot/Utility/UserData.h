@@ -36,6 +36,7 @@ struct ReplayData
 	int image;	//その時の画像
 	std::string text;		//どういうシーンか
 };
+
 class UserData
 {
 private:
@@ -49,7 +50,7 @@ public:
 
 	//UIに表示する必要がある or 保持しておいた方が良い可能性があるプレイヤー情報はここで管理
 	static float player_hp;					//体力
-	static int coin;						//スコア
+	static int coin;						//コイン
 	static int timer;						//残り時間
 	static bool is_clear;					//false=ゲームオーバー true=ゲームクリア
 	static bool is_dead;					//プレイヤーが死亡演出中か
@@ -62,6 +63,9 @@ public:
 	static int attraction_timer;			//コイン吸い寄せ時間測定
 	static bool can_bullet_change_flg;		//弾種類変更可能か
 	static bool player_damage_flg;			//プレイヤーがダメージを受けて動けない状態か判断
+
+	static int boss_coin;					//ボスのコイン
+
 	static std::vector<int> coin_graph;		//コインの増減保存用
 	static std::vector<ReplayData> replay;	//ハイライト保存場所
 	static std::vector<std::vector<int>> button_image;//ボタン画像格納

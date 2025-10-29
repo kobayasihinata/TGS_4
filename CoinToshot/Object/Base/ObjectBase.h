@@ -99,7 +99,8 @@ public:
 	bool IsBoss()const
 	{
 		return object_type == eBOSS1 ||
-			   object_type == eBOSS2;
+			   object_type == eBOSS2 ||
+			   object_type == eBOSS3;
 	}
 	//アニメーション処理(基本的なループ用)
 	virtual void Animation()

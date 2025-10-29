@@ -264,6 +264,7 @@ void ObjectManager::UpdateBossAnim(ObjectBase* _now_anim_boss)
 void ObjectManager::CreateObject(int object_type, Vector2D init_location, Vector2D init_size, float init_radius, Vector2D init_velocity)
 {
 	Player* p;
+	Boss3* b;
 	switch (object_type)
 	{
 	case ObjectList::ePLAYER:
@@ -294,6 +295,14 @@ void ObjectManager::CreateObject(int object_type, Vector2D init_location, Vector
 		break;
 	case ObjectList::eBOSS2:
 		create_object.push_back(ObjectInitData{ new Boss2(ingame),object_type,init_location,init_size,init_radius });
+		break;
+	case ObjectList::eBOSS3:
+		b = Boss3::Get(ingame);
+		//一ゲーム中に複数プレイヤー生成されないように
+		if (b != nullptr)
+		{
+			create_object.push_back(ObjectInitData{b,object_type,init_location,init_size,init_radius });
+		}
 		break;
 	case ObjectList::eCOIN:
 		create_object.push_back(ObjectInitData{ new Coin(ingame,init_velocity),object_type,init_location,init_size,init_radius });
@@ -483,9 +492,10 @@ void ObjectManager::ObjectHitCheck()
 コイン、プレイヤー、それ以外に分けてそれぞれで当たり判定を確認する
  *****************/
 
-	//コインとプレイヤーとそれ以外に分ける
+	//コインとプレイヤーとボス３とそれ以外に分ける
 	std::vector<ObjectBase*> coin_list;
 	std::vector<ObjectBase*> other_list;
+	ObjectBase* boss3 = nullptr;
 	ObjectBase* player = nullptr;
 
 	//仕分け
@@ -502,6 +512,9 @@ void ObjectManager::ObjectHitCheck()
 			 case ObjectList::ePLAYER:
 				 player = object;
 				 break;
+			 case ObjectList::eBOSS3:
+				 boss3 = object;
+				 break;
 			 default:
 				 other_list.push_back(object);
 				 break;
@@ -511,27 +524,27 @@ void ObjectManager::ObjectHitCheck()
 
 	//コインの当たり判定
 	for (const auto& coin1 : coin_list)
- {
-	 for (const auto& coin2 : coin_list)
-	 {
-		 if (CheckHit(coin1, coin2))
+	{
+		 for (const auto& coin2 : coin_list)
 		 {
-			 coin1->Hit(coin2);	
+			 if (CheckHit(coin1, coin2))
+			 {
+				 coin1->Hit(coin2);	
+			 }
 		 }
-	 }
- }
+	}
 
 	//それ以外の当たり判定
 	for (const auto& other1 : other_list)
- {
-	 for (const auto& other2 : other_list)
-	 {
-		 if (CheckHit(other1, other2))
+	{
+		 for (const auto& other2 : other_list)
 		 {
-			 other1->Hit(other2);
+			 if (CheckHit(other1, other2))
+			 {
+				 other1->Hit(other2);
+			 }
 		 }
-	 }
- }
+	}
 
 	//プレイヤーの当たり判定
 	if (player != nullptr)
@@ -542,6 +555,19 @@ void ObjectManager::ObjectHitCheck()
 			{
 				player->Hit(object);
 				object->Hit(player);
+			}
+		}
+	}
+
+	//ボス３の当たり判定
+	if (boss3 != nullptr)
+	{
+		for (const auto& object : object_list)
+		{
+			if (boss3 != object && CheckHit(boss3, object))
+			{
+				boss3->Hit(object);
+				object->Hit(boss3);
 			}
 		}
 	}
@@ -613,6 +639,30 @@ ObjectBase* ObjectManager::CheckNearEnemy(ObjectBase* _obj, ObjectBase* _ignore)
 			CheckInScreen(object_list,0) &&
 			object_list != ret && 
 			object_list != _ignore)
+		{
+			//距離を比較して、近い方を戻り値に入れる
+			obj_distance = sqrt(powf(_obj->GetLocation().x - object_list->GetLocation().x, 2) + powf(_obj->GetLocation().y - object_list->GetLocation().y, 2));
+			if (obj_distance < ret_distance)
+			{
+				ret = object_list;
+				ret_distance = obj_distance;
+			}
+		}
+	}
+	return ret;
+}
+
+ObjectBase* ObjectManager::CheckNearCoin(ObjectBase* _obj)
+{
+	ObjectBase* ret = nullptr;
+	float ret_distance = 100000;
+	float obj_distance;
+	for (const auto& object_list : object_list)
+	{
+		//測定対象か調べる
+		if (object_list->GetObjectType()==eCOIN &&
+			CheckInScreen(object_list, 0) &&
+			object_list != ret)
 		{
 			//距離を比較して、近い方を戻り値に入れる
 			obj_distance = sqrt(powf(_obj->GetLocation().x - object_list->GetLocation().x, 2) + powf(_obj->GetLocation().y - object_list->GetLocation().y, 2));

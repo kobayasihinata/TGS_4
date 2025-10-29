@@ -29,6 +29,7 @@ bool UserData::attraction_flg = false;
 int UserData::attraction_timer = 0;
 bool UserData::can_bullet_change_flg = false;
 bool UserData::player_damage_flg = false;
+int UserData::boss_coin = 0;
 std::vector<int> UserData::coin_graph;
 std::vector<ReplayData> UserData::replay;
 std::vector<std::vector<int>> UserData::button_image;

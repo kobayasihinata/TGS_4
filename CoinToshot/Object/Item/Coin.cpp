@@ -87,11 +87,14 @@ void Coin::Hit(ObjectBase* hit_object)
 	//	return;
 	//}
 	//触れた対象がプレイヤーとコイン以外なら終了
-	if (hit_object->GetObjectType() != ePLAYER && hit_object->GetObjectType() != eCOIN)
+	if (hit_object->GetObjectType() != ePLAYER && hit_object->GetObjectType() != eCOIN && hit_object->GetObjectType() != eBOSS3)
 	{
 		return;
 	}
-	
+	if (hit_object->GetObjectType() == eBOSS3)
+	{
+		int a = hit_object->GetObjectType();
+	}
 	//コイン同士が引き寄せられる
 	if (hit_object->GetObjectType() == eCOIN && 
 		UserData::player_hp > 0 &&
@@ -141,6 +144,19 @@ void Coin::Hit(ObjectBase* hit_object)
 		UserData::coin += add_num;
 		std::string s = "+" + std::to_string((int)add_num);
 		ingame->CreatePopUp(this->location, s,0xffff33);
+
+		manager->DeleteObject(this);
+		manager->CreateEffect(elCoin, { location.x + GetRand((int)radius) - (radius / 2),location.y + GetRand((int)radius) - (radius / 2) }, TRUE, 0xffff00);
+		ResourceManager::rPlaySound(get_se, DX_PLAYTYPE_BACK);
+		return;
+	}
+
+	//ボス3に触れたらコイン加算して消える
+	if (this->add_num > 0 && hit_object->GetObjectType() == eBOSS3)
+	{
+		UserData::boss_coin += add_num;
+		std::string s = "+" + std::to_string((int)add_num);
+		ingame->CreatePopUp(this->location, s, 0x550000);
 
 		manager->DeleteObject(this);
 		manager->CreateEffect(elCoin, { location.x + GetRand((int)radius) - (radius / 2),location.y + GetRand((int)radius) - (radius / 2) }, TRUE, 0xffff00);

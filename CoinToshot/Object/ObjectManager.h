@@ -11,6 +11,7 @@
 #include "Enemy/Enemy5.h"
 #include "Enemy/Boss/Boss1.h"
 #include "Enemy/Boss/Boss2.h"
+#include "Enemy/Boss/Boss3.h"
 #include "Item/Coin.h"
 #include "Item/Heal.h"
 #include "Item/Magnet.h"
@@ -125,6 +126,9 @@ public:
 
 	//指定したオブジェクトから最も近い敵のポインタを返す _obj = 指定のオブジェクト _ignore = 無視するオブジェクト
 	ObjectBase* CheckNearEnemy(ObjectBase* _obj, ObjectBase* _ignore);
+
+	//指定したオブジェクトから最も近いコインのポインタを返す  _obj = 指定のオブジェクト
+	ObjectBase* CheckNearCoin(ObjectBase* _obj);
 
 	//オブジェクトのY座標の比較
 	bool CompareLocY(const ObjectBase* &_obj1, const ObjectBase* &_obj2)

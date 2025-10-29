@@ -22,7 +22,7 @@ struct PlayerBullet
 //íeÇÃÉfÅ[É^
 static PlayerBullet pBullet[BULLET_NUM]
 {
-	//name     cos   dam   spe   rad   h_c  life  cd  num space
+	//name     cos   dam   spe   rad   h_c  life  cd  num space color
 	{"í èÌíe",   1,	 1.f, 10.f, 20.f,   1,  120,  1,  1,    0,{255,255,255}},
 	{"ägéUíe",   5,  2.f, 10.f, 20.f,   1,   30, 20,  5, 0.3f,{0,255,255}},
 	{"ã≠âªíe",  10,  7.f, 15.f, 30.f,   5,  180, 10,  1,    0,{255,127,0}},
