@@ -49,30 +49,6 @@ void Attack::Finalize()
 
 void Attack::Update()
 {
-	//追尾弾処理
-	if (count_up > 30 && bullet_type == BulletType::bTracking)
-	{
-		//近くの敵に向けて方向を変える
-		ObjectBase* near_enemy = manager->CheckNearEnemy(this, old_hit_object);
-		//敵が一体も居ないならプレイヤー追尾
-		if (near_enemy == nullptr)
-		{
-			if (count_up % 30 == 0)
-			{
-				float shot_rad = atan2f(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x);
-				move_velocity.x = speed * cosf(shot_rad);
-				move_velocity.y = speed * sinf(shot_rad);
-				old_hit_object = nullptr;
-			}
-		}
-		else
-		{
-			float shot_rad = atan2f(near_enemy->GetLocation().y - this->location.y, near_enemy->GetLocation().x - this->location.x);
-			move_velocity.x = speed * cosf(shot_rad);
-			move_velocity.y = speed * sinf(shot_rad);
-		}
-	}
-
 	//一定時間経過したら自身を削除する
 	if (++count_up > time)
 	{
@@ -99,6 +75,19 @@ void Attack::Update()
 		manager->CreateEffect(elRipples, this->location, false, ripple_color,false,30);
 	}
 
+	//追尾弾用の更新
+	if (bullet_type == BulletType::bTracking)
+	{
+		//プレイヤーかボスかで挙動を変える
+		if (object->GetObjectType() == ePLAYER)
+		{
+			UpdateTracking();
+		}
+		else
+		{
+			UpdateBossTracking();
+		}
+	}
 	//最強弾用の更新
 	if (bullet_type == BulletType::bStrongest)
 	{
@@ -154,8 +143,10 @@ void Attack::Hit(ObjectBase* hit_object)
 		manager->CreateEffect(elHit, hit_object->GetLocation(), true, 0x000000, false, 30);
 	}
 
-	//攻撃したのがプレイヤーで、敵か箱に攻撃が当たっているなら
-	if (object->GetObjectType() == ePLAYER && (hit_object->IsEnemy() || hit_object->IsBoss() || hit_object->GetObjectType()== eBOX))
+	//攻撃したのがプレイヤーかボスで、敵か箱に攻撃が当たっているなら
+	if ((object->GetObjectType() == ePLAYER || object->GetObjectType() == eBOSS3) && 
+		(hit_object->IsEnemy() || hit_object->IsBoss() || hit_object->GetObjectType()== eBOX) && 
+		hit_object != object)
 	{
 		//ダメージ
 		hit_object->Damage(damage, this->location);
@@ -227,5 +218,44 @@ void Attack::UpdateStrongest()
 			manager->CreateAttack(GetBulletData(i));
 		}
 		ResourceManager::rPlaySound(shot_se, DX_PLAYTYPE_BACK);
+	}
+}
+
+void Attack::UpdateTracking()
+{
+	//追尾弾処理
+	if (count_up > 30)
+	{
+		//近くの敵に向けて方向を変える
+		ObjectBase* near_enemy = manager->CheckNearEnemy(this, old_hit_object);
+		//敵が一体も居ないならプレイヤー追尾
+		if (near_enemy == nullptr)
+		{
+			if (count_up % 30 == 0)
+			{
+				float shot_rad = atan2f(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x);
+				move_velocity.x = speed * cosf(shot_rad);
+				move_velocity.y = speed * sinf(shot_rad);
+				old_hit_object = nullptr;
+			}
+		}
+		else
+		{
+			float shot_rad = atan2f(near_enemy->GetLocation().y - this->location.y, near_enemy->GetLocation().x - this->location.x);
+			move_velocity.x = speed * cosf(shot_rad);
+			move_velocity.y = speed * sinf(shot_rad);
+		}
+	}
+}
+
+void Attack::UpdateBossTracking()
+{
+	//生成後一定時間経過＆一定周期でプレイヤーへ向かう
+	if (count_up > 30 && count_up % 30 == 0)
+	{
+		float shot_rad = atan2f(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x);
+		move_velocity.x = speed * cosf(shot_rad);
+		move_velocity.y = speed * sinf(shot_rad);
+		old_hit_object = nullptr;
 	}
 }

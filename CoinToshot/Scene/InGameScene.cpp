@@ -561,6 +561,7 @@ void InGameScene::MakeGameMainDraw()
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 	}
 
+	SetFontSize(36);
 	Vector2D hpbar_loc = { SCREEN_WIDTH / 2,SCREEN_HEIGHT-50 }; 
 	Vector2D hp_bar_size = { BOSS_BAR_SIZE,30 };
 	int count = 0;
@@ -1068,8 +1069,8 @@ void InGameScene::TutorialUpdate()
 	{
 		//アイテム生成
 		SpawnItem();
-		//制限時間減少
-		if (!UserData::is_dead)UserData::timer--;
+		//制限時間減少(死んでいない＆ボスが居ないなら)
+		if (!UserData::is_dead && boss_hp.size() > 0)UserData::timer--;
 		//敵生成
 		SpawnEnemy();
 	}

@@ -32,7 +32,9 @@ void Boss3::Initialize(ObjectManager* _manager, int _object_type, Vector2D init_
 	hit_damage = BOSS3_DAMAGE;
 	drop_coin = BOSS3_DROPCOIN;
 
+	stop_flg = false;
 	move_mode = 0;
+	can_shot = false;
 	bullet_type = 1;
 	shot_speed = 0;
 
@@ -62,7 +64,8 @@ void Boss3::Update()
 {
 	__super::Update();
 
-	drop_coin = BOSS3_DROPCOIN + UserData::boss_coin;
+	stop_flg = false;									//デフォルトで移動できる状態にする
+	drop_coin = BOSS3_DROPCOIN + UserData::boss_coin;	//コインドロップ量に、所持コインを加算する
 
 	//一回だけアニメーション実行
 	if (!anim_once)
@@ -71,17 +74,17 @@ void Boss3::Update()
 		anim_once = true;
 	}
 
-	MoveBoss3();
+	//弾発射関連処理
+	Bullet();
 
-	//登場アニメーション中は動かない
-	if (!anim_flg)
+	//死亡していなければこの処理
+	if (!death_flg && !anim_flg && !stop_flg)
 	{
+		//移動方向決定処理
+		MoveBoss3();
 		//移動
 		Move();
 	}
-
-	//弾発射関連処理
-	Bullet();
 
 	//アニメーション
 	Animation();
@@ -205,7 +208,7 @@ void Boss3::Bullet()
 	if (!shot_once && image_line == 1 && image_num == 4)
 	{
 		//プレイヤーの位置で発射角度を決める
-		shot_rad = atan2f(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x);
+		shot_rad = atan2f(target_loc.y - this->location.y, target_loc.x - this->location.x);
 		ShotBullet();
 		UserData::boss_coin -= bBullet[bullet_type].cost;
 		std::string s = "-" + std::to_string(bBullet[bullet_type].cost);
@@ -214,7 +217,9 @@ void Boss3::Bullet()
 		shot_once = true;
 	}
 	//指定の周期毎にアニメーションを投擲に変える
-	if (!death_flg && frame % boss3_bullet[bullet_type].attack_span == 0 && move_mode != 0)
+	if (!death_flg && 
+		can_shot && 
+		frame % boss3_bullet[bullet_type].attack_span == 0)
 	{
 		//投擲アニメーション開始
 		image_line = 1;
@@ -261,100 +266,83 @@ void Boss3::ChangeMove()
 		//コイン収集モード
 		move_mode = 0;
 		//弾種類ランダム変更
-		bullet_type = GetRand(2);
+		bullet_type = GetRand(3);
 		//リセット
 		shot_count = 0;
+		//弾を撃てなくする
+		can_shot = false;
 	}
 }
 
 void Boss3::MoveBoss3()
 {
-	//死亡していなければこの処理
-	if (!this->death_flg)
+	double radian;
+
+	can_shot = true;	//デフォルトで弾が撃てる状態にする
+	target_loc = camera->player_location;				//攻撃のターゲットをデフォルトでプレイヤーにする
+
+	//挙動変更処理
+	ChangeMove();
+
+	switch (move_mode)
 	{
-		double radian;
-
-		//挙動変更処理
-		ChangeMove();
-
-		switch (move_mode)
+	case 0:	//コイン集め
+		if (manager->CheckNearCoin(this) != nullptr)
 		{
-		case 0:	//コイン集め
-			if (manager->CheckNearCoin(this) != nullptr)
-			{
-				radian = atan2(manager->CheckNearCoin(this)->GetLocation().y - this->location.y, manager->CheckNearCoin(this)->GetLocation().x - this->location.x);
-			}
-			else
-			{
-				radian = atan2(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x);
-			}
-			break;
-		case 1:	//プレイヤー攻撃(通常弾)
-			//プレイヤーと離れていたら、プレイヤーに向けて移動
-			if (UserData::Distance(camera->player_location, this->location) > BOSS3_PLAYER_DISTANCE + 30)
-			{
-				radian = atan2(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x) + 0.8;
-
-			}
-			//プレイヤーと近ければ、プレイヤーとは反対側に移動
-			else if (UserData::Distance(camera->player_location, this->location) < BOSS3_PLAYER_DISTANCE - 30)
-			{
-				radian = atan2(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x) + 2.5;
-
-			}
-			//横移動
-			else
-			{
-				radian = atan2(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x) + 1.7;
-			}
-			//レレレ
-			if (frame % 60 > 30)radian += 3.4;
-
-			break;
-		case 2:	//プレイヤー攻撃(散弾)
-			//プレイヤーと離れていたら、プレイヤーに向けて移動
-			if (UserData::Distance(camera->player_location, this->location) > BOSS3_PLAYER_DISTANCE/2 + 30)
-			{
-				radian = atan2(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x);
-
-			}
-			//プレイヤーと近ければ、プレイヤーとは反対側に移動
-			else if (UserData::Distance(camera->player_location, this->location) < BOSS3_PLAYER_DISTANCE/2 - 30)
-			{
-				radian = atan2(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x) * -1;
-
-			}
-			break;
-		case 3:	//プレイヤー攻撃(強化弾)
-			//プレイヤーと離れていたら、プレイヤーに向けて移動
-			if (UserData::Distance(camera->player_location, this->location) > BOSS3_PLAYER_DISTANCE + 30)
-			{
-				radian = atan2(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x) - 0.8;
-
-			}
-			//プレイヤーと近ければ、プレイヤーとは反対側に移動
-			else if (UserData::Distance(camera->player_location, this->location) < BOSS3_PLAYER_DISTANCE - 30)
-			{
-				radian = atan2(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x) - 2.5;
-
-			}
-			//横移動
-			else
-			{
-				radian = atan2(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x) - 1.7;
-			}
-			break;
-		default:
-			break;
+			radian = atan2(manager->CheckNearCoin(this)->GetLocation().y - this->location.y, manager->CheckNearCoin(this)->GetLocation().x - this->location.x);
+			can_shot = false;
 		}
+		else
+		{
+			//コイン吸い寄せのせいでコインがなくなっていたら、プレイヤーに突撃
+			if (UserData::attraction_flg || manager->CheckNearEnemy(this, this) == nullptr)
+			{
+				radian = atan2(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x);
+			}
+			//ただコインが無いだけなら、近くの敵を攻撃してコインを生む
+			else
+			{
+				target_loc = manager->CheckNearEnemy(this, this)->GetLocation();
+				radian = MoveAround(target_loc, 20);
+				bullet_type = 0;
+			}
+		}
+		break;
+	case 1:	//プレイヤー攻撃(通常弾)
+		radian = MoveAround(camera->player_location, BOSS3_PLAYER_DISTANCE);
+		//左右に揺れる
+		if (frame % 60 > 30)radian += 3.4;
 
-		//移動の上限値設定
-		if (fabsf(velocity.x) < move_speed)velocity.x += move_speed * cos(radian);
-		if (fabsf(velocity.y) < move_speed)velocity.y += move_speed * sin(radian);
+		break;
+	case 2:	//プレイヤー攻撃(散弾)
+		//プレイヤーと離れていたら、プレイヤーに向けて移動
+		if (UserData::Distance(camera->player_location, this->location) > BOSS3_PLAYER_DISTANCE/2 + 30)
+		{
+			radian = atan2(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x);
 
-		//移動したい方向保存
-		move_velocity = { move_speed * cosf(radian) ,move_speed * sinf(radian) };
+		}
+		//プレイヤーと近ければ、プレイヤーとは反対側に移動
+		else if (UserData::Distance(camera->player_location, this->location) < BOSS3_PLAYER_DISTANCE/2 - 30)
+		{
+			radian = atan2(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x) * -1;
+		}
+		break;
+	case 3:	//プレイヤー攻撃(強化弾)
+		radian = MoveAround(camera->player_location, BOSS3_PLAYER_DISTANCE, true);
+		break;
+	case 4:	//プレイヤー攻撃(追尾弾)
+		stop_flg = true;
+		break;
+	default:
+		break;
 	}
+
+	//移動の上限値設定
+	if (fabsf(velocity.x) < move_speed)velocity.x += move_speed * cos(radian);
+	if (fabsf(velocity.y) < move_speed)velocity.y += move_speed * sin(radian);
+
+	//移動したい方向保存
+	move_velocity = { move_speed * cosf(radian) ,move_speed * sinf(radian) };
 }
 
 void Boss3::ShotBullet()
@@ -373,4 +361,49 @@ void Boss3::ShotBullet()
 	{
 		manager->CreateAttack(GetBulletData(shot_rad));
 	}
+}
+
+double Boss3::MoveAround(Vector2D _loc, int _distance, bool _direction)
+{
+	double radian;
+	//プレイヤーと離れていたら、プレイヤーに向けて移動
+	if (UserData::Distance(_loc, this->location) > _distance)
+	{
+		if (_direction)
+		{
+			radian = atan2(_loc.y - this->location.y, _loc.x - this->location.x) - 0.8;
+
+		}
+		else
+		{
+			radian = atan2(_loc.y - this->location.y, _loc.x - this->location.x) + 0.8;
+
+		}
+	}
+	//プレイヤーと近ければ、プレイヤーとは反対側に移動
+	else if (UserData::Distance(_loc, this->location) < _distance)
+	{
+		if (_direction)
+		{
+			radian = atan2(_loc.y - this->location.y, _loc.x - this->location.x) - 2.5;
+		}
+		else
+		{
+			radian = atan2(_loc.y - this->location.y, _loc.x - this->location.x) + 2.5;
+		}
+
+	}
+	//横移動
+	else
+	{
+		if (_direction)
+		{
+			radian = atan2(_loc.y - this->location.y, _loc.x - this->location.x) - 1.7;
+		}
+		else
+		{
+			radian = atan2(_loc.y - this->location.y, _loc.x - this->location.x) + 1.7;
+		}
+	}
+	return radian;
 }

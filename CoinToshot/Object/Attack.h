@@ -48,7 +48,13 @@ public:
 	//弾の情報を取得
 	BulletData GetBulletData(float _shot_rad);
 
-	//最強弾専用更新
+	//追尾弾更新
+	void UpdateTracking();
+
+	//追尾弾（ボス）更新
+	void UpdateBossTracking();
+
+	//最強弾更新
 	void UpdateStrongest();
 };
 

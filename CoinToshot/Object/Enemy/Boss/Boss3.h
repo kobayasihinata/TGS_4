@@ -40,10 +40,13 @@ private:
 	int coin_num;		//コイン所持数
 	int move_mode;		//移動タイプ格納
 	int collect_timer;	//コイン収集時間測定
+	bool stop_flg;		//歩くのをやめるか
 
 	//攻撃発射関連
 	int bullet_type;	//弾種類
 
+	bool can_shot;		//弾を撃っていい状態か
+	Vector2D target_loc;//攻撃対象の座標
 	int shot_count;		//発射回数
 	float shot_rad;		//発射角度
 	bool shot_once;		//一回だけ撃つ
@@ -95,5 +98,8 @@ public:
 
 	//弾を撃つ
 	void ShotBullet();
+
+	///指定の座標の周りを回るように移動 _loc=軸 _distance=対象との距離 _direction=回転方向(false=左)
+	double MoveAround(Vector2D _loc, int _distance, bool _direction = false);
 };
 

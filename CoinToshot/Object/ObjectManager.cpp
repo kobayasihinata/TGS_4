@@ -634,7 +634,7 @@ ObjectBase* ObjectManager::CheckNearEnemy(ObjectBase* _obj, ObjectBase* _ignore)
 	for (const auto& object_list : object_list)
 	{
 		//‘ª’è‘ÎÛ‚©’²‚×‚é
-		if (object_list->IsEnemy() &&
+		if ((object_list->IsEnemy() || object_list->IsBoss()) &&
 			!object_list->GetDeathFlg() && 
 			CheckInScreen(object_list,0) &&
 			object_list != ret && 
