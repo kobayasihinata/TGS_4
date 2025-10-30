@@ -146,9 +146,9 @@ void ObjectManager::Update()
 void ObjectManager::Draw()const
 {
 	std::vector<ObjectBase*> enemy_list;	//敵格納
-	std::vector<ObjectBase*> facility_list;		//スロット格納
+	std::vector<ObjectBase*> facility_list;	//スロット格納
 	std::vector<EffectBase*> front_effect;	//オブジェクトの後ろに描画するエフェクト格納
-	ObjectBase* player = nullptr;						//プレイヤーを最前面で描画する
+	ObjectBase* player = nullptr;			//プレイヤーを最前面で描画する
 
 	//オブジェクトの後ろに描画するエフェクト
 	for (const auto& effect : effect_list)

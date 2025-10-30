@@ -30,7 +30,6 @@ void Boss3::Initialize(ObjectManager* _manager, int _object_type, Vector2D init_
 	move_speed = BOSS3_SPEED;
 	max_hp = hp = BOSS3_HP;
 	hit_damage = BOSS3_DAMAGE;
-	shot_span = BOSS3_ATTACK_SPAN;
 	drop_coin = BOSS3_DROPCOIN;
 
 	move_mode = 0;
@@ -163,12 +162,18 @@ void Boss3::Draw()const
 {
 	__super::Draw();
 
-	//SetFontSize(24);
-	UserData::DrawCoin({ local_location.x - GetDrawFormatStringWidth("×%d", UserData::boss_coin),
-	local_location.y + 45 },
-		15);
-	DrawFormatString(local_location.x - GetDrawFormatStringWidth("×%d", UserData::boss_coin),
-		local_location.y + 22,
+	SetFontSize(15);
+	DrawBoxAA(local_location.x - (box_size.x / 2),
+		local_location.y - box_size.y - 20,
+		local_location.x + (box_size.x / 2)+10,
+		local_location.y - box_size.y, 0xffffff, true);
+
+	UserData::DrawCoin({ local_location.x-10,
+	local_location.y - box_size.y - 10 },
+		10);
+
+	DrawFormatString(local_location.x,
+		local_location.y - box_size.y - 20,
 		0x550000,
 		"×%d",
 		UserData::boss_coin);
@@ -190,7 +195,6 @@ void Boss3::Damage(float _value, Vector2D _attack_loc, int _knock_back)
 
 void Boss3::Bullet()
 {
-	shot_span = BOSS3_ATTACK_SPAN;
 
 	//投擲アニメーションが一周したら通常アニメーションに戻す
 	if (image_line == 1 && anim_end_flg)
@@ -203,19 +207,20 @@ void Boss3::Bullet()
 		//プレイヤーの位置で発射角度を決める
 		shot_rad = atan2f(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x);
 		ShotBullet();
-		UserData::boss_coin -= pBullet[bullet_type].cost;
-		std::string s = "-" + std::to_string(pBullet[bullet_type].cost);
+		UserData::boss_coin -= bBullet[bullet_type].cost;
+		std::string s = "-" + std::to_string(bBullet[bullet_type].cost);
 		ingame->CreatePopUp(this->location, s, 0x550000, -1);
 		//一回だけ撃つ
 		shot_once = true;
 	}
 	//指定の周期毎にアニメーションを投擲に変える
-	if (!death_flg && frame % shot_span == 0 && move_mode == 1)
+	if (!death_flg && frame % boss3_bullet[bullet_type].attack_span == 0 && move_mode != 0)
 	{
 		//投擲アニメーション開始
 		image_line = 1;
 		anim_timer = 0;
 		image_num = 0;
+		shot_count++;
 		//一回だけ撃つ用変数リセット
 		shot_once = false;
 	}
@@ -224,28 +229,42 @@ void Boss3::Bullet()
 BulletData Boss3::GetBulletData(float _shot_rad)
 {
 	BulletData _data;
-	_data.damage = pBullet[bullet_type].damage;
+	_data.damage = bBullet[bullet_type].damage;
 	_data.b_angle = _shot_rad;
-	_data.delete_time = pBullet[bullet_type].life_span;
-	_data.h_count = pBullet[bullet_type].h_count;
+	_data.delete_time = bBullet[bullet_type].life_span;
+	_data.h_count = bBullet[bullet_type].h_count;
 	_data.location = this->location;
-	_data.radius = pBullet[bullet_type].radius;
-	_data.speed = pBullet[bullet_type].speed;
+	_data.radius = bBullet[bullet_type].radius;
+	_data.speed = bBullet[bullet_type].speed;
 	_data.who = this;
 	_data.b_type = (BulletType)bullet_type;
+
 	for (int i = 0; i < 3; i++)
 	{
-		//０を下回らないようにする
-		if (pBullet[bullet_type].color[i] - 120 < 0)
-		{
-			_data.color[i] = 0;
-		}
-		else
-		{
-			_data.color[i] = pBullet[bullet_type].color[i] - 150;
-		}
+		_data.color[i] = bBullet[bullet_type].color[i];
 	}
 	return _data;
+}
+
+void Boss3::ChangeMove()
+{
+	//コインの所持数に応じて移動方法変更
+
+	//コイン収集中で、所持コインが指定量を超えたら攻撃開始
+	if (move_mode == 0 && UserData::boss_coin > boss3_bullet[bullet_type].correct_coin)
+	{
+		move_mode = bullet_type + 1;
+	}
+	//攻撃中にコインがなくなるor指定の回数攻撃したら
+	else if (move_mode != 0 && (UserData::boss_coin < bBullet[bullet_type].cost || shot_count > boss3_bullet[bullet_type].shot_num))
+	{
+		//コイン収集モード
+		move_mode = 0;
+		//弾種類ランダム変更
+		bullet_type = GetRand(2);
+		//リセット
+		shot_count = 0;
+	}
 }
 
 void Boss3::MoveBoss3()
@@ -255,16 +274,9 @@ void Boss3::MoveBoss3()
 	{
 		double radian;
 
-		//コインの所持数に応じて移動方法変更
-		if (UserData::boss_coin > 20)
-		{
-			move_mode = 1;
-		}
-		//攻撃中にコインがなくなったら
-		else if (move_mode == 1 && UserData::boss_coin < pBullet[bullet_type].cost)
-		{
-			move_mode = 0;
-		}
+		//挙動変更処理
+		ChangeMove();
+
 		switch (move_mode)
 		{
 		case 0:	//コイン集め
@@ -277,7 +289,7 @@ void Boss3::MoveBoss3()
 				radian = atan2(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x);
 			}
 			break;
-		case 1:	//プレイヤー攻撃
+		case 1:	//プレイヤー攻撃(通常弾)
 			//プレイヤーと離れていたら、プレイヤーに向けて移動
 			if (UserData::Distance(camera->player_location, this->location) > BOSS3_PLAYER_DISTANCE + 30)
 			{
@@ -295,7 +307,42 @@ void Boss3::MoveBoss3()
 			{
 				radian = atan2(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x) + 1.7;
 			}
+			//レレレ
+			if (frame % 60 > 30)radian += 3.4;
 
+			break;
+		case 2:	//プレイヤー攻撃(散弾)
+			//プレイヤーと離れていたら、プレイヤーに向けて移動
+			if (UserData::Distance(camera->player_location, this->location) > BOSS3_PLAYER_DISTANCE/2 + 30)
+			{
+				radian = atan2(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x);
+
+			}
+			//プレイヤーと近ければ、プレイヤーとは反対側に移動
+			else if (UserData::Distance(camera->player_location, this->location) < BOSS3_PLAYER_DISTANCE/2 - 30)
+			{
+				radian = atan2(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x) * -1;
+
+			}
+			break;
+		case 3:	//プレイヤー攻撃(強化弾)
+			//プレイヤーと離れていたら、プレイヤーに向けて移動
+			if (UserData::Distance(camera->player_location, this->location) > BOSS3_PLAYER_DISTANCE + 30)
+			{
+				radian = atan2(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x) - 0.8;
+
+			}
+			//プレイヤーと近ければ、プレイヤーとは反対側に移動
+			else if (UserData::Distance(camera->player_location, this->location) < BOSS3_PLAYER_DISTANCE - 30)
+			{
+				radian = atan2(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x) - 2.5;
+
+			}
+			//横移動
+			else
+			{
+				radian = atan2(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x) - 1.7;
+			}
 			break;
 		default:
 			break;
@@ -313,12 +360,12 @@ void Boss3::MoveBoss3()
 void Boss3::ShotBullet()
 {
 	//一発以上撃つ弾種なら
-	if (pBullet[bullet_type].bullet_num > 1)
+	if (bBullet[bullet_type].bullet_num > 1)
 	{
-		float t = (pBullet[bullet_type].space * pBullet[bullet_type].bullet_num) / 2;
-		for (int i = 0; i < pBullet[bullet_type].bullet_num; i++)
+		float t = (bBullet[bullet_type].space * bBullet[bullet_type].bullet_num) / 2;
+		for (int i = 0; i < bBullet[bullet_type].bullet_num; i++)
 		{
-			manager->CreateAttack(GetBulletData(shot_rad - t + i * pBullet[bullet_type].space));
+			manager->CreateAttack(GetBulletData(shot_rad - t + i * bBullet[bullet_type].space));
 		}
 	}
 	//単発なら

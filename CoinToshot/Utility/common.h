@@ -47,71 +47,70 @@
 #define PLATER_BULLET_CHANGE_CD 30	//プレイヤー弾種類変更可能間隔
 
 //敵のパラメータ関連
-#define ENEMY1_HP 2				//敵１HP
-#define ENEMY1_WIDTH 40			//敵１幅
-#define ENEMY1_HEIGHT 40		//敵１高さ
-#define ENEMY1_SPEED 0.5f		//敵１速度
-#define ENEMY1_DAMAGE 1			//敵１与ダメ
-#define ENEMY1_DROPCOIN 6		//敵１コインドロップ量
+#define ENEMY1_HP 2					//敵１HP
+#define ENEMY1_WIDTH 40				//敵１幅
+#define ENEMY1_HEIGHT 40			//敵１高さ
+#define ENEMY1_SPEED 0.5f			//敵１速度
+#define ENEMY1_DAMAGE 1				//敵１与ダメ
+#define ENEMY1_DROPCOIN 6			//敵１コインドロップ量
 
-#define ENEMY2_HP 5				//敵２HP
-#define ENEMY2_WIDTH 50			//敵２幅
-#define ENEMY2_HEIGHT 50		//敵２高さ
-#define ENEMY2_SPEED 1.2f		//敵２速度
-#define ENEMY2_DAMAGE 3			//敵２与ダメ
-#define ENEMY2_DROPCOIN 14		//敵２コインドロップ量
+#define ENEMY2_HP 5					//敵２HP
+#define ENEMY2_WIDTH 50				//敵２幅
+#define ENEMY2_HEIGHT 50			//敵２高さ
+#define ENEMY2_SPEED 1.2f			//敵２速度
+#define ENEMY2_DAMAGE 3				//敵２与ダメ
+#define ENEMY2_DROPCOIN 14			//敵２コインドロップ量
 
-#define ENEMY3_HP 1				//敵３HP
-#define ENEMY3_WIDTH 50			//敵３幅
-#define ENEMY3_HEIGHT 50		//敵３高さ
-#define ENEMY3_SPEED 0.f		//敵３速度
-#define ENEMY3_DAMAGE 2			//敵３与ダメ
-#define ENEMY3_ATTACK_SPAN 180	//敵３攻撃周期
-#define ENEMY3_ATTACK_SPEED 5	//敵３弾速度
-#define ENEMY3_ATTACK_LIMIT 180	//敵３弾残留時間
-#define ENEMY3_DROPCOIN 8		//敵３コインドロップ量
+#define ENEMY3_HP 1					//敵３HP
+#define ENEMY3_WIDTH 50				//敵３幅
+#define ENEMY3_HEIGHT 50			//敵３高さ
+#define ENEMY3_SPEED 0.f			//敵３速度
+#define ENEMY3_DAMAGE 2				//敵３与ダメ
+#define ENEMY3_ATTACK_SPAN 180		//敵３攻撃周期
+#define ENEMY3_ATTACK_SPEED 5		//敵３弾速度
+#define ENEMY3_ATTACK_LIMIT 180		//敵３弾残留時間
+#define ENEMY3_DROPCOIN 8			//敵３コインドロップ量
 
-#define ENEMY4_HP 3				//敵４HP
-#define ENEMY4_WIDTH 40			//敵４幅
-#define ENEMY4_HEIGHT 40		//敵４高さ
-#define ENEMY4_SPEED 3.f		//敵４速度
-#define ENEMY4_ESCAPE_SPEED 0.5f//敵４逃げ速度
-#define ENEMY4_STEAL 15			//敵４盗むコイン量
-#define ENEMY4_DAMAGE 0			//敵４与ダメ
-#define ENEMY4_DROPCOIN 7		//敵４コインドロップ量
+#define ENEMY4_HP 3					//敵４HP
+#define ENEMY4_WIDTH 40				//敵４幅
+#define ENEMY4_HEIGHT 40			//敵４高さ
+#define ENEMY4_SPEED 3.f			//敵４速度
+#define ENEMY4_ESCAPE_SPEED 0.5f	//敵４逃げ速度
+#define ENEMY4_STEAL 15				//敵４盗むコイン量
+#define ENEMY4_DAMAGE 0				//敵４与ダメ
+#define ENEMY4_DROPCOIN 7			//敵４コインドロップ量
 
-#define ENEMY5_HP 20			//敵５HP
-#define ENEMY5_WIDTH 90			//敵５幅
-#define ENEMY5_HEIGHT 130		//敵５高さ
-#define ENEMY5_SPEED 0.2f		//敵５速度
-#define ENEMY5_DAMAGE 2			//敵５与ダメ
-#define ENEMY5_DROPCOIN 30		//敵５コインドロップ量
+#define ENEMY5_HP 20				//敵５HP
+#define ENEMY5_WIDTH 90				//敵５幅
+#define ENEMY5_HEIGHT 130			//敵５高さ
+#define ENEMY5_SPEED 0.2f			//敵５速度
+#define ENEMY5_DAMAGE 2				//敵５与ダメ
+#define ENEMY5_DROPCOIN 30			//敵５コインドロップ量
 
-#define BOSS_BAR_SIZE 500		//ボスHPゲージ幅
+#define BOSS_BAR_SIZE 500			//ボスHPゲージ幅
 
-#define BOSS1_HP 40				//ボス１HP
-#define BOSS1_WIDTH 100			//ボス１幅
-#define BOSS1_HEIGHT 100		//ボス１高さ
-#define BOSS1_SPEED 1.f			//ボス１速度
-#define BOSS1_DAMAGE 2			//ボス１与ダメ
-#define BOSS1_DROPCOIN 100		//ボス１コインドロップ量
+#define BOSS1_HP 40					//ボス１HP
+#define BOSS1_WIDTH 100				//ボス１幅
+#define BOSS1_HEIGHT 100			//ボス１高さ
+#define BOSS1_SPEED 1.f				//ボス１速度
+#define BOSS1_DAMAGE 2				//ボス１与ダメ
+#define BOSS1_DROPCOIN 100			//ボス１コインドロップ量
 
-#define BOSS2_HP 30				//ボス２HP
-#define BOSS2_WIDTH 100			//ボス２幅
-#define BOSS2_HEIGHT 100		//ボス２高さ
-#define BOSS2_SPEED 1.f			//ボス２速度
-#define BOSS2_DAMAGE 3			//ボス２与ダメ
-#define BOSS2_ATTACK_SPAN 180	//ボス２攻撃周期
-#define BOSS2_ATTACK_SPEED 8	//ボス２弾速度
-#define BOSS2_ATTACK_LIMIT 500	//ボス２弾残留時間
-#define BOSS2_PLAYER_DISTANCE 400//ボス２プレイヤーとの間合い
-#define BOSS2_DROPCOIN 130		//ボス２コインドロップ量
+#define BOSS2_HP 30					//ボス２HP
+#define BOSS2_WIDTH 100				//ボス２幅
+#define BOSS2_HEIGHT 100			//ボス２高さ
+#define BOSS2_SPEED 1.f				//ボス２速度
+#define BOSS2_DAMAGE 3				//ボス２与ダメ
+#define BOSS2_ATTACK_SPAN 180		//ボス２攻撃周期
+#define BOSS2_ATTACK_SPEED 8		//ボス２弾速度
+#define BOSS2_ATTACK_LIMIT 500		//ボス２弾残留時間
+#define BOSS2_PLAYER_DISTANCE 400	//ボス２プレイヤーとの間合い
+#define BOSS2_DROPCOIN 130			//ボス２コインドロップ量
 
 #define BOSS3_HP 100				//ボス３HP
-#define BOSS3_WIDTH 40			//ボス３幅
-#define BOSS3_HEIGHT 40			//ボス３高さ
-#define BOSS3_SPEED 3.f			//ボス３速度
-#define BOSS3_DAMAGE 3			//ボス３与ダメ
-#define BOSS3_ATTACK_SPAN 180	//ボス３攻撃周期
-#define BOSS3_PLAYER_DISTANCE 400//ボス３プレイヤーとの間合い
-#define BOSS3_DROPCOIN 300		//ボス３コインドロップ量
+#define BOSS3_WIDTH 40				//ボス３幅
+#define BOSS3_HEIGHT 40				//ボス３高さ
+#define BOSS3_SPEED 1.7f			//ボス３速度
+#define BOSS3_DAMAGE 3				//ボス３与ダメ
+#define BOSS3_PLAYER_DISTANCE 400	//ボス３プレイヤーとの間合い
+#define BOSS3_DROPCOIN 300			//ボス３コインドロップ量

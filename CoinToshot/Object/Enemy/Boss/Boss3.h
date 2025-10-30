@@ -3,26 +3,56 @@
 #include "../../Base/BulletData.h"
 #include "../../Player/PlayerBullet.h"
 
-#define RUSH_SPAN  300	//突撃の頻度
-#define RUSH_SPEED 100	//突撃の速度
+//弾のデータ
+static PlayerBullet bBullet[BULLET_NUM]
+{
+	//name     cos   dam   spe   rad   h_c  life  cd  num space color
+	{"通常弾",   1,	 1.f, 10.f, 20.f,   1,  120,  1,  1,    0,{100,100,100}},
+	{"拡散弾",   5,  2.f, 10.f, 20.f,   1,   30, 20,  5, 0.3f,{  0,100,100}},
+	{"強化弾",  10,  7.f, 15.f, 30.f,   5,  180, 10,  1,    0,{100, 60,  0}},
+	{"追尾弾",  10,  1.f,  2.f, 15.f,  13,  600, 30,  1,    0,{100,  0,100}},
+	{"爆発弾",  30,  3.f, 10.f, 10.f, 100,   20, 40,  1,	0,{100,  0,  0}},
+	{"最強弾", 100, 20.f, 25.f, 40.f, 100,  360,180,  1,    0,{255,255,255}},
+};
+
+
+struct BOSS3_BULLET
+{
+	int correct_coin;	//攻撃に移るのに必要なコイン枚数
+	int attack_span;	//攻撃頻度
+	int shot_num;		//攻撃回数
+};
+static BOSS3_BULLET boss3_bullet[BULLET_NUM]
+{
+	{10,  30,10},
+	{30,  90, 5},
+	{30,  70, 5},
+	{60,  60, 5},
+	{60, 180, 5},
+	{100,180, 5},
+};
+
 class Boss3 :
 	public BossBase
 {
 private:
 
-	int coin_num;				//コイン所持数
-	int move_mode;				//移動タイプ格納
+	int coin_num;		//コイン所持数
+	int move_mode;		//移動タイプ格納
+	int collect_timer;	//コイン収集時間測定
 
 	//攻撃発射関連
-	int bullet_type;			//弾種類
+	int bullet_type;	//弾種類
 
-	float shot_rad;				//発射角度
-	bool shot_once;				//一回だけ撃つ
-	int shot_span;				//発射間隔
-	float shot_speed;			//弾速度
+	int shot_count;		//発射回数
+	float shot_rad;		//発射角度
+	bool shot_once;		//一回だけ撃つ
+	float shot_speed;	//弾速度
+
 public:
 	static InGameScene* ingame;		//現在のシーンのポインタを保存
 	static bool boss3_once;		//プレイヤー生成を一回だけにする
+
 private:
 	//コンストラクタをprivateにすることで、
 //自クラスのメンバ関数でインスタンスを生成できないようにする
@@ -56,6 +86,9 @@ public:
 
 	// 弾を発射するための情報をまとめる
 	BulletData GetBulletData(float _shot_rad);
+
+	//挙動切り替え
+	void ChangeMove();
 
 	//移動方向管理
 	void MoveBoss3();
