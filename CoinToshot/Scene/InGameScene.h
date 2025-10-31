@@ -19,6 +19,11 @@
 //ボーナスアニメーション
 #define TIME_BONUS 60	//文字表示時間
 
+//ボス出現タイミング
+#define BOSS1_SPAWN 200
+#define BOSS2_SPAWN 150
+#define BOSS3_SPAWN  60
+
 struct BossHp
 {
 	char* name;		//ボス名
@@ -66,6 +71,7 @@ private:
 	bool back_title_flg;		//タイトル画面に戻るか確認する画面を表示するか判断
 	int back_title_cursor;		//タイトル画面に戻るか確認
 	bool coin_spawn_once;		//最低保証コインのスポーン
+	bool boss_spawn_once[3];	//ボスを一体だけ生成
 
 	Vector2D now_gm_loc;		//ゲームメイン画像の現在位置
 	Vector2D goal_gm_loc;		//ゲームメイン画像のゴール位置

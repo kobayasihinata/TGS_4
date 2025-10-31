@@ -49,6 +49,10 @@ void InGameScene::Initialize()
 	back_title_flg = false;
 	back_title_cursor = 0;
 	coin_spawn_once = false;
+	for (int i = 0; i < 3; i++)
+	{
+		boss_spawn_once[i] = false;
+	}
 	first_bonus_count = 0;
 	bonus_timer = 0;
 	second_bonus_count = 0;
@@ -173,11 +177,11 @@ eSceneType InGameScene::Update(float _delta)
 			camera->Update();
 			//ガイド表示更新
 			UpdateGuideLoc();
-			//チュートリアル更新
-			TutorialUpdate();
-			
 			//オブジェクト更新
 			objects->Update();
+			//チュートリアル更新
+			TutorialUpdate();
+		
 
 		}
 
@@ -219,15 +223,15 @@ eSceneType InGameScene::Update(float _delta)
 		}
 		if (input->GetKeyState(KEY_INPUT_2) == eInputState::Pressed)
 		{
-			objects->CreateObject({ {150,0}, Vector2D{ BOSS1_WIDTH,BOSS1_HEIGHT }, eBOSS1 });
+			objects->CreateObject({ GetRandLoc(), Vector2D{ BOSS1_WIDTH,BOSS1_HEIGHT }, eBOSS1 });
 		}
 		if (input->GetKeyState(KEY_INPUT_3) == eInputState::Pressed)
 		{
-			objects->CreateObject({ {150,0}, Vector2D{ BOSS2_WIDTH,BOSS2_HEIGHT }, eBOSS2 });
+			objects->CreateObject({ GetRandLoc(), Vector2D{ BOSS2_WIDTH,BOSS2_HEIGHT }, eBOSS2 });
 		}
 		if (input->GetKeyState(KEY_INPUT_4) == eInputState::Pressed)
 		{
-			objects->CreateObject({ {150,0}, Vector2D{ BOSS3_WIDTH,BOSS3_HEIGHT }, eBOSS3 });
+			objects->CreateObject({ GetRandLoc(), Vector2D{ BOSS3_WIDTH,BOSS3_HEIGHT }, eBOSS3 });
 		}
 		if (InputPad::OnButton(XINPUT_BUTTON_A))
 		{
@@ -769,6 +773,23 @@ void InGameScene::SpawnEnemy()
 			objects->CreateObject(GetEnemyData());
 		}
 	}
+
+	//指定の時間にボスをスポーン
+	if (!boss_spawn_once[0] && (UserData::timer / 60) == BOSS1_SPAWN)
+	{
+		objects->CreateObject({ GetRandLoc(), Vector2D{ BOSS1_WIDTH,BOSS1_HEIGHT }, eBOSS1 });
+		boss_spawn_once[0] = true;
+	}
+	if (!boss_spawn_once[1] && (UserData::timer / 60) == BOSS2_SPAWN)
+	{
+		objects->CreateObject({ GetRandLoc(), Vector2D{ BOSS2_WIDTH,BOSS2_HEIGHT }, eBOSS2 });
+		boss_spawn_once[1] = true;
+	}
+	if (!boss_spawn_once[2] && (UserData::timer / 60) == BOSS3_SPAWN)
+	{
+		objects->CreateObject({ GetRandLoc(), Vector2D{ BOSS3_WIDTH,BOSS3_HEIGHT }, eBOSS3 });
+		boss_spawn_once[2] = true;
+	}
 }
 
 void InGameScene::CreatePopUp(Vector2D _location, string _text, int _text_color, float _move, int _life_span)
@@ -1070,7 +1091,12 @@ void InGameScene::TutorialUpdate()
 		//アイテム生成
 		SpawnItem();
 		//制限時間減少(死んでいない＆ボスが居ないなら)
-		if (!UserData::is_dead && boss_hp.size() > 0)UserData::timer--;
+		auto it = std::find_if(boss_hp.begin(), boss_hp.end(), [](const BossHp& b) {return b.name == "Boss3"; });
+		if (!UserData::is_dead && it == boss_hp.end())
+		{
+			UserData::timer--;
+		}
+		//if (!UserData::is_dead && boss_hp.size() == 0)UserData::timer--;
 		//敵生成
 		SpawnEnemy();
 	}

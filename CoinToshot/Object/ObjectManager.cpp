@@ -172,6 +172,7 @@ void ObjectManager::Draw()const
 			if (object->GetObjectType() != eSHOP &&
 				object->GetObjectType() != eSLOT &&
 				object->GetObjectType() != eBOX &&
+				object->GetObjectType() != eENEMY5 &&
 				object->GetObjectType() != eCOIN)
 			{
 				//‰e

@@ -32,7 +32,7 @@ void Boss3::Initialize(ObjectManager* _manager, int _object_type, Vector2D init_
 	hit_damage = BOSS3_DAMAGE;
 	drop_coin = BOSS3_DROPCOIN;
 
-	stop_flg = false;
+	boss_stop_flg = false;
 	move_mode = 0;
 	can_shot = false;
 	bullet_type = 1;
@@ -64,7 +64,6 @@ void Boss3::Update()
 {
 	__super::Update();
 
-	stop_flg = false;									//デフォルトで移動できる状態にする
 	drop_coin = BOSS3_DROPCOIN + UserData::boss_coin;	//コインドロップ量に、所持コインを加算する
 
 	//一回だけアニメーション実行
@@ -74,14 +73,16 @@ void Boss3::Update()
 		anim_once = true;
 	}
 
+	//移動方向決定処理
+	MoveBoss3();
+
 	//弾発射関連処理
 	Bullet();
 
+
 	//死亡していなければこの処理
-	if (!death_flg && !anim_flg && !stop_flg)
+	if (!death_flg && !anim_flg && !boss_stop_flg)
 	{
-		//移動方向決定処理
-		MoveBoss3();
 		//移動
 		Move();
 	}
@@ -261,12 +262,12 @@ void Boss3::ChangeMove()
 		move_mode = bullet_type + 1;
 	}
 	//攻撃中にコインがなくなるor指定の回数攻撃したら
-	else if (move_mode != 0 && (UserData::boss_coin < bBullet[bullet_type].cost || shot_count > boss3_bullet[bullet_type].shot_num))
+	else if (move_mode != 0 && (UserData::boss_coin < bBullet[bullet_type].cost || shot_count >= boss3_bullet[bullet_type].shot_num))
 	{
 		//コイン収集モード
 		move_mode = 0;
 		//弾種類ランダム変更
-		bullet_type = GetRand(3);
+		bullet_type = GetRand(5);
 		//リセット
 		shot_count = 0;
 		//弾を撃てなくする
@@ -283,6 +284,8 @@ void Boss3::MoveBoss3()
 
 	//挙動変更処理
 	ChangeMove();
+
+	boss_stop_flg = false;
 
 	switch (move_mode)
 	{
@@ -331,7 +334,13 @@ void Boss3::MoveBoss3()
 		radian = MoveAround(camera->player_location, BOSS3_PLAYER_DISTANCE, true);
 		break;
 	case 4:	//プレイヤー攻撃(追尾弾)
-		stop_flg = true;
+		boss_stop_flg = true;
+		break;
+	case 5:	//プレイヤー攻撃(爆発弾)
+		radian = MoveAround(camera->player_location, BOSS2_PLAYER_DISTANCE/2);
+		break;
+	case 6:	//プレイヤー攻撃(最強弾)
+		boss_stop_flg = true;
 		break;
 	default:
 		break;

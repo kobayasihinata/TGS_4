@@ -27,9 +27,9 @@ static BOSS3_BULLET boss3_bullet[BULLET_NUM]
 	{10,  30,10},
 	{30,  90, 5},
 	{30,  70, 5},
-	{60,  60, 5},
-	{60, 180, 5},
-	{100,180, 5},
+	{60,  60, 3},
+	{60, 180, 2},
+	{100,180, 1},
 };
 
 class Boss3 :
@@ -40,7 +40,7 @@ private:
 	int coin_num;		//コイン所持数
 	int move_mode;		//移動タイプ格納
 	int collect_timer;	//コイン収集時間測定
-	bool stop_flg;		//歩くのをやめるか
+	bool boss_stop_flg;		//歩くのをやめるか
 
 	//攻撃発射関連
 	int bullet_type;	//弾種類
