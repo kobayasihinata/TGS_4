@@ -165,18 +165,18 @@ void Attack::Hit(ObjectBase* hit_object)
 BulletData Attack::GetBulletData(float _shot_rad)
 {
 	BulletData _data;
-	_data.damage = 6;
+	_data.damage = 3;
 	_data.b_angle = _shot_rad;
 	_data.delete_time = 20;
-	_data.h_count = 100;
+	_data.h_count = 5;
 	_data.location = this->location;
 	_data.radius = 5;
 	_data.speed = 10;
 	_data.who = object;
 	_data.b_type = BulletType::bNormal;
-	_data.color[0] = 255;
-	_data.color[1] = 255;
-	_data.color[2] = 255;
+	_data.color[0] = bullet_color[0];
+	_data.color[1] = bullet_color[1];
+	_data.color[2] = bullet_color[2];
 	return _data;
 }
 

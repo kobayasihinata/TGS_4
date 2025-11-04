@@ -9,6 +9,11 @@ Box::Box()
 
 	//読込
 	ResourceManager* rm = ResourceManager::GetInstance();
+	std::vector<int>tmp;
+	tmp = rm->GetImages("Resource/Images/Item/Box.png", 1, 1, 1, 48, 43);
+	animation_image.push_back(tmp);
+
+	image = animation_image[0][0];
 	//SE読み込み
 	death_se = rm->GetSounds("Resource/Sounds/Enemy/death.mp3");
 	item_spawn_se = rm->GetSounds("Resource/Sounds/Direction/成功音.mp3");
@@ -42,27 +47,6 @@ void Box::Update()
 	//死亡演出フラグが立っているなら
 	if (death_flg)
 	{
-		//死亡時アニメーションに遷移
-		image_line = 1;
-		anim_span = 5;
-
-		//死にながらコインをまき散らす
-		if (++death_timer % 10 == 0 && drop_coin_count < drop_coin)
-		{
-			Vector2D rand = { (float)(GetRand(this->GetSize().x) - this->GetSize().x / 2),(float)(GetRand(this->GetSize().y) - this->GetSize().y / 2) };
-			manager->CreateObject(
-				eCOIN,
-				this->location + rand,
-				Vector2D{ 40, 40 },
-				20.f,
-				rand / 3);
-			drop_coin_count++;
-		}
-
-		//死亡演出時間を過ぎたら自身を削除
-		//if (anim_end_flg)アニメーションがある時用
-		if (death_timer > 60)
-		{
 			manager->DeleteObject(this);
 			//演出中に出せなかったコインをまとめてドロップ
 			for (int i = drop_coin_count; i < drop_coin; i++)
@@ -105,28 +89,12 @@ void Box::Update()
 				//SE再生
 				ResourceManager::rPlaySound(death_se, DX_PLAYTYPE_BACK);
 			}
-		}
 	}
 }
 
 void Box::Draw()const
 {
 	__super::Draw();
-	
-	if (death_flg)
-	{
-		DrawBoxAA(local_location.x - (box_size.x / 2) + GetRand(6) - 3,
-			local_location.y - (box_size.y / 2) + GetRand(6) - 3,
-			local_location.x + (box_size.x / 2) + GetRand(6) - 3,
-			local_location.y + (box_size.y / 2) + GetRand(6) - 3,
-			0x7b4d28, true);
-		DrawString(local_location.x, local_location.y, "はこ", 0xffffff);
-	}
-	else
-	{
-		Vector2D::DrawBoxV2(local_location - (box_size / 2), local_location + (box_size / 2), 0x7b4d28, true);
-		DrawString(local_location.x, local_location.y, "はこ", 0xffffff);
-	}
 }
 
 void Box::Hit(ObjectBase* hit_object)

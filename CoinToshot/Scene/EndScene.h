@@ -2,14 +2,15 @@
 
 #include "SceneBase.h"
 #define END_TIMER 1200	//何秒でゲームが終了するか
-#define IMAGE_LINE_NUM 11
+#define IMAGE_LINE_NUM 14
 #define SOUND_LINE_NUM 10
 
 //表示文字
 static char image_cledit[IMAGE_LINE_NUM][256]
 {
 	"画像素材",
-	"プレイヤー、敵画像：craftpix.net"
+	"プレイヤー、敵画像：craftpix.net(https://craftpix.net/)"
+	" ",
 	"Free Golem Chibi 2D Game Sprites",
 	" ",
 	"Free Chibi Skeleton Crusader Character Sprites",
@@ -18,7 +19,9 @@ static char image_cledit[IMAGE_LINE_NUM][256]
 	" ",
 	"Free Simple Platformer Game Kit Pixel Art",
 	" ",
-	"背景素材 : ichi.io(https://itch.io/)",
+	"背景、アイテム素材 : ichi.io(https://itch.io/) ",
+	"craftpix.net(https://craftpix.net/)",
+	" ",
 	"Basic Tileset and Asset Pack 32x32 Pixels",
 };
 static char sound_cledit[SOUND_LINE_NUM][256]

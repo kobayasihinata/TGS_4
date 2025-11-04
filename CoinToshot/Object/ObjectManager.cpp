@@ -171,7 +171,7 @@ void ObjectManager::Draw()const
 		{
 			if (object->GetObjectType() != eSHOP &&
 				object->GetObjectType() != eSLOT &&
-				object->GetObjectType() != eBOX &&
+				object->GetObjectType() != eBOX && 
 				object->GetObjectType() != eENEMY5 &&
 				object->GetObjectType() != eCOIN)
 			{
@@ -180,7 +180,7 @@ void ObjectManager::Draw()const
 				DrawOval(object->GetLocalLocation().x, object->GetLocalLocation().y + object->GetSize().y - (object->GetSize().y / 4), object->GetSize().x / 2, 10, 0x000000, true);
 				SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 			}
-			else
+			else if(object->GetObjectType() != eBOX)
 			{
 				//‰e
 				SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);

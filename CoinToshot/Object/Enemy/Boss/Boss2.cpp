@@ -51,6 +51,28 @@ void Boss2::Update()
 {
 	__super::Update();
 
+	//壁に当たっていたら前の座標に戻す(敵３限定)
+//左端
+	if (location.x - (box_size.x / 2) <= -STAGE_SIZE)
+	{
+		location.x = -STAGE_SIZE + (box_size.x / 2);
+	}
+	//右端
+	if (location.x + (box_size.x / 2) > STAGE_SIZE)
+	{
+		location.x = STAGE_SIZE - (box_size.x / 2);
+	}
+	//上端
+	if (location.y - (box_size.y / 2) <= -STAGE_SIZE)
+	{
+		location.y = -STAGE_SIZE + (box_size.y / 2);
+	}
+	//下端
+	if (location.y + (box_size.y / 2) > STAGE_SIZE)
+	{
+		location.y = STAGE_SIZE - (box_size.y / 2);
+	}
+
 	//一回だけアニメーション実行
 	if (!anim_once)
 	{
