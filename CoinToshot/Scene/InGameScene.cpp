@@ -474,6 +474,14 @@ void InGameScene::Draw()const
 		tutorial->Draw();
 	}
 
+	//ボスが居たら画面を薄暗く
+	if (boss_hp.size() > 0)
+	{
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 50);
+		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, true);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+	}
+
 }
 
 eSceneType InGameScene::GetNowSceneType()const
@@ -777,17 +785,17 @@ void InGameScene::SpawnEnemy()
 	//指定の時間にボスをスポーン
 	if (!boss_spawn_once[0] && (UserData::timer / 60) == BOSS1_SPAWN)
 	{
-		objects->CreateObject({ GetRandLoc(), Vector2D{ BOSS1_WIDTH,BOSS1_HEIGHT }, eBOSS1 });
+		objects->CreateObject({ {-1000,0}, Vector2D{BOSS1_WIDTH,BOSS1_HEIGHT}, eBOSS1});
 		boss_spawn_once[0] = true;
 	}
 	if (!boss_spawn_once[1] && (UserData::timer / 60) == BOSS2_SPAWN)
 	{
-		objects->CreateObject({ GetRandLoc(), Vector2D{ BOSS2_WIDTH,BOSS2_HEIGHT }, eBOSS2 });
+		objects->CreateObject({ {1000,0}, Vector2D{ BOSS2_WIDTH,BOSS2_HEIGHT }, eBOSS2 });
 		boss_spawn_once[1] = true;
 	}
 	if (!boss_spawn_once[2] && (UserData::timer / 60) == BOSS3_SPAWN)
 	{
-		objects->CreateObject({ GetRandLoc(), Vector2D{ BOSS3_WIDTH,BOSS3_HEIGHT }, eBOSS3 });
+		objects->CreateObject({ {0,0}, Vector2D{ BOSS3_WIDTH,BOSS3_HEIGHT }, eBOSS3 });
 		boss_spawn_once[2] = true;
 	}
 }
