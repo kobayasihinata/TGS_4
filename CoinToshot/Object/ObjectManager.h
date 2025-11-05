@@ -31,6 +31,7 @@
 #include "Effect/Walk.h"
 #include "Effect/Hit.h"
 #include "Effect/CoinGet.h"
+#include "Effect/Dust.h"
 #include "Base/EffectList.h"
 
 class InGameScene;
@@ -51,6 +52,7 @@ struct EffectInitData {
 	bool front_flg;				//オブジェクトより前に描画するか
 	int timer;					//表示時間
 	int anim_span;				//アニメーション切り替え間隔
+	Vector2D init_velocity;		//初期移動方向
 };
 
 class ObjectManager
@@ -100,7 +102,8 @@ public:
 	void DeleteAllObject();
 
 	//エフェクトの生成
-	void CreateEffect(int object_type, Vector2D init_location = 0.0f, bool _front_flg = true, int _color = 0xffffff,bool _dir = false,int _timer = 60, int _anim_span = 10);
+	void CreateEffect(int object_type, Vector2D init_location, bool _front_flg = true, int _color = 0xffffff,bool _dir = false,int _timer = 60, int _anim_span = 10, Vector2D init_velocity = 0.f);
+	void CreateEffect(int object_type, Vector2D init_location, Vector2D init_velocity=0.f, bool _front_flg = true, int _color = 0xffffff);
 	//エフェクトの削除
 	void DeleteEffect(EffectBase* _delete_effect);
 

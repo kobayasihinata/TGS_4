@@ -103,7 +103,7 @@ void ObjectManager::Update()
 	//エフェクト配列に追加する処理
 	for (const auto& create_effect : create_effect)
 	{
-		create_effect.effect->Initialize(this, create_effect.init_location, create_effect.front_flg, create_effect.timer, create_effect.anim_span);
+		create_effect.effect->Initialize(this, create_effect.init_location, create_effect.front_flg, create_effect.timer, create_effect.anim_span,create_effect.init_velocity);
 		effect_list.push_back(create_effect.effect);
 	}
 
@@ -346,37 +346,45 @@ void ObjectManager::DeleteAllObject()
 	}
 }
 
-void ObjectManager::CreateEffect(int object_type, Vector2D init_location, bool _front_flg, int _color, bool _dir, int _timer, int _anim_span)
+void ObjectManager::CreateEffect(int object_type, Vector2D init_location, bool _front_flg, int _color, bool _dir, int _timer, int _anim_span, Vector2D init_velocity)
 {
 	switch (object_type)
 	{
 	case EffectList::elRipples:
-		create_effect.push_back(EffectInitData{ new Ripples(_color),init_location, _front_flg,_timer, _anim_span});
+		create_effect.push_back(EffectInitData{ new Ripples(_color),init_location, _front_flg,_timer, _anim_span,init_velocity });
 		break;
 	case EffectList::elSmoke:
-		create_effect.push_back(EffectInitData{ new Smoke(),init_location, _front_flg,_timer, _anim_span });
+		create_effect.push_back(EffectInitData{ new Smoke(),init_location, _front_flg,_timer, _anim_span,init_velocity });
 		break;
 	case EffectList::elShine:
 		if (effect_list.size() < 200)
 		{
-			create_effect.push_back(EffectInitData{ new Shine(_color),init_location, _front_flg,_timer, _anim_span });
+			create_effect.push_back(EffectInitData{ new Shine(_color),init_location, _front_flg,_timer, _anim_span,init_velocity });
 		}
 		break;
 	case EffectList::elExplosion:
-		create_effect.push_back(EffectInitData{ new Explosion(),init_location, _front_flg,_timer, _anim_span });
+		create_effect.push_back(EffectInitData{ new Explosion(),init_location, _front_flg,_timer, _anim_span,init_velocity });
 		break;
 	case EffectList::elWalk:
-		create_effect.push_back(EffectInitData{ new Walk(_dir),init_location, _front_flg,_timer, _anim_span });
+		create_effect.push_back(EffectInitData{ new Walk(_dir),init_location, _front_flg,_timer, _anim_span,init_velocity });
 		break;
 	case EffectList::elHit:
-		create_effect.push_back(EffectInitData{ new Hit(),init_location, _front_flg,_timer, _anim_span });
+		create_effect.push_back(EffectInitData{ new Hit(),init_location, _front_flg,_timer, _anim_span,init_velocity });
 		break;
 	case EffectList::elCoin:
-		create_effect.push_back(EffectInitData{ new CoinGet(),init_location, _front_flg,_timer, _anim_span });
+		create_effect.push_back(EffectInitData{ new CoinGet(),init_location, _front_flg,_timer, _anim_span,init_velocity });
+		break;
+	case EffectList::elDust:
+		create_effect.push_back(EffectInitData{ new Dust(_color),init_location, _front_flg,_timer, _anim_span,init_velocity });
 		break;
 	default:
 		break;
 	}
+}
+
+void ObjectManager::CreateEffect(int object_type, Vector2D init_location, Vector2D init_velocity, bool _front_flg, int _color)
+{
+	CreateEffect(object_type, init_location, _front_flg, _color, false, 60, 10, init_velocity);
 }
 
 void ObjectManager::DeleteEffect(EffectBase* _delete_effect)

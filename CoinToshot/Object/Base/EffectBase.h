@@ -33,7 +33,7 @@ public:
 	virtual ~EffectBase() = default;
 
 	//‰Šú‰»ˆ—
-	virtual void Initialize(ObjectManager* _manager, Vector2D init_location, bool _front_flg, int _timer, int _anim_span) {
+	virtual void Initialize(ObjectManager* _manager, Vector2D init_location, bool _front_flg, int _timer, int _anim_span,Vector2D init_velocity) {
 
 		location = init_location;
 		local_location = 0;

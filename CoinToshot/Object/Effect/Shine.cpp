@@ -15,9 +15,9 @@ Shine::~Shine()
 
 }
 
-void Shine::Initialize(ObjectManager* _manager, Vector2D init_location, bool _front_flg, int _timer, int _anim_span)
+void Shine::Initialize(ObjectManager* _manager, Vector2D init_location, bool _front_flg, int _timer, int _anim_span, Vector2D init_velocity)
 {
-	__super::Initialize(_manager, init_location, _front_flg, _timer, _anim_span);
+	__super::Initialize(_manager, init_location, _front_flg, _timer, _anim_span, init_velocity);
 	//¶‘¶ŠÔ‚ğƒ‰ƒ“ƒ_ƒ€‚É
 	timer = GetRand(25) + 5;
 	init_timer = timer;

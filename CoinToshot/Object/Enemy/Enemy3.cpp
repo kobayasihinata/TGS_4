@@ -160,7 +160,7 @@ void Enemy3::Update()
 					rand);
 			}
 			//エフェクト
-			manager->CreateEffect(elExplosion, this->location);
+			manager->CreateEffect(elExplosion, this->location, { 0,0 });
 
 			//レア個体ならアイテム生成＆アイテムSE再生
 			if (rare_flg)

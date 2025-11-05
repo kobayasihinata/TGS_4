@@ -156,7 +156,7 @@ void Boss3::Update()
 			ResourceManager::rPlaySound(death_se, DX_PLAYTYPE_BACK);
 
 			//エフェクト
-			manager->CreateEffect(elExplosion, this->location);
+			manager->CreateEffect(elExplosion, this->location, { 0,0 });
 		}
 	}
 

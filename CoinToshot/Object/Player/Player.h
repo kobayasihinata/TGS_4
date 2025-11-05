@@ -7,6 +7,7 @@
 #include "../../Scene/Tutorial.h"
 
 #define PLAYER_IMAGE_SIZE 150 //プレイヤーの画像サイズ
+#define MUZZLE_FLAST_TIME 20  //マズルフラッシュの長さ
 
 class InGameScene;
 
@@ -31,6 +32,8 @@ private:
 	float shot_rad;				//発射角度
 	float old_shot_rad;			//１フレーム前の発射角度
 	int arrow_image;			//矢印画像作成
+	int flash_time;				//マズルフラッシュ時間
+	std::vector<int> flash_image;//マズルフラッシュ画像
 
 	//無敵処理関連
 	bool inv_flg;				//無敵か判断

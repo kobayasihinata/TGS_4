@@ -118,7 +118,7 @@ public:
 		//€–S‚µ‚Ä‚¢‚È‚¯‚ê‚Î‚±‚Ìˆ—
 		if (!this->death_flg)
 		{
-			double radian = atan2(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x);
+			float radian = atan2(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x);
 
 			//ˆÚ“®‚ÌãŒÀ’lİ’è
 			if (fabsf(velocity.x) < move_speed)velocity.x += move_speed * cos(radian);

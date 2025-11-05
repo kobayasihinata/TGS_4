@@ -143,6 +143,7 @@
     <ClCompile Include="Object\Effect\CoinGet.cpp" />
     <ClCompile Include="Object\Effect\Explosion.cpp" />
     <ClCompile Include="Object\Effect\Hit.cpp" />
+    <ClCompile Include="Object\Effect\Dust.cpp" />
     <ClCompile Include="Object\Effect\Ripples.cpp" />
     <ClCompile Include="Object\Effect\Shine.cpp" />
     <ClCompile Include="Object\Effect\Smoke.cpp" />
@@ -193,6 +194,7 @@
     <ClInclude Include="Object\Effect\CoinGet.h" />
     <ClInclude Include="Object\Effect\Explosion.h" />
     <ClInclude Include="Object\Effect\Hit.h" />
+    <ClInclude Include="Object\Effect\Dust.h" />
     <ClInclude Include="Object\Effect\Ripples.h" />
     <ClInclude Include="Object\Effect\Shine.h" />
     <ClInclude Include="Object\Effect\Smoke.h" />

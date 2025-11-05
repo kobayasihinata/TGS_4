@@ -1,14 +1,19 @@
 #pragma once
 #include "../Base/EffectBase.h"
 
-class CoinGet :
+class Dust :
 	public EffectBase
 {
 private:
-	int color;	//0~8‚Ìƒ‰ƒ“ƒ_ƒ€
+	Vector2D move_velocity;	//ˆÚ“®•ûŒü
+	Vector2D box_size;		//‘å‚«‚³
+
+	int timer;				//Á‚¦‚é‚Ü‚Å‚ÌŠÔ
+	int color;				//•`‰æ‚ÌF
+
 public:
-	CoinGet();
-	~CoinGet();
+	Dust(int _color);
+	~Dust();
 
 	//‰Šú‰»ˆ—
 	void Initialize(ObjectManager* _manager, Vector2D init_location, bool _front_flg, int _timer, int _anim_span, Vector2D init_velocity)override;

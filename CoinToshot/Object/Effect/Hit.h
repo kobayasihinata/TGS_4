@@ -11,7 +11,7 @@ public:
 	~Hit();
 
 	//‰Šú‰»ˆ—
-	void Initialize(ObjectManager* _manager, Vector2D init_location, bool _front_flg, int _timer, int _anim_span)override;
+	void Initialize(ObjectManager* _manager, Vector2D init_location, bool _front_flg, int _timer, int _anim_span, Vector2D init_velocity)override;
 
 	//I—¹ˆ—
 	void Finalize()override;

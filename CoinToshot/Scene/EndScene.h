@@ -21,8 +21,7 @@ static char image_cledit[IMAGE_LINE_NUM][256]
 	" ",
 	"背景、アイテム素材 : ichi.io(https://itch.io/) ",
 	"craftpix.net(https://craftpix.net/)",
-	" ",
-	"Basic Tileset and Asset Pack 32x32 Pixels",
+	"ぴぽや倉庫(https://pipoya.net/sozai/)",
 };
 static char sound_cledit[SOUND_LINE_NUM][256]
 {

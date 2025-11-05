@@ -157,8 +157,13 @@ void Attack::Hit(ObjectBase* hit_object)
 		{
 			manager->DeleteObject(this);
 		}
-		manager->CreateEffect(elHit, hit_object->GetLocation(), true, 0x000000, false, 30);
-
+		//manager->CreateEffect(elHit, hit_object->GetLocation(), true, 0x000000, false, 30);
+		//manager->CreateEffect(elDust, this->location, false, 0xffffff, false, GetRand(30) + 15, 1, this->move_velocity);
+		for (int i = 0; i < 10; i++)
+		{
+			Vector2D rand = { (this->move_velocity.x + (float)(GetRand(14) - 7))*2 ,(this->move_velocity.y + (float)(GetRand(14)-7))*2 };
+			manager->CreateEffect(elDust, this->location, rand);
+		}
 	}
 }
 

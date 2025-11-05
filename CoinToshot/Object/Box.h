@@ -7,9 +7,12 @@ class Box :
 	public ActorBase
 {
 private:
+
+	int impact;			//箱の振動
+
 	int death_se;				//死亡時SE
 	int item_spawn_se;			//レアアイテム生成SE
-	
+
 public:
 	//コンストラクタ
 	Box();

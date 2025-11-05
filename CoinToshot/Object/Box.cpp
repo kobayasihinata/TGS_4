@@ -7,6 +7,8 @@ Box::Box()
 	drop_coin = GetRand(20) + 10;
 	drop_coin_count = 0;
 
+	impact = 0;
+
 	//読込
 	ResourceManager* rm = ResourceManager::GetInstance();
 	std::vector<int>tmp;
@@ -38,6 +40,11 @@ void Box::Update()
 {
 	__super::Update();
 
+	//箱振動
+	if (impact > 0)
+	{
+		impact--;
+	}
 	//移動
 	Move();
 
@@ -60,7 +67,7 @@ void Box::Update()
 					rand);
 			}
 			//エフェクト
-			manager->CreateEffect(elExplosion, this->location);
+			manager->CreateEffect(elExplosion, this->location,{0,0});
 
 			//一定確率でアイテム生成＆アイテムSE再生
 			if (GetRand(ITEM_DROP) == 0)
@@ -94,7 +101,21 @@ void Box::Update()
 
 void Box::Draw()const
 {
-	__super::Draw();
+	Vector2D loc{ 0,10 };	//振動用の移動＋画像の上下のずれ修正
+
+	loc.x = (float)GetRand(impact) - (float)(impact / 2);
+	//画像描画
+	if (image != 0)
+	{
+		if (move_velocity.x > 0)
+		{
+			DrawRotaGraphF(local_location.x + loc.x, local_location.y + loc.y, 1, 0, image, true, false);
+		}
+		else
+		{
+			DrawRotaGraphF(local_location.x + loc.x, local_location.y + loc.y, 1, 0, image, true, true);
+		}
+	}
 }
 
 void Box::Hit(ObjectBase* hit_object)
@@ -117,21 +138,14 @@ void Box::Damage(float _value, Vector2D _attack_loc, int _knock_back)
 	if (hp > 0)
 	{
 		hp -= _value;
+		impact = 10;
 		//ダメージSE
 		ResourceManager::rPlaySound(damage_se, DX_PLAYTYPE_BACK);
+
 	}
 	//HPが０以下なら死亡処理
 	if (hp <= 0)
 	{
 		death_flg = true;
-
-		//ノックバック処理
-		double radian = atan2(_attack_loc.y - this->location.y, _attack_loc.x - this->location.x);
-		velocity.x -= (_knock_back * cos(radian));
-		velocity.y -= (_knock_back * sin(radian));
-
-		//アニメーション位置をリセット
-		image_num = 0;
-		anim_end_flg = false;
 	}
 }

@@ -45,6 +45,7 @@ void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init
 	change_timer = 0;
 	player_image = MakeScreen(PLAYER_IMAGE_SIZE, PLAYER_IMAGE_SIZE, TRUE);
 	arrow_image = MakeScreen(100, 110, TRUE);
+	flash_time = 0;
 	aim_once_flg = false;
 	shot_rad = 123456.f;	//ありえない値を入れておく
 	old_shot_rad = 0.f;
@@ -73,6 +74,8 @@ void Player::Initialize(ObjectManager* _manager, int _object_type, Vector2D init
 	animation_image.push_back(tmp);
 	tmp = rm->GetImages("Resource/Images/Player/Hit2.png", 7, 7, 1, 64, 64);
 	animation_image.push_back(tmp);
+
+	flash_image;
 
 	//画像サイズの半分マイナス
 	image_shift = -32;
@@ -211,6 +214,11 @@ void Player::Update()
 	Animation();
 	CreateArrowImage();
 
+	//マズルフラッシュ用
+	if (flash_time > 0)
+	{
+		flash_time--;
+	}
 
 	//アニメーション位置に応じて足音を鳴らす
 	if (image_line == 1 &&
@@ -263,7 +271,7 @@ void Player::Update()
 			//死亡SE再生
 			ResourceManager::rPlaySound(death_se, DX_PLAYTYPE_BACK);
 			//爆発エフェクト
-			manager->CreateEffect(elExplosion, { location.x + (GetRand(100) - 50),location.y + (GetRand(100) - 50) });
+			manager->CreateEffect(elExplosion, { location.x + (GetRand(100) - 50),location.y + (GetRand(100) - 50) },{0,0});
 		}
 
 		//死亡演出時間を過ぎたら自身を削除
@@ -311,6 +319,13 @@ void Player::Draw()const
 		}
 	}
 
+	//マズルフラッシュ
+	if (flash_time > 0)
+	{
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
+		//
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+	}
 	//カーソルを動かせる状態なら表示
 	if (aim_once_flg && !death_flg)
 	{
@@ -547,6 +562,7 @@ void Player::Control()
 			ResourceManager::rPlaySound(shot_se, DX_PLAYTYPE_BACK);
 			std::string s = "-" + std::to_string(pBullet[UserData::get_bullet[UserData::now_bullet]].cost);
 			ingame->CreatePopUp(this->location, s, 0xff0000, -1);
+			flash_time = MUZZLE_FLAST_TIME;
 		}
 		//発射失敗SE
 		else
