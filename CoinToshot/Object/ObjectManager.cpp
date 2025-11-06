@@ -117,7 +117,6 @@ void ObjectManager::Update()
 		{
 			if (*it == delete_effect)
 			{
-
 				it = effect_list.erase(it);
 				break;
 			}

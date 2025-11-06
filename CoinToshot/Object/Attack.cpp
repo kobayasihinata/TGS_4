@@ -164,6 +164,8 @@ void Attack::Hit(ObjectBase* hit_object)
 			Vector2D rand = { (this->move_velocity.x + (float)(GetRand(14) - 7))*2 ,(this->move_velocity.y + (float)(GetRand(14)-7))*2 };
 			manager->CreateEffect(elDust, this->location, rand);
 		}
+		//ƒJƒƒ‰U“®
+		camera->impact = 5;
 	}
 }
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "SceneBase.h"
-#define END_TIMER 1200	//何秒でゲームが終了するか
+#define END_TIMER 1500	//何秒でゲームが終了するか
 #define IMAGE_LINE_NUM 14
 #define SOUND_LINE_NUM 10
 
@@ -9,7 +9,7 @@
 static char image_cledit[IMAGE_LINE_NUM][256]
 {
 	"画像素材",
-	"プレイヤー、敵画像：craftpix.net(https://craftpix.net/)"
+	"プレイヤー、敵画像：craftpix.net（https://craftpix.net/）"
 	" ",
 	"Free Golem Chibi 2D Game Sprites",
 	" ",
@@ -19,9 +19,9 @@ static char image_cledit[IMAGE_LINE_NUM][256]
 	" ",
 	"Free Simple Platformer Game Kit Pixel Art",
 	" ",
-	"背景、アイテム素材 : ichi.io(https://itch.io/) ",
-	"craftpix.net(https://craftpix.net/)",
-	"ぴぽや倉庫(https://pipoya.net/sozai/)",
+	"背景、アイテム素材 : ichi.io（https://itch.io/）",
+	"craftpix.net（https://craftpix.net/）",
+	"ぴぽや倉庫（https://pipoya.net/sozai/）",
 };
 static char sound_cledit[SOUND_LINE_NUM][256]
 {

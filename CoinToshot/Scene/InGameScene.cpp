@@ -424,7 +424,7 @@ eSceneType InGameScene::Update(float _delta)
 void InGameScene::Draw()const
 {
 
-	DrawRotaGraph(now_gm_loc.x, now_gm_loc.y, now_gm_size, 0, gamemain_image, FALSE);
+	DrawRotaGraph(now_gm_loc.x+camera->GetRandImpact(), now_gm_loc.y+camera->GetRandImpact(), now_gm_size, 0, gamemain_image, FALSE);
 
 	//一時停止フラグかショップ表示フラグが立っていたら背景を暗くする
 	if (pause_flg || shop_flg)

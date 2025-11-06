@@ -113,4 +113,5 @@
 #define BOSS3_SPEED 1.7f			//ボス３速度
 #define BOSS3_DAMAGE 3				//ボス３与ダメ
 #define BOSS3_PLAYER_DISTANCE 400	//ボス３プレイヤーとの間合い
-#define BOSS3_DROPCOIN 300			//ボス３コインドロップ量
+#define BOSS3_PLAYER_DISTANCE2 800	//ボス３プレイヤーとどれくらい離れたら加速するか
+#define BOSS3_DROPCOIN 100			//ボス３コインドロップ量

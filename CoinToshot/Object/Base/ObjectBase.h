@@ -43,6 +43,7 @@ public:
 		//初期化
 		anim_span = DEFAULT_ANIM_SPAN;	//アニメーション周期保存用
 		anim_end_flg = false;
+		image_line = 0;
 		image_num = 0;					//描画画像の配列上の位置格納
 		image_shift = 0;
 		death_flg = false;					

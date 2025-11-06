@@ -157,6 +157,9 @@ void Boss3::Update()
 
 			//エフェクト
 			manager->CreateEffect(elExplosion, this->location, { 0,0 });
+
+			//終了時処理
+			this->Finalize();
 		}
 	}
 
@@ -267,7 +270,7 @@ void Boss3::ChangeMove()
 		//コイン収集モード
 		move_mode = 0;
 		//弾種類ランダム変更
-		bullet_type = GetRand(5);
+		bullet_type = GetRand(4);
 		//リセット
 		shot_count = 0;
 		//弾を撃てなくする
@@ -346,6 +349,15 @@ void Boss3::MoveBoss3()
 		break;
 	}
 
+	//プレイヤーが遠くに居たら加速
+	if (UserData::Distance(camera->player_location, this->location) > BOSS3_PLAYER_DISTANCE2)
+	{
+		move_speed = BOSS3_SPEED * 2;
+	}
+	else
+	{
+		move_speed = BOSS3_SPEED;
+	}
 	//移動の上限値設定
 	if (fabsf(velocity.x) < move_speed)velocity.x += move_speed * cos(radian);
 	if (fabsf(velocity.y) < move_speed)velocity.y += move_speed * sin(radian);
