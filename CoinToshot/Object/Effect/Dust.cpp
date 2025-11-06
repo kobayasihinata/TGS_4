@@ -45,7 +45,9 @@ void Dust::Update()
 //ï`âÊèàóù
 void Dust::Draw()const
 {
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, (255 / init_timer) * timer);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, (255 / init_timer) * timer-50);
+	DrawBoxAA(local_location.x-3, local_location.y-3, local_location.x + box_size.x+3, local_location.y + box_size.y+3, color, true);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, (255 / init_timer) * timer+30);
 	DrawBoxAA(local_location.x, local_location.y, local_location.x + box_size.x, local_location.y + box_size.y, color, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 }

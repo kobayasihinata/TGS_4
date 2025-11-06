@@ -57,7 +57,10 @@ void ObjectManager::Update()
 			create_object.object->Initialize(this, create_object.object_num, create_object.init_location, create_object.init_size, create_object.init_radius);
 			object_list.push_back(create_object.object);
 			//煙エフェクト生成
-			CreateEffect(elSmoke, create_object.init_location, true, 0x000000, false, 30);
+			if (!create_object.object->IsBoss())
+			{
+				CreateEffect(elSmoke, create_object.init_location, true, 0x000000, false, 30);
+			}
 		}
 	}
 
