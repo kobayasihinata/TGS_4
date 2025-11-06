@@ -1,7 +1,7 @@
 #pragma once
 #define DEBUG_SKIP true			//デバッグ用チュートリアルスキップモード
 #define DEBUG_PLAYER false		//クリアと死をすぐ確認したい時用
-#define WINDOW_MODE true		//ウィンドウモードかどうか
+#define WINDOW_MODE false		//ウィンドウモードかどうか
 
 #define SE_MAX 13000	//SE音量の上限
 #define BGM_MAX 11000	//BGM音量の上限
@@ -89,14 +89,14 @@
 
 #define BOSS_BAR_SIZE 500			//ボスHPゲージ幅
 
-#define BOSS1_HP 40					//ボス１HP
+#define BOSS1_HP 70				//ボス１HP
 #define BOSS1_WIDTH 100				//ボス１幅
 #define BOSS1_HEIGHT 100			//ボス１高さ
 #define BOSS1_SPEED 1.f				//ボス１速度
 #define BOSS1_DAMAGE 2				//ボス１与ダメ
 #define BOSS1_DROPCOIN 100			//ボス１コインドロップ量
 
-#define BOSS2_HP 30					//ボス２HP
+#define BOSS2_HP 80				//ボス２HP
 #define BOSS2_WIDTH 100				//ボス２幅
 #define BOSS2_HEIGHT 100			//ボス２高さ
 #define BOSS2_SPEED 1.f				//ボス２速度
@@ -110,8 +110,8 @@
 #define BOSS3_HP 100				//ボス３HP
 #define BOSS3_WIDTH 40				//ボス３幅
 #define BOSS3_HEIGHT 40				//ボス３高さ
-#define BOSS3_SPEED 1.7f			//ボス３速度
+#define BOSS3_SPEED 2.5f			//ボス３速度
 #define BOSS3_DAMAGE 3				//ボス３与ダメ
-#define BOSS3_PLAYER_DISTANCE 400	//ボス３プレイヤーとの間合い
-#define BOSS3_PLAYER_DISTANCE2 800	//ボス３プレイヤーとどれくらい離れたら加速するか
+#define BOSS3_PLAYER_DISTANCE 200	//ボス３プレイヤーとの間合い
+#define BOSS3_PLAYER_DISTANCE2 600	//ボス３プレイヤーとどれくらい離れたら加速するか
 #define BOSS3_DROPCOIN 100			//ボス３コインドロップ量

@@ -40,7 +40,9 @@ private:
 	int coin_num;		//コイン所持数
 	int move_mode;		//移動タイプ格納
 	int collect_timer;	//コイン収集時間測定
-	bool boss_stop_flg;		//歩くのをやめるか
+	bool boss_stop_flg;	//歩くのをやめるか
+	int strength_level;	//ボスの強さ
+	int boss_speed[2];	//強さごとのボスの速さ
 
 	//攻撃発射関連
 	int bullet_type;	//弾種類
@@ -101,5 +103,8 @@ public:
 
 	///指定の座標の周りを回るように移動 _loc=軸 _distance=対象との距離 _direction=回転方向(false=左)
 	double MoveAround(Vector2D _loc, int _distance, bool _direction = false);
+
+	//自身の強さを変更する
+	void SetStrength(int _level);
 };
 

@@ -142,5 +142,8 @@ public:
 
 	//2点間の距離を求める
 	static float Distance(Vector2D _loc1, Vector2D _loc2);
+
+	//配列で渡された色を16進数で返す
+	static int GetColorHex(int _color[3]);
 };
 

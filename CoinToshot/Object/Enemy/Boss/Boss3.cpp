@@ -33,6 +33,9 @@ void Boss3::Initialize(ObjectManager* _manager, int _object_type, Vector2D init_
 	drop_coin = BOSS3_DROPCOIN;
 
 	boss_stop_flg = false;
+	strength_level = 0;
+	boss_speed[0] = BOSS3_SPEED;
+	boss_speed[1] = BOSS3_SPEED * 2;
 	move_mode = 0;
 	can_shot = false;
 	bullet_type = 1;
@@ -169,19 +172,19 @@ void Boss3::Draw()const
 {
 	__super::Draw();
 
-	SetFontSize(15);
-	DrawBoxAA(local_location.x - (box_size.x / 2),
+	SetFontSize(17);
+	DrawBoxAA(local_location.x - (box_size.x / 2)-2,
 		local_location.y - box_size.y - 20,
-		local_location.x + (box_size.x / 2)+10,
+		local_location.x + (box_size.x / 2)+12,
 		local_location.y - box_size.y, 0xffffff, true);
 
-	UserData::DrawCoin({ local_location.x-10,
+	UserData::DrawCoin({ local_location.x-12,
 	local_location.y - box_size.y - 10 },
 		10);
 
 	DrawFormatString(local_location.x,
 		local_location.y - box_size.y - 20,
-		0x550000,
+		UserData::boss_coin >= 0 ? 0x550000 : 0x0000ff,
 		"×%d",
 		UserData::boss_coin);
 }
@@ -270,7 +273,14 @@ void Boss3::ChangeMove()
 		//コイン収集モード
 		move_mode = 0;
 		//弾種類ランダム変更
-		bullet_type = GetRand(4);
+		if (strength_level == 0)
+		{
+			bullet_type = GetRand(2);
+		}
+		else
+		{
+			bullet_type = GetRand(5);
+		}
 		//リセット
 		shot_count = 0;
 		//弾を撃てなくする
@@ -352,12 +362,13 @@ void Boss3::MoveBoss3()
 	//プレイヤーが遠くに居たら加速
 	if (UserData::Distance(camera->player_location, this->location) > BOSS3_PLAYER_DISTANCE2)
 	{
-		move_speed = BOSS3_SPEED * 2;
+		move_speed = boss_speed[strength_level] * 5;
 	}
 	else
 	{
-		move_speed = BOSS3_SPEED;
+		move_speed = boss_speed[strength_level];
 	}
+
 	//移動の上限値設定
 	if (fabsf(velocity.x) < move_speed)velocity.x += move_speed * cos(radian);
 	if (fabsf(velocity.y) < move_speed)velocity.y += move_speed * sin(radian);
@@ -427,4 +438,22 @@ double Boss3::MoveAround(Vector2D _loc, int _distance, bool _direction)
 		}
 	}
 	return radian;
+}
+
+void Boss3::SetStrength(int _level)
+{
+	//既にその強さレベルならスキップ
+	if (strength_level != _level)
+	{
+		strength_level = _level;
+		switch (strength_level)
+		{
+		case 0:
+			hit_damage = BOSS3_DAMAGE;
+			break;
+		case 1:
+			hit_damage = BOSS3_DAMAGE + 1;
+			break;
+		}
+	}
 }

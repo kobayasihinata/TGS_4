@@ -484,3 +484,12 @@ float UserData::Distance(Vector2D _loc1, Vector2D _loc2)
 {
 	return std::sqrt(std::pow(_loc2.x - _loc1.x, 2) + std::pow(_loc2.y - _loc1.y, 2));
 }
+
+int UserData::GetColorHex(int _color[3])
+{
+	int ret = 0x000000;
+	ret = (ret << 8) | _color[0]; // Ô
+	ret = (ret << 8) | _color[1]; // —Î
+	ret = (ret << 8) | _color[2]; // Â
+	return ret;
+}
