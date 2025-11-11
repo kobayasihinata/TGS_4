@@ -19,11 +19,15 @@ Boss2::Boss2(InGameScene* _ingame)
 	//画像読込
 	ResourceManager* rm = ResourceManager::GetInstance();
 	std::vector<int>tmp;
-	tmp = rm->GetImages("Resource/Images/Enemy3/Enemy3_Idle.png", 18, 5, 4, 96, 96);
+	tmp = rm->GetImages("Resource/Images/Boss2/Boss2_Idle.png", 18, 5, 4, 96, 96);
 	animation_image.push_back(tmp);
-	tmp = rm->GetImages("Resource/Images/Enemy3/Enemy3_Throw.png", 12, 5, 3, 96, 96);
+	tmp = rm->GetImages("Resource/Images/Boss2/Boss2_Throw.png", 12, 5, 3, 96, 96);
 	animation_image.push_back(tmp);
-	tmp = rm->GetImages("Resource/Images/Enemy3/Enemy3_Death.png", 15, 5, 3, 96, 96);
+	tmp = rm->GetImages("Resource/Images/Boss2/Boss2_Run.png", 12, 5, 3, 96, 96);
+	animation_image.push_back(tmp);
+	tmp = rm->GetImages("Resource/Images/Boss2/Boss2_Run_Throw.png", 12, 5, 3, 96, 96);
+	animation_image.push_back(tmp);
+	tmp = rm->GetImages("Resource/Images/Boss2/Boss2_Death.png", 15, 5, 3, 96, 96);
 	animation_image.push_back(tmp);
 
 	image = animation_image[0][0];
@@ -51,7 +55,7 @@ void Boss2::Update()
 {
 	__super::Update();
 
-	//壁に当たっていたら前の座標に戻す(敵３限定)
+	//壁に当たっていたら前の座標に戻す
 //左端
 	if (location.x - (box_size.x / 2) <= -STAGE_SIZE)
 	{
@@ -110,7 +114,7 @@ void Boss2::Update()
 	if (death_flg)
 	{
 		//死亡アニメーションを表示
-		image_line = 2;
+		image_line = 4;
 		anim_span = 5;
 
 		//死にながらコインをまき散らす
@@ -133,7 +137,7 @@ void Boss2::Update()
 			//演出中に出せなかったコインをまとめてドロップ
 			for (int i = drop_coin_count; i < drop_coin; i++)
 			{
-				Vector2D rand = { (float)(GetRand(25) - 12),(float)(GetRand(25) - 12) };
+				Vector2D rand = { (float)(GetRand(50) - 25),(float)(GetRand(50) - 25) };
 				manager->CreateObject(
 					eCOIN,
 					this->location + rand,
@@ -209,12 +213,12 @@ void Boss2::Bullet()
 	}
 
 	//投擲アニメーションが一周したら通常アニメーションに戻す
-	if (image_line == 1 && anim_end_flg)
+	if ((image_line == 1 || image_line == 3) && anim_end_flg)
 	{
-		image_line = 0;
+		image_line = boss_move_flg ? 2 : 0;
 	}
 	//投擲アニメーションが指定の画像まで再生されたら、弾を発射する
-	if (!shot_once && image_line == 1 && image_num == 4)
+	if (!shot_once && (image_line == 1 || image_line == 3) && image_num == 4)
 	{
 		//プレイヤーの位置で発射角度を決める
 		shot_rad = atan2f(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x);
@@ -226,7 +230,7 @@ void Boss2::Bullet()
 	if (!death_flg && frame % shot_span == 0)
 	{
 		//投擲アニメーション開始
-		image_line = 1;
+		image_line = boss_move_flg ? 3 : 1;
 		anim_timer = 0;
 		image_num = 0;
 		//一回だけ撃つ用変数リセット

@@ -123,7 +123,7 @@ void Boss3::Update()
 			//演出中に出せなかったコインをまとめてドロップ
 			for (int i = drop_coin_count; i < drop_coin; i++)
 			{
-				Vector2D rand = { (float)(GetRand(25) - 12),(float)(GetRand(25) - 12) };
+				Vector2D rand = { (float)(GetRand(50) - 25),(float)(GetRand(50) - 25) };
 				manager->CreateObject(
 					eCOIN,
 					this->location + rand,
