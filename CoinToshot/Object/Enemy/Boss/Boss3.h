@@ -3,13 +3,15 @@
 #include "../../Base/BulletData.h"
 #include "../../Player/PlayerBullet.h"
 
+#define MAX_LEVEL 2		//最大レベル
+
 //弾のデータ
 static PlayerBullet bBullet[BULLET_NUM]
 {
 	//name     cos   dam   spe   rad   h_c  life  cd  num space color
 	{"通常弾",   1,	 1.f, 10.f, 20.f,   1,  120,  1,  1,    0,{100,100,100}},
 	{"拡散弾",   5,  2.f, 10.f, 20.f,   1,   30, 20,  5, 0.3f,{  0,100,100}},
-	{"強化弾",  10,  7.f, 15.f, 30.f,   5,  180, 10,  1,    0,{100, 60,  0}},
+	{"強化弾",  10,  3.f, 15.f, 30.f,   5,  180, 10,  1,    0,{100, 60,  0}},
 	{"追尾弾",  10,  1.f,  2.f, 15.f,  13,  600, 30,  1,    0,{100,  0,100}},
 	{"爆発弾",  30,  3.f, 10.f, 10.f, 100,   20, 40,  1,	0,{100,  0,  0}},
 	{"最強弾", 100, 20.f, 25.f, 40.f, 100,  360,180,  1,    0,{255,255,255}},
@@ -41,8 +43,12 @@ private:
 	int move_mode;		//移動タイプ格納
 	int collect_timer;	//コイン収集時間測定
 	bool boss_stop_flg;	//歩くのをやめるか
+
+	bool time_count_flg;//生きている時間の測定をするかどうか
+	int survival_time;	//ボスの生きている時間（レベルが上がったらリセット）
 	int strength_level;	//ボスの強さ
-	int boss_speed[2];	//強さごとのボスの速さ
+	int boss_speed[3];	//強さごとのボスの速さ
+	int player_distance;//プレイヤーとの距離の基準値
 
 	//攻撃発射関連
 	int bullet_type;	//弾種類
@@ -103,6 +109,9 @@ public:
 
 	///指定の座標の周りを回るように移動 _loc=軸 _distance=対象との距離 _direction=回転方向(false=左)
 	double MoveAround(Vector2D _loc, int _distance, bool _direction = false);
+
+	//強さの更新
+	void UpdateStrength();
 
 	//自身の強さを変更する
 	void SetStrength(int _level);

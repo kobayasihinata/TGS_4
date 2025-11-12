@@ -16,8 +16,11 @@ protected:
 	bool anim_flg;			//登場アニメーション中か
 	int boss_anim_timer;			//登場アニメーション時間測定
 
+	std::vector<int> aura_image;	//ボスオーラ画像
+	int now_aura_image;				//オーラ画像表示位置
 	int death_se;			//死亡時SE
 	int item_spawn_se;		//アイテム生成SE
+
 public:
 
 	BossBase()
@@ -35,6 +38,8 @@ public:
 
 		//SE読み込み
 		ResourceManager* rm = ResourceManager::GetInstance();
+		std::vector<int>tmp;
+		aura_image = rm->GetImages("Resource/Images/Effect/boss_aura.png", 8, 8, 1, 120, 120);
 		death_se = rm->GetSounds("Resource/Sounds/Enemy/death.mp3");
 		item_spawn_se = rm->GetSounds("Resource/Sounds/Direction/成功音.mp3");
 	}
@@ -53,10 +58,19 @@ public:
 		{
 			anim_flg = false;
 		}
+		//オーラ更新
+		if (frame % 5 == 0)
+		{
+			if (++now_aura_image > aura_image.size())
+			{
+				now_aura_image = 0;
+			}
+		}
 	}
 
 	virtual void Draw()const override
 	{
+		DrawRotaGraphF(local_location.x, local_location.y, box_size.x / 40, 0, aura_image[now_aura_image], TRUE);
 		//画像描画
 		if (image != 0)
 		{

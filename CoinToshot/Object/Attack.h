@@ -19,11 +19,16 @@ private:
 	int hit_count;				//当たったオブジェクトの数を測定
 	int wall_hit;				//画面端に当たった回数を測定
 	int hit_max;				//いくつのオブジェクトに当たれるか
+
 	ObjectBase* old_hit_object;	//ひとつ前に当たったオブジェクトを保存
 	BulletType bullet_type;		//自身の弾種類を格納
 	int bullet_color[3];		//弾の色を格納
 	int ripple_color;			//生成する波紋の色
 	int gauss_image;			//ぼかし画像保存
+
+	std::vector<int> aura_image;	//ボスオーラ画像
+	int now_aura_image;				//オーラ画像表示位置
+
 	//音源
 	int shot_se;				//弾発射SE
 public:

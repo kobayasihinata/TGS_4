@@ -518,6 +518,16 @@ void InGameScene::LoadGameMainResource()
 	rm->GetImages("Resource/Images/Enemy2/Enemy2_Death.png", 15, 5, 3, 96, 96);
 	rm->GetImages("Resource/Images/Enemy1/Enemy1_Walk.png", 24, 5, 5, 96, 96);
 	rm->GetImages("Resource/Images/Enemy1/Enemy1_Death.png", 15, 5, 3, 96, 96);
+	rm->GetImages("Resource/Images/Effect/boss_aura.png", 8, 8, 1, 120, 120);
+	rm->GetImages("Resource/Images/Boss1/Boss1_Walk1.png", 24, 5, 5, 96, 96);
+	rm->GetImages("Resource/Images/Boss1/Boss1_Idle1.png", 18, 5, 4, 96, 96);
+	rm->GetImages("Resource/Images/Boss1/Boss1_Sliding1.png", 6, 5, 2, 96, 96);
+	rm->GetImages("Resource/Images/Boss1/Boss1_Death1.png", 15, 5, 3, 96, 96);
+	rm->GetImages("Resource/Images/Boss2/Boss2_Idle.png", 18, 5, 4, 96, 96);
+	rm->GetImages("Resource/Images/Boss2/Boss2_Throw.png", 12, 5, 3, 96, 96);
+	rm->GetImages("Resource/Images/Boss2/Boss2_Run.png", 12, 5, 3, 96, 96);
+	rm->GetImages("Resource/Images/Boss2/Boss2_Run_Throw.png", 12, 5, 3, 96, 96);
+	rm->GetImages("Resource/Images/Boss2/Boss2_Death.png", 15, 5, 3, 96, 96);
 
 	//BGMASE“Ç‚Ýž‚Ý
 	gamemain_bgm = rm->GetSounds("Resource/Sounds/BGM/Rail_train.mp3");

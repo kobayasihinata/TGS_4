@@ -31,11 +31,15 @@ void Boss3::Initialize(ObjectManager* _manager, int _object_type, Vector2D init_
 	max_hp = hp = BOSS3_HP;
 	hit_damage = BOSS3_DAMAGE;
 	drop_coin = BOSS3_DROPCOIN;
+	player_distance = BOSS3_PLAYER_DISTANCE;
 
 	boss_stop_flg = false;
+	time_count_flg = true;	//ボスのレベルが最大でない内は生存時間を測定する
+	survival_time = 0;
 	strength_level = 0;
 	boss_speed[0] = BOSS3_SPEED;
 	boss_speed[1] = BOSS3_SPEED * 2;
+	boss_speed[2] = BOSS3_SPEED * 3;
 	move_mode = 0;
 	can_shot = false;
 	bullet_type = 1;
@@ -82,6 +86,8 @@ void Boss3::Update()
 	//弾発射関連処理
 	Bullet();
 
+	//強さの更新
+	UpdateStrength();
 
 	//死亡していなければこの処理
 	if (!death_flg && !anim_flg && !boss_stop_flg)
@@ -325,32 +331,32 @@ void Boss3::MoveBoss3()
 		}
 		break;
 	case 1:	//プレイヤー攻撃(通常弾)
-		radian = MoveAround(camera->player_location, BOSS3_PLAYER_DISTANCE);
+		radian = MoveAround(camera->player_location, player_distance);
 		//左右に揺れる
 		if (frame % 60 > 30)radian += 3.4;
 
 		break;
 	case 2:	//プレイヤー攻撃(散弾)
 		//プレイヤーと離れていたら、プレイヤーに向けて移動
-		if (UserData::Distance(camera->player_location, this->location) > BOSS3_PLAYER_DISTANCE/2 + 30)
+		if (UserData::Distance(camera->player_location, this->location) > player_distance /2 + 30)
 		{
 			radian = atan2(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x);
 
 		}
 		//プレイヤーと近ければ、プレイヤーとは反対側に移動
-		else if (UserData::Distance(camera->player_location, this->location) < BOSS3_PLAYER_DISTANCE/2 - 30)
+		else if (UserData::Distance(camera->player_location, this->location) < player_distance /2 - 30)
 		{
 			radian = atan2(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x) * -1;
 		}
 		break;
 	case 3:	//プレイヤー攻撃(強化弾)
-		radian = MoveAround(camera->player_location, BOSS3_PLAYER_DISTANCE, true);
+		radian = MoveAround(camera->player_location, player_distance, true);
 		break;
 	case 4:	//プレイヤー攻撃(追尾弾)
 		boss_stop_flg = true;
 		break;
 	case 5:	//プレイヤー攻撃(爆発弾)
-		radian = MoveAround(camera->player_location, BOSS2_PLAYER_DISTANCE/2);
+		radian = MoveAround(camera->player_location, player_distance /2);
 		break;
 	case 6:	//プレイヤー攻撃(最強弾)
 		boss_stop_flg = true;
@@ -440,6 +446,17 @@ double Boss3::MoveAround(Vector2D _loc, int _distance, bool _direction)
 	return radian;
 }
 
+void Boss3::UpdateStrength()
+{
+	if (time_count_flg && ++survival_time > BOSS3_POWERUP_TIME)
+	{
+		//レベルが上がってからの生存時間を格納
+		survival_time = 0;
+		SetStrength(strength_level + 1);
+		if (strength_level >= MAX_LEVEL)time_count_flg = false;
+	}
+}
+
 void Boss3::SetStrength(int _level)
 {
 	//既にその強さレベルならスキップ
@@ -449,10 +466,17 @@ void Boss3::SetStrength(int _level)
 		switch (strength_level)
 		{
 		case 0:
-			hit_damage = BOSS3_DAMAGE;
+			player_distance = BOSS3_PLAYER_DISTANCE;
 			break;
 		case 1:
-			hit_damage = BOSS3_DAMAGE + 1;
+			player_distance = BOSS3_PLAYER_DISTANCE;
+			box_size = { 60,60 };
+			break;
+		case 2:
+			player_distance = BOSS3_PLAYER_DISTANCE / 2;
+			box_size = { 100,100 };
+			break;
+		default:
 			break;
 		}
 	}

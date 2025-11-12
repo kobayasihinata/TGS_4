@@ -28,6 +28,10 @@ Attack::Attack(BulletData _bullet_data)
 	ResourceManager* rm = ResourceManager::GetInstance();
 	//SE読み込み
 	shot_se = rm->GetSounds("Resource/Sounds/shot.mp3");
+	if (object->IsBoss())
+	{
+		aura_image = rm->GetImages("Resource/Images/Effect/boss_aura.png", 8, 8, 1, 120, 120);
+	}
 }
 
 Attack::~Attack()
@@ -93,6 +97,16 @@ void Attack::Update()
 	{
 		UpdateStrongest();
 	}
+
+	//オーラ更新
+	if (object->IsBoss() && count_up % 7 == 0)
+	{
+		if (++now_aura_image > aura_image.size())
+		{
+			now_aura_image = 0;
+		}
+	}
+
 	//弾の移動
 	this->location += move_velocity;
 }
@@ -100,6 +114,12 @@ void Attack::Update()
 void Attack::Draw()const
 {
 	__super::Draw();
+
+	if (object->IsBoss())
+	{
+		DrawRotaGraphF(local_location.x, local_location.y, box_size.x / 40, 0, aura_image[now_aura_image], TRUE);
+	}
+
 	int old = GetDrawScreen();
 	SetDrawScreen(gauss_image);
 	ClearDrawScreen();

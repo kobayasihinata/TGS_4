@@ -114,4 +114,5 @@
 #define BOSS3_DAMAGE 3				//ボス３与ダメ
 #define BOSS3_PLAYER_DISTANCE 200	//ボス３プレイヤーとの間合い
 #define BOSS3_PLAYER_DISTANCE2 600	//ボス３プレイヤーとどれくらい離れたら加速するか
+#define BOSS3_POWERUP_TIME 5400		//ボス３強化されるまでの時間
 #define BOSS3_DROPCOIN 100			//ボス３コインドロップ量
