@@ -25,7 +25,7 @@ Boss3* Boss3::Get(InGameScene* _ingame)
 void Boss3::Initialize(ObjectManager* _manager, int _object_type, Vector2D init_location, Vector2D init_size, float init_radius)
 {
 	__super::Initialize(_manager, _object_type, init_location, init_size, init_radius);
-	anim_span = 1;
+	anim_span = 3;
 	
 	move_speed = BOSS3_SPEED;
 	max_hp = hp = BOSS3_HP;
@@ -38,8 +38,8 @@ void Boss3::Initialize(ObjectManager* _manager, int _object_type, Vector2D init_
 	survival_time = 0;
 	strength_level = 0;
 	boss_speed[0] = BOSS3_SPEED;
-	boss_speed[1] = BOSS3_SPEED * 2;
-	boss_speed[2] = BOSS3_SPEED * 3;
+	boss_speed[1] = BOSS3_SPEED * 1.5;
+	boss_speed[2] = BOSS3_SPEED * 2;
 	move_mode = 0;
 	can_shot = false;
 	bullet_type = 1;
@@ -48,11 +48,13 @@ void Boss3::Initialize(ObjectManager* _manager, int _object_type, Vector2D init_
 	//画像読込
 	ResourceManager* rm = ResourceManager::GetInstance();
 	std::vector<int>tmp;
-	tmp = rm->GetImages("Resource/Images/Enemy3/Enemy3_Idle.png", 18, 5, 4, 96, 96);
+	tmp = rm->GetImages("Resource/Images/Boss3/Boss3_Idle.png", 11, 11, 1, 64, 64);
+	animation_image.push_back(tmp);	
+	tmp = rm->GetImages("Resource/Images/Boss3/Boss3_Run.png", 12, 12, 1, 64, 64);
 	animation_image.push_back(tmp);
-	tmp = rm->GetImages("Resource/Images/Enemy3/Enemy3_Throw.png", 12, 5, 3, 96, 96);
-	animation_image.push_back(tmp);
-	tmp = rm->GetImages("Resource/Images/Enemy3/Enemy3_Death.png", 15, 5, 3, 96, 96);
+	tmp = rm->GetImages("Resource/Images/Boss3/Boss3_Jump.png", 6, 6, 1, 64, 64);
+	animation_image.push_back(tmp);		 
+	tmp = rm->GetImages("Resource/Images/Boss3/Boss3_Hit.png", 7, 7, 1, 64, 64);
 	animation_image.push_back(tmp);
 
 	image = animation_image[0][0];
@@ -65,6 +67,7 @@ void Boss3::Finalize()
 	//リセット
 	boss3_once = false;
 	UserData::boss_coin = 0;
+	anim_once = false;
 }
 
 void Boss3::Update()
@@ -89,6 +92,19 @@ void Boss3::Update()
 	//強さの更新
 	UpdateStrength();
 
+	//少しでも移動していたら表示アニメーションを変える
+	if (image_line != 2)
+	{
+		if (fabsf(velocity.x) > 0.3f || fabsf(velocity.y) > 0.3f)
+		{
+			image_line = 1;
+		}
+		else
+		{
+			image_line = 0;
+		}
+	}
+
 	//死亡していなければこの処理
 	if (!death_flg && !anim_flg && !boss_stop_flg)
 	{
@@ -106,7 +122,7 @@ void Boss3::Update()
 	if (death_flg)
 	{
 		//死亡アニメーションを表示
-		image_line = 2;
+		image_line = 3;
 		anim_span = 5;
 
 		//死にながらコインをまき散らす
@@ -213,12 +229,12 @@ void Boss3::Bullet()
 {
 
 	//投擲アニメーションが一周したら通常アニメーションに戻す
-	if (image_line == 1 && anim_end_flg)
+	if (image_line == 2 && anim_end_flg)
 	{
 		image_line = 0;
 	}
 	//投擲アニメーションが指定の画像まで再生されたら、弾を発射する
-	if (!shot_once && image_line == 1 && image_num == 4)
+	if (!shot_once && image_line == 2 && image_num == 3)
 	{
 		//プレイヤーの位置で発射角度を決める
 		shot_rad = atan2f(target_loc.y - this->location.y, target_loc.x - this->location.x);
@@ -235,7 +251,7 @@ void Boss3::Bullet()
 		frame % boss3_bullet[bullet_type].attack_span == 0)
 	{
 		//投擲アニメーション開始
-		image_line = 1;
+		image_line = 2;
 		anim_timer = 0;
 		image_num = 0;
 		shot_count++;
@@ -448,7 +464,8 @@ double Boss3::MoveAround(Vector2D _loc, int _distance, bool _direction)
 
 void Boss3::UpdateStrength()
 {
-	if (time_count_flg && ++survival_time > BOSS3_POWERUP_TIME)
+	//ボスが一定時間生きているorプレイヤーのコインが5000を超えていたら強化
+	if (time_count_flg && (++survival_time > BOSS3_POWERUP_TIME || UserData::coin >= 5000))
 	{
 		//レベルが上がってからの生存時間を格納
 		survival_time = 0;
@@ -467,14 +484,16 @@ void Boss3::SetStrength(int _level)
 		{
 		case 0:
 			player_distance = BOSS3_PLAYER_DISTANCE;
+			anim_span = 3;
 			break;
 		case 1:
-			player_distance = BOSS3_PLAYER_DISTANCE;
 			box_size = { 60,60 };
+			anim_span = 2;
 			break;
 		case 2:
 			player_distance = BOSS3_PLAYER_DISTANCE / 2;
 			box_size = { 100,100 };
+			anim_span = 1;
 			break;
 		default:
 			break;

@@ -47,7 +47,7 @@ private:
 	bool time_count_flg;//生きている時間の測定をするかどうか
 	int survival_time;	//ボスの生きている時間（レベルが上がったらリセット）
 	int strength_level;	//ボスの強さ
-	int boss_speed[3];	//強さごとのボスの速さ
+	float boss_speed[3];//強さごとのボスの速さ
 	int player_distance;//プレイヤーとの距離の基準値
 
 	//攻撃発射関連

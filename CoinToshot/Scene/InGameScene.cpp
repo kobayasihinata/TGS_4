@@ -153,7 +153,7 @@ eSceneType InGameScene::Update(float _delta)
 		UserData::coin_graph.push_back(UserData::coin);
 	}
 	//ˆêŽž’âŽ~ƒtƒ‰ƒOØ‚è‘Ö‚¦
-	if (UserData::CheckPause() && !tutorial->GetTutorialFlg())
+	if (UserData::CheckPause() && !tutorial->GetTutorialFlg() && !boss_anim_flg)
 	{
 		pause_flg = !pause_flg;
 		pause_timer = 0;
@@ -805,7 +805,7 @@ void InGameScene::SpawnEnemy()
 	}
 	if (!boss_spawn_once[2] && (UserData::timer / 60) == BOSS3_SPAWN)
 	{
-		objects->CreateObject({ {0,0}, Vector2D{ BOSS3_WIDTH,BOSS3_HEIGHT }, eBOSS3 });
+		objects->CreateObject({ {1,1}, Vector2D{ BOSS3_WIDTH,BOSS3_HEIGHT }, eBOSS3 });
 		boss_spawn_once[2] = true;
 	}
 }
