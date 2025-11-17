@@ -61,7 +61,7 @@ public:
 		//オーラ更新
 		if (frame % 5 == 0)
 		{
-			if (++now_aura_image > aura_image.size())
+			if (++now_aura_image >= aura_image.size())
 			{
 				now_aura_image = 0;
 			}

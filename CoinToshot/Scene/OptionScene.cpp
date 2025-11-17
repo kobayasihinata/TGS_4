@@ -40,7 +40,7 @@ OptionScene::OptionScene()
 	option_bgm = rm->GetSounds("Resource/Sounds/BGM/Sweet_smelling_flower.mp3");
 	if (!CheckSoundMem(option_bgm))
 	{
-		ResourceManager::rPlaySound(option_bgm, DX_PLAYTYPE_LOOP, TRUE);
+		ResourceManager::rPlaySound(option_bgm, DX_PLAYTYPE_LOOP, 0,true);
 	}
 }
 
@@ -233,7 +233,7 @@ void OptionScene::VolumeUpdate()
 				UserData::bgm_volume_num = 0;
 			}
 			UserData::bgm_volume = bgm_volume[UserData::bgm_volume_num];
-			ResourceManager::rPlaySound(option_bgm, DX_PLAYTYPE_LOOP, false);
+			ResourceManager::rPlaySound(option_bgm, DX_PLAYTYPE_LOOP, 0,false);
 			ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 			break;
 		}
@@ -266,7 +266,7 @@ void OptionScene::VolumeUpdate()
 				UserData::bgm_volume_num = 9;
 			}
 			UserData::bgm_volume = bgm_volume[UserData::bgm_volume_num];
-			ResourceManager::rPlaySound(option_bgm, DX_PLAYTYPE_LOOP, false);
+			ResourceManager::rPlaySound(option_bgm, DX_PLAYTYPE_LOOP, 0,false);
 			ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 			break;
 		}

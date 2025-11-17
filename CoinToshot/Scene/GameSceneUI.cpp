@@ -48,7 +48,9 @@ void GameSceneUI::Initialize(InGameScene* _ingame)
 	ex_se_once = ex_anim_once = tutorial->GetBasicTuto();
 	ex_anim_timer = 0;
 	now_image = 0;
+	now_aura_image = 0;
 	ResourceManager* rm = ResourceManager::GetInstance();
+	aura_image = rm->GetImages("Resource/Images/Effect/boss_aura.png", 8, 8, 1, 120, 120);
 	ex_anim = rm->GetImages("Resource/Images/Effect/E_PuffAndStar.png", 60, 10, 6, 108, 116);
 	ex_se = rm->GetSounds("Resource/Sounds/explsion_big.mp3");
 	lock_se = rm->GetSounds("Resource/Sounds/lock.mp3");
@@ -67,6 +69,15 @@ void GameSceneUI::Update()
 	if (++frame >= 6000)
 	{
 		frame = 0;
+	}
+
+	//オーラ更新
+	if (frame % 5 == 0)
+	{
+		if (++now_aura_image >= aura_image.size())
+		{
+			now_aura_image = 0;
+		}
 	}
 
 	for (auto& ui_data : ui_data)
@@ -662,6 +673,12 @@ void GameSceneUI::DrawPlayerUI()const
 		player_ui_loc.x - width +210, player_ui_loc.y + 125,
 		0x666600, TRUE);
 	DrawFormatString(player_ui_loc.x - width +240, player_ui_loc.y+22, 0xffffff, "HP:%d", (int)(UserData::player_hp));
+	//ボスによってタイマーが停止していたら、エフェクトを出す
+	if (ingame->GetBossTimerStop())
+	{
+		DrawRotaGraphF(player_ui_loc.x - GetDrawFormatStringWidth("TIME:%d", (int)(UserData::timer / 60)) + 450, player_ui_loc.y + 42, 1.f, 0, aura_image[now_aura_image], TRUE);
+
+	}
 	DrawFormatString(player_ui_loc.x - GetDrawFormatStringWidth("TIME:%d", (int)(UserData::timer/60))+325, player_ui_loc.y+22, 0xffffff, "TIME:%d", (int)(UserData::timer/60));
 	
 	int coin_text_color = 0xffffff;

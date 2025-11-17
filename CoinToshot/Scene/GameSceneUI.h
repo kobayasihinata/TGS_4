@@ -92,8 +92,10 @@ private:
 	int damage_timer;		//ダメージ時間測定
 	int con_spawn;			//紙吹雪生成までの間隔
 
-	int lock_image;			//"ロックされている"用画像
-	int confetti_image[8];	//8色の紙吹雪格納
+	int lock_image;				//"ロックされている"用画像
+	int confetti_image[8];		//8色の紙吹雪格納
+	std::vector<int> aura_image;//ボスのオーラ
+	int now_aura_image;			//オーラ画像表示位置
 
 	bool ex_anim_once;			//一回だけアニメーション
 	bool ex_se_once;			//一回だけ再生

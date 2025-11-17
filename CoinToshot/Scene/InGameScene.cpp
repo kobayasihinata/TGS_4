@@ -74,6 +74,7 @@ void InGameScene::Initialize()
 	zoom_time_count = 0; 
 	zoom_speed = 0;
 
+	boss_timer_stop = false;
 	boss_anim_flg = false;
 	boss_anim_count = 0;
 	boss_anim_timer = 0;
@@ -104,6 +105,11 @@ void InGameScene::Initialize()
 	gamemain_image = MakeScreen(SCREEN_WIDTH, SCREEN_HEIGHT);
 	flower_image = MakeScreen(191, 191);
 
+	crossfade_flg = false;
+	crossfade_num = 0;
+	now_bgm = 0;
+	crossfade_bgm = 0;
+
 	//背景の自動生成
 	CreateBackGround();
 	//ボーナス描画の生成
@@ -113,8 +119,9 @@ void InGameScene::Initialize()
 	LoadGameMainResource();
 
 	//BGMを初めから再生するための処理
-	ResourceManager::rPlaySound(gamemain_bgm,DX_PLAYTYPE_LOOP,TRUE);
-	StopSoundMem(gamemain_bgm);
+	now_bgm = gamemain_bgm;
+	ResourceManager::rPlaySound(now_bgm,DX_PLAYTYPE_LOOP,0,true);
+	StopSoundMem(now_bgm);
 }
 
 void InGameScene::Finalize()
@@ -129,7 +136,7 @@ void InGameScene::Finalize()
 	//カメラを初期位置に戻しておく
 	camera->Update({ -SCREEN_WIDTH / 2 + 48, -SCREEN_HEIGHT / 2 + 32 });
 
-	StopSoundMem(gamemain_bgm);
+	StopSoundMem(now_bgm);
 	//オブジェクト管理クラス終了時処理
 	objects->Finalize();
 
@@ -140,6 +147,9 @@ void InGameScene::Finalize()
 eSceneType InGameScene::Update(float _delta)
 {
 	change_scene = __super::Update(_delta);
+
+	//BGM更新
+	UpdateSound();
 
 	//ボスHP表示用変数リセット
 	boss_hp.clear();
@@ -162,10 +172,6 @@ eSceneType InGameScene::Update(float _delta)
 	//一時停止フラグか遷移時アニメーションフラグかショップ展開フラグが立っていたら更新しない
 	if (((!pause_flg && !start_anim_flg)|| !update_once )&& !shop_flg && !boss_anim_flg)
 	{
-		if (!CheckSoundMem(gamemain_bgm) && update_once && !UserData::is_gamestop)
-		{
-			ResourceManager::rPlaySound(gamemain_bgm, DX_PLAYTYPE_LOOP, false);
-		}
 
 		//いずれかの時間停止フラグが立っていたらオブジェクトの動きはすべて止める
 		if (!UserData::is_gamestop && !tutorial->GetTutoStopFlg() && !ui->GetNewBulletFlg())
@@ -181,7 +187,6 @@ eSceneType InGameScene::Update(float _delta)
 			objects->Update();
 			//チュートリアル更新
 			TutorialUpdate();
-		
 
 		}
 
@@ -193,6 +198,8 @@ eSceneType InGameScene::Update(float _delta)
 		{
 			UserData::is_clear = true;
 			ui->confetti_flg = true;
+			//振動をやめる
+			camera->impact = 0;
 			ChangeResult(G_END_ANIM_TIME);
 		}
 
@@ -246,10 +253,7 @@ eSceneType InGameScene::Update(float _delta)
 	{
 		//時間測定
 		pause_timer++;
-		if (!CheckSoundMem(gamemain_bgm))
-		{
-			ResourceManager::rPlaySound(gamemain_bgm, DX_PLAYTYPE_LOOP, false);
-		}
+
 		//タイトル画面に戻る確認画面が出ていなければポーズ更新
 		if (!back_title_flg)
 		{
@@ -281,9 +285,9 @@ eSceneType InGameScene::Update(float _delta)
 					pause_flg = false;
 					break;
 				case 1: //オプション
-					if (CheckSoundMem(gamemain_bgm))
+					if (CheckSoundMem(now_bgm))
 					{
-						StopSoundMem(gamemain_bgm);
+						StopSoundMem(now_bgm);
 					}
 					UserData::old_scene = this;
 					return eSceneType::eOption;
@@ -386,11 +390,6 @@ eSceneType InGameScene::Update(float _delta)
 	{
 		InputKey* input = InputKey::Get();
 
-		//BGMを止める
-		if (CheckSoundMem(gamemain_bgm))
-		{
-			StopSoundMem(gamemain_bgm);
-		}
 		//遷移アニメーション早送り
 		if (
 			(UserData::control_type != 2 && InputPad::OnPressed(XINPUT_BUTTON_A)) ||
@@ -531,6 +530,7 @@ void InGameScene::LoadGameMainResource()
 
 	//BGM、SE読み込み
 	gamemain_bgm = rm->GetSounds("Resource/Sounds/BGM/Rail_train.mp3");
+	boss_bgm = rm->GetSounds("Resource/Sounds/BGM/TIME_LIMIT.mp3");
 	game_clear_se = rm->GetSounds("Resource/Sounds/Direction/victory.mp3");
 	game_over_se = rm->GetSounds("Resource/Sounds/Direction/deden.mp3");
 	clap_se = rm->GetSounds("Resource/Sounds/Direction/大勢で拍手.mp3");
@@ -717,6 +717,8 @@ void InGameScene::ChangeResult(int _delay)
 	//遅延無し
 	if (_delay <= 0)
 	{
+		//振動をやめる
+		camera->impact = 0;
 		change_scene = eSceneType::eResult;
 	}
 	//遅延あり
@@ -728,6 +730,8 @@ void InGameScene::ChangeResult(int _delay)
 		change_result = true;
 		//リザルト遷移までの時間設定
 		change_result_delay = _delay;
+		//振動をやめる
+		camera->impact = 0;
 		//ゲームクリアかゲームオーバーのSEを再生
 		if (UserData::is_clear)
 		{
@@ -744,7 +748,7 @@ void InGameScene::ChangeResult(int _delay)
 			}
 		}
 		//ゲームメインBGMを停止
-		StopSoundMem(gamemain_bgm);
+		StopSoundMem(now_bgm);
 	}
 }
 
@@ -1110,10 +1114,17 @@ void InGameScene::TutorialUpdate()
 		SpawnItem();
 		//制限時間減少(死んでいない＆ボスが居ないなら)
 		auto it = std::find_if(boss_hp.begin(), boss_hp.end(), [](const BossHp& b) {return b.name == "Boss3"; });
+		
 		if (!UserData::is_dead && it == boss_hp.end())
 		{
 			UserData::timer--;
+			boss_timer_stop = false;
 		}
+		else
+		{
+			boss_timer_stop = true;
+		}
+
 		//if (!UserData::is_dead && boss_hp.size() == 0)UserData::timer--;
 		//敵生成
 		SpawnEnemy();
@@ -1304,4 +1315,65 @@ void InGameScene::SetBossSpawnAnim(ObjectBase* _boss, Vector2D _spawn_loc, int _
 	boss_anim_count = 0;
 	camera->camera_gaze_location = _spawn_loc;
 	SetZoom({ SCREEN_WIDTH / 2,SCREEN_HEIGHT / 2 }, 2, boss_anim_timer, 30);
+	SetCrossFade(boss_bgm);
+}
+
+void InGameScene::UpdateSound()
+{
+	//クロスフェード
+	if (crossfade_flg)
+	{
+		UpdateCrossFade();
+	}
+	//通常
+	else
+	{
+		if (start_anim_flg)
+		{
+			//BGMを止める
+			if (CheckSoundMem(now_bgm))
+			{
+				StopSoundMem(now_bgm);
+			}
+		}
+		else
+		{
+			if (!CheckSoundMem(now_bgm) && update_once && !UserData::is_gamestop)
+			{
+				ResourceManager::rPlaySound(now_bgm, DX_PLAYTYPE_LOOP, 0, false);
+			}
+		}
+	}
+}
+
+void InGameScene::SetCrossFade(int _change_bgm)
+{
+	crossfade_bgm = _change_bgm;
+	crossfade_flg = true;
+}
+
+void InGameScene::UpdateCrossFade()
+{
+	//遷移後のBGMは最初から再生する
+	if (CheckSoundMem(crossfade_bgm))
+	{
+		ResourceManager::rPlaySound(crossfade_bgm, DX_PLAYTYPE_LOOP, (UserData::bgm_volume / BOSS_BGM_FADE) * (BOSS_BGM_FADE - crossfade_num), true);
+		StopSoundMem(crossfade_bgm);
+	}
+	if (++crossfade_num < BOSS_BGM_FADE)
+	{
+		StopSoundMem(now_bgm);
+		StopSoundMem(crossfade_bgm);
+		ResourceManager::rPlaySound(now_bgm, DX_PLAYTYPE_LOOP, (UserData::bgm_volume / BOSS_BGM_FADE) * crossfade_num, false);
+		ResourceManager::rPlaySound(crossfade_bgm, DX_PLAYTYPE_LOOP, (UserData::bgm_volume / BOSS_BGM_FADE) * (BOSS_BGM_FADE - crossfade_num), false);
+		DebugInfomation::Add("now_bgm", (UserData::bgm_volume / BOSS_BGM_FADE) * crossfade_num);
+		DebugInfomation::Add("crossfade_bgm", (UserData::bgm_volume / BOSS_BGM_FADE) * (BOSS_BGM_FADE - crossfade_num));
+	
+	}
+	else
+	{
+		now_bgm = crossfade_bgm;
+		crossfade_num = 0;
+		crossfade_flg = false;
+	}
 }

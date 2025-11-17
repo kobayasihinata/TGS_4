@@ -20,9 +20,11 @@
 #define TIME_BONUS 60	//文字表示時間
 
 //ボス出現タイミング
-#define BOSS1_SPAWN 290
-#define BOSS2_SPAWN 150
+#define BOSS1_SPAWN 200
+#define BOSS2_SPAWN 140
 #define BOSS3_SPAWN  60
+
+#define BOSS_BGM_FADE 120	//ボスBGMフェード時間
 
 struct BossHp
 {
@@ -82,6 +84,7 @@ private:
 	float zoom_speed;			//ズームの速度
 
 	std::vector<BossHp> boss_hp;//ボスの体力表示用
+	bool boss_timer_stop;		//ボスによってタイマーが止まっているか判断	
 
 	bool boss_anim_flg;			//ボス生成アニメーション
 	int boss_anim_count;		//ボスのアニメーション時間
@@ -90,7 +93,14 @@ private:
 
 	int first_bonus_image;		//3/1ボーナス画像
 	int second_bonus_image;		//3/2ボーナス画像
+
+	bool crossfade_flg;			//BGMのクロスフェード
+	int crossfade_num;			//クロスフェードの数値
+	int now_bgm;				//クロスフェード開始時のBGM
+	int crossfade_bgm;			//クロスフェード終了後のBGM
+
 	int gamemain_bgm;			//BGM格納
+	int boss_bgm;				//BGM格納
 	int game_clear_se;			//ゲームクリアSE
 	int game_over_se;			//ゲームオーバーSE
 	int clap_se;				//拍手SE
@@ -263,6 +273,34 @@ public:
 	/// <param name="_spawn_loc">ボスの座標（相対座標）</param>
 	/// <param name="_anim_time">アニメーション時間</param>
 	void SetBossSpawnAnim(ObjectBase* _boss,Vector2D _spawn_loc, int _anim_time);
+
+	/// <summary>
+	/// BGM更新
+	/// </summary>
+	void UpdateSound();
+
+	/// <summary>
+	/// クロスフェードを開始する
+	/// </summary>
+	/// <param name="now_bgm">クロスフェードする前のBGM</param>
+	/// <param name="_change_bgm">クロスフェードした後のBGM</param>
+	void SetCrossFade(int _change_bgm);
+
+	/// <summary>
+	/// 通常のゲームメインBGMに戻す
+	/// </summary>
+	void SetCrossFadeDefault() { SetCrossFade(gamemain_bgm); }
+
+	/// <summary>
+	/// BGMのクロスフェード処理
+	/// </summary>
+	void UpdateCrossFade();
+
+	/// <summary>
+	/// ボスによってタイマーが停止しているか取得
+	/// </summary>
+	/// <returns></returns>
+	bool GetBossTimerStop()const { return boss_timer_stop; }
 };
 
 

@@ -94,19 +94,22 @@ const int& ResourceManager::GetSounds(const char* file_name)
 	return GetSounds(std::string(file_name));
 }
 
-void ResourceManager::rPlaySound(int _sound_path, int _play_type, int _reset)
+void ResourceManager::rPlaySound(int _sound_path, int _play_type, int _dec, int _reset)
 {
 	int path = _sound_path;
 	//PlayType‚ÅSE‚©BGM‚©•ª‚¯‚é
 	if (_play_type == DX_PLAYTYPE_LOOP)
 	{
-		SetVolumeSoundMem(UserData::bgm_volume, path);
+		SetVolumeSoundMem(UserData::bgm_volume -_dec, path);
+		//‰¹—Ê‚ª0‚È‚çÄ¶‚µ‚È‚¢
+		if (UserData::bgm_volume - _dec > 0)PlaySoundMem(path, _play_type, _reset);
 	}
 	else
 	{
-		SetVolumeSoundMem(UserData::se_volume, path);
+		SetVolumeSoundMem(UserData::se_volume - _dec, path);
+		//‰¹—Ê‚ª0‚È‚çÄ¶‚µ‚È‚¢
+		if (UserData::se_volume - _dec > 0)PlaySoundMem(path, _play_type, _reset);
 	}
-	PlaySoundMem(path, _play_type, _reset);
 }
 
 /**

@@ -183,6 +183,9 @@ void Boss3::Update()
 			//エフェクト
 			manager->CreateEffect(elExplosion, this->location, { 0,0 });
 
+			//BGMを元に戻す処理
+			ingame->SetCrossFadeDefault();
+
 			//終了時処理
 			this->Finalize();
 		}
@@ -312,7 +315,7 @@ void Boss3::ChangeMove()
 
 void Boss3::MoveBoss3()
 {
-	double radian;
+	double radian = 0;
 
 	can_shot = true;	//デフォルトで弾が撃てる状態にする
 	target_loc = camera->player_location;				//攻撃のターゲットをデフォルトでプレイヤーにする
