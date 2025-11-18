@@ -20,9 +20,9 @@
 #define TIME_BONUS 60	//文字表示時間
 
 //ボス出現タイミング
-#define BOSS1_SPAWN 200
-#define BOSS2_SPAWN 140
-#define BOSS3_SPAWN  60
+#define BOSS1_SPAWN 290
+#define BOSS2_SPAWN 120
+#define BOSS3_SPAWN  30
 
 #define BOSS_BGM_FADE 120	//ボスBGMフェード時間
 

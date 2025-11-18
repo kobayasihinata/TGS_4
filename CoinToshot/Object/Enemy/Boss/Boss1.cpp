@@ -33,6 +33,9 @@ Boss1::Boss1(InGameScene* _ingame)
 	animation_image.push_back(tmp);
 
 	image = animation_image[0][0];
+
+	rush_se = rm->GetSounds("Resource/Sounds/Enemy/Boss/Boss1_Rush.mp3");
+	rush_damage_se = rm->GetSounds("Resource/Sounds/Enemy/Boss/Boss1_Attack.mp3");
 }
 
 Boss1::~Boss1()
@@ -197,6 +200,8 @@ void Boss1::Hit(ObjectBase* hit_object)
 		hit_object->IsEnemy())
 	{
 		hit_object->Damage(hit_damage, this->location, 10 + fabs(velocity.x) + fabs(velocity.y));
+		//SEçƒê∂
+		ResourceManager::rPlaySound(rush_damage_se, DX_PLAYTYPE_BACK);
 	}
 }
 
@@ -276,6 +281,8 @@ void Boss1::Rush()
 				rush_num_count = 0;
 			}
 			rush_timer = 0;
+			//SEçƒê∂
+			ResourceManager::rPlaySound(rush_se, DX_PLAYTYPE_BACK);
 		}
 	}
 }

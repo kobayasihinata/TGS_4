@@ -549,7 +549,8 @@ void InGameScene::LoadGameMainResource()
 	rm->GetSounds("Resource/Sounds/Player/Heal.mp3");
 	rm->GetSounds("Resource/Sounds/Shop/‹àŠz•\Ž¦.mp3");
 	rm->GetSounds("Resource/Sounds/Shop/“ü“Xƒ`ƒƒƒCƒ€.mp3");
-
+	rm->GetSounds("Resource/Sounds/Enemy/Boss/Boss1_Rush.mp3");
+	rm->GetSounds("Resource/Sounds/Enemy/Boss/Boss1_Attack.mp3");
 
 }
 
@@ -1366,8 +1367,8 @@ void InGameScene::UpdateCrossFade()
 		StopSoundMem(crossfade_bgm);
 		ResourceManager::rPlaySound(now_bgm, DX_PLAYTYPE_LOOP, (UserData::bgm_volume / BOSS_BGM_FADE) * crossfade_num, false);
 		ResourceManager::rPlaySound(crossfade_bgm, DX_PLAYTYPE_LOOP, (UserData::bgm_volume / BOSS_BGM_FADE) * (BOSS_BGM_FADE - crossfade_num), false);
-		DebugInfomation::Add("now_bgm", (UserData::bgm_volume / BOSS_BGM_FADE) * crossfade_num);
-		DebugInfomation::Add("crossfade_bgm", (UserData::bgm_volume / BOSS_BGM_FADE) * (BOSS_BGM_FADE - crossfade_num));
+		DebugInfomation::Add("now_bgm", UserData::bgm_volume - ((UserData::bgm_volume / BOSS_BGM_FADE) * crossfade_num));
+		DebugInfomation::Add("crossfade_bgm", UserData::bgm_volume - ((UserData::bgm_volume / BOSS_BGM_FADE) * (BOSS_BGM_FADE - crossfade_num)));
 	
 	}
 	else

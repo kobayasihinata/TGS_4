@@ -17,6 +17,8 @@ private:
 	int rush_num;				//突進回数
 	int rush_num_count;			//突進回数測定
 
+	int rush_se;				//突進のSE
+	int rush_damage_se;			//突進が当たった時のSE
 public:
 	//コンストラクタ
 	Boss1(InGameScene* _ingame);

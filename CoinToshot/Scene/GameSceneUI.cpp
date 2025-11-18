@@ -672,14 +672,18 @@ void GameSceneUI::DrawPlayerUI()const
 		player_ui_loc.x + 525, player_ui_loc.y + 125,
 		player_ui_loc.x - width +210, player_ui_loc.y + 125,
 		0x666600, TRUE);
-	DrawFormatString(player_ui_loc.x - width +240, player_ui_loc.y+22, 0xffffff, "HP:%d", (int)(UserData::player_hp));
+	DrawFormatString(player_ui_loc.x - width + 240, player_ui_loc.y + 22, 0xffffff, "HP:%d", (int)(UserData::player_hp));
 	//ボスによってタイマーが停止していたら、エフェクトを出す
 	if (ingame->GetBossTimerStop())
 	{
 		DrawRotaGraphF(player_ui_loc.x - GetDrawFormatStringWidth("TIME:%d", (int)(UserData::timer / 60)) + 450, player_ui_loc.y + 42, 1.f, 0, aura_image[now_aura_image], TRUE);
+		DrawFormatString(player_ui_loc.x - GetDrawFormatStringWidth("TIME:%d", (int)(UserData::timer/60))+325, player_ui_loc.y+22, 0xaa0000, "TIME:%d", (int)(UserData::timer/60));
+	}
+	else
+	{
+		DrawFormatString(player_ui_loc.x - GetDrawFormatStringWidth("TIME:%d", (int)(UserData::timer / 60)) + 325, player_ui_loc.y + 22, 0xffffff, "TIME:%d", (int)(UserData::timer / 60));
 
 	}
-	DrawFormatString(player_ui_loc.x - GetDrawFormatStringWidth("TIME:%d", (int)(UserData::timer/60))+325, player_ui_loc.y+22, 0xffffff, "TIME:%d", (int)(UserData::timer/60));
 	
 	int coin_text_color = 0xffffff;
 	//コイン加算時のアニメーション
