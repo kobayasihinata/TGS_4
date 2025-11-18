@@ -94,10 +94,10 @@ private:
 	int first_bonus_image;		//3/1ボーナス画像
 	int second_bonus_image;		//3/2ボーナス画像
 
-	bool crossfade_flg;			//BGMのクロスフェード
-	int crossfade_num;			//クロスフェードの数値
-	int now_bgm;				//クロスフェード開始時のBGM
-	int crossfade_bgm;			//クロスフェード終了後のBGM
+	bool fade_flg;				//BGMのフェード
+	int fade_num;				//フェードの数値
+	int now_bgm;				//フェード開始時のBGM
+	int fade_bgm;				//フェード終了後のBGM
 
 	int gamemain_bgm;			//BGM格納
 	int boss_bgm;				//BGM格納
@@ -280,21 +280,21 @@ public:
 	void UpdateSound();
 
 	/// <summary>
-	/// クロスフェードを開始する
+	/// フェードを開始する
 	/// </summary>
-	/// <param name="now_bgm">クロスフェードする前のBGM</param>
-	/// <param name="_change_bgm">クロスフェードした後のBGM</param>
-	void SetCrossFade(int _change_bgm);
+	/// <param name="now_bgm">フェードする前のBGM</param>
+	/// <param name="_change_bgm">フェードした後のBGM</param>
+	void SetFade(int _change_bgm);
 
 	/// <summary>
 	/// 通常のゲームメインBGMに戻す
 	/// </summary>
-	void SetCrossFadeDefault() { SetCrossFade(gamemain_bgm); }
+	void SetFadeDefault() { SetFade(gamemain_bgm); }
 
 	/// <summary>
-	/// BGMのクロスフェード処理
+	/// BGMのフェード処理
 	/// </summary>
-	void UpdateCrossFade();
+	void UpdateFade();
 
 	/// <summary>
 	/// ボスによってタイマーが停止しているか取得

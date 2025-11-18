@@ -172,7 +172,7 @@ void Boss1::Update()
 			//エフェクト
 			manager->CreateEffect(elExplosion, this->location,{0,0});
 			//BGMを元に戻す処理
-			ingame->SetCrossFadeDefault();
+			ingame->SetFadeDefault();
 		}
 	}
 }

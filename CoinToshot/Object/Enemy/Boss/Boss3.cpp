@@ -184,7 +184,7 @@ void Boss3::Update()
 			manager->CreateEffect(elExplosion, this->location, { 0,0 });
 
 			//BGM‚ðŒ³‚É–ß‚·ˆ—
-			ingame->SetCrossFadeDefault();
+			ingame->SetFadeDefault();
 
 			//I—¹Žžˆ—
 			this->Finalize();

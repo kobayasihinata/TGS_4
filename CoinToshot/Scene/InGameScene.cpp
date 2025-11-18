@@ -105,10 +105,10 @@ void InGameScene::Initialize()
 	gamemain_image = MakeScreen(SCREEN_WIDTH, SCREEN_HEIGHT);
 	flower_image = MakeScreen(191, 191);
 
-	crossfade_flg = false;
-	crossfade_num = 0;
+	fade_flg = false;
+	fade_num = 0;
 	now_bgm = 0;
-	crossfade_bgm = 0;
+	fade_bgm = 0;
 
 	//背景の自動生成
 	CreateBackGround();
@@ -1316,15 +1316,15 @@ void InGameScene::SetBossSpawnAnim(ObjectBase* _boss, Vector2D _spawn_loc, int _
 	boss_anim_count = 0;
 	camera->camera_gaze_location = _spawn_loc;
 	SetZoom({ SCREEN_WIDTH / 2,SCREEN_HEIGHT / 2 }, 2, boss_anim_timer, 30);
-	SetCrossFade(boss_bgm);
+	SetFade(boss_bgm);
 }
 
 void InGameScene::UpdateSound()
 {
-	//クロスフェード
-	if (crossfade_flg)
+	//フェードイン、アウト
+	if (fade_flg)
 	{
-		UpdateCrossFade();
+		UpdateFade();
 	}
 	//通常
 	else
@@ -1347,34 +1347,32 @@ void InGameScene::UpdateSound()
 	}
 }
 
-void InGameScene::SetCrossFade(int _change_bgm)
+void InGameScene::SetFade(int _change_bgm)
 {
-	crossfade_bgm = _change_bgm;
-	crossfade_flg = true;
+	fade_bgm = _change_bgm;
+	fade_flg = true;
 }
 
-void InGameScene::UpdateCrossFade()
+void InGameScene::UpdateFade()
 {
 	//遷移後のBGMは最初から再生する
-	if (CheckSoundMem(crossfade_bgm))
+	if (CheckSoundMem(fade_bgm))
 	{
-		ResourceManager::rPlaySound(crossfade_bgm, DX_PLAYTYPE_LOOP, (UserData::bgm_volume / BOSS_BGM_FADE) * (BOSS_BGM_FADE - crossfade_num), true);
-		StopSoundMem(crossfade_bgm);
+		ResourceManager::rPlaySound(fade_bgm, DX_PLAYTYPE_LOOP, (UserData::bgm_volume / BOSS_BGM_FADE) * (BOSS_BGM_FADE - fade_num), true);
+		StopSoundMem(fade_bgm);
 	}
-	if (++crossfade_num < BOSS_BGM_FADE)
+	if (++fade_num < BOSS_BGM_FADE)
 	{
 		StopSoundMem(now_bgm);
-		StopSoundMem(crossfade_bgm);
-		ResourceManager::rPlaySound(now_bgm, DX_PLAYTYPE_LOOP, (UserData::bgm_volume / BOSS_BGM_FADE) * crossfade_num, false);
-		ResourceManager::rPlaySound(crossfade_bgm, DX_PLAYTYPE_LOOP, (UserData::bgm_volume / BOSS_BGM_FADE) * (BOSS_BGM_FADE - crossfade_num), false);
-		DebugInfomation::Add("now_bgm", UserData::bgm_volume - ((UserData::bgm_volume / BOSS_BGM_FADE) * crossfade_num));
-		DebugInfomation::Add("crossfade_bgm", UserData::bgm_volume - ((UserData::bgm_volume / BOSS_BGM_FADE) * (BOSS_BGM_FADE - crossfade_num)));
+		StopSoundMem(fade_bgm);
+		ResourceManager::rPlaySound(now_bgm, DX_PLAYTYPE_LOOP, (UserData::bgm_volume / BOSS_BGM_FADE) * fade_num, false);
+		ResourceManager::rPlaySound(fade_bgm, DX_PLAYTYPE_LOOP, (UserData::bgm_volume / BOSS_BGM_FADE) * (BOSS_BGM_FADE - fade_num), false);
 	
 	}
 	else
 	{
-		now_bgm = crossfade_bgm;
-		crossfade_num = 0;
-		crossfade_flg = false;
+		now_bgm = fade_bgm;
+		fade_num = 0;
+		fade_flg = false;
 	}
 }
