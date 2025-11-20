@@ -7,6 +7,8 @@
 #include "../Object/Base/ShapeCollider.h"
 #include <vector>
 
+#define PAUSE_MENU_NUM 3	//一時停止画面の項目数
+
 //背景自動生成に使う情報
 #define IMAGE_SIZE 64	//画像一つ当たりの大きさ
 #define DEFAULT_BLOCK 11	//基本となるブロックの位置
@@ -20,8 +22,8 @@
 #define TIME_BONUS 60	//文字表示時間
 
 //ボス出現タイミング
-#define BOSS1_SPAWN 290
-#define BOSS2_SPAWN 120
+#define BOSS1_SPAWN 230
+#define BOSS2_SPAWN 130
 #define BOSS3_SPAWN  30
 
 #define BOSS_BGM_FADE 120	//ボスBGMフェード時間
@@ -34,6 +36,12 @@ struct BossHp
 	float hp_move;	//減少アニメーション用
 };
 
+static int pause_menu_size[PAUSE_MENU_NUM]
+{
+	96,
+	240,
+	192,
+};
 class InGameScene : public SceneBase
 {
 private:
@@ -70,8 +78,14 @@ private:
 	bool pause_flg;				//一時停止判断
 	bool pause_timer;			//一時停止の時間測定
 	int pause_cursor;			//ポーズ画面のカーソル
-	bool back_title_flg;		//タイトル画面に戻るか確認する画面を表示するか判断
-	int back_title_cursor;		//タイトル画面に戻るか確認
+	int old_pause_cursor;		//ひとつ前のポーズ画面のカーソル
+	Vector2D pause_loc;			//ポーズ画面の項目の座標
+	float pause_size_y;			//ポーズ画面の項目の大きさ
+	bool back_title_flg;		//戻るか確認する画面を表示するか判断
+	int back_title_cursor;		//戻るか確認する画面のカーソル
+	int old_back_title_cursor;	//戻るか確認する画面のひとつ前のカーソル
+	Vector2D back_title_loc;	//戻るか確認する画面の表示位置
+	Vector2D back_title_size;	//戻るか確認する画面の項目の大きさ
 	bool coin_spawn_once;		//最低保証コインのスポーン
 	bool boss_spawn_once[3];	//ボスを一体だけ生成
 

@@ -13,6 +13,10 @@ Shop::Shop(InGameScene* _ingame)
 	shop_cd = SHOP_COOLDOWN;
 
 	shop_cursor = 0;
+	old_shop_cursor = 0;
+	shop_ui_span = 250;
+	shop_ui_loc = { (SCREEN_WIDTH / 2) - (ITEM_NUM * shop_ui_span) / 2, anim_move[0] };
+	shop_ui_size = { SHOP_ITEM_WIDTH ,SHOP_ITEM_HEIGHT };
 	for (int i = 0; i < ITEM_NUM; i++)
 	{
 		buy_count[i] = 0;
@@ -62,6 +66,7 @@ void Shop::Update()
 		//アニメーション更新
 		if (start_anim)
 		{
+			shop_ui_loc.y = anim_move[start_anim_timer];
 			if (++start_anim_timer >= START_ANIM_TIME)
 			{
 				start_anim = false;
@@ -70,6 +75,7 @@ void Shop::Update()
 		}
 		else if (end_anim)
 		{
+			shop_ui_loc.y =anim_move[END_ANIM_TIME - 1 - end_anim_timer];
 			if (++end_anim_timer >= END_ANIM_TIME)
 			{
 				end_anim = false;
@@ -105,7 +111,6 @@ void Shop::Update()
 				{
 					shop_cursor = 0;
 				}
-				ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 			}
 			if (UserData::CheckCursorMove(LEFT))
 			{
@@ -113,7 +118,23 @@ void Shop::Update()
 				{
 					shop_cursor = ITEM_NUM - 1;
 				}
+			}
+			//マウスカーソルの位置に合わせて項目変更(キーマウ操作なら)
+			if (UserData::control_type == 2)
+			{
+				for (int i = 0; i < ITEM_NUM; i++)
+				{
+					if (UserData::CheckCursor({ shop_ui_loc.x + (i * shop_ui_span) ,shop_ui_loc.y}, shop_ui_size))
+					{
+						shop_cursor = i;
+					}
+				}
+			}
+			//カーソルの位置が変わっていたらSE
+			if (old_shop_cursor != shop_cursor)
+			{
 				ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
+				old_shop_cursor = shop_cursor;
 			}
 			//購入処理
 			if (UserData::CheckEnter())
@@ -126,6 +147,7 @@ void Shop::Update()
 				end_anim = true;
 				ResourceManager::rPlaySound(back_se, DX_PLAYTYPE_BACK);
 			}
+			shop_ui_loc.y = anim_move[END_ANIM_TIME-1];
 		}
 	}
 	//ショップ非展開時の処理
@@ -160,39 +182,27 @@ void Shop::Draw()const
 			UserData::DrawButtonAndString({ local_location.x - 100,local_location.y - 100 }, XINPUT_BUTTON_A, ":ショップ", 0xffff00);
 		}
 	}
-	int span = 250;
-	Vector2D shop_loc = { (SCREEN_WIDTH / 2) - (ITEM_NUM * span) / 2,anim_move[START_ANIM_TIME-1]};
-	//開始アニメーション
-	if (start_anim)
-	{
-		shop_loc.y = anim_move[start_anim_timer];
-	}
-	//終了アニメーション
-	if (end_anim)
-	{
-		shop_loc.y = anim_move[END_ANIM_TIME-1 - end_anim_timer];
-	}
 	//ショップUI描画
 	if (shop_flg)
 	{
 		SetFontSize(56);
-		DrawString(shop_loc.x, shop_loc.y - 100, "購入画面", 0xffffff);
+		DrawString(shop_ui_loc.x, shop_ui_loc.y - 100, "購入画面", 0xffffff);
 		SetFontSize(30);
 		for (int i = 0; i < ITEM_NUM; i++)
 		{
-			float shift = shop_cursor != i ? shop_loc.y : shop_loc.y - 5;
-			DrawGraphF(shop_loc.x + (i * span) + (float)GetRand(item_impact[i]) - (item_impact[i] / 2), shift, item_image[i][shop_cursor != i], false);
+			float shift = shop_cursor != i ? shop_ui_loc.y : shop_ui_loc.y - 5;
+			DrawGraphF(shop_ui_loc.x + (i * shop_ui_span) + (float)GetRand(item_impact[i]) - (item_impact[i] / 2), shift, item_image[i][shop_cursor != i], false);
 			if (buy_count[i] >= item_list[i].buy_max)
 			{
-				DrawString(shop_loc.x + 70 + (i * span), shift+150, "在庫なし", 0xff0000);
+				DrawString(shop_ui_loc.x + 70 + (i * shop_ui_span), shift+150, "在庫なし", 0xff0000);
 			}
 			else if (UserData::coin < item_list[i].price)
 			{
-				DrawString(shop_loc.x + (i * span), shift + 150, "コイン不足!", 0xff0000);
+				DrawString(shop_ui_loc.x + (i * shop_ui_span), shift + 150, "コイン不足!", 0xff0000);
 			}
 			else
 			{
-				DrawFormatStringF(shop_loc.x + (i * span)+30, shift + 150, 0x00ff00, "あと%dコ", item_list[i].buy_max - buy_count[i]);
+				DrawFormatStringF(shop_ui_loc.x + (i * shop_ui_span)+30, shift + 150, 0x00ff00, "あと%dコ", item_list[i].buy_max - buy_count[i]);
 			}
 		}
 	}

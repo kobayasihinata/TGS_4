@@ -117,7 +117,7 @@ public:
 	static bool CheckPlayerMove(int _dir);
 
 	//決定に割り当てられたボタンが押されているか確認
-	static bool CheckEnter();
+	static bool CheckEnter(eInputState _state = eInputState::Pressed);
 
 	//キャンセルに割り当てられたボタンが押されているか確認
 	static bool CheckCancel();

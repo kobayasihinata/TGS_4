@@ -327,20 +327,34 @@ bool UserData::CheckPlayerMove(int _dir)
 	return false;
 }
 
-bool UserData::CheckEnter()
+bool UserData::CheckEnter(eInputState _state)
 {
 	switch (control_type)
 	{
 		//Aボタン
 	case 0:
 	case 1:
-		return InputPad::OnButton(XINPUT_BUTTON_A);
+		switch (_state)
+		{
+		case eInputState::Held:
+			return InputPad::OnPressed(XINPUT_BUTTON_A);
+			break;
+		case eInputState::Pressed:
+			return InputPad::OnButton(XINPUT_BUTTON_A);
+			break;
+		case eInputState::Released:
+			return InputPad::OnRelease(XINPUT_BUTTON_A);
+			break;
+		default:
+			return false;
+			break;
+		}
 		break;
 
 		//スペースキー or 左クリック
 	case 2:
-		return input->GetKeyState(KEY_INPUT_SPACE) == eInputState::Pressed ||
-			   input->GetMouseState(MOUSE_INPUT_LEFT) == eInputState::Pressed;
+		return input->GetKeyState(KEY_INPUT_SPACE) == _state ||
+			   input->GetMouseState(MOUSE_INPUT_LEFT) == _state;
 		break;
 	}
 	return false;

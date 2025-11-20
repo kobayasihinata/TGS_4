@@ -46,8 +46,14 @@ void InGameScene::Initialize()
 	pause_flg = false;
 	pause_timer = 0;
 	pause_cursor = 0;
+	old_pause_cursor = 0;
+	pause_loc = { SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2 + 100 };
+	pause_size_y = 50.f;
 	back_title_flg = false;
 	back_title_cursor = 0;
+	old_back_title_cursor = 0;
+	back_title_loc = { SCREEN_WIDTH / 2 - 180, SCREEN_HEIGHT / 2 + 150 };
+	back_title_size = { 100,50 };
 	coin_spawn_once = false;
 	for (int i = 0; i < 3; i++)
 	{
@@ -158,12 +164,12 @@ eSceneType InGameScene::Update(float _delta)
 	tutorial->Update();
 
 	//一定時間経過毎のコインの枚数を保存
-	if (UserData::timer % 60 == 1)
+	if (UserData::timer % 60 == 0)
 	{
 		UserData::coin_graph.push_back(UserData::coin);
 	}
 	//一時停止フラグ切り替え
-	if (UserData::CheckPause() && !tutorial->GetTutorialFlg() && !boss_anim_flg)
+	if (UserData::CheckPause() && !tutorial->GetTutorialFlg() && !boss_anim_flg && !shop_flg)
 	{
 		pause_flg = !pause_flg;
 		pause_timer = 0;
@@ -264,7 +270,6 @@ eSceneType InGameScene::Update(float _delta)
 				{
 					pause_cursor = 0;
 				}
-				ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 			}
 			//上入力で項目上移動
 			if (UserData::CheckCursorMove(UP))
@@ -273,7 +278,23 @@ eSceneType InGameScene::Update(float _delta)
 				{
 					pause_cursor = 2;
 				}
+			}
+			//マウスカーソルの位置に合わせて項目変更(キーマウ操作なら)
+			if (UserData::control_type == 2)
+			{
+				for (int i = 0; i < PAUSE_MENU_NUM; i++)
+				{
+					if (UserData::CheckCursor({ pause_loc.x,pause_loc.y + (i * pause_size_y) }, { pause_menu_size[i],pause_size_y}))
+					{
+						pause_cursor = i;	
+					}
+				}
+			}
+			//カーソルの位置が変わっていたらSE
+			if (old_pause_cursor != pause_cursor)
+			{
 				ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
+				old_pause_cursor = pause_cursor;
 			}
 			//Aボタンでカーソルが合っているところの処理を実行
 			if (UserData::CheckEnter())
@@ -327,6 +348,23 @@ eSceneType InGameScene::Update(float _delta)
 					back_title_cursor = 0;
 				}
 				ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
+			}
+			//マウスカーソルの位置に合わせて項目変更(キーマウ操作なら)
+			if (UserData::control_type == 2)
+			{
+				for (int i = 0; i < 2; i++)
+				{
+					if (UserData::CheckCursor({ back_title_loc.x + (i * back_title_size.x),back_title_loc.y }, { back_title_size.x,back_title_size.y }))
+					{
+						back_title_cursor = i;
+					}
+				}
+			}
+			//カーソルの位置が変わっていたらSE
+			if (old_back_title_cursor != back_title_cursor)
+			{
+				ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
+				old_back_title_cursor = back_title_cursor;
 			}
 			//キャンセルボタンで項目の選択を解除
 			if (UserData::CheckCancel())
@@ -447,16 +485,16 @@ void InGameScene::Draw()const
 		SetFontSize(48);
 		if (back_title_flg)
 		{
-			DrawString(SCREEN_WIDTH / 2 - 200, SCREEN_HEIGHT / 2 + 100, "タイトルに戻りますか？", 0xffffff);
-			DrawString(SCREEN_WIDTH / 2 - 180, SCREEN_HEIGHT / 2 + 150, "いいえ", back_title_cursor == 0 ? 0xffff00 : 0xffffff);
-			DrawString(SCREEN_WIDTH / 2 + 120, SCREEN_HEIGHT / 2 + 150, "はい", back_title_cursor == 1 ? 0xffff00 : 0xffffff);
+			DrawString(back_title_loc.x-20, back_title_loc.y-50, "タイトルに戻りますか？", 0xffffff);
+			DrawString(back_title_loc.x, back_title_loc.y, "いいえ", back_title_cursor == 0 ? 0xffff00 : 0xffffff);
+			DrawString(back_title_loc.x + 300, back_title_loc.y, "はい", back_title_cursor == 1 ? 0xffff00 : 0xffffff);
 			UserData::DrawCoin({ (float)SCREEN_WIDTH / 2 - 200 + (back_title_cursor * 300), SCREEN_HEIGHT / 2 + 185 }, 20, 227 + abs(((int)frame % 56 - 28)), 200);
 		}
 		else
 		{
-			DrawString(SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2 + 100, "再開", 0xffffff);
-			DrawString(SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2 + 150, "オプション", 0xffffff);
-			DrawString(SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2 + 200, "タイトル", 0xffffff);
+			DrawStringF(pause_loc.x, pause_loc.y, "再開", 0xffffff);
+			DrawStringF(pause_loc.x, pause_loc.y + 50, "オプション", 0xffffff);
+			DrawStringF(pause_loc.x, pause_loc.y + 100, "タイトル", 0xffffff);
 			UserData::DrawCoin({ (float)SCREEN_WIDTH / 2 - 80, (float)SCREEN_HEIGHT / 2 + (pause_cursor * 50) + 130 }, 20, 227 + abs(((int)frame % 56 - 28)), 200);
 		}
 	}

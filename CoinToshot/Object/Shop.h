@@ -50,13 +50,17 @@ private:
 	int shop_cd;				//再びショップを使えるようになる時間測定
 
 	int shop_cursor;			//購入アイテムを選ぶ
-	int buy_count[ITEM_NUM];		//購入回数を記録
-	int item_impact[ITEM_NUM];				//購入不可時の振動
+	int old_shop_cursor;		//ひとつ前に選ばれていた購入アイテム
+	Vector2D shop_ui_loc;		//ショップUIの座標
+	Vector2D shop_ui_size;		//ショップUI一項目辺りの大きさ
+	int shop_ui_span;			//ショップUI一項目間の間隔
+	int buy_count[ITEM_NUM];	//購入回数を記録
+	int item_impact[ITEM_NUM];	//購入不可時の振動
 
-	bool start_anim;		   //ショップを開いたアニメーション
-	int start_anim_timer;	   //アニメーション測定
-	bool end_anim;			   //ショップを閉じたアニメーション
-	int end_anim_timer;		   //アニメーション測定
+	bool start_anim;			 //ショップを開いたアニメーション
+	int start_anim_timer;		 //アニメーション測定
+	bool end_anim;				 //ショップを閉じたアニメーション
+	int end_anim_timer;			 //アニメーション測定
 
 	int item_image[ITEM_NUM][2];	//表示画像格納
 	std::vector<int> shop_image;	//ショップ画像

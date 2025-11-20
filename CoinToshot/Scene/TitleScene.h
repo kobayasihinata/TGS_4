@@ -29,9 +29,13 @@ private:
 	bool start_anim_flg;	//タイトル遷移時アニメーション
 	int start_anim_timer;	//タイトル遷移時アニメーション測定
 	bool tuto_reset_flg;	//チュートリアルをスキップするか選ばせる
+	Vector2D tuto_loc;		//チュートリアルスキップ時の項目の座標
+	Vector2D tuto_size;		//チュートリアルスキップ時の項目の大きさ
 	int tuto_current_num;	//チュートリアルスキップ時の項目
+	int old_tuto_current_num;//チュートリアルスキップ時のひとつ前の項目
 
 	int current_num;		//選択されている項目
+	int old_current_num;	//ひとつ前に選択されていた項目
 	Vector2D menu_loc;		//項目の座標
 	Vector2D menu_size;		//項目一つずつの大きさ
 	int bg_image;			//背景画像格納

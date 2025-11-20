@@ -9,10 +9,15 @@ OptionScene::OptionScene()
 {
 	change_scene = GetNowSceneType();
 	cursor = 0;
+	old_cursor = 0;
+	cursor_loc = { 50, 100 };
+	cursor_size_y = 70;
+	cursor_span = (SCREEN_HEIGHT / OPTION_NUM);
 	current_item = oNull;
 
 	volume_cursor = 0;//どこも選択されていない状態
-
+	volume_cursor_loc = { 700,150 };
+	volume_cursor_size;
 	for (int i = 0; i < 10; i++)
 	{
 		//0以外は一定数加算
@@ -30,7 +35,7 @@ OptionScene::OptionScene()
 	end_cursor = 0;
 	cont_type_timer = 0;
 	cont_type_cursor = 0;
-	cont_type = UserData::control_type;
+	old_cont_type = cont_type = UserData::control_type;
 	check_change_flg = false;
 	//BGM、SE読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
@@ -87,7 +92,6 @@ eSceneType OptionScene::Update(float _delta)
 			{
 				cursor = 0;
 			}
-			ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 		}
 		//上入力で項目上移動
 		if (UserData::CheckCursorMove(UP))
@@ -96,13 +100,30 @@ eSceneType OptionScene::Update(float _delta)
 			{
 				cursor = OPTION_NUM - 1;
 			}
+		}
+		//マウスカーソルの位置に合わせて項目変更(キーマウ操作なら)
+		if (UserData::control_type == 2)
+		{
+			for (int i = 0; i < OPTION_NUM; i++)
+			{
+				if (UserData::CheckCursor({ cursor_loc.x,cursor_loc.y + (i * cursor_span) }, { option_text_size[i],cursor_size_y}))
+				{
+					cursor = i;
+				}
+			}
+		}
+		//カーソルの位置が変わっていたらSE
+		if (old_cursor != cursor)
+		{
 			ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
+			old_cursor = cursor;
 		}
 		//Aボタンで現在選択している項目に移動
 		if (UserData::CheckEnter())
 		{
 			ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
 			current_item = cursor;
+			old_cont_type = UserData::control_type;
 		}
 		//Bボタンでオプション終了画面
 		if (UserData::CheckCancel())
@@ -147,7 +168,8 @@ void OptionScene::Draw()const
 	case OptionItem::oNull:
 		for (int i = 0; i < OPTION_NUM; i++)
 		{
-			DrawFormatString(50, 100 + i * (SCREEN_HEIGHT / OPTION_NUM), 0x000000, "%s", option_text[i]);
+			DrawFormatString(cursor_loc.x, cursor_loc.y + (i * cursor_span), 0x000000, "%s", option_text[i]);
+			DrawBoxAA(cursor_loc.x, cursor_loc.y + (i * cursor_span), cursor_loc.x + option_text_size[i], cursor_loc.y + cursor_size_y + (i * cursor_span), 0xff0000, false);
 			if (cursor == i)
 			{
 				UserData::DrawCoin({ 30.f, (float)135 + i * (SCREEN_HEIGHT / OPTION_NUM) }, 20, 227 + abs(((int)frame % 56 - 28)), 200);
@@ -271,6 +293,43 @@ void OptionScene::VolumeUpdate()
 			break;
 		}
 	}
+
+	if (UserData::CheckEnter(eInputState::Held))
+	{
+		for (int i = 0; i < 9; i++)
+		{
+			for (int j = 0; j < 2; j++)
+			{
+				//音量調節
+				if (UserData::CheckCursor({ volume_cursor_loc.x + (i * 40),volume_cursor_loc.y + (j * 400) }, { 40,50 }))
+				{
+					volume_cursor = j;
+					switch (volume_cursor)
+					{
+					case 0:
+						if (UserData::se_volume_num != i + 1)
+						{
+							UserData::se_volume_num = i + 1;
+							UserData::se_volume = se_volume[UserData::se_volume_num];
+							ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
+						}
+						break;
+					case 1:
+						if (UserData::bgm_volume_num != i + 1)
+						{
+							UserData::bgm_volume_num = i + 1;
+							UserData::bgm_volume = bgm_volume[UserData::bgm_volume_num];
+							ResourceManager::rPlaySound(option_bgm, DX_PLAYTYPE_LOOP, 0, false);
+							ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
+						}
+						break;
+					default:
+						break;
+					}
+				}
+			}
+		}
+	}
 }
 
 void OptionScene::VolumeDraw()const
@@ -282,22 +341,30 @@ void OptionScene::VolumeDraw()const
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
-
-	Vector2D se_loc = { 700,150 };
-	Vector2D bgm_loc = { 700,550 };
+	
 	int span = 40;	//ゲージの間隔
-	DrawString(se_loc.x + (span*9/2) - (GetDrawStringWidth("SE",strlen("SE"))/2) +1, se_loc.y - 69, "SE", 0xffffff);
-	DrawString(se_loc.x + (span*9/2) - (GetDrawStringWidth("SE",strlen("SE"))/2), se_loc.y - 70, "SE", 0x000000);
-	DrawBox(se_loc.x, se_loc.y, se_loc.x + span*9, se_loc.y + 50, 0x555500, TRUE);
-	DrawBox(se_loc.x, se_loc.y, se_loc.x + UserData::se_volume_num * span, se_loc.y + 50, 0xffff00, TRUE);
-	DrawString(bgm_loc.x + (span * 9 / 2) - (GetDrawStringWidth("BGM", strlen("BGM")) / 2)+1, bgm_loc.y - 69, "BGM", 0xffffff);
-	DrawString(bgm_loc.x + (span * 9 / 2) - (GetDrawStringWidth("BGM", strlen("BGM")) / 2), bgm_loc.y - 70, "BGM", 0x000000);
-	DrawBox(bgm_loc.x, bgm_loc.y, bgm_loc.x + span * 9, bgm_loc.y + 50, 0x555500, TRUE);
-	DrawBox(bgm_loc.x, bgm_loc.y, bgm_loc.x + UserData::bgm_volume_num * span, bgm_loc.y + 50, 0xffff00, TRUE);
+	DrawString(volume_cursor_loc.x + (span*9/2) - (GetDrawStringWidth("SE",strlen("SE"))/2) +1, volume_cursor_loc.y - 69, "SE", 0xffffff);
+	DrawString(volume_cursor_loc.x + (span*9/2) - (GetDrawStringWidth("SE",strlen("SE"))/2), volume_cursor_loc.y - 70, "SE", 0x000000);
+	DrawBox(volume_cursor_loc.x, volume_cursor_loc.y, volume_cursor_loc.x + span*9, volume_cursor_loc.y + 50, 0x555500, TRUE);
+	DrawBox(volume_cursor_loc.x, volume_cursor_loc.y, volume_cursor_loc.x + UserData::se_volume_num * span, volume_cursor_loc.y + 50, 0xffff00, TRUE);
+	DrawString(volume_cursor_loc.x + (span * 9 / 2) - (GetDrawStringWidth("BGM", strlen("BGM")) / 2)+1, volume_cursor_loc.y - 69 + 400, "BGM", 0xffffff);
+	DrawString(volume_cursor_loc.x + (span * 9 / 2) - (GetDrawStringWidth("BGM", strlen("BGM")) / 2), volume_cursor_loc.y - 70 + 400, "BGM", 0x000000);
+	DrawBox(volume_cursor_loc.x, volume_cursor_loc.y + 400, volume_cursor_loc.x + span * 9, volume_cursor_loc.y + 50 + 400, 0x555500, TRUE);
+	DrawBox(volume_cursor_loc.x, volume_cursor_loc.y + 400, volume_cursor_loc.x + UserData::bgm_volume_num * span, volume_cursor_loc.y + 50 + 400, 0xffff00, TRUE);
 
+	//for (int i = 0; i < 9; i++)
+	//{
+	//	for (int j = 0; j < 2; j++)
+	//	{
+	//		DrawBox(volume_cursor_loc.x + (i * 40),
+	//			volume_cursor_loc.y + (j * 400),
+	//			volume_cursor_loc.x + (i * 40)+40,
+	//			volume_cursor_loc.y + (j * 400)+50, 0xff0000, false);
+	//	}
+	//}
 	if (volume_cursor != -1)
 	{
-		UserData::DrawCoin({ se_loc.x-30, (float)se_loc.y + (volume_cursor * (bgm_loc.y - se_loc.y))+30 }, 20, 227 + abs(((int)frame % 56 - 28)), 200);
+		UserData::DrawCoin({ volume_cursor_loc.x-30, (float)volume_cursor_loc.y + (volume_cursor * 400)+30 }, 20, 227 + abs(((int)frame % 56 - 28)), 200);
 	}
 
 	SetFontSize(48);
@@ -364,8 +431,10 @@ void OptionScene::ControlUpdate()
 		{
 			switch (cont_type_cursor)
 			{
-				//カーソル左で変更画面に戻る
+				//カーソル左で操作タイプを元に戻す&設定画面終了
 			case 0:
+				UserData::control_type = old_cont_type;
+				current_item = OptionItem::oNull;
 				check_change_flg = false;
 				cont_type_timer = 0;
 				ResourceManager::rPlaySound(back_se, DX_PLAYTYPE_BACK);
@@ -374,9 +443,9 @@ void OptionScene::ControlUpdate()
 			case 1:
 				UserData::control_type = cont_type;
 				current_item = OptionItem::oNull;
-				ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
 				check_change_flg = false;
 				cont_type_timer = 0;
+				ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
 				break;
 			default:
 				break;

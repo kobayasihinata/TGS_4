@@ -504,8 +504,7 @@ void Player::Control()
 	else
 	{
 		//照準チュートリアルが完了している　もしくは照準チュートリアル中ならマウスカーソルに応じて照準角度を変更する
-		if (tutorial->GetTutoNowEnd(TutoType::tAim) &&
-			(k_input->GetMouseState(MOUSE_INPUT_RIGHT) == eInputState::Held))
+		if (tutorial->GetTutoNowEnd(TutoType::tAim))
 		{
 			//カーソルを動かした事を格納する
 			if (!aim_once_flg)aim_once_flg = true;

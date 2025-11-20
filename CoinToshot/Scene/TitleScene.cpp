@@ -16,8 +16,11 @@ TitleScene::TitleScene()
 	start_anim_flg = true;
 	start_anim_timer = 0;
 	tuto_reset_flg = false;
+	tuto_loc = { SCREEN_WIDTH / 2 - 200, 400 };
+	tuto_size = { 150,72 };
 	tuto_current_num = 0;
 	current_num = 0;
+	old_current_num = 0;
 	bg_image = CreateBackGround();
 
 	menu_loc = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 };
@@ -59,7 +62,6 @@ eSceneType TitleScene::Update(float _delta)
 				{
 					current_num = 0;
 				}
-				ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 			}
 
 			//上入力で項目上移動
@@ -69,7 +71,6 @@ eSceneType TitleScene::Update(float _delta)
 				{
 					current_num = ITEM_NUM - 1;
 				}
-				ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 			}
 
 			//マウスカーソルの位置に合わせて項目変更(キーマウ操作なら)
@@ -82,6 +83,12 @@ eSceneType TitleScene::Update(float _delta)
 						current_num = i;
 					}
 				}
+			}
+			//カーソルの位置が変わっていたらSE
+			if (old_current_num != current_num)
+			{
+				ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
+				old_current_num = current_num;
 			}
 			//決定ボタン
 			if (UserData::CheckEnter())
@@ -131,7 +138,6 @@ eSceneType TitleScene::Update(float _delta)
 				{
 					tuto_current_num = 0;
 				}
-				ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 			}
 			//左入力で項目左移動
 			if (UserData::CheckCursorMove(LEFT))
@@ -140,10 +146,24 @@ eSceneType TitleScene::Update(float _delta)
 				{
 					tuto_current_num = 1;
 				}
-				ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 			}
 			//マウスカーソルの位置に合わせて項目変更(キーマウ操作なら)
-
+			if (UserData::control_type == 2)
+			{
+				for (int i = 0; i < 2; i++)
+				{
+					if (UserData::CheckCursor({ tuto_loc.x + (i * 400),tuto_loc.y}, tuto_size))
+					{
+						tuto_current_num = i;
+					}
+				}
+			}
+			//カーソルの位置が変わっていたらSE
+			if (old_tuto_current_num != tuto_current_num)
+			{
+				ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
+				old_tuto_current_num = tuto_current_num;
+			}
 			//決定ボタン
 			if (UserData::CheckEnter())
 			{
@@ -232,10 +252,10 @@ void TitleScene::Draw()const
 		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, true);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 		SetFontSize(108);
-		UserData::DrawStringCenter({ SCREEN_WIDTH / 2,300 }, "チュートリアルを飛ばしますか？", 0xffffff);
+		UserData::DrawStringCenter({ tuto_loc.x + 100, tuto_loc.y - 100 }, "チュートリアルを飛ばしますか？", 0xffffff);
 		SetFontSize(72);
-		DrawString(SCREEN_WIDTH / 2 - 200, 400, "はい", tuto_current_num == 0 ? 0xff5555 : 0x999999);
-		DrawString(SCREEN_WIDTH / 2 + 200, 400, "いいえ", tuto_current_num == 1 ? 0xff5555 : 0x999999);
+		DrawString(tuto_loc.x, tuto_loc.y, "はい", tuto_current_num == 0 ? 0xff5555 : 0x999999);
+		DrawString(tuto_loc.x+400, tuto_loc.y, "いいえ", tuto_current_num == 1 ? 0xff5555 : 0x999999);
 	}
 
 	if (start_anim_flg)
