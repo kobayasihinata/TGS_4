@@ -30,6 +30,8 @@ Boss2::Boss2(InGameScene* _ingame)
 	tmp = rm->GetImages("Resource/Images/Boss2/Boss2_Death.png", 15, 5, 3, 96, 96);
 	animation_image.push_back(tmp);
 
+	shot_se = rm->GetSounds("Resource/Sounds/Enemy/Boss/Boss_Shot.mp3");
+
 	image = animation_image[0][0];
 
 	shot_once = false;
@@ -225,6 +227,8 @@ void Boss2::Bullet()
 		//プレイヤーの位置で発射角度を決める
 		shot_rad = atan2f(camera->player_location.y - this->location.y, camera->player_location.x - this->location.x);
 		manager->CreateAttack(GetBulletData());
+		//SE再生
+		ResourceManager::rPlaySound(shot_se, DX_PLAYTYPE_BACK);
 		//一回だけ撃つ
 		shot_once = true;
 	}

@@ -23,8 +23,8 @@
 
 //ボス出現タイミング
 #define BOSS1_SPAWN 230
-#define BOSS2_SPAWN 130
-#define BOSS3_SPAWN  30
+#define BOSS2_SPAWN 280
+#define BOSS3_SPAWN 290
 
 #define BOSS_BGM_FADE 120	//ボスBGMフェード時間
 

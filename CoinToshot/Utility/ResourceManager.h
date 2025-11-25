@@ -5,6 +5,9 @@
 #include <string>
 #include <vector>
 
+#define DEFAULT_SOUND_DISTANCE	1200.f		//何ピクセル先の音まで聞こえるか(音の距離減衰処理用)
+#define DEFAULT_START_ATTENUATION 600.f		//何ピクセル先から減衰が始まるか
+
 struct MaterialParam
 {
 	std::string file_path;
@@ -75,9 +78,10 @@ public:
 	//音源の再生
 	static void rPlaySound(int _sound_path, int _play_type, int _dec = 0, int _reset = 1);
 
-	/**
-	* 全ての画像と音源を削除する
-	*/
+	//自身と対象の距離に応じて音量の減速する値を計算する(_start_atten = 減衰開始距離 _sound_distance = どこまで聞こえるか)
+	static int GetSoundDistance(Vector2D _self, Vector2D _target, int _start_atten = DEFAULT_START_ATTENUATION, int _sound_distance = DEFAULT_SOUND_DISTANCE);
+
+	//全ての画像と音源を削除する
 	void UnloadResourceAll();
 
 private:

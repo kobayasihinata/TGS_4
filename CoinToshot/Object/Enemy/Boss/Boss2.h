@@ -17,6 +17,8 @@ private:
 	bool shot_once;				//一回だけ撃つ
 	int shot_span;				//発射間隔
 	float shot_speed;			//弾速度
+
+	int shot_se;				//弾発射SE
 public:
 	//コンストラクタ
 	Boss2(InGameScene* _ingame);

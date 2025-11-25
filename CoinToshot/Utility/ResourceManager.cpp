@@ -3,7 +3,7 @@
 #include "UserData.h"
 
 //静的メンバ変数定義
-ResourceManager* ResourceManager::instance = nullptr;		//クラスのインスタンスのポインタ
+ResourceManager* ResourceManager::instance = nullptr;	//クラスのインスタンスのポインタ
 
 /// <summary>
 /// リソース管理クラスのインスタンス取得する処理
@@ -26,7 +26,7 @@ ResourceManager* ResourceManager::GetInstance()
 /// </summary>
 void ResourceManager::DeleteInstance()
 {
-	//インスタンスが存在していなければ、削除する
+	//インスタンスが存在していれば、削除する
 	if (instance != nullptr)
 	{
 		instance->UnloadResourceAll();
@@ -110,6 +110,17 @@ void ResourceManager::rPlaySound(int _sound_path, int _play_type, int _dec, int 
 		//音量が0なら再生しない
 		if (UserData::se_volume - _dec > 0)PlaySoundMem(path, _play_type, _reset);
 	}
+}
+
+int ResourceManager::GetSoundDistance(Vector2D _self, Vector2D _target, int _start_atten, int _sound_distance)
+{
+	//減衰開始の基準を満たさない距離の場合は0(音量調整なし)を返す
+	int distance = UserData::Distance(_self, _target) - _start_atten;
+	if (distance <= 0)return 0;
+
+	//距離の値にかける倍率を求める
+	float magnification = (float)UserData::se_volume / _sound_distance;
+	return (int)(distance * magnification);
 }
 
 /**

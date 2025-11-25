@@ -57,6 +57,9 @@ void Boss3::Initialize(ObjectManager* _manager, int _object_type, Vector2D init_
 	tmp = rm->GetImages("Resource/Images/Boss3/Boss3_Hit.png", 7, 7, 1, 64, 64);
 	animation_image.push_back(tmp);
 
+	shot_se = rm->GetSounds("Resource/Sounds/Enemy/Boss/Boss_Shot.mp3");
+	walk_se = rm->GetSounds("Resource/Sounds/Enemy/Boss/Boss3_Walk.wav");
+
 	image = animation_image[0][0];
 
 	shot_once = false;
@@ -109,11 +112,20 @@ void Boss3::Update()
 	if (!death_flg && !anim_flg && !boss_stop_flg)
 	{
 		//移動
-		Move();
+		//Move();
 	}
 
 	//アニメーション
 	Animation();
+
+	//アニメーション位置に応じて足音を鳴らす
+	if (image_line == 1 &&
+		(image_num == 4 || image_num == 10) &&
+		!CheckSoundMem(walk_se))
+	{
+		ResourceManager::rPlaySound(walk_se, DX_PLAYTYPE_BACK,ResourceManager::GetSoundDistance(this->location,camera->player_location));
+		manager->CreateEffect(elWalk, { location.x,location.y + (box_size.y / 2) }, FALSE, 0xffffff, velocity.x > 0 ? FALSE : TRUE, 30);
+	}
 
 	//HPゲージ表示
 	ingame->SetBossHp("Boss3", hp, max_hp, hpbar_move);
@@ -239,12 +251,15 @@ void Boss3::Bullet()
 	//投擲アニメーションが指定の画像まで再生されたら、弾を発射する
 	if (!shot_once && image_line == 2 && image_num == 3)
 	{
+		shot_count++;
 		//プレイヤーの位置で発射角度を決める
 		shot_rad = atan2f(target_loc.y - this->location.y, target_loc.x - this->location.x);
 		ShotBullet();
 		UserData::boss_coin -= bBullet[bullet_type].cost;
 		std::string s = "-" + std::to_string(bBullet[bullet_type].cost);
 		ingame->CreatePopUp(this->location, s, 0x550000, -1);
+		//SE再生
+		ResourceManager::rPlaySound(shot_se, DX_PLAYTYPE_BACK, ResourceManager::GetSoundDistance(this->location, camera->player_location,SA_BOSS3_SHOT,SD_BOSS3_SHOT));
 		//一回だけ撃つ
 		shot_once = true;
 	}
@@ -257,7 +272,6 @@ void Boss3::Bullet()
 		image_line = 2;
 		anim_timer = 0;
 		image_num = 0;
-		shot_count++;
 		//一回だけ撃つ用変数リセット
 		shot_once = false;
 	}

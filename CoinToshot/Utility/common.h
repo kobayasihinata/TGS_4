@@ -116,3 +116,14 @@
 #define BOSS3_PLAYER_DISTANCE2 600	//ボス３プレイヤーとどれくらい離れたら加速するか
 #define BOSS3_POWERUP_TIME 5400		//ボス３強化されるまでの時間
 #define BOSS3_DROPCOIN 100			//ボス３コインドロップ量
+
+//音の減衰関連 SA:減衰の開始距離(StartAttenuation) SD:どこまで聞こえるか(SoundDistance)
+
+#define DEFAULT_START_ATTENUATION 600.f		//何ピクセル先から減衰が始まるか
+#define DEFAULT_SOUND_DISTANCE	1200.f		//何ピクセル先の音まで聞こえるか(音の距離減衰処理用)
+
+#define SA_BOSS3_SHOT 1000.f	//ボス３攻撃
+#define SD_BOSS3_SHOT 2000.f	//ボス３攻撃
+
+#define SA_ENEMY_HIT 1000.f		//敵被弾音
+#define SD_ENEMY_HIT 1000.f		//敵被弾音

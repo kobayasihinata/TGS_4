@@ -2,11 +2,13 @@
 #include "ObjectBase.h"
 #include "ObjectList.h"
 #include "../../Utility/common.h"
+#include "../../Scene/Camera/Camera.h"
 
 class ActorBase :
 	public ObjectBase
 {
 protected:
+	class Camera* camera;
 	int frame;		//フレーム測定
 	float max_hp;	//最大HP記憶
 	float hp;		//HP格納
@@ -35,7 +37,7 @@ public:
 		last_velocity = 0.f;				
 		move_velocity = 0.f;
 		drop_coin_count = 0;
-
+		camera = Camera::Get();
 		//SE読込
 		ResourceManager* rm = ResourceManager::GetInstance();
 		//SE読み込み
@@ -155,7 +157,7 @@ public:
 			hpbar_move += _value * (HPBAR_WIDTH / max_hp);
 
 			//ダメージSE
-			ResourceManager::rPlaySound(damage_se, DX_PLAYTYPE_BACK);
+			ResourceManager::rPlaySound(damage_se, DX_PLAYTYPE_BACK, ResourceManager::GetSoundDistance(this->location, camera->player_location));
 
 			//ノックバック処理
 

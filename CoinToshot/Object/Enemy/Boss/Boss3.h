@@ -60,6 +60,9 @@ private:
 	bool shot_once;		//一回だけ撃つ
 	float shot_speed;	//弾速度
 
+	int shot_se;		//弾発射SE
+	int walk_se;		//歩行SE
+
 public:
 	static InGameScene* ingame;		//現在のシーンのポインタを保存
 	static bool boss3_once;		//プレイヤー生成を一回だけにする
