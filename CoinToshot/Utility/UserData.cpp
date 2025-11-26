@@ -507,3 +507,89 @@ int UserData::GetColorHex(int _color[3])
 	ret = (ret << 8) | _color[2]; // Â
 	return ret;
 }
+
+void UserData::DrawLightReflection(Vector2D _loc, Vector2D _size, int _max_time, int _timer, int _color)
+{
+	Vector2D upper_left ,upper_right, lower_right, lower_left;
+	upper_left = upper_right = lower_right = lower_left = _loc - (_size/2);
+
+	float light_size = 7;	//ü‚Ì‘¾‚³
+	float inc = (_size.x + _size.y + light_size) / (_max_time);	//_timer‚ª‚P‘‰Á‚·‚é–ˆ‚É‚Ç‚ê‚­‚ç‚¢•`‰æˆÊ’u‚ðˆÚ“®‚³‚¹‚é‚©
+	int time_x = _size.x / inc;
+	int time_y = _size.y / inc;
+
+	//ã‘¤‚Ì‚Q“_‚ÌŒvŽZ
+	if (_timer * inc < _size.x)
+	{
+		upper_right.x = upper_right.x + (_timer * inc);
+	}
+	else
+	{
+		upper_right.x = upper_right.x + _size.x;
+		upper_right.y = upper_right.y + ((_timer - time_x) * inc);
+
+	}
+	if ((_timer * inc) - light_size < _size.x)
+	{
+		//light_size‚ðŒ¸ŽZ‚·‚éŽ–‚ÅA‘‰Á—Ê‚ªƒ}ƒCƒiƒX‚É‚È‚é‚È‚çA‚O‚É‚·‚é
+		if ((_timer * inc) - light_size < 0)
+		{
+			upper_left.x = upper_left.x + (_timer * inc);
+		}
+		else
+		{
+			upper_left.x = upper_left.x + (_timer * inc) - light_size;
+		}
+	}
+	else
+	{
+		upper_left.x = upper_left.x + _size.x;
+		upper_left.y = upper_left.y + ((_timer - time_x) * inc) - light_size;
+	}
+
+	//‰º‘¤‚Ì‚Q“_‚ÌŒvŽZ
+	if (_timer * inc < _size.y)
+	{
+		lower_right.y = lower_right.y + (_timer * inc);
+	}
+	else
+	{
+		lower_right.y = lower_right.y + _size.y;
+		lower_right.x = lower_right.x + ((_timer - time_y) * inc);
+	}
+	if ((_timer * inc) - light_size < _size.y)
+	{
+		//light_size‚ðŒ¸ŽZ‚·‚éŽ–‚ÅA‘‰Á—Ê‚ªƒ}ƒCƒiƒX‚É‚È‚é‚È‚çA‚O‚É‚·‚é
+		if ((_timer * inc) - light_size < 0)
+		{
+			lower_left.y = lower_left.y + (_timer * inc);
+		}
+		else
+		{
+			lower_left.y = lower_left.y + (_timer * inc) - light_size;
+		}
+	}
+	else
+	{
+		lower_left.y = lower_left.y + _size.y;
+		lower_left.x = lower_left.x + ((_timer - time_y) * inc) - light_size;
+	}
+	
+	//˜gŠO‚Éo‚é‚È‚ç–ß‚·
+	if (upper_right.x > _loc.x + _size.x)upper_right.x = _loc.x + _size.x;
+	if (upper_right.y > _loc.y + _size.y)upper_right.y = _loc.y + _size.y;
+	if (upper_left.x > _loc.x + _size.x)upper_left.x = _loc.x + _size.x;
+	if (upper_left.y > _loc.y + _size.y)upper_left.y = _loc.y + _size.y;
+	if (lower_right.x > _loc.x + _size.x)lower_right.x = _loc.x + _size.x;
+	if (lower_right.y > _loc.y + _size.y)lower_right.y = _loc.y + _size.y;
+	if (lower_left.x > _loc.x + _size.x)lower_left.x = _loc.x + _size.x;
+	if (lower_left.y > _loc.y + _size.y)lower_left.y = _loc.y + _size.y;
+
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
+	DrawQuadrangleAA(upper_left.x, upper_left.y,
+		upper_right.x, upper_right.y,
+		lower_right.x, lower_right.y,
+		lower_left.x, lower_left.y,
+		_color, true);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+}

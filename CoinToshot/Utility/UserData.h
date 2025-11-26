@@ -18,7 +18,7 @@ using namespace std;
 struct RankingData
 {
 	int num;		//順番
-	string name;		//名前
+	string name;	//名前
 	int coin;		//コインの数
 };
 
@@ -33,7 +33,7 @@ struct ObjectData
 struct ReplayData
 {
 	int time;				//何秒時点での出来事か
-	int image;	//その時の画像
+	int image;				//その時の画像
 	std::string text;		//どういうシーンか
 };
 
@@ -48,7 +48,7 @@ public:
 	static RankingData ranking_data[RANKING_DATA];	//ランキングデータ格納
 	static RankingData my_ranking_data;				//前回プレイのデータ
 
-	//UIに表示する必要がある or 保持しておいた方が良い可能性があるプレイヤー情報はここで管理
+	//UIに表示する必要がある or 保持しておいた方が良いプレイヤー情報はここで管理
 	static float player_hp;					//体力
 	static int coin;						//コイン
 	static int timer;						//残り時間
@@ -74,7 +74,7 @@ public:
 	static int se_volume;					//SEの音量格納
 	static int se_volume_num;				//SEの音量強度格納
 	static int bgm_volume;					//BGMの音量格納
-	static int bgm_volume_num;					//BGMの音量強度格納
+	static int bgm_volume_num;				//BGMの音量強度格納
 	static int control_type;				//操作方法の格納
 	static SceneBase* old_scene;			//ゲームメイン情報保持
 
@@ -82,6 +82,7 @@ public:
 	static int variable;			//起動中に好きに変更できる値
 	static bool variable_change;	//値変更中か
 	static Vector2D variable_loc;	//調整表示用座標
+
 public:
 	//画像を読み込む
 	static void LoadButtonImage();
@@ -134,6 +135,7 @@ public:
 
 	//マウスカーソルが指定した範囲内にあるか確認
 	static bool CheckCursor(Vector2D _loc, Vector2D _size);
+
 	//可変の変数描画
 	static void DrawVariable();
 
@@ -145,5 +147,15 @@ public:
 
 	//配列で渡された色を16進数で返す
 	static int GetColorHex(int _color[3]);
+
+	/// <summary>
+	/// 光の反射描画
+	/// </summary>
+	/// <param name="_loc">反射を描画する四角の中心座標</param>
+	/// <param name="_size">反射を描画する四角の大きさ</param>
+	/// <param name="_max_time">アニメーションの最大時間</param>
+	/// <param name="_timer">現在のアニメーション時間</param>
+	/// <param name="color">光の色</param>
+	static void DrawLightReflection(Vector2D _loc, Vector2D _size,int _max_time, int _timer, int color);
 };
 

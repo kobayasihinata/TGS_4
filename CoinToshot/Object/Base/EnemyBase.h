@@ -2,6 +2,7 @@
 #include "ActorBase.h"
 #include "../../Scene/Camera/Camera.h"
 #include <vector>
+#include "../../Utility/UserData.h"
 
 class EnemyBase :
 	public ActorBase
@@ -16,7 +17,7 @@ protected:
 	int now_shine_image;			//Œ»Ý•`‰æƒI[ƒ‰‰æ‘œ
 
 	int item_spawn_se;			//ƒŒƒAƒAƒCƒeƒ€¶¬SE
-	int death_se;				//Ž€–SŽžSE
+	int death_se;				//Ž€–SŽžSE	
 public:
 
 	EnemyBase()
@@ -135,7 +136,15 @@ public:
 			0xffffff,
 			false
 		);
+		////Ž€–S‚µ‚Ä‚¢‚½‚çHPƒQ[ƒW‚É‚Ð‚Ñ‚ð‚¢‚ê‚é
+		//if (death_flg)
+		//{
 
+		//}
+		if (frame % 120 > 90)
+		{
+			UserData::DrawLightReflection({ local_location.x,local_location.y - (box_size.y / 2) - 5 }, { HPBAR_WIDTH ,HPBAR_HEIGHT}, 30, frame % 30 -1, 0xffffff);
+		}
 #ifdef _DEBUG
 		//hp•`‰æ
 		DrawFormatStringF(local_location.x, local_location.y - (box_size.y / 2), 0xffffff, "HP:%f", this->hp);
