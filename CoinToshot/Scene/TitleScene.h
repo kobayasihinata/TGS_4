@@ -3,6 +3,7 @@
 #include "SceneBase.h"
 #include "Tutorial.h"
 
+#define LOGO_NUM 10	//タイトルの文字数
 #define ITEM_NUM 4	//タイトルの項目数
 #define START_ANIM 180  //アニメーション時間
 
@@ -26,6 +27,8 @@ class TitleScene : public SceneBase
 private:
 	class Tutorial* tutorial;	//チュートリアル格納
 
+	int logo_shift[LOGO_NUM];		//タイトルロゴのアニメーション用
+
 	bool start_anim_flg;	//タイトル遷移時アニメーション
 	int start_anim_timer;	//タイトル遷移時アニメーション測定
 	bool tuto_reset_flg;	//チュートリアルをスキップするか選ばせる
@@ -43,6 +46,8 @@ private:
 	int title_bgm;				//タイトルBGM
 	int cursor_se;				//カーソルSE
 	int enter_se;				//決定SE
+
+
 public:
 	TitleScene();
 	virtual ~TitleScene();

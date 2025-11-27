@@ -13,6 +13,10 @@ TitleScene::TitleScene()
 {
 	tutorial = Tutorial::Get();
 
+	for (int i = 0; i < LOGO_NUM; i++)
+	{
+		logo_shift[i] = GetRand(30)+60;
+	}
 	start_anim_flg = true;
 	start_anim_timer = 0;
 	tuto_reset_flg = false;
@@ -201,15 +205,26 @@ eSceneType TitleScene::Update(float _delta)
 
 void TitleScene::Draw()const
 {	
-
 	//”wŒi‰æ‘œ•`‰æ
 	DrawGraph(0, 0, bg_image, TRUE);
-
+	
 	//ƒ^ƒCƒgƒ‹•¶Žš
-	SetFontSize(144);
-	UserData::DrawStringCenter({ SCREEN_WIDTH / 2+2,52 }, "CoinToShot", 0x000000);
-	UserData::DrawStringCenter({ SCREEN_WIDTH / 2 -2,48 }, "CoinToShot", 0xffffff);
-	UserData::DrawStringCenter({ SCREEN_WIDTH / 2,50 }, "CoinToShot", 0xddbb00);
+	SetFontSize(184);
+
+	int logo_width = GetDrawStringWidth("CoinToShot", strlen("CoinToShot"));
+	Vector2D logo_loc = { SCREEN_WIDTH / 2 - logo_width / 2,50 };	//•`‰æŠJŽnˆÊ’u
+	string logo[LOGO_NUM] = { "C","o","i","n","T","o","S","h","o","t" };	//•`‰æ•¶Žš
+	int draw_width = 0;
+	int shift;				//ƒƒS‚ÌˆÚ“®’l‚ð•Û‘¶
+
+	for (int i = 0; i < LOGO_NUM; i++)
+	{
+		shift = abs(((int)frame + (i*5)) % logo_shift[i] - logo_shift[i]/2) / 10;
+		DrawStringF(logo_loc.x + draw_width + 2, logo_loc.y + shift + 2, logo[i].c_str(), 0x000000);
+		DrawStringF(logo_loc.x + draw_width - 2, logo_loc.y + shift - 2, logo[i].c_str(), 0xffffff);
+		DrawStringF(logo_loc.x + draw_width, logo_loc.y + shift, logo[i].c_str(), 0xddbb00);
+		draw_width += GetDrawStringWidth(logo[i].c_str(), strlen(logo[i].c_str()));
+	}
 
 	SetFontSize(menu_size.y);
 	
