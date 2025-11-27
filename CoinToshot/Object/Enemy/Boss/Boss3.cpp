@@ -112,7 +112,7 @@ void Boss3::Update()
 	if (!death_flg && !anim_flg && !boss_stop_flg)
 	{
 		//移動
-		//Move();
+		Move();
 	}
 
 	//アニメーション
@@ -195,8 +195,11 @@ void Boss3::Update()
 			//エフェクト
 			manager->CreateEffect(elExplosion, this->location, { 0,0 });
 
-			//BGMを元に戻す処理
-			ingame->SetFadeDefault();
+			//BGMを元に戻す処理(ボスが自身しか居ない場合)
+			if (ingame->GetBossNum() <= 1)
+			{
+				ingame->SetFadeDefault();
+			}
 
 			//終了時処理
 			this->Finalize();
@@ -210,17 +213,17 @@ void Boss3::Draw()const
 	__super::Draw();
 
 	SetFontSize(17);
-	DrawBoxAA(local_location.x - (box_size.x / 2)-2,
-		local_location.y - box_size.y - 20,
-		local_location.x + (box_size.x / 2)+12,
-		local_location.y - box_size.y, 0xffffff, true);
+	DrawBoxAA(local_location.x - 22,
+		local_location.y - 60,
+		local_location.x + 32,
+		local_location.y - 40, 0xffffff, true);
 
 	UserData::DrawCoin({ local_location.x-12,
-	local_location.y - box_size.y - 10 },
+	local_location.y - 50 },
 		10);
 
 	DrawFormatString(local_location.x,
-		local_location.y - box_size.y - 20,
+		local_location.y - 60,
 		UserData::boss_coin >= 0 ? 0x550000 : 0x0000ff,
 		"×%d",
 		UserData::boss_coin);
@@ -314,11 +317,15 @@ void Boss3::ChangeMove()
 		//弾種類ランダム変更
 		if (strength_level == 0)
 		{
-			bullet_type = GetRand(2);
+			bullet_type = GetRand(1);
 		}
-		else
+		else if(strength_level == 1)
 		{
-			bullet_type = GetRand(5);
+			bullet_type = GetRand(3);
+		}
+		else if (strength_level == 2)
+		{
+			bullet_type = GetRand(4);
 		}
 		//リセット
 		shot_count = 0;

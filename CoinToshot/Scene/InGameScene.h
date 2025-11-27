@@ -22,8 +22,8 @@
 #define TIME_BONUS 60	//文字表示時間
 
 //ボス出現タイミング
-#define BOSS1_SPAWN 230
-#define BOSS2_SPAWN 280
+#define BOSS1_SPAWN 200
+#define BOSS2_SPAWN 125
 #define BOSS3_SPAWN 290
 
 #define BOSS_BGM_FADE 120	//ボスBGMフェード時間
@@ -97,6 +97,7 @@ private:
 	int zoom_time_count;		//何秒間ズームしたままでいるか測定
 	float zoom_speed;			//ズームの速度
 
+	int old_boss_num;			//一フレーム前のボスの数
 	std::vector<BossHp> boss_hp;//ボスの体力表示用
 	bool boss_timer_stop;		//ボスによってタイマーが止まっているか判断	
 
@@ -315,6 +316,12 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	bool GetBossTimerStop()const { return boss_timer_stop; }
+
+	/// <summary>
+	/// ボスのHPゲージの大きさ取得
+	/// </summary>
+	/// <returns></returns>
+	int GetBossNum()const { return old_boss_num; }
 };
 
 

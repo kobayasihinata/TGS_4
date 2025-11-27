@@ -157,6 +157,9 @@ eSceneType InGameScene::Update(float _delta)
 	//BGM更新
 	UpdateSound();
 
+	//一フレーム前のボスの数保存
+	old_boss_num = boss_hp.size();
+
 	//ボスHP表示用変数リセット
 	boss_hp.clear();
 
@@ -518,7 +521,6 @@ void InGameScene::Draw()const
 		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, true);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 	}
-
 }
 
 eSceneType InGameScene::GetNowSceneType()const

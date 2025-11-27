@@ -1,12 +1,12 @@
 #pragma once
-#define DEBUG_SKIP true			//デバッグ用チュートリアルスキップモード
-#define DEBUG_PLAYER false		//クリアと死をすぐ確認したい時用
-#define WINDOW_MODE true		//ウィンドウモードかどうか
+#define DEBUG_SKIP true		//デバッグ用チュートリアルスキップモード
+#define DEBUG_PLAYER false	//クリアと死をすぐ確認したい時用
+#define WINDOW_MODE false	//ウィンドウモードかどうか
 
-#define SE_MAX 13000	//SE音量の上限
-#define BGM_MAX 11000	//BGM音量の上限
+#define SE_MAX 13000		//SE音量の上限
+#define BGM_MAX 11000		//BGM音量の上限
 
-#define FRAME_RATE 60			//フレームレート
+#define FRAME_RATE 60		//フレームレート
 
 #define SCREEN_WIDTH  (WINDOW_MODE ? 1280 : 1920) 	//画面横幅
 #define SCREEN_HEIGHT (WINDOW_MODE ? 720 : 1080) 	//画面高さ
@@ -112,9 +112,9 @@
 #define BOSS3_HEIGHT 40				//ボス３高さ
 #define BOSS3_SPEED 2.5f			//ボス３速度
 #define BOSS3_DAMAGE 3				//ボス３与ダメ
-#define BOSS3_PLAYER_DISTANCE 200	//ボス３プレイヤーとの間合い
-#define BOSS3_PLAYER_DISTANCE2 600	//ボス３プレイヤーとどれくらい離れたら加速するか
-#define BOSS3_POWERUP_TIME 5400		//ボス３強化されるまでの時間
+#define BOSS3_PLAYER_DISTANCE 250	//ボス３プレイヤーとの間合い
+#define BOSS3_PLAYER_DISTANCE2 700	//ボス３プレイヤーとどれくらい離れたら加速するか
+#define BOSS3_POWERUP_TIME 3600		//ボス３強化されるまでの時間
 #define BOSS3_DROPCOIN 100			//ボス３コインドロップ量
 
 //音の減衰関連 SA:減衰の開始距離(StartAttenuation) SD:どこまで聞こえるか(SoundDistance)

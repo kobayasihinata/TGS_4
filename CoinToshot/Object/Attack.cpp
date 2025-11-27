@@ -161,6 +161,8 @@ void Attack::Hit(ObjectBase* hit_object)
 			manager->DeleteObject(this);
 		}
 		manager->CreateEffect(elHit, hit_object->GetLocation(), true, 0x000000, false, 30);
+		//ジョイパッドを振動させる
+		StartJoypadVibration(DX_INPUT_PAD1, 500, 100);
 	}
 
 	//攻撃したのがプレイヤーかボスで、敵か箱に攻撃が当たっているなら
@@ -186,6 +188,8 @@ void Attack::Hit(ObjectBase* hit_object)
 		}
 		//カメラ振動
 		camera->impact = 5;
+		//ジョイパッドを振動させる
+		StartJoypadVibration(DX_INPUT_PAD1, 350, 100);
 	}
 }
 
