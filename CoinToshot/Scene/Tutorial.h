@@ -50,6 +50,7 @@ private:
 
 	int ex_se;					//爆発音
 	int charge_se;				//エイム合わせSE
+	int nice_se;				//成功音
 
 	bool tuto_executed_flg[TUTO_NUM];	//チュートリアルを既に行ったか判断
 public:

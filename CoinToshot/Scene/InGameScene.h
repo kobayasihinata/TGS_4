@@ -22,9 +22,9 @@
 #define TIME_BONUS 60	//文字表示時間
 
 //ボス出現タイミング
-#define BOSS1_SPAWN 200
+#define BOSS1_SPAWN 290
 #define BOSS2_SPAWN 125
-#define BOSS3_SPAWN 290
+#define BOSS3_SPAWN 50
 
 #define BOSS_BGM_FADE 120	//ボスBGMフェード時間
 
@@ -100,11 +100,16 @@ private:
 	int old_boss_num;			//一フレーム前のボスの数
 	std::vector<BossHp> boss_hp;//ボスの体力表示用
 	bool boss_timer_stop;		//ボスによってタイマーが止まっているか判断	
-
+	
 	bool boss_anim_flg;			//ボス生成アニメーション
-	int boss_anim_count;		//ボスのアニメーション時間
-	int boss_anim_timer;		//ボスのアニメーション測定
+	int boss_anim_count;		//ボスのアニメーション測定
+	int boss_anim_timer;		//ボスのアニメーション時間
 	ObjectBase* now_anim_boss;	//現在アニメーションしているボス
+
+	bool blackout_flg;		//暗転演出
+	int blackout_time;		//暗転時間格納
+	int blackout_count;		//暗転時間測定
+	int blackout_alpha;		//暗転の透明度格納
 
 	int first_bonus_image;		//3/1ボーナス画像
 	int second_bonus_image;		//3/2ボーナス画像
@@ -322,6 +327,17 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	int GetBossNum()const { return old_boss_num; }
+
+	/// <summary>
+	/// 暗転演出を開始する
+	/// </summary>
+	/// <param name="_time"></param>
+	void StartBlackOut(int _time);
+
+	/// <summary>
+	/// 暗転演出の更新
+	/// </summary>
+	void UpdateBlackOut();
 };
 
 

@@ -95,26 +95,26 @@ void Boss3::Update()
 	//強さの更新
 	UpdateStrength();
 
-	//少しでも移動していたら表示アニメーションを変える
-	if (image_line != 2)
-	{
-		if (fabsf(velocity.x) > 0.3f || fabsf(velocity.y) > 0.3f)
-		{
-			image_line = 1;
-		}
-		else
-		{
-			image_line = 0;
-		}
-	}
+
 
 	//死亡していなければこの処理
 	if (!death_flg && !anim_flg && !boss_stop_flg)
 	{
+		//少しでも移動していたら表示アニメーションを変える
+		if (image_line != 2)
+		{
+			if (fabsf(velocity.x) > 0.3f || fabsf(velocity.y) > 0.3f)
+			{
+				image_line = 1;
+			}
+			else
+			{
+				image_line = 0;
+			}
+		}
 		//移動
 		Move();
 	}
-
 	//アニメーション
 	Animation();
 

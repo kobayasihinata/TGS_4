@@ -86,6 +86,11 @@ void InGameScene::Initialize()
 	boss_anim_timer = 0;
 	now_anim_boss = nullptr;
 
+	blackout_flg = false;
+	blackout_time = 0;
+	blackout_count = 0;
+	blackout_alpha = 0;
+
 	//チュートリアルが完了していないなら初期コインは0枚、しているなら20枚
 	UserData::coin = tutorial->GetBasicTuto() ? 20 : 0;
 
@@ -455,6 +460,8 @@ eSceneType InGameScene::Update(float _delta)
 	//画面ズームの更新
 	UpdateZoom();
 
+	//暗転の更新
+	UpdateBlackOut();
 
 	//遷移時一回だけ更新
 	update_once = true;
@@ -480,6 +487,19 @@ void InGameScene::Draw()const
 		update_shop->Draw();
 	}
 
+	//ボスが居たら画面を薄暗く
+	if (boss_hp.size() > 0)
+	{
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 50);
+		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, true);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+	}
+	if (blackout_flg)
+	{
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, blackout_alpha);
+		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, true);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+	}
 	//一時停止フラグが立っていたら、ポーズ画面の描画
 	if (pause_flg)
 	{
@@ -514,13 +534,6 @@ void InGameScene::Draw()const
 		tutorial->Draw();
 	}
 
-	//ボスが居たら画面を薄暗く
-	if (boss_hp.size() > 0)
-	{
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 50);
-		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, true);
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
-	}
 }
 
 eSceneType InGameScene::GetNowSceneType()const
@@ -841,6 +854,7 @@ void InGameScene::SpawnEnemy()
 	if (!boss_spawn_once[0] && (UserData::timer / 60) == BOSS1_SPAWN)
 	{
 		objects->CreateObject({ {-1000,0}, Vector2D{BOSS1_WIDTH,BOSS1_HEIGHT}, eBOSS1});
+		StartBlackOut(120);
 		boss_spawn_once[0] = true;
 	}
 	if (!boss_spawn_once[1] && (UserData::timer / 60) == BOSS2_SPAWN)
@@ -1414,5 +1428,31 @@ void InGameScene::UpdateFade()
 		now_bgm = fade_bgm;
 		fade_num = 0;
 		fade_flg = false;
+	}
+}
+
+void InGameScene::StartBlackOut(int _time)
+{ 
+	//暗転演出をしていないなら開始
+	if (!blackout_flg)
+	{
+		blackout_flg = true; 
+		blackout_time = _time;
+		blackout_count = 0;
+	}
+}
+
+void InGameScene::UpdateBlackOut()
+{
+	//暗転処理フラグが立っていたら更新
+	if (blackout_flg)
+	{
+		if (++blackout_count >= blackout_time)
+		{
+			blackout_flg = false;
+			blackout_count = 0;
+		}
+		//指定された時間の半分が一番暗くなる（値が255になる）ように計算
+		blackout_alpha = 255 -((255 / (blackout_time / 2)) * abs((blackout_count - (blackout_time / 2))));
 	}
 }

@@ -89,14 +89,14 @@
 
 #define BOSS_BAR_SIZE 500			//ボスHPゲージ幅
 
-#define BOSS1_HP 70				//ボス１HP
+#define BOSS1_HP 70					//ボス１HP
 #define BOSS1_WIDTH 100				//ボス１幅
 #define BOSS1_HEIGHT 100			//ボス１高さ
 #define BOSS1_SPEED 1.f				//ボス１速度
 #define BOSS1_DAMAGE 2				//ボス１与ダメ
 #define BOSS1_DROPCOIN 100			//ボス１コインドロップ量
 
-#define BOSS2_HP 80				//ボス２HP
+#define BOSS2_HP 80					//ボス２HP
 #define BOSS2_WIDTH 100				//ボス２幅
 #define BOSS2_HEIGHT 100			//ボス２高さ
 #define BOSS2_SPEED 1.f				//ボス２速度
@@ -112,8 +112,8 @@
 #define BOSS3_HEIGHT 40				//ボス３高さ
 #define BOSS3_SPEED 2.5f			//ボス３速度
 #define BOSS3_DAMAGE 3				//ボス３与ダメ
-#define BOSS3_PLAYER_DISTANCE 250	//ボス３プレイヤーとの間合い
-#define BOSS3_PLAYER_DISTANCE2 700	//ボス３プレイヤーとどれくらい離れたら加速するか
+#define BOSS3_PLAYER_DISTANCE 350	//ボス３プレイヤーとの間合い
+#define BOSS3_PLAYER_DISTANCE2 800	//ボス３プレイヤーとどれくらい離れたら加速するか
 #define BOSS3_POWERUP_TIME 3600		//ボス３強化されるまでの時間
 #define BOSS3_DROPCOIN 100			//ボス３コインドロップ量
 
@@ -125,5 +125,5 @@
 #define SA_BOSS3_SHOT 1000.f	//ボス３攻撃
 #define SD_BOSS3_SHOT 2000.f	//ボス３攻撃
 
-#define SA_ENEMY_HIT 1000.f		//敵被弾音
-#define SD_ENEMY_HIT 1000.f		//敵被弾音
+#define SA_ENEMY_HIT  1000.f	//敵被弾音
+#define SD_ENEMY_HIT  1000.f	//敵被弾音

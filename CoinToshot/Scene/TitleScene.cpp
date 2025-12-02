@@ -237,7 +237,7 @@ void TitleScene::Draw()const
 			UserData::DrawCoin({ menu_loc.x - 30, menu_loc.y + (i * menu_size.y) + menu_size.y /2 }, 20,227+abs(((int)frame%56 - 28)),200 );
 			//	DrawCircle(SCREEN_WIDTH / 2 - 30, SCREEN_HEIGHT / 2 + (i * 30)+15, 15, 0x00ff00, true);
 			//çÄñ⁄ÇÃï`âÊ
-			DrawFormatString(menu_loc .x-1, menu_loc.y + (i * menu_size.y)-1, GetColor(227 + abs(((int)frame % 56 - 28)), 200,0), "%s", item_text[i]);
+			DrawFormatString(menu_loc .x-5, menu_loc.y + (i * menu_size.y)-5, GetColor(227 + abs(((int)frame % 56 - 28)), 200,0), "%s", item_text[i]);
 		}
 		//çÄñ⁄ÇÃÇ›ÇÃï`âÊ
 		else

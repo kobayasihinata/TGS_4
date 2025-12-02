@@ -101,10 +101,11 @@ void Boss2::Update()
 	{
 		//移動
 		Move();
+
+		//弾発射関連処理
+		Bullet();
 	}
 
-	//弾発射関連処理
-	Bullet();
 
 	//アニメーション
 	Animation();

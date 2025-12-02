@@ -45,6 +45,7 @@ void Tutorial::Initialize()
 
 	ResourceManager* rm = ResourceManager::GetInstance();
 	charge_se = rm->GetSounds("Resource/Sounds/charge.mp3");
+	nice_se = rm->GetSounds("Resource/Sounds/Direction/成功音.mp3");
 }
 
 void Tutorial::Update()
@@ -151,7 +152,7 @@ void Tutorial::InitTuto(TutoType _type)
 	case TutoType::tRule:
 		//テキスト量に合った大きさの箱画像を生成
 		text_box_loc = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 150 };
-		text_box_size = { 450, 150 };
+		text_box_size = { 600, 200 };
 		GenerateTextBox(text_box_size);
 		//表示中にゲームを停止状態に
 		tuto_stop_flg = true;
@@ -159,13 +160,13 @@ void Tutorial::InitTuto(TutoType _type)
 		break;
 	case TutoType::tMove:
 		text_box_loc = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 150 };
-		text_box_size = { 450, 150 };
+		text_box_size = { 600, 200 };
 		timer = 240;
 		break;
 	case TutoType::tAim:
 		//テキスト量に合った大きさの箱画像を生成
 		text_box_loc = { SCREEN_WIDTH / 2, 100 };
-		text_box_size = { 450, 200 };
+		text_box_size = { 700, 250 };
 		GenerateTextBox(text_box_size);
 		//表示中にゲームを停止状態に
 		tuto_stop_flg = true;
@@ -174,7 +175,7 @@ void Tutorial::InitTuto(TutoType _type)
 		break;
 	case TutoType::tAttack:
 		text_box_loc = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 150 };
-		text_box_size = { 375, 150 };
+		text_box_size = { 575, 150 };
 		GenerateTextBox(text_box_size);
 		tuto_stop_flg = true;
 		timer = 180;
@@ -344,14 +345,14 @@ void Tutorial::UpdateTimeTuto()
 
 void Tutorial::DrawRule()const
 {
-	SetFontSize(36);
+	SetFontSize(48);
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha - 150);
 	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, TRUE);
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha);
 	DrawGraph(text_box_loc.x - text_box_size.x / 2, text_box_loc.y - text_box_size.y / 2, generate_text_box, TRUE);
-	UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y - 50 }, "ルール説明", 0xffffff);
-	SetFontSize(48);
-	DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 20, "ひたすらコインを稼げ！", 0xeeeeee);
+	UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y - 70 }, "ルール説明", 0xffffff);
+	SetFontSize(64);
+	UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y - 30 }, "ひたすらコインを稼げ！", 0xeeeeee);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 }
 
@@ -368,10 +369,10 @@ void Tutorial::UpdateMove()
 }
 void Tutorial::DrawMove()const
 {
-	SetFontSize(36);
+	SetFontSize(64);
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha);
 	UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y - 50 }, "左スティック：移動", 0xffffff);
-	DrawRotaGraphF(text_box_loc.x, text_box_loc.y + 50, 1.f, 0, UserData::button_image[1][l_stick[stick_anim]], TRUE);
+	DrawRotaGraphF(text_box_loc.x, text_box_loc.y + 50, 1.5f, 0, UserData::button_image[1][l_stick[stick_anim]], TRUE);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 }
 
@@ -416,6 +417,7 @@ void Tutorial::UpdateAim()
 			{
 				aim_success_flg = true;
 				aim_timer = 0;
+				ResourceManager::rPlaySound(nice_se, DX_PLAYTYPE_BACK);
 			}
 			if (!CheckSoundMem(charge_se))
 			{
@@ -449,53 +451,58 @@ void Tutorial::UpdateAim()
 void Tutorial::DrawAim()const
 {
 	Vector2D obj_loc = tuto_object->GetLocalLocation();
+	Vector2D obj_size = { 100,20 };
+	int obj_shift = 30;
+
 	//説明のテキストボックス
 	if (timer > 0)
 	{
-		SetFontSize(36);
 		//SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha - 150);
 		//DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x000000, TRUE);
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha);
 		DrawGraph(text_box_loc.x - text_box_size.x/2, text_box_loc.y - text_box_size.y / 2, generate_text_box, TRUE);
-		SetFontSize(48);
-		DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 20, "敵に照準を合わせよう", 0xffffff);
+		SetFontSize(64);
+		UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y - 50 }, "敵に照準を合わせよう", 0xffffff);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 	}
 	//実践のターゲット
 	else
 	{
+		SetFontSize(64);
 		UserData::DrawStringCenter({SCREEN_WIDTH/2,SCREEN_HEIGHT/2 - 200 }, "右スティック：照準", 0xffffff);
-		DrawRotaGraphF(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 100, 1.f, 0, UserData::button_image[1][r_stick[stick_anim]], TRUE);
+		DrawRotaGraphF(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 100, 1.5f, 0, UserData::button_image[1][r_stick[stick_anim]], TRUE);
 		//照準
 		if (aim_timer > 0)
 		{
-			DrawBoxAA(obj_loc.x - 30,
-				obj_loc.y       - 70,
-				obj_loc.x       - 30 + (50.f / 30) * (aim_timer % 30),
-				obj_loc.y       - 40,
+			DrawBoxAA(obj_loc.x - (obj_size.x/2),
+				obj_loc.y - (obj_size.y / 2) - obj_shift,
+				obj_loc.x - (obj_size.x/2) + (obj_size.x / 30) * (aim_timer % 30),
+				obj_loc.y + (obj_size.y / 2) - obj_shift,
 				0xffaa00, TRUE);
-			DrawBoxAA(obj_loc.x - 30,
-				obj_loc.y       - 70,
-				obj_loc.x       + 30,
-				obj_loc.y       - 40,
+			DrawBoxAA(obj_loc.x - (obj_size.x / 2),
+				obj_loc.y - (obj_size.y / 2) - obj_shift,
+				obj_loc.x + (obj_size.x / 2),
+				obj_loc.y +(obj_size.y / 2) - obj_shift,
 				0xffffff, FALSE);
-			DrawFormatString(obj_loc.x + 1, obj_loc.y - 79, 0x000000, "%d", 3 - (aim_timer / 30));
-			DrawFormatString(obj_loc.x, obj_loc.y - 80, 0xff0000, "%d", 3 - (aim_timer / 30));
+			SetFontSize(32);
+			DrawFormatString(obj_loc.x - (GetDrawFormatStringWidth("%d", 3 - (aim_timer / 30)) / 2) + 2, obj_loc.y - 50 + 2, 0x000000, "%d", 3 - (aim_timer / 30));
+			DrawFormatString(obj_loc.x - (GetDrawFormatStringWidth("%d", 3 - (aim_timer / 30)) / 2), obj_loc.y - 50, 0xff0000, "%d", 3 - (aim_timer / 30));
 		}
 		//照準合わせ成功描画
 		if (aim_success_flg)
 		{
-			DrawBoxAA(obj_loc.x - 30,
-				obj_loc.y - 70,
-				obj_loc.x + 30,
-				obj_loc.y - 40,
+			DrawBoxAA(obj_loc.x - (obj_size.x / 2),
+				obj_loc.y - (obj_size.y / 2) - obj_shift,
+				obj_loc.x + (obj_size.x / 2),
+				obj_loc.y + (obj_size.y / 2) - obj_shift,
 				0xffaa00, TRUE);
-			DrawBoxAA(obj_loc.x - 30,
-				obj_loc.y - 70,
-				obj_loc.x + 30,
-				obj_loc.y - 40,
+			DrawBoxAA(obj_loc.x - (obj_size.x / 2),
+				obj_loc.y - (obj_size.y / 2) - obj_shift,
+				obj_loc.x + (obj_size.x / 2),
+				obj_loc.y + (obj_size.y / 2) - obj_shift,
 				0xffffff, FALSE);
-			DrawString(obj_loc.x - 30, obj_loc.y - 80, "nice!", aim_success_timer % 30 > 15 ? 0xaaaa00 : 0xffff00);
+			SetFontSize(32);
+			DrawString(obj_loc.x - GetDrawStringWidth("nice!",strlen("nice!"))/2, obj_loc.y - 50, "nice!", aim_success_timer % 30 > 15 ? 0xaaaa00 : 0xffff00);
 		}
 	}
 }
@@ -543,6 +550,7 @@ void Tutorial::UpdateAttack()
 		//敵が死んでいたら成功描画手順
 		else {
 			attack_sequence = 2;
+			ResourceManager::rPlaySound(nice_se, DX_PLAYTYPE_BACK);
 		}
 		break;
 
@@ -577,6 +585,7 @@ void Tutorial::UpdateAttack()
 		break;
 	}
 }
+
 void Tutorial::DrawAttack()const
 {
 	switch (attack_sequence)
@@ -587,26 +596,27 @@ void Tutorial::DrawAttack()const
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha);
 		DrawGraph(text_box_loc.x - text_box_size.x / 2, text_box_loc.y - text_box_size.y / 2, generate_text_box, TRUE);
 		
-		SetFontSize(48);
-		DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 60, "コインを飛ばして", 0xffffff);
-		DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 10, "    敵を攻撃！", timer % 30 > 15 ? 0xffffff : 0xff0000);
+		SetFontSize(64);
+		UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y - 70 }, "コインを飛ばして", 0xffffff);
+		UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y - 20 }, "敵を攻撃！", timer % 30 > 15 ? 0xffffff : 0xff0000);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 		break;
 	case 1:	//実践
-		SetFontSize(36);
+		SetFontSize(64);
 		if (UserData::control_type == 0) {
 			UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y - 50 }, "LB、RBボタン：攻撃", 0xffffff);
-			DrawRotaGraphF(text_box_loc.x - 40, text_box_loc.y + 50, 1.f, 0, UserData::button_image[button_anim][XINPUT_BUTTON_LEFT_SHOULDER], TRUE);
-			DrawRotaGraphF(text_box_loc.x + 40, text_box_loc.y + 50, 1.f, 0, UserData::button_image[button_anim][XINPUT_BUTTON_RIGHT_SHOULDER], TRUE);
+			DrawRotaGraphF(text_box_loc.x - 40, text_box_loc.y + 50, 1.5f, 0, UserData::button_image[button_anim][XINPUT_BUTTON_LEFT_SHOULDER], TRUE);
+			DrawRotaGraphF(text_box_loc.x + 40, text_box_loc.y + 50, 1.5f, 0, UserData::button_image[button_anim][XINPUT_BUTTON_RIGHT_SHOULDER], TRUE);
 		}
 		else if (UserData::control_type == 1)
 		{
 			UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y - 50 }, "Bボタン：攻撃", 0xffffff);
-			DrawRotaGraphF(text_box_loc.x - 20, text_box_loc.y + 50, 1.f, 0, UserData::button_image[button_anim][XINPUT_BUTTON_B], TRUE);
+			DrawRotaGraphF(text_box_loc.x - 20, text_box_loc.y + 50, 1.5f, 0, UserData::button_image[button_anim][XINPUT_BUTTON_B], TRUE);
 		}
 
 		break;
 	case 2:	//成功描画手順
+		SetFontSize(48);
 		DrawString(enemy_loc.x - camera->GetCameraLocation().x - 25, enemy_loc.y - camera->GetCameraLocation().y - 70, "nice!", attack_success_timer % 30 > 15 ? 0xaaaa00 : 0xff4400);
 		break;
 	case 3: //基本操作説明完了
@@ -615,8 +625,8 @@ void Tutorial::DrawAttack()const
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha);
 		DrawGraph(text_box_loc.x - text_box_size.x / 2, text_box_loc.y - text_box_size.y / 2, generate_text_box, TRUE);
 		
-		SetFontSize(48);
-		DrawString(text_box_loc.x - (text_box_size.x / 2) + 10, text_box_loc.y - 30, "撃って倒して稼げ！", 0xffffff);
+		SetFontSize(64);
+		UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y - 50 }, "撃って倒して稼げ！", 0xffffff);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 		break;
 	}
