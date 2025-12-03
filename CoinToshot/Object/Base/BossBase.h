@@ -4,6 +4,7 @@
 #include <vector>
 
 #define BOSS_ANIM 180	//登場アニメーション時間
+
 class BossBase :
 	public ActorBase
 {
@@ -14,12 +15,16 @@ protected:
 
 	bool anim_once;			//一回だけ実行
 	bool anim_flg;			//登場アニメーション中か
-	int boss_anim_timer;			//登場アニメーション時間測定
+	bool anim_impact_flg;	//登場演出を始めるか
+	int boss_anim_timer;	//登場アニメーション時間測定
 
 	std::vector<int> aura_image;	//ボスオーラ画像
 	int now_aura_image;				//オーラ画像表示位置
-	int death_se;			//死亡時SE
-	int item_spawn_se;		//アイテム生成SE
+	int waves_image;				//波動画像格納
+	int boss_gauss_image;			//ボスぼかし画像保存
+
+	int death_se;					//死亡時SE
+	int item_spawn_se;				//アイテム生成SE
 
 public:
 
@@ -31,11 +36,14 @@ public:
 		hit_damage = 0;
 		anim_once = false;
 		anim_flg = true;	//生成された瞬間にアニメーションが開始するので真
+		anim_impact_flg = false;
 		boss_anim_timer = 0;
 		drop_coin = 0;
 		drop_coin_count = 0;
 		death_se = 0;
-
+		waves_image = MakeScreen(100, 100, true);
+		boss_gauss_image = 0;
+		MakeDrawWaves();
 		//SE読み込み
 		ResourceManager* rm = ResourceManager::GetInstance();
 		std::vector<int>tmp;
@@ -57,6 +65,7 @@ public:
 		if (anim_flg && ++boss_anim_timer > BOSS_ANIM)
 		{
 			anim_flg = false;
+			anim_impact_flg = false;
 		}
 		//オーラ更新
 		if (frame % 5 == 0)
@@ -66,6 +75,7 @@ public:
 				now_aura_image = 0;
 			}
 		}
+		boss_gauss_image = image;
 	}
 
 	virtual void Draw()const override
@@ -82,6 +92,15 @@ public:
 			{
 				DrawRotaGraphF(local_location.x, local_location.y, box_size.x / 40, 0, image, true, true);
 			}
+		}
+		if (anim_impact_flg)
+		{
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200 - ((200.f/10.f)* (frame % 10)));
+			DrawRotaGraphF(local_location.x, local_location.y, (box_size.x + pow(frame % 10,3)) / 40 , 0, boss_gauss_image, true, false);
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+			DrawWaves(local_location, powf(frame % 30, 2)*2);
+			DrawWaves(local_location, powf((frame -10) % 30, 2)*2);
+			DrawWaves(local_location, powf((frame -20) % 30, 2)*2);
 		}
 #ifdef _DEBUG
 		//当たり判定の描画
@@ -116,6 +135,7 @@ public:
 
 	}
 
+	//移動処理
 	void Move()override
 	{
 		//減速の実行
@@ -126,6 +146,7 @@ public:
 		//移動の実行
 		location += velocity;
 	}
+
 	//プレイヤーに向かって移動する
 	void MovetoPlayer()
 	{
@@ -143,4 +164,19 @@ public:
 		}
 	}
 
+	//波動生成
+	void MakeDrawWaves()
+	{
+		SetDrawScreen(waves_image);
+		ClearDrawScreen();
+		DrawCircle(50, 50, 48, 0xffffff, false);
+		SetDrawScreen(DX_SCREEN_BACK);
+		GraphFilter(waves_image, DX_GRAPH_FILTER_GAUSS, 8, 300);
+	}
+
+	//波動描画 _loc=中心座標 _size=大きさ
+	void DrawWaves(Vector2D _loc, float _size)const
+	{
+		DrawRotaGraphF(_loc.x, _loc.y, _size / 100, 0.f, waves_image, true);
+	}
 };

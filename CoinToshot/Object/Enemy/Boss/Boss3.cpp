@@ -37,6 +37,8 @@ void Boss3::Initialize(ObjectManager* _manager, int _object_type, Vector2D init_
 	time_count_flg = true;	//ボスのレベルが最大でない内は生存時間を測定する
 	survival_time = 0;
 	strength_level = 0;
+	strength_up_anim = false;
+	strength_up_timer = 0;
 	boss_speed[0] = BOSS3_SPEED;
 	boss_speed[1] = BOSS3_SPEED * 1.5;
 	boss_speed[2] = BOSS3_SPEED * 2;
@@ -71,6 +73,7 @@ void Boss3::Finalize()
 	boss3_once = false;
 	UserData::boss_coin = 0;
 	anim_once = false;
+	boss_anim_timer = 0;
 }
 
 void Boss3::Update()
@@ -95,10 +98,14 @@ void Boss3::Update()
 	//強さの更新
 	UpdateStrength();
 
-
+	//波動の演出を開始
+	if (anim_flg && boss_anim_timer > BOSS3_ANIM_IMPACT)
+	{
+		anim_impact_flg = true;
+	}
 
 	//死亡していなければこの処理
-	if (!death_flg && !anim_flg && !boss_stop_flg)
+	if (!death_flg && !anim_flg && !boss_stop_flg && !strength_up_anim)
 	{
 		//少しでも移動していたら表示アニメーションを変える
 		if (image_line != 2)
@@ -115,6 +122,29 @@ void Boss3::Update()
 		//移動
 		Move();
 	}
+
+	//ボス強化演出
+	if (strength_up_anim)
+	{
+		if ((strength_level == 1 && box_size < 80) ||
+			(strength_level == 2 && box_size < 120))
+		{
+			box_size += 0.4f;
+		}
+		else
+		{
+			anim_impact_flg = true;
+		}
+		if (++strength_up_timer > BOSS_POWERUP_ANIM)
+		{
+			strength_up_timer = 0;
+			strength_up_anim = false;
+			anim_impact_flg = false;
+			can_shot = true;
+		}
+		image_line = 0;
+	}
+
 	//アニメーション
 	Animation();
 
@@ -511,13 +541,19 @@ void Boss3::SetStrength(int _level)
 			anim_span = 3;
 			break;
 		case 1:
-			box_size = { 60,60 };
 			anim_span = 2;
+			ingame->StartBlackOut(60);
+			ingame->SetBossSpawnAnim(this, this->location, BOSS_POWERUP_ANIM);
+			strength_up_anim = true;
+			can_shot = false;
 			break;
 		case 2:
 			player_distance = BOSS3_PLAYER_DISTANCE / 2;
-			box_size = { 100,100 };
 			anim_span = 1;
+			ingame->StartBlackOut(60);
+			ingame->SetBossSpawnAnim(this, this->location, BOSS_POWERUP_ANIM);
+			strength_up_anim = true;
+			can_shot = false;
 			break;
 		default:
 			break;

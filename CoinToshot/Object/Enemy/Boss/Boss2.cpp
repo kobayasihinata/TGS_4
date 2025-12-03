@@ -105,6 +105,14 @@ void Boss2::Update()
 		//弾発射関連処理
 		Bullet();
 	}
+	else
+	{
+		//波動の演出を開始
+		if (boss_anim_timer > BOSS2_ANIM_IMPACT)
+		{
+			anim_impact_flg = true;
+		}
+	}
 
 
 	//アニメーション

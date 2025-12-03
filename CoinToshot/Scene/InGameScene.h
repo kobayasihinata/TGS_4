@@ -22,9 +22,9 @@
 #define TIME_BONUS 60	//文字表示時間
 
 //ボス出現タイミング
-#define BOSS1_SPAWN 290
+#define BOSS1_SPAWN 200
 #define BOSS2_SPAWN 125
-#define BOSS3_SPAWN 50
+#define BOSS3_SPAWN 295//50
 
 #define BOSS_BGM_FADE 120	//ボスBGMフェード時間
 
@@ -42,6 +42,7 @@ static int pause_menu_size[PAUSE_MENU_NUM]
 	240,
 	192,
 };
+
 class InGameScene : public SceneBase
 {
 private:

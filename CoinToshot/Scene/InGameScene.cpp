@@ -93,6 +93,7 @@ void InGameScene::Initialize()
 
 	//チュートリアルが完了していないなら初期コインは0枚、しているなら20枚
 	UserData::coin = tutorial->GetBasicTuto() ? 20 : 0;
+	//UserData::coin = 1000;
 
 	//オブジェクト管理クラス生成
 	objects = new ObjectManager();
@@ -850,11 +851,18 @@ void InGameScene::SpawnEnemy()
 		}
 	}
 
+	//ボスのスポーン前に暗転を始める
+	if (UserData::timer == BOSS1_SPAWN * 60 + 90 ||
+		UserData::timer == BOSS2_SPAWN * 60 + 90 || 
+		UserData::timer == BOSS3_SPAWN * 60 + 90)
+	{
+		StartBlackOut(120);
+	}
+
 	//指定の時間にボスをスポーン
 	if (!boss_spawn_once[0] && (UserData::timer / 60) == BOSS1_SPAWN)
 	{
 		objects->CreateObject({ {-1000,0}, Vector2D{BOSS1_WIDTH,BOSS1_HEIGHT}, eBOSS1});
-		StartBlackOut(120);
 		boss_spawn_once[0] = true;
 	}
 	if (!boss_spawn_once[1] && (UserData::timer / 60) == BOSS2_SPAWN)

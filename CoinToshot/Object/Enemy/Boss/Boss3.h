@@ -3,6 +3,8 @@
 #include "../../Base/BulletData.h"
 #include "../../Player/PlayerBullet.h"
 
+#define BOSS_POWERUP_ANIM 180	//登場アニメーション時間
+
 #define MAX_LEVEL 2		//最大レベル
 
 //弾のデータ
@@ -12,7 +14,7 @@ static PlayerBullet bBullet[BULLET_NUM]
 	{"通常弾",   1,	 1.f, 10.f, 20.f,   1,  120,  1,  1,    0,{100,100,100}},
 	{"拡散弾",   5,  2.f, 10.f, 20.f,   1,   30, 20,  5, 0.3f,{  0,100,100}},
 	{"強化弾",  10,  3.f, 15.f, 30.f,   5,  180, 10,  1,    0,{100, 60,  0}},
-	{"追尾弾",  10,  1.f,  2.f, 15.f,  13,  600, 30,  1,    0,{100,  0,100}},
+	{"追尾弾",  10,  1.f,  4.f, 15.f,  13,  600, 30,  1,    0,{100,  0,100}},
 	{"爆発弾",  30,  3.f, 10.f, 10.f, 100,   20, 40,  1,	0,{100,  0,  0}},
 	{"最強弾", 100, 20.f, 25.f, 40.f, 100,  360,180,  1,    0,{255,255,255}},
 };
@@ -44,11 +46,13 @@ private:
 	int collect_timer;	//コイン収集時間測定
 	bool boss_stop_flg;	//歩くのをやめるか
 
-	bool time_count_flg;//生きている時間の測定をするかどうか
-	int survival_time;	//ボスの生きている時間（レベルが上がったらリセット）
-	int strength_level;	//ボスの強さ
-	float boss_speed[3];//強さごとのボスの速さ
-	int player_distance;//プレイヤーとの距離の基準値
+	bool time_count_flg;	//生きている時間の測定をするかどうか
+	int survival_time;		//ボスの生きている時間（レベルが上がったらリセット）
+	int strength_level;		//ボスの強さ
+	float boss_speed[3];	//強さごとのボスの速さ
+	int player_distance;	//プレイヤーとの距離の基準値
+	bool strength_up_anim;	//敵強化演出
+	int strength_up_timer; //敵強化測定
 
 	//攻撃発射関連
 	int bullet_type;	//弾種類

@@ -92,6 +92,11 @@ void Boss1::Update()
 		{
 			image_line = 1;
 		}
+		//波動の演出を開始
+		if (boss_anim_timer > BOSS1_ANIM_IMPACT)
+		{
+			anim_impact_flg = true;
+		}
 	}
 
 	//アニメーション

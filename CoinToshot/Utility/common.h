@@ -95,6 +95,7 @@
 #define BOSS1_SPEED 1.f				//ボス１速度
 #define BOSS1_DAMAGE 2				//ボス１与ダメ
 #define BOSS1_DROPCOIN 100			//ボス１コインドロップ量
+#define BOSS1_ANIM_IMPACT 120		//ボス１アニメーション時の衝撃再生時間
 
 #define BOSS2_HP 80					//ボス２HP
 #define BOSS2_WIDTH 100				//ボス２幅
@@ -106,6 +107,7 @@
 #define BOSS2_ATTACK_LIMIT 500		//ボス２弾残留時間
 #define BOSS2_PLAYER_DISTANCE 400	//ボス２プレイヤーとの間合い
 #define BOSS2_DROPCOIN 130			//ボス２コインドロップ量
+#define BOSS2_ANIM_IMPACT 60		//ボス２アニメーション時の衝撃再生時間
 
 #define BOSS3_HP 100				//ボス３HP
 #define BOSS3_WIDTH 40				//ボス３幅
@@ -116,6 +118,7 @@
 #define BOSS3_PLAYER_DISTANCE2 800	//ボス３プレイヤーとどれくらい離れたら加速するか
 #define BOSS3_POWERUP_TIME 3600		//ボス３強化されるまでの時間
 #define BOSS3_DROPCOIN 100			//ボス３コインドロップ量
+#define BOSS3_ANIM_IMPACT 60		//ボス３アニメーション時の衝撃再生時間
 
 //音の減衰関連 SA:減衰の開始距離(StartAttenuation) SD:どこまで聞こえるか(SoundDistance)
 
