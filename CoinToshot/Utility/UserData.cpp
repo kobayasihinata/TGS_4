@@ -59,7 +59,7 @@ void UserData::LoadButtonImage()
 	coin_image = MakeScreen(40, 40, TRUE);
 	SetDrawScreen(coin_image);
 	ClearDrawScreen();
-	UserData::DrawCoin({ 19,19 }, 20);
+	UserData::DrawCoin({ 20,20 }, 19);
 	SetDrawScreen(DX_SCREEN_BACK);
 	//Še•Ï”‰Šú‰»
 	frame = 0;
