@@ -593,3 +593,66 @@ void UserData::DrawLightReflection(Vector2D _loc, Vector2D _size, int _max_time,
 		_color, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 }
+
+int UserData::GetColorGradation(int _num)
+{
+	//1530を上回ったら0に戻す（色が一周する）
+	int num = _num % 1530;
+	//RGB単位で分けて計算した結果を格納
+	int color[3] = { 255,0,0 };
+	
+	//赤の計算
+	if (_num < 255 || _num >= 1275)
+	{
+		color[0] = 255;
+	}
+	else if (_num >= 255 && _num < 510)
+	{
+		color[0] = 255 - _num % 255;
+	}
+	else if(_num >= 510 && _num < 1020)
+	{
+		color[0] = 0;
+	}
+	else if(_num >= 1020 && _num < 1275)
+	{
+		color[0] = _num % 255;
+	}
+
+	//緑の計算
+	if (_num < 255)
+	{
+		color[1] = _num % 255;
+	}
+	else if (_num >= 255 && _num < 765)
+	{
+		color[1] = 255;
+	}
+	else if (_num >= 765 && _num < 1020)
+	{
+		color[1] = 255 - _num % 255;
+	}
+	else
+	{
+		color[1] = 0;
+	}
+
+	//青の計算
+	if (_num < 510)
+	{
+		color[2] = 0;
+	}
+	else if (_num >= 510 && _num < 765)
+	{
+		color[2] = _num % 255;
+	}
+	else if (_num >= 765 && _num < 1275)
+	{
+		color[2] = 255;
+	}
+	else
+	{
+		color[2] = 255 - _num % 255;
+	}
+	return GetColorHex(color);
+}

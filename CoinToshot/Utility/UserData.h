@@ -157,5 +157,10 @@ public:
 	/// <param name="_timer">現在のアニメーション時間</param>
 	/// <param name="color">光の色</param>
 	static void DrawLightReflection(Vector2D _loc, Vector2D _size,int _max_time, int _timer, int color);
+
+	//色をグラデーションで並べ、引数に対応する位置の色を16進数で返す
+	static int GetColorGradation(int _num);
+
+	//static void DrawGradationBox(Vector2D _loc,Vector2D _size,int )
 };
 

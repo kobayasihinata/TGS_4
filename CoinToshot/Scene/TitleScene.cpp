@@ -207,15 +207,6 @@ void TitleScene::Draw()const
 {	
 	//背景画像描画
 	DrawGraph(0, 0, bg_image, TRUE);
-	
-	//色
-	for (int i = 0; i < 255; i++)
-	{
-		for (int j = 0; j < 255; j++)
-		{
-			DrawPixel(100 + i, 200 + j, GetColor(i, j, (int)frame % 255));
-		}
-	}
 
 	//タイトル文字
 	SetFontSize(184);

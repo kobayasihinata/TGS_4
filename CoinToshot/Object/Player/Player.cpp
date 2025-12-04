@@ -315,7 +315,7 @@ void Player::Draw()const
 	{
 		for (int i = 0; i < 5; i++)
 		{
-			DrawCircleAA(local_location.x, local_location.y, -frame * i % 60, 30, 0x00ffff, false);
+			DrawCircleAA(local_location.x, local_location.y, -frame * i % 60, 30, UserData::GetColorGradation((frame * 20) % 1530), false);
 		}
 	}
 
@@ -381,19 +381,6 @@ void Player::Draw()const
 				0xffffff,
 				false
 			);
-			////HPƒQ[ƒWŒÀŠE“Ë”jŒ©‚½–Ú
-			//if (UserData::player_hp > DEFAULT_HP)
-			//{
-			//	for (int i = 0; i < UserData::player_hp - DEFAULT_HP; i++)
-			//	{
-			//		DrawBoxAA(local_location.x + (HPBAR_WIDTH / 2) + (i * 5),
-			//			local_location.y - (box_size.y / 2) - 9,
-			//			local_location.x + (HPBAR_WIDTH / 2) + 5 + (i * 5),
-			//			local_location.y - (box_size.y / 2) - 1,
-			//			color[i % 7], true);
-			//	}
-			//}
-
 		}
 		//HPƒsƒ“ƒ`•\Ž¦
 		if (hp <= 3)

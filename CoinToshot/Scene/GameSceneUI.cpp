@@ -354,7 +354,7 @@ void GameSceneUI::Draw()const
 			camera->player_location.y - camera->GetCameraLocation().y - 20,
 			camera->player_location.x - camera->GetCameraLocation().x + max_attraction / 20 - ((max_attraction - UserData::attraction_timer)/10),
 			camera->player_location.y - camera->GetCameraLocation().y - 10,
-			0x00ffff, true);
+			UserData::GetColorGradation((frame*20)%1530), true);
 		DrawBox(camera->player_location.x - camera->GetCameraLocation().x - max_attraction / 20,
 			camera->player_location.y - camera->GetCameraLocation().y - 20,
 			camera->player_location.x - camera->GetCameraLocation().x + max_attraction / 20,
