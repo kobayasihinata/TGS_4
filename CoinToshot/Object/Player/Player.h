@@ -50,6 +50,8 @@ private:
 	int death_se;				//死亡SE
 	int bullet_change_se;		//弾変更SE
 	int danger_se;				//危険SE
+
+
 public:
 	static InGameScene* ingame;		//現在のシーンのポインタを保存
 	static bool player_once;		//プレイヤー生成を一回だけにする
