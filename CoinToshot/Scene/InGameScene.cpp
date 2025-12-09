@@ -92,7 +92,7 @@ void InGameScene::Initialize()
 	blackout_alpha = 0;
 
 	//チュートリアルが完了していないなら初期コインは0枚、しているなら20枚
-	UserData::coin = tutorial->GetBasicTuto() ? 20 : 0;
+	UserData::coin = tutorial->GetBasicTuto() ? DEFAULT_COIN : 0;
 	//UserData::coin = 1000;
 
 	//オブジェクト管理クラス生成
@@ -108,7 +108,7 @@ void InGameScene::Initialize()
 
 
 	objects->CreateObject({ {-1000,-1000},{100,100},eSLOT});
-	objects->CreateObject({ {1000,1000},{100,100},eSLOT});
+	objects->CreateObject({ 100/*{1000,1000}*/,{100,100},eSLOT});
 	objects->CreateObject({ {-1000,1000},{160,120},eSHOP});
 	objects->CreateObject({ {1000,-1000},{160,120},eSHOP});
 	objects->CreateObject({ Vector2D{ 200, 30},Vector2D{40,40},eCOIN, 20.f});

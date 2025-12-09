@@ -23,6 +23,9 @@ Slot::Slot(InGameScene* _ingame)
 		reel[i] = -1;
 		now_reel[i] = 0;
 	}
+	pay_flg = false;
+	pay_num = 0;
+	pay_count = 0;
 	real_location = 0;
 	real_size = { 120.f,100.f };
 	hana_location = 0;
@@ -103,7 +106,7 @@ void Slot::Update()
 	}
 
 	//７が揃ったらメダルを出す
-	if (CheckBigBonus())
+	if (CheckStraightLine(7))
 	{
 		if (!bonus_se_play_once)
 		{
@@ -122,6 +125,29 @@ void Slot::Update()
 				20.f,
 				rand);
 			drop_coin_count++;
+		}
+	}
+
+	//７以外の数字が揃っていたら対応するコインを出す
+	if (pay_flg)
+	{
+		if (frame % 10 == 0 && pay_count < pay_num)
+		{
+			Vector2D rand = { (float)(GetRand(40) - 20),(float)(GetRand(40) - 20) };
+			manager->CreateObject(
+				eCOIN,
+				this->location + rand,
+				Vector2D{ 40, 40 },
+				20.f,
+				rand);
+			//SEを再生
+			ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
+			pay_count++;
+		}
+		if (pay_count >= pay_num)
+		{
+			pay_flg = false;
+			pay_num = 0;
 		}
 	}
 }
@@ -246,9 +272,9 @@ void Slot::AutoPlay()
 	if (stop_reel_num < 3)
 	{
 		if (++timer > 300)
-			{
-				timer = 0;
-			}
+		{
+			timer = 0;
+		}
 		if (timer % 5 == 0)
 		{
 			for (int i = 0; i < 3; i++)
@@ -260,60 +286,87 @@ void Slot::AutoPlay()
 				}
 			}
 		}
-		if (reel_wait >= (REEL_WAIT / 4) && reel[0] == -1)
+		//子役フラグが立っていたら、その数字に合わせる
+		if (pay_num > 0 && pay_num < 10)
+		{
+			for (int i = 0; i < 3; i++)
 			{
-				//ペカっていなくて７が揃ったらずらす
-				if (CheckBigBonus())
+				if (reel_wait >= (REEL_WAIT / 4)*(i+1) && reel[i] == -1 && ReelArray[i][now_reel[i]] == pay_num)
 				{
-					reel[0] = ReelArray[0][now_reel[0] - 1];
+					reel[i] = now_reel[i];
+					//SEを再生
+					ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
 				}
-				else
-				{
-					reel[0] = now_reel[0];
-				}
-				//SEを再生
-				ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
 			}
-		if (reel_wait >= (REEL_WAIT / 4) * 2 && reel[1] == -1)
+		}
+		else
+		{
+			for (int i = 0; i < 3; i++)
 			{
-				//ペカっていなくて７が揃ったらずらす
-				if (CheckBigBonus())
+				if (reel_wait >= (REEL_WAIT / 4) * (i + 1) && reel[i] == -1)
 				{
-					reel[1] = ReelArray[1][now_reel[1] - 1];
+					//ペカっていなくて７が揃ったらずらす
+					if (CheckStraightLine(7))
+					{
+						reel[i] = ReelArray[i][now_reel[i] - 1];
+					}
+					else
+					{
+						reel[i] = now_reel[i];
+					}
+					//SEを再生
+					ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
 				}
-				else
-				{
-					reel[1] = now_reel[1];
-				}
-				//SEを再生
-				ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
 			}
-		if (reel_wait >= (REEL_WAIT / 4) * 3 && reel[2] == -1)
-			{
-				//ペカっていなくて７が揃ったらずらす
-				if (CheckBigBonus())
-				{
-					reel[2] = ReelArray[2][now_reel[2] - 1];
-				}
-				else
-				{
-					reel[2] = now_reel[2];
-				}
-				//SEを再生
-				ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
-			}
+			//if (reel_wait >= (REEL_WAIT / 4) * 2 && reel[1] == -1)
+			//{
+			//	//ペカっていなくて７が揃ったらずらす
+			//	if (CheckStraightLine(7))
+			//	{
+			//		reel[1] = ReelArray[1][now_reel[1] - 1];
+			//	}
+			//	else
+			//	{
+			//		reel[1] = now_reel[1];
+			//	}
+			//	//SEを再生
+			//	ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
+			//}
+			//if (reel_wait >= (REEL_WAIT / 4) * 3 && reel[2] == -1)
+			//{
+			//	//ペカっていなくて７が揃ったらずらす
+			//	if (CheckStraightLine(7))
+			//	{
+			//		reel[2] = ReelArray[2][now_reel[2] - 1];
+			//	}
+			//	else
+			//	{
+			//		reel[2] = now_reel[2];
+			//	}
+			//	//SEを再生
+			//	ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
+			//}
+		}
 	}
-
+	else
+	{
+		if (reel[0] != -1 && reel[0] == reel[1] && reel[0]== reel[2])
+		{
+			pay_flg = true;
+			pay_num = reel[0];
+		}
+	}
 	//リセット
 	stop_reel_num = 0;
 	//停止しているリールの数を数える
 	for (int i = 0; i < 3; i++)
+	{
+		if (reel[i] != -1)
 		{
-			if (reel[i] != -1)
-			{
-				stop_reel_num++;
-			}
+			stop_reel_num++;
 		}
+	}
+
 	//全リール止まっているなら一定時間待ってリセット
 	if (stop_reel_num == 3 && reel_wait > REEL_WAIT)
 	{
@@ -323,10 +376,20 @@ void Slot::AutoPlay()
 			reel[i] = -1;
 		}
 		//指定の確率でペカる
-		if (GetRand(PEKA) == 0)
+		if (GetRand(PEKA - 1) == 0)
 		{
 			peka_flg = true;
 		}
+		//子役の抽選
+		if (!peka_flg && GetRand(BELL - 1) == 0)
+		{
+			//７以外になるまで繰り返す
+			do {
+				pay_num = GetRand(8);
+			} while (pay_num == 7);
+			pay_count = 0;
+		}
+
 		//プレイヤーが触れているか判断するフラグをリセット
 		can_stop = false;
 		//コイン消費フラグをリセット
@@ -342,9 +405,9 @@ void Slot::BonusStop()
 	if (stop_reel_num < 3)
 	{
 		if (++timer > 300)
-			{
-				timer = 0;
-			}
+		{
+			timer = 0;
+		}
 		if (timer % 5 == 0)
 		{
 			for (int i = 0; i < 3; i++)
@@ -359,13 +422,13 @@ void Slot::BonusStop()
 			{
 				//あと一つ下にずれたらBIGが揃うという状態なら、下にずらす
 				reel[0] = now_reel[0];
-				if (!CheckBigBonus())
+				if (!CheckStraightLine(7))
 				{
 					reel[0] -= 1;
-					if (!CheckBigBonus())
+					if (!CheckStraightLine(7))
 					{
 						reel[0] -= 1;
-						if (!CheckBigBonus())
+						if (!CheckStraightLine(7))
 						{
 							reel[0] += 2;
 						}
@@ -378,13 +441,13 @@ void Slot::BonusStop()
 			{
 				//あと一つ下にずれたらBIGが揃うという状態なら、下にずらす
 				reel[1] = now_reel[1];
-				if (!CheckBigBonus())
+				if (!CheckStraightLine(7))
 				{
 					reel[1] -= 1;
-					if (!CheckBigBonus())
+					if (!CheckStraightLine(7))
 					{
 						reel[1] -= 1;
-						if (!CheckBigBonus())
+						if (!CheckStraightLine(7))
 						{
 							reel[1] += 2;
 						}
@@ -397,13 +460,13 @@ void Slot::BonusStop()
 			{
 				//あと一つ下にずれたらBIGが揃うという状態なら、下にずらす
 				reel[2] = now_reel[2];
-				if (!CheckBigBonus())
+				if (!CheckStraightLine(7))
 				{
 					reel[2] -= 1;
-					if (!CheckBigBonus())
+					if (!CheckStraightLine(7))
 					{
 						reel[2] -= 1;
-						if (!CheckBigBonus())
+						if (!CheckStraightLine(7))
 						{
 							reel[2] += 2;
 						}
@@ -425,7 +488,7 @@ void Slot::BonusStop()
 		}
 	}
 	//BIGの払い出し中ならリールは回せない
-	if (!CheckBigBonus() || drop_coin_count >= drop_coin)
+	if (!CheckStraightLine(7) || drop_coin_count >= drop_coin)
 	{
 		//全リール止まっているなら一定時間経過後に右スティックでリール開始
 		if (stop_reel_num == 3 &&
@@ -433,7 +496,7 @@ void Slot::BonusStop()
 			(InputPad::OnButton(R_STICK_UP) || InputPad::OnButton(R_STICK_DOWN)))
 		{
 			//BIG当選していたらペカを消す
-			if (CheckBigBonus())
+			if (CheckStraightLine(7))
 			{
 				peka_flg = false;
 			}
@@ -488,28 +551,28 @@ bool Slot::CheckButton(int _button)
 	return false;
 }
 
-bool Slot::CheckBigBonus()const
+bool Slot::CheckStraightLine(int _check_num)const
 {
 	//横列を調べる
 	for (int i = -1; i < 2; i++)
 	{
-		if (ReelArray[0][reel[0] + i] == 7 &&
-			ReelArray[1][reel[1] + i] == 7 &&
-			ReelArray[2][reel[2] + i] == 7)
+		if (ReelArray[0][reel[0] + i] == _check_num &&
+			ReelArray[1][reel[1] + i] == _check_num &&
+			ReelArray[2][reel[2] + i] == _check_num)
 		{
 			return true;
 		}
 	}
 	//斜めを調べる
-	if (ReelArray[0][reel[0] - 1] == 7 &&
-		ReelArray[1][reel[1]] == 7 &&
-		ReelArray[2][reel[2] + 1] == 7)
+	if (ReelArray[0][reel[0] - 1] == _check_num &&
+		ReelArray[1][reel[1]] == _check_num &&
+		ReelArray[2][reel[2] + 1] == _check_num)
 	{
 		return true;
 	}
-	if (ReelArray[0][reel[0] + 1] == 7 &&
-		ReelArray[1][reel[1]] == 7 &&
-		ReelArray[2][reel[2] - 1] == 7)
+	if (ReelArray[0][reel[0] + 1] == _check_num &&
+		ReelArray[1][reel[1]] == _check_num &&
+		ReelArray[2][reel[2] - 1] == _check_num)
 	{
 		return true;
 	}

@@ -4,9 +4,10 @@
 #include "../Scene/Camera/Camera.h"
 
 #define REEL_NUM 9		//リールの要素数
-#define PEKA 30			//光る確率 〇分の１
+#define PEKA 68			//光る確率 〇分の１
+#define BELL 2			//子役　〇分の1
 #define REEL_WAIT 120	//待ち時間
-#define BIG_BONUS 240	//ドロップコイン量
+#define BIG_BONUS 260	//ドロップコイン量
 
 class InGameScene;
 
@@ -35,6 +36,9 @@ private:
 	int stop_reel_num;	//今止まっているリールの数
 	int timer;		//フレーム測定
 	int now_reel[3];	//今指しているリール
+	bool pay_flg;		//払いだすか判断
+	int pay_num;		//払い出しの金額
+	int pay_count;		//払い出した枚数計算
 
 	int bonus_wait_count;	//ボーナス払い出し開始前測定
 	int drop_coin;			//ドロップするコインの量
@@ -75,7 +79,7 @@ public:
 	void BonusStop();
 	//他のスロットに使うボタンが押されているか調べる(_button = 押そうとしているボタン)
 	bool CheckButton(int _button);
-	//７が揃っているか調べる
-	bool CheckBigBonus()const;
+	//数字が揃っているか調べる
+	bool CheckStraightLine(int _check_num)const;
 };
 

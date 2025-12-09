@@ -2,6 +2,7 @@
 #define DEBUG_SKIP true		//デバッグ用チュートリアルスキップモード
 #define DEBUG_PLAYER false	//クリアと死をすぐ確認したい時用
 #define WINDOW_MODE true	//ウィンドウモードかどうか
+#define PLAYER_INV_MODE true	//プレイヤー無敵
 
 #define SE_MAX 13000		//SE音量の上限
 #define BGM_MAX 11000		//BGM音量の上限
@@ -39,6 +40,7 @@
 
 //プレイヤーのパラメータ関連
 #define DEFAULT_HP 10				//プレイヤー初期HP
+#define DEFAULT_COIN 200				//プレイヤー初期コイン枚数
 #define PLAYER_WIDTH 40				//プレイヤー幅
 #define PLAYER_HEIGHT 40			//プレイヤー高さ
 #define PLAYER_SPEED 4.f			//プレイヤー移動速度
