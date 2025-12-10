@@ -108,7 +108,7 @@ void InGameScene::Initialize()
 
 
 	objects->CreateObject({ {-1000,-1000},{100,100},eSLOT});
-	objects->CreateObject({ 100/*{1000,1000}*/,{100,100},eSLOT});
+	objects->CreateObject({ 150/*{1000,1000}*/,{100,100},eSLOT});
 	objects->CreateObject({ {-1000,1000},{160,120},eSHOP});
 	objects->CreateObject({ {1000,-1000},{160,120},eSHOP});
 	objects->CreateObject({ Vector2D{ 200, 30},Vector2D{40,40},eCOIN, 20.f});
@@ -178,7 +178,7 @@ eSceneType InGameScene::Update(float _delta)
 		UserData::coin_graph.push_back(UserData::coin);
 	}
 	//ˆêŽž’âŽ~ƒtƒ‰ƒOØ‚è‘Ö‚¦
-	if (UserData::CheckPause() && !tutorial->GetTutorialFlg() && !boss_anim_flg && !shop_flg)
+	if (UserData::CheckPause() && !tutorial->GetTutorialFlg() && !boss_anim_flg && !shop_flg && !change_result)
 	{
 		pause_flg = !pause_flg;
 		pause_timer = 0;

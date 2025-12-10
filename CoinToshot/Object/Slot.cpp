@@ -37,8 +37,9 @@ Slot::Slot(InGameScene* _ingame)
 	reel_se = rm->GetSounds("Resource/Sounds/Hanahana/reel.mp3");
 	button_se = rm->GetSounds("Resource/Sounds/Hanahana/button.mp3");
 	bonus_se = rm->GetSounds("Resource/Sounds/Hanahana/big.mp3");
+	pay_se = rm->GetSounds("Resource/Sounds/Hanahana/決定ボタンを押す7.mp3");
 	bonus_se_play_once = false;
-	//		PlaySoundMem(reel_se, DX_PLAYTYPE_BACK);
+	//PlaySoundMem(reel_se, DX_PLAYTYPE_BACK);
 }
 
 Slot::~Slot()
@@ -141,7 +142,7 @@ void Slot::Update()
 				20.f,
 				rand);
 			//SEを再生
-			ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
+			ResourceManager::rPlaySound(pay_se, DX_PLAYTYPE_BACK);
 			pay_count++;
 		}
 		if (pay_count >= pay_num)
@@ -197,9 +198,13 @@ void Slot::Draw()const
 				{
 					DrawFormatStringF(real_location.x + (i * 40)+10.f, real_location.y + (j * 32), 0xff0000, "%d", ReelArray[i][r]);
 				}
+				else if(pay_flg && ReelArray[i][r] == pay_num)
+				{
+					DrawFormatStringF(real_location.x + (i * 40)+10.f, real_location.y + (j * 32), UserData::GetColorGradation((frame*30)%1530), "%d", ReelArray[i][r]);
+				}
 				else
 				{
-					DrawFormatStringF(real_location.x + (i * 40)+10.f, real_location.y + (j * 32), 0x00ff00, "%d", ReelArray[i][r]);
+					DrawFormatStringF(real_location.x + (i * 40) + 10.f, real_location.y + (j * 32), 0x00ff00, "%d", ReelArray[i][r]);
 				}
 			}
 		}
@@ -308,7 +313,7 @@ void Slot::AutoPlay()
 					//ペカっていなくて７が揃ったらずらす
 					if (CheckStraightLine(7))
 					{
-						reel[i] = ReelArray[i][now_reel[i] - 1];
+						reel[i] = now_reel[i] - 1;
 					}
 					else
 					{
@@ -347,13 +352,21 @@ void Slot::AutoPlay()
 			//	ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
 			//}
 		}
-	}
-	else
-	{
-		if (reel[0] != -1 && reel[0] == reel[1] && reel[0]== reel[2])
+
+		//数字が揃っていたら払い出し開始
+		if (reel[0] != -1 &&
+			reel[1] != -1 && 
+			reel[2] != -1)
 		{
-			pay_flg = true;
-			pay_num = reel[0];
+			for (int i = 1; i < 10; i++)
+			{
+				if (CheckStraightLine(i))
+				{
+					pay_flg = true;
+					pay_num = i;
+					break;
+				}
+			}
 		}
 	}
 	//リセット
@@ -368,7 +381,7 @@ void Slot::AutoPlay()
 	}
 
 	//全リール止まっているなら一定時間待ってリセット
-	if (stop_reel_num == 3 && reel_wait > REEL_WAIT)
+	if (stop_reel_num == 3 && reel_wait > REEL_WAIT && !pay_flg)
 	{
 		reel_wait = 0;
 		for (int i = 0; i < 3; i++)
@@ -385,7 +398,7 @@ void Slot::AutoPlay()
 		{
 			//７以外になるまで繰り返す
 			do {
-				pay_num = GetRand(8);
+				pay_num = GetRand(8)+1;
 			} while (pay_num == 7);
 			pay_count = 0;
 		}

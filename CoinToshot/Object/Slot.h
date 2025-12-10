@@ -5,7 +5,7 @@
 
 #define REEL_NUM 9		//リールの要素数
 #define PEKA 68			//光る確率 〇分の１
-#define BELL 2			//子役　〇分の1
+#define BELL 5			//子役　〇分の1
 #define REEL_WAIT 120	//待ち時間
 #define BIG_BONUS 260	//ドロップコイン量
 
@@ -51,6 +51,7 @@ private:
 	int reel_se;			//リール回転音SE
 	int button_se;			//ボタン停止SE
 	int bonus_se;			//ボーナスSE
+	int pay_se;				//払い出しSE
 	bool bonus_se_play_once;//ボーナスSEを一回だけ再生
 
 	std::vector<int> slot_image;			//スロット画像
