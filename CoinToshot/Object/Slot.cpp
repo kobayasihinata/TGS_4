@@ -155,6 +155,7 @@ void Slot::Update()
 		{
 			pay_flg = false;
 			pay_num = 0;
+			pay_count = 0;
 		}
 	}
 }
@@ -308,6 +309,7 @@ void Slot::AutoPlay()
 					//SEを再生
 					ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
 					reel_span = REEL_SPAN;
+					break;
 				}
 			}
 		}
@@ -349,6 +351,10 @@ void Slot::AutoPlay()
 			}
 		}
 	}
+
+	DebugInfomation::Add("slot1", ReelArray[0][reel[0]]);
+	DebugInfomation::Add("slot2", ReelArray[1][reel[1]]);
+	DebugInfomation::Add("slot3", ReelArray[2][reel[2]]);
 	//リセット
 	stop_reel_num = 0;
 	//停止しているリールの数を数える
@@ -374,7 +380,7 @@ void Slot::AutoPlay()
 			peka_flg = true;
 		}
 		//子役の抽選
-		if (!peka_flg && GetRand(BELL - 1) == 0)
+		if (!peka_flg && GetRand(BELL - 1) == 0 && pay_num==0)
 		{
 			//７以外になるまで繰り返す
 			do {
@@ -543,6 +549,7 @@ void Slot::BonusStop()
 			bet_once = false;
 		}
 	}
+
 }
 
 bool Slot::CheckButton(int _button)
@@ -585,24 +592,26 @@ bool Slot::CheckStraightLine(int _check_num)const
 	//横列を調べる
 	for (int i = -1; i < 2; i++)
 	{
-		(reel[0] + 8 + i) % 9 + i;
-		if (ReelArray[0][(reel[0] + 8 + i) % 9] == _check_num &&
-			ReelArray[1][(reel[1] + 8 + i) % 9] == _check_num &&
-			ReelArray[2][(reel[2] + 8 + i) % 9] == _check_num)
+		int a = ReelArray[0][(reel[0] + 9 + i) % 9];
+		int b = ReelArray[1][(reel[1] + 9 + i) % 9];
+		int c = ReelArray[2][(reel[2] + 9 + i) % 9];
+		if (ReelArray[0][(reel[0] + 9 + i) % 9] == _check_num &&
+			ReelArray[1][(reel[1] + 9 + i) % 9] == _check_num &&
+			ReelArray[2][(reel[2] + 9 + i) % 9] == _check_num)
 		{
 			return true;
 		}
 	}
 	//斜めを調べる
-	if (ReelArray[0][(reel[0] + 8 -1) % 9] == _check_num &&
-		ReelArray[1][(reel[1] + 8) % 9] == _check_num &&
-		ReelArray[2][(reel[2] + 8 + 1) % 9] == _check_num)
+	if (ReelArray[0][(reel[0] + 9 - 1) % 9] == _check_num &&
+		ReelArray[1][(reel[1] + 9) % 9] == _check_num &&
+		ReelArray[2][(reel[2] + 9 + 1) % 9] == _check_num)
 	{
 		return true;
 	}
-	if (ReelArray[0][(reel[0] + 8 + 1) % 9] == _check_num &&
-		ReelArray[1][(reel[1] + 8) % 9] == _check_num &&
-		ReelArray[2][(reel[2] + 8 - 1) % 9] == _check_num)
+	if (ReelArray[0][(reel[0] + 9 + 1) % 9] == _check_num &&
+		ReelArray[1][(reel[1] + 9) % 9] == _check_num &&
+		ReelArray[2][(reel[2] + 9 - 1) % 9] == _check_num)
 	{
 		return true;
 	}

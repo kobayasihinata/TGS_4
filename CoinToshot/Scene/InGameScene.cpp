@@ -93,7 +93,6 @@ void InGameScene::Initialize()
 
 	//チュートリアルが完了していないなら初期コインは0枚、しているなら20枚
 	UserData::coin = tutorial->GetBasicTuto() ? DEFAULT_COIN : 0;
-	//UserData::coin = 1000;
 
 	//オブジェクト管理クラス生成
 	objects = new ObjectManager();
@@ -106,13 +105,21 @@ void InGameScene::Initialize()
 	ui = new GameSceneUI();
 	ui->Initialize(this);
 
-
-	objects->CreateObject({ {-1000,-1000},{100,100},eSLOT});
-	objects->CreateObject({ 150/*{1000,1000}*/,{100,100},eSLOT});
-	objects->CreateObject({ {-1000,1000},{160,120},eSHOP});
-	objects->CreateObject({ {1000,-1000},{160,120},eSHOP});
-	objects->CreateObject({ Vector2D{ 200, 30},Vector2D{40,40},eCOIN, 20.f});
-	objects->CreateObject({ {1050,0}, Vector2D{ ENEMY1_WIDTH,ENEMY1_HEIGHT }, eENEMY1});
+	if (!UserData::slot_mode)
+	{
+		objects->CreateObject({ {-1000,-1000},{100,100},eSLOT });
+		objects->CreateObject({ {1000, 1000},{100,100},eSLOT });
+		objects->CreateObject({ {-1000,1000},{160,120},eSHOP });
+		objects->CreateObject({ {1000,-1000},{160,120},eSHOP });
+		objects->CreateObject({ Vector2D{ 200, 30},Vector2D{40,40},eCOIN, 20.f });
+		objects->CreateObject({ {1050,0}, Vector2D{ ENEMY1_WIDTH,ENEMY1_HEIGHT }, eENEMY1 });
+	}
+	else
+	{
+		objects->CreateObject({ 150,{100,100},eSLOT });
+		//初期投資５本（４６枚貸し）
+		UserData::coin = 230;
+	}
 
 	gamemain_image = MakeScreen(SCREEN_WIDTH, SCREEN_HEIGHT);
 	flower_image = MakeScreen(191, 191);
@@ -809,71 +816,78 @@ void InGameScene::ChangeResult(int _delay)
 
 void InGameScene::SpawnItem()
 {
-	DebugInfomation::Add("frame", frame);
+	if (!UserData::slot_mode)
+	{
+		DebugInfomation::Add("frame", frame);
 
-	//マップの中心に定期的にコインをスポーン
-	if ((int)frame % 60 == 0)
-	{
-		objects->CreateObject({ Vector2D{(float)(GetRand(100)),(float)(GetRand(100))},Vector2D{40,40},eCOIN, 20.f });
-	}
-	//マップの中心にキラキラエフェクト
-	if ((int)frame % 10 == 0)
-	{
-		objects->CreateEffect(elShine, { (float)(GetRand(100)),(float)(GetRand(100)) }, TRUE, 0xffff00);
-	}
-	//マップ内のどこかにランダムで箱をスポーン
-	if ((int)frame % 60 == 0)
-	{
-		objects->CreateObject({ Vector2D{(float)(GetRand(3800)-1900),(float)(GetRand(3800) - 1900)},Vector2D{80,80},eBOX, 20.f });
+		//マップの中心に定期的にコインをスポーン
+		if ((int)frame % 60 == 0)
+		{
+			objects->CreateObject({ Vector2D{(float)(GetRand(100)),(float)(GetRand(100))},Vector2D{40,40},eCOIN, 20.f });
+		}
+		//マップの中心にキラキラエフェクト
+		if ((int)frame % 10 == 0)
+		{
+			objects->CreateEffect(elShine, { (float)(GetRand(100)),(float)(GetRand(100)) }, TRUE, 0xffff00);
+		}
+		//マップ内のどこかにランダムで箱をスポーン
+		if ((int)frame % 60 == 0)
+		{
+			objects->CreateObject({ Vector2D{(float)(GetRand(3800) - 1900),(float)(GetRand(3800) - 1900)},Vector2D{80,80},eBOX, 20.f });
+		}
 	}
 }
 void InGameScene::SpawnEnemy()
 {
-	//画面外からランダムに一定周期でスポーン
-	if ((int)frame % (100 -((DEFAULT_TIMELIMIT - UserData::timer)/300)) == 0)
+	//スロットモードなら敵を出現させない
+	if (!UserData::slot_mode)
 	{
-		//低確率で塊出現
-		if (GetRand(30) == 0)
+		//画面外からランダムに一定周期でスポーン
+		if ((int)frame % (100 - ((DEFAULT_TIMELIMIT - UserData::timer) / 300)) == 0)
 		{
-			ObjectData data = GetEnemyData();
-			for (int i = 0; i < 10; i++)
+			//低確率で塊出現
+			if (GetRand(30) == 0)
 			{
-				
-				objects->CreateObject(data.type,
-					{ data.loc.x + (GetRand(50) - 25),data.loc.y + (GetRand(50) - 25) },
-					data.size,
-					data.radius);
+				ObjectData data = GetEnemyData();
+				for (int i = 0; i < 10; i++)
+				{
+
+					objects->CreateObject(data.type,
+						{ data.loc.x + (GetRand(50) - 25),data.loc.y + (GetRand(50) - 25) },
+						data.size,
+						data.radius);
+				}
+			}
+			else
+			{
+				objects->CreateObject(GetEnemyData());
 			}
 		}
-		else
+
+		//ボスのスポーン前に暗転を始める
+		if (UserData::timer == BOSS1_SPAWN * 60 + 90 ||
+			UserData::timer == BOSS2_SPAWN * 60 + 90 ||
+			UserData::timer == BOSS3_SPAWN * 60 + 90)
 		{
-			objects->CreateObject(GetEnemyData());
+			StartBlackOut(120);
 		}
-	}
 
-	//ボスのスポーン前に暗転を始める
-	if (UserData::timer == BOSS1_SPAWN * 60 + 90 ||
-		UserData::timer == BOSS2_SPAWN * 60 + 90 || 
-		UserData::timer == BOSS3_SPAWN * 60 + 90)
-	{
-		StartBlackOut(120);
-	}
-
-	//指定の時間にボスをスポーン
-	if (!boss_spawn_once[0] && (UserData::timer / 60) == BOSS1_SPAWN)
-	{
-		objects->CreateObject({ {-1000,0}, Vector2D{BOSS1_WIDTH,BOSS1_HEIGHT}, eBOSS1});
-		boss_spawn_once[0] = true;
-	}
-	if (!boss_spawn_once[1] && (UserData::timer / 60) == BOSS2_SPAWN)
-	{
-		objects->CreateObject({ {1000,0}, Vector2D{ BOSS2_WIDTH,BOSS2_HEIGHT }, eBOSS2 });
-		boss_spawn_once[1] = true;
-	}
-	if (!boss_spawn_once[2] && (UserData::timer / 60) == BOSS3_SPAWN)
-	{
-		objects->CreateObject({ {1,1}, Vector2D{ BOSS3_WIDTH,BOSS3_HEIGHT }, eBOSS3 });
-		boss_spawn_once[2] = true;
+		//指定の時間にボスをスポーン
+		if (!boss_spawn_once[0] && (UserData::timer / 60) == BOSS1_SPAWN)
+		{
+			objects->CreateObject({ {-1000,0}, Vector2D{BOSS1_WIDTH,BOSS1_HEIGHT}, eBOSS1 });
+			boss_spawn_once[0] = true;
+		}
+		if (!boss_spawn_once[1] && (UserData::timer / 60) == BOSS2_SPAWN)
+		{
+			objects->CreateObject({ {1000,0}, Vector2D{ BOSS2_WIDTH,BOSS2_HEIGHT }, eBOSS2 });
+			boss_spawn_once[1] = true;
+		}
+		if (!boss_spawn_once[2] && (UserData::timer / 60) == BOSS3_SPAWN)
+		{
+			objects->CreateObject({ {1,1}, Vector2D{ BOSS3_WIDTH,BOSS3_HEIGHT }, eBOSS3 });
+			boss_spawn_once[2] = true;
+		}
 	}
 }
 

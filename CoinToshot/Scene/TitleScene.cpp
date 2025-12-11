@@ -280,12 +280,12 @@ void TitleScene::Draw()const
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 	}
 
-	//for (int j = 1; j < 10; j++)
+	//for (int j = 0; j < 9; j++)
 	//{
 	//	//‰¡—ñ‚ð’²‚×‚é
 	//	for (int i = -1; i < 2; i++)
 	//	{
-	//		DrawFormatString(100 + (i * 40), 100 + (j * 40), 0xff0000, "%d", (j + 8 + i) % 9 + 1);
+	//		DrawFormatString(100 + (i * 40), 100 + (j * 40), 0xff0000, "%d", (j + 9 + i) % 9);
 	//	}
 	//}
 }

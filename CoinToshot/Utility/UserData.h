@@ -48,6 +48,8 @@ public:
 	static RankingData ranking_data[RANKING_DATA];	//ランキングデータ格納
 	static RankingData my_ranking_data;				//前回プレイのデータ
 
+	static bool slot_mode;					//スロットだけ出来るモード
+
 	//UIに表示する必要がある or 保持しておいた方が良いプレイヤー情報はここで管理
 	static float player_hp;					//体力
 	static int coin;						//コイン
