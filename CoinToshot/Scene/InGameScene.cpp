@@ -363,7 +363,7 @@ eSceneType InGameScene::Update(float _delta)
 			{
 				for (int i = 0; i < 2; i++)
 				{
-					if (UserData::CheckCursor({ back_title_loc.x + (i * back_title_size.x),back_title_loc.y }, { back_title_size.x,back_title_size.y }))
+					if (UserData::CheckCursor({ back_title_loc.x + (i *300),back_title_loc.y }, { back_title_size.x,back_title_size.y }))
 					{
 						back_title_cursor = i;
 					}

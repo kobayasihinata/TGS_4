@@ -8,6 +8,7 @@
 #define BELL 5			//子役　〇分の1
 #define REEL_WAIT 120	//待ち時間
 #define BIG_BONUS 260	//ドロップコイン量
+#define REEL_SPAN 10	//連続でリールを止める時の待ち時間
 
 class InGameScene;
 
@@ -39,6 +40,7 @@ private:
 	bool pay_flg;		//払いだすか判断
 	int pay_num;		//払い出しの金額
 	int pay_count;		//払い出した枚数計算
+	int reel_span;		//リールを連続で止める時の待ち時間
 
 	int bonus_wait_count;	//ボーナス払い出し開始前測定
 	int drop_coin;			//ドロップするコインの量

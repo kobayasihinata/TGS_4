@@ -547,6 +547,30 @@ eSceneType ResultScene::EnterName()
 		} while (key[current_y][current_x] == ' ');
 		ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 	}
+
+	//マウスカーソルの位置に合わせて項目変更(キーマウ操作なら)
+	if (UserData::control_type == 2)
+	{
+		for (int i = 0; i < KEY_HEIGHT; i++)
+		{
+			for (int j = 0; j < KEY_WIDTH; j++)
+			{
+				if (UserData::CheckCursor({ key_box_loc.x + (j * 60),key_box_loc.y + (i * 60) }, {60,60}))
+				{
+					int old_x = current_x; 
+					int old_y = current_y;
+					current_x = j;
+					current_y = i;
+					//選ばれてる文字が空白なら移動しない
+					if (key[current_x][current_y] == ' ')
+					{
+						current_x = old_x;
+						current_y = old_y;
+					}
+				}
+			}
+		}
+	}
 	//Aボタンを押して文字の追加(現在の入力と画面内の文字の合計が10文字未満なら)
 	if (name.size() < 10 && UserData::CheckEnter())
 	{
@@ -560,9 +584,9 @@ eSceneType ResultScene::EnterName()
 	//Bボタン(キーはback space)を押して一文字消す(現在の入力が0文字より大きいなら)
 	if (
 		name.size() > 0 &&
-		(UserData::control_type != 2 && InputPad::OnButton(XINPUT_BUTTON_B)) || 
+		((UserData::control_type != 2 && InputPad::OnButton(XINPUT_BUTTON_B)) || 
 		(UserData::control_type == 2 && input->InputKey::GetKeyState(KEY_INPUT_BACK)==eInputState::Pressed)
-	    )
+	    ))
 	{
 		//現在のテキスト幅を計算
 		int size = 0;
@@ -703,6 +727,17 @@ void ResultScene::EnterNameDraw()const
 			string_data.text
 		);
 	}
+
+	//for (int i = 0; i < KEY_HEIGHT; i++)
+	//{
+	//	for (int j = 0; j < KEY_WIDTH; j++)
+	//	{
+	//		DrawBoxAA(key_box_loc.x + (j * 60), key_box_loc.y + (i * 60),
+	//			key_box_loc.x + (j * 60) + 60, key_box_loc.y + (i * 60) + 60,
+	//			0xff0000, false
+	//		);	
+	//	}
+	//}
 }
 
 void ResultScene::SortRanking()

@@ -26,6 +26,7 @@ Slot::Slot(InGameScene* _ingame)
 	pay_flg = false;
 	pay_num = 0;
 	pay_count = 0;
+	reel_span = 0;
 	real_location = 0;
 	real_size = { 120.f,100.f };
 	hana_location = 0;
@@ -63,11 +64,16 @@ void Slot::Update()
 	{
 		frame = 0;
 	}
+	//リールの待ち時間
+	if (reel_span > 0)
+	{
+		reel_span--;
+	}
 	//描画位置更新
 	real_location = { local_location.x + (box_size.x / 2) - 110.f,local_location.y - 150.f };
 	hana_location = real_location;
-	//プレイヤーと自身の距離が一定範囲で、照準チュートリアルが終わっていないなら、リクエストする
-	if (!tutorial->GetTutoNowEnd(TutoType::tSlot) && sqrtf(powf(location.x - camera->player_location.x, 2) + powf(location.y - camera->player_location.y, 2)) < 300)
+	//プレイヤーと自身の距離が一定範囲で、スロットチュートリアルが終わっていないなら、リクエストする
+	if (tutorial->GetBasicTuto() && !tutorial->GetTutoNowEnd(TutoType::tSlot) && sqrtf(powf(location.x - camera->player_location.x, 2) + powf(location.y - camera->player_location.y, 2)) < 300)
 	{
 		tutorial->StartTutoRequest(TutoType::tSlot, this);
 	}
@@ -296,11 +302,12 @@ void Slot::AutoPlay()
 		{
 			for (int i = 0; i < 3; i++)
 			{
-				if (reel_wait >= (REEL_WAIT / 4)*(i+1) && reel[i] == -1 && ReelArray[i][now_reel[i]] == pay_num)
+				if (reel_wait >= (REEL_WAIT / 4) && reel[i] == -1 && ReelArray[i][now_reel[i]] == pay_num && reel_span <= 0)
 				{
 					reel[i] = now_reel[i];
 					//SEを再生
 					ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
+					reel_span = REEL_SPAN;
 				}
 			}
 		}
@@ -308,7 +315,7 @@ void Slot::AutoPlay()
 		{
 			for (int i = 0; i < 3; i++)
 			{
-				if (reel_wait >= (REEL_WAIT / 4) * (i + 1) && reel[i] == -1)
+				if (reel_wait >= (REEL_WAIT / 4) * (i + 1) && reel[i] == -1 && reel_span <= 0)
 				{
 					//ペカっていなくて７が揃ったらずらす
 					if (CheckStraightLine(7))
@@ -321,36 +328,9 @@ void Slot::AutoPlay()
 					}
 					//SEを再生
 					ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
+					reel_span = REEL_SPAN;
 				}
 			}
-			//if (reel_wait >= (REEL_WAIT / 4) * 2 && reel[1] == -1)
-			//{
-			//	//ペカっていなくて７が揃ったらずらす
-			//	if (CheckStraightLine(7))
-			//	{
-			//		reel[1] = ReelArray[1][now_reel[1] - 1];
-			//	}
-			//	else
-			//	{
-			//		reel[1] = now_reel[1];
-			//	}
-			//	//SEを再生
-			//	ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
-			//}
-			//if (reel_wait >= (REEL_WAIT / 4) * 3 && reel[2] == -1)
-			//{
-			//	//ペカっていなくて７が揃ったらずらす
-			//	if (CheckStraightLine(7))
-			//	{
-			//		reel[2] = ReelArray[2][now_reel[2] - 1];
-			//	}
-			//	else
-			//	{
-			//		reel[2] = now_reel[2];
-			//	}
-			//	//SEを再生
-			//	ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
-			//}
 		}
 
 		//数字が揃っていたら払い出し開始
@@ -431,7 +411,9 @@ void Slot::BonusStop()
 				}
 			}
 		}
-		if (CheckButton(XINPUT_BUTTON_X) && InputPad::OnButton(XINPUT_BUTTON_X) && reel[0] == -1)
+		if (UserData::control_type != 2)
+		{
+			if (CheckButton(XINPUT_BUTTON_X) && InputPad::OnButton(XINPUT_BUTTON_X) && reel[0] == -1 && reel_span <= 0)
 			{
 				//あと一つ下にずれたらBIGが揃うという状態なら、下にずらす
 				reel[0] = now_reel[0];
@@ -449,8 +431,9 @@ void Slot::BonusStop()
 				}
 				//SEを再生
 				ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
+				reel_span = REEL_SPAN;
 			}
-		if (CheckButton(XINPUT_BUTTON_Y) && InputPad::OnButton(XINPUT_BUTTON_Y) && reel[1] == -1)
+			if (CheckButton(XINPUT_BUTTON_Y) && InputPad::OnButton(XINPUT_BUTTON_Y) && reel[1] == -1 && reel_span <= 0)
 			{
 				//あと一つ下にずれたらBIGが揃うという状態なら、下にずらす
 				reel[1] = now_reel[1];
@@ -468,8 +451,9 @@ void Slot::BonusStop()
 				}
 				//SEを再生
 				ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
+				reel_span = REEL_SPAN;
 			}
-		if (CheckButton(XINPUT_BUTTON_B) && InputPad::OnButton(XINPUT_BUTTON_B) && reel[2] == -1)
+			if (CheckButton(XINPUT_BUTTON_B) && InputPad::OnButton(XINPUT_BUTTON_B) && reel[2] == -1 && reel_span <= 0)
 			{
 				//あと一つ下にずれたらBIGが揃うという状態なら、下にずらす
 				reel[2] = now_reel[2];
@@ -487,7 +471,38 @@ void Slot::BonusStop()
 				}
 				//SEを再生
 				ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
+				reel_span = REEL_SPAN;
 			}
+		}
+		else
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				if (UserData::CheckEnter(eInputState::Pressed) && reel[i] == -1 && reel_span <= 0)
+				{
+					//あと一つ下にずれたらBIGが揃うという状態なら、下にずらす
+					reel[i] = now_reel[i];
+					if (!CheckStraightLine(7))
+					{
+						reel[i] -= 1;
+						if (!CheckStraightLine(7))
+						{
+							reel[i] -= 1;
+							if (!CheckStraightLine(7))
+							{
+								reel[i] += 2;
+							}
+						}
+					}
+					//SEを再生
+					ResourceManager::rPlaySound(button_se, DX_PLAYTYPE_BACK);
+					reel_span = REEL_SPAN;
+					//他のリールが同時に揃わない用にループ終了
+					break;
+				}
+			}
+		}
+
 	}
 
 	//リセット
@@ -506,7 +521,8 @@ void Slot::BonusStop()
 		//全リール止まっているなら一定時間経過後に右スティックでリール開始
 		if (stop_reel_num == 3 &&
 			reel_wait > REEL_WAIT &&
-			(InputPad::OnButton(R_STICK_UP) || InputPad::OnButton(R_STICK_DOWN)))
+			((UserData::control_type != 2 &&(InputPad::OnButton(R_STICK_UP) || InputPad::OnButton(R_STICK_DOWN)))||
+			(UserData::control_type == 2 && UserData::CheckEnter(eInputState::Pressed))))
 		{
 			//BIG当選していたらペカを消す
 			if (CheckStraightLine(7))
@@ -569,23 +585,24 @@ bool Slot::CheckStraightLine(int _check_num)const
 	//横列を調べる
 	for (int i = -1; i < 2; i++)
 	{
-		if (ReelArray[0][reel[0] + i] == _check_num &&
-			ReelArray[1][reel[1] + i] == _check_num &&
-			ReelArray[2][reel[2] + i] == _check_num)
+		(reel[0] + 8 + i) % 9 + i;
+		if (ReelArray[0][(reel[0] + 8 + i) % 9] == _check_num &&
+			ReelArray[1][(reel[1] + 8 + i) % 9] == _check_num &&
+			ReelArray[2][(reel[2] + 8 + i) % 9] == _check_num)
 		{
 			return true;
 		}
 	}
 	//斜めを調べる
-	if (ReelArray[0][reel[0] - 1] == _check_num &&
-		ReelArray[1][reel[1]] == _check_num &&
-		ReelArray[2][reel[2] + 1] == _check_num)
+	if (ReelArray[0][(reel[0] + 8 -1) % 9] == _check_num &&
+		ReelArray[1][(reel[1] + 8) % 9] == _check_num &&
+		ReelArray[2][(reel[2] + 8 + 1) % 9] == _check_num)
 	{
 		return true;
 	}
-	if (ReelArray[0][reel[0] + 1] == _check_num &&
-		ReelArray[1][reel[1]] == _check_num &&
-		ReelArray[2][reel[2] - 1] == _check_num)
+	if (ReelArray[0][(reel[0] + 8 + 1) % 9] == _check_num &&
+		ReelArray[1][(reel[1] + 8) % 9] == _check_num &&
+		ReelArray[2][(reel[2] + 8 - 1) % 9] == _check_num)
 	{
 		return true;
 	}

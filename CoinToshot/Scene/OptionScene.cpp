@@ -169,7 +169,7 @@ void OptionScene::Draw()const
 		for (int i = 0; i < OPTION_NUM; i++)
 		{
 			DrawFormatString(cursor_loc.x, cursor_loc.y + (i * cursor_span), 0x000000, "%s", option_text[i]);
-			DrawBoxAA(cursor_loc.x, cursor_loc.y + (i * cursor_span), cursor_loc.x + option_text_size[i], cursor_loc.y + cursor_size_y + (i * cursor_span), 0xff0000, false);
+			//DrawBoxAA(cursor_loc.x, cursor_loc.y + (i * cursor_span), cursor_loc.x + option_text_size[i], cursor_loc.y + cursor_size_y + (i * cursor_span), 0xff0000, false);
 			if (cursor == i)
 			{
 				UserData::DrawCoin({ 30.f, (float)135 + i * (SCREEN_HEIGHT / OPTION_NUM) }, 20, 227 + abs(((int)frame % 56 - 28)), 200);
