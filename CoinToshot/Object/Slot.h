@@ -4,7 +4,7 @@
 #include "../Scene/Camera/Camera.h"
 
 #define REEL_NUM 9		//リールの要素数
-#define PEKA 50			//光る確率 〇分の１
+#define PEKA 30			//光る確率 〇分の１
 #define BELL 3			//子役　〇分の1
 #define REEL_WAIT 100	//待ち時間
 #define BIG_BONUS 260	//ドロップコイン量

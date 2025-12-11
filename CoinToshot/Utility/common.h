@@ -1,8 +1,8 @@
 #pragma once
-#define DEBUG_SKIP true		//デバッグ用チュートリアルスキップモード
+#define DEBUG_SKIP false		//デバッグ用チュートリアルスキップモード
 #define DEBUG_PLAYER false	//クリアと死をすぐ確認したい時用
-#define WINDOW_MODE true	//ウィンドウモードかどうか
-#define PLAYER_INV_MODE true	//プレイヤー無敵
+#define WINDOW_MODE false	//ウィンドウモードかどうか
+#define PLAYER_INV_MODE false	//プレイヤー無敵
 
 #define SE_MAX 13000		//SE音量の上限
 #define BGM_MAX 11000		//BGM音量の上限
@@ -91,7 +91,7 @@
 
 #define BOSS_BAR_SIZE 500			//ボスHPゲージ幅
 
-#define BOSS1_HP 70					//ボス１HP
+#define BOSS1_HP 100					//ボス１HP
 #define BOSS1_WIDTH 100				//ボス１幅
 #define BOSS1_HEIGHT 100			//ボス１高さ
 #define BOSS1_SPEED 1.f				//ボス１速度
@@ -111,7 +111,7 @@
 #define BOSS2_DROPCOIN 130			//ボス２コインドロップ量
 #define BOSS2_ANIM_IMPACT 60		//ボス２アニメーション時の衝撃再生時間
 
-#define BOSS3_HP 100				//ボス３HP
+#define BOSS3_HP 150				//ボス３HP
 #define BOSS3_WIDTH 40				//ボス３幅
 #define BOSS3_HEIGHT 40				//ボス３高さ
 #define BOSS3_SPEED 2.5f			//ボス３速度

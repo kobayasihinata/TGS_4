@@ -15,7 +15,7 @@ InputKey* UserData::input = InputKey::Get();
 RankingData UserData::ranking_data[RANKING_DATA]{ 0 };	//ランキングデータ格納
 RankingData UserData::my_ranking_data{ -1,"ありえない",-1 };	//ありえない値を入れておく
 
-bool UserData::slot_mode = true;
+bool UserData::slot_mode = false;
 
 float UserData::player_hp = 0;			
 int UserData::coin = 0;						

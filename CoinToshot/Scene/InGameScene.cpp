@@ -37,7 +37,8 @@ void InGameScene::Initialize()
 	UserData::get_bullet = { 0,1 };
 	UserData::get_bullet_cd = { 0,0 };
 	UserData::now_bullet = 0;
-
+	/*if()
+	UserData::slot_mode*/
 	update_shop = nullptr;
 	shop_flg = false;
 	change_result_delay = -1;//0‚É‚È‚Á‚½‚çƒŠƒUƒ‹ƒg‘JˆÚ
