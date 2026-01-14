@@ -188,24 +188,24 @@ public:
 		//移動の実行
 		location += velocity;
 
-		//壁に当たっていたら前の座標に戻す
+		//元々壁の内側に居て、壁に当たっていたら前の座標に戻す
 		//左端
-		if (location.x - (box_size.x/2) <= -STAGE_SIZE)
+		if (old_location.x - (box_size.x / 2) >= -STAGE_SIZE && location.x - (box_size.x/2) < -STAGE_SIZE)
 		{
 			location.x = -STAGE_SIZE + (box_size.x / 2);
 		}
 		//右端
-		if (location.x + (box_size.x / 2) > STAGE_SIZE)
+		if (old_location.x + (box_size.x / 2) <= STAGE_SIZE && location.x + (box_size.x / 2) > STAGE_SIZE)
 		{
 			location.x = STAGE_SIZE - (box_size.x / 2);
 		}
 		//上端
-		if (location.y - (box_size.y / 2) <= -STAGE_SIZE)
+		if (old_location.y - (box_size.y / 2) >= -STAGE_SIZE && location.y - (box_size.y / 2) < -STAGE_SIZE)
 		{
 			location.y = -STAGE_SIZE + (box_size.y / 2);
 		}
 		//下端
-		if (location.y + (box_size.y / 2) > STAGE_SIZE)
+		if (old_location.y + (box_size.y / 2) <= STAGE_SIZE && location.y + (box_size.y / 2) > STAGE_SIZE)
 		{
 			location.y = STAGE_SIZE - (box_size.y / 2);
 		}

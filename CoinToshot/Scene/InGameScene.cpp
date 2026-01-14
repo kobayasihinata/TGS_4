@@ -221,14 +221,14 @@ eSceneType InGameScene::Update(float _delta)
 		{
 			UserData::is_clear = true;
 			ui->confetti_flg = true;
-			//振動をやめる
-			camera->impact = 0;
 			ChangeResult(G_END_ANIM_TIME);
 		}
 
 		//リザルト遷移前の演出
 		if (change_result && --change_result_delay <= 0)
 		{
+			//振動をやめる
+			camera->impact = 0;
 			change_scene = eSceneType::eResult;
 		}
 
@@ -249,7 +249,7 @@ eSceneType InGameScene::Update(float _delta)
 		//デバッグ用
 		if (input->GetKeyState(KEY_INPUT_1) == eInputState::Pressed)
 		{
-			SetZoom({ SCREEN_WIDTH / 2,SCREEN_HEIGHT/2 }, 3, 60, 20);
+			camera->impact = 30;
 		}
 		if (input->GetKeyState(KEY_INPUT_2) == eInputState::Pressed)
 		{
@@ -274,6 +274,8 @@ eSceneType InGameScene::Update(float _delta)
 	//ポーズ画面
 	else if (pause_flg)
 	{
+		//揺れを止める
+		camera->impact = 0;
 		//時間測定
 		pause_timer++;
 
@@ -413,6 +415,8 @@ eSceneType InGameScene::Update(float _delta)
 	//ショップ画面
 	else if (shop_flg)
 	{
+		//揺れを止める
+		camera->impact = 0;
 		if (update_shop != nullptr)
 		{
 			update_shop->Update();
@@ -421,6 +425,8 @@ eSceneType InGameScene::Update(float _delta)
 	//ボス登場アニメーション
 	else if (boss_anim_flg)
 	{
+		//揺れを止める
+		camera->impact = 0;
 		//カメラ更新
 		camera->Update();
 
@@ -443,6 +449,8 @@ eSceneType InGameScene::Update(float _delta)
 	//遷移アニメーション
 	else
 	{
+		//揺れを止める
+		camera->impact = 0;
 		InputKey* input = InputKey::Get();
 
 		//遷移アニメーション早送り
@@ -787,6 +795,7 @@ void InGameScene::ChangeResult(int _delay)
 	//遅延あり
 	else
 	{
+
 		//時止め
 		UserData::is_gamestop = true;
 		//リザルト遷移処理開始

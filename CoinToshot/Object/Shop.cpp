@@ -269,15 +269,15 @@ void Shop::BuyItem(int cursor)
 		{
 		case 0:	//‰ñ•œƒAƒCƒeƒ€
 			rand = GetRandLoc();
-			rand_velocity = { (camera->player_location.x - rand.x) / 10  ,
-							  (camera->player_location.y - rand.y) / 10 };
-			manager->CreateObject(eHEAL, rand, { 40,40 }, 20.f, rand_velocity);
+			rand_velocity = { (camera->player_location.x - rand.x) / 7  ,
+							  (camera->player_location.y - rand.y) / 7 };
+			manager->CreateObject(eHEAL, rand, 40, 20.f, rand_velocity);
 			break;
 		case 1: //Ž¥Î
 			rand = GetRandLoc();
-			rand_velocity = { (camera->player_location.x - rand.x) / 10  ,
-							  (camera->player_location.y - rand.y) / 10 };
-			manager->CreateObject(eMAGNET, rand, { 40,40 }, 20.f, rand_velocity);
+			rand_velocity = { (camera->player_location.x - rand.x) / 7  ,
+							  (camera->player_location.y - rand.y) / 7 };
+			manager->CreateObject(eMAGNET, rand, 40, 20.f, rand_velocity);
 			break;
 		case 2: //‹­‰»’e
 			UserData::get_bullet.push_back(2);
