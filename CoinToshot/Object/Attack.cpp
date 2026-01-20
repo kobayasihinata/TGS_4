@@ -6,6 +6,7 @@ Attack::Attack(BulletData _bullet_data)
 {
 	camera = Camera::Get();
 	damage = _bullet_data.damage;
+	knockback = _bullet_data.knockback;
 	object = _bullet_data.who;
 	time = _bullet_data.delete_time;
 	count_up = 0;
@@ -92,8 +93,8 @@ void Attack::Update()
 			UpdateBossTracking();
 		}
 	}
-	//最強弾用の更新
-	if (bullet_type == BulletType::bStrongest)
+	//ボス最強弾用の更新
+	if (bullet_type == BulletType::bStrongest && object->GetObjectType() != ePLAYER)
 	{
 		UpdateStrongest();
 	}
@@ -152,7 +153,7 @@ void Attack::Hit(ObjectBase* hit_object)
 	if (object->GetObjectType() != ePLAYER && hit_object->GetObjectType() == ePLAYER)
 	{
 		//ダメージ
-		hit_object->Damage(damage, this->location);
+		hit_object->Damage(damage, this->location, knockback);
 		//当たった事を保存する
 		old_hit_object = hit_object;
 		//指定した回数オブジェクトに当たっていれば、攻撃の消去
@@ -171,7 +172,7 @@ void Attack::Hit(ObjectBase* hit_object)
 		hit_object != object)
 	{
 		//ダメージ
-		hit_object->Damage(damage, this->location);
+		hit_object->Damage(damage, this->location, knockback);
 		//当たった事を保存する
 		old_hit_object = hit_object;
 		//指定した回数オブジェクトに当たっていれば、もしくは生きてる敵５に弾が当たったら、攻撃の消去

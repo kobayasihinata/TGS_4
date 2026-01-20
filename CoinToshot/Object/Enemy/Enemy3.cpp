@@ -213,6 +213,7 @@ BulletData Enemy3::GetBulletData()
 	BulletData _data;
 	_data.b_angle = shot_rad;
 	_data.damage = ENEMY3_DAMAGE;
+	_data.knockback = ENEMY3_KNOCKBACK;
 	_data.delete_time = ENEMY3_ATTACK_LIMIT;
 	_data.h_count = 1;
 	_data.location = this->location;

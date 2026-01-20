@@ -6,6 +6,7 @@
 struct BulletData {
 	Vector2D location;	//座標
 	float damage;		//与ダメージ
+	int knockback;		//ノックバック強度
 	float radius;		//半径
 	float speed;		//速度
 	ObjectBase* who;	//誰が打ち出したか

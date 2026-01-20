@@ -538,7 +538,9 @@ void Player::Control()
 	//攻撃チュートリアルが完了している　もしくは攻撃チュートリアル中ならコイン消費で弾を発射する
 
 	if (tutorial->GetTutoNowEnd(TutoType::tAttack) &&
-		UserData::CheckBulletButton())
+			(UserData::CheckBulletButton()|| 
+			((BulletType)UserData::get_bullet[UserData::now_bullet] == BulletType::bStrongest && UserData::CheckBulletButton(eInputState::Held)))
+		)
 	{
 		if (UserData::get_bullet_cd[UserData::now_bullet] <= 0 && UserData::coin >= pBullet[UserData::get_bullet[UserData::now_bullet]].cost)
 		{
@@ -608,6 +610,7 @@ BulletData Player::GetBulletData(float _shot_rad)
 {
 	BulletData _data;
 	_data.damage = pBullet[UserData::get_bullet[UserData::now_bullet]].damage;
+	_data.knockback = pBullet[UserData::get_bullet[UserData::now_bullet]].knockback;
 	_data.b_angle = _shot_rad;
 	_data.delete_time = pBullet[UserData::get_bullet[UserData::now_bullet]].life_span;
 	_data.h_count = pBullet[UserData::get_bullet[UserData::now_bullet]].h_count;

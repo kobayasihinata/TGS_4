@@ -399,23 +399,39 @@ bool UserData::CheckPause()
 	return false;
 }
 
-bool UserData::CheckBulletButton()
+bool UserData::CheckBulletButton(eInputState _state)
 {
 	switch (control_type)
 	{
 		//LBとRB
 	case 0:
-		return InputPad::OnButton(XINPUT_BUTTON_LEFT_SHOULDER) || InputPad::OnButton(XINPUT_BUTTON_RIGHT_SHOULDER);
+		switch (_state)
+		{
+		case eInputState::Held:
+			return InputPad::OnPressed(XINPUT_BUTTON_LEFT_SHOULDER) || InputPad::OnPressed(XINPUT_BUTTON_RIGHT_SHOULDER);
+		case eInputState::Pressed:
+			return InputPad::OnButton(XINPUT_BUTTON_LEFT_SHOULDER) || InputPad::OnButton(XINPUT_BUTTON_RIGHT_SHOULDER);
+		case eInputState::Released:
+			return InputPad::OnRelease(XINPUT_BUTTON_LEFT_SHOULDER) || InputPad::OnRelease(XINPUT_BUTTON_RIGHT_SHOULDER);
+		}
 		break;
 
 		//Bボタン
 	case 1:
-		return InputPad::OnButton(XINPUT_BUTTON_B);
+		switch (_state)
+		{
+		case eInputState::Held:
+			return InputPad::OnPressed(XINPUT_BUTTON_B);
+		case eInputState::Pressed:
+			return InputPad::OnButton(XINPUT_BUTTON_B);
+		case eInputState::Released:
+			return InputPad::OnRelease(XINPUT_BUTTON_B);
+		}
 		break;
 		//左クリックor右クリックしながら左クリック
 	case 2:
-		return (input->GetMouseState(MOUSE_INPUT_LEFT) == eInputState::Pressed ||
-			input->GetMouseState(0x0003) == eInputState::Pressed);
+		return (input->GetMouseState(MOUSE_INPUT_LEFT) == _state ||
+			input->GetMouseState(0x0003) == _state);
 		break;
 	}
 	return false;

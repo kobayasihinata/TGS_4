@@ -14,6 +14,7 @@ private:
 	float angle;				//角度を保存
 	float speed;				//速度を保存
 	int time;					//存在できる時間
+	int knockback;				//ノックバック強度
 	int count_up;				//生成されてからの時間測定
 	Vector2D move_velocity;		//移動方向
 	int hit_count;				//当たったオブジェクトの数を測定

@@ -314,6 +314,7 @@ BulletData Boss3::GetBulletData(float _shot_rad)
 {
 	BulletData _data;
 	_data.damage = bBullet[bullet_type].damage;
+	_data.knockback = bBullet[bullet_type].knockback;
 	_data.b_angle = _shot_rad;
 	_data.delete_time = bBullet[bullet_type].life_span;
 	_data.h_count = bBullet[bullet_type].h_count;

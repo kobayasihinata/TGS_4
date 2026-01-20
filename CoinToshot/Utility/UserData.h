@@ -129,7 +129,7 @@ public:
 	static bool CheckPause();
 
 	//弾発射に割り当てられたボタンorキーが押されているか確認
-	static bool CheckBulletButton();
+	static bool CheckBulletButton(eInputState _state = eInputState::Pressed);
 
 	//弾変更に割り当てられたボタンorキーが押されているか確認
 	static bool CheckBulletChangeButtonRight();

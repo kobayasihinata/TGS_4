@@ -261,6 +261,7 @@ BulletData Boss2::GetBulletData()
 	BulletData _data;
 	_data.b_angle = shot_rad;
 	_data.damage = BOSS2_DAMAGE;
+	_data.knockback = BOSS2_KNOCKBACK;
 	_data.delete_time = BOSS2_ATTACK_LIMIT;
 	_data.h_count = 1;
 	_data.location = this->location;

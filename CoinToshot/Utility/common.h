@@ -1,7 +1,7 @@
 #pragma once
 #define DEBUG_SKIP true		//デバッグ用チュートリアルスキップモード
-#define DEBUG_PLAYER true	//クリアと死をすぐ確認したい時用
-#define WINDOW_MODE false	//ウィンドウモードかどうか
+#define DEBUG_PLAYER false	//クリアと死をすぐ確認したい時用
+#define WINDOW_MODE true	//ウィンドウモードかどうか
 #define PLAYER_INV_MODE false	//プレイヤー無敵
 
 #define SE_MAX 13000		//SE音量の上限
@@ -68,6 +68,7 @@
 #define ENEMY3_HEIGHT 50			//敵３高さ
 #define ENEMY3_SPEED 0.f			//敵３速度
 #define ENEMY3_DAMAGE 2				//敵３与ダメ
+#define ENEMY3_KNOCKBACK 10			//敵３ノックバック
 #define ENEMY3_ATTACK_SPAN 180		//敵３攻撃周期
 #define ENEMY3_ATTACK_SPEED 5		//敵３弾速度
 #define ENEMY3_ATTACK_LIMIT 180		//敵３弾残留時間
@@ -104,6 +105,7 @@
 #define BOSS2_HEIGHT 100			//ボス２高さ
 #define BOSS2_SPEED 1.f				//ボス２速度
 #define BOSS2_DAMAGE 3				//ボス２与ダメ
+#define BOSS2_KNOCKBACK 15			//ボス２ノックバック
 #define BOSS2_ATTACK_SPAN 180		//ボス２攻撃周期
 #define BOSS2_ATTACK_SPEED 8		//ボス２弾速度
 #define BOSS2_ATTACK_LIMIT 500		//ボス２弾残留時間
