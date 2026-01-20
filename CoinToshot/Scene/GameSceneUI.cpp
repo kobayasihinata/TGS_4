@@ -672,7 +672,11 @@ void GameSceneUI::DrawPlayerUI()const
 		player_ui_loc.x + 525, player_ui_loc.y + 125,
 		player_ui_loc.x - width +210, player_ui_loc.y + 125,
 		0x666600, TRUE);
-	DrawFormatString(player_ui_loc.x - width + 240, player_ui_loc.y + 22, 0xffffff, "HP:%d", (int)(UserData::player_hp));
+	int hp_color[3] = { 255,255,255 };
+	if(UserData::player_hp>=10)hp_color[0] = hp_color[2] = 255 - (abs((frame % 120) - 60) * 4);
+	else if(UserData::player_hp >= 4)hp_color[2] = 255 - (abs((frame % 90) - 45) * 5);
+	else hp_color[1] = hp_color[2] = 255 - (abs((frame % 60) - 30) * 8);
+	DrawFormatString(player_ui_loc.x - width + 240, player_ui_loc.y + 22, UserData::GetColorHex(hp_color), "HP:%d", (int)(UserData::player_hp));
 	//ボスによってタイマーが停止していたら、エフェクトを出す
 	if (ingame->GetBossTimerStop())
 	{

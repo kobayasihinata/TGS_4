@@ -701,7 +701,7 @@ void InGameScene::MakeGameMainDraw()
 	//UI描画
 	ui->Draw();
 
-	//ゲームオーバーかクリアか表示
+	//ゲーム終了表示
 	if (UserData::is_gamestop)
 	{
 		if (UserData::is_clear)

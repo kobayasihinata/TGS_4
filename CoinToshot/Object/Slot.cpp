@@ -218,6 +218,13 @@ void Slot::Draw()const
 		//ペカっていたら光らす
 		if (peka_flg)
 		{
+			//文字表示
+			if (stop_reel_num < 3)
+			{
+				SetFontSize(32);
+				DrawStringF(hana_location.x - 8, hana_location.y - 51, "7をねらえ！", 0xffffff);
+				DrawStringF(hana_location.x - 7, hana_location.y - 50, "7をねらえ！", 0xff0000);
+			}
 			if (frame % 10 >= 5)
 			{
 				DrawCircleAA(hana_location.x , hana_location.y, 20, 10, 0xff0000, true);

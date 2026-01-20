@@ -474,6 +474,11 @@ void Tutorial::DrawAim()const
 		//照準
 		if (aim_timer > 0)
 		{
+			DrawBoxAA(obj_loc.x - (obj_size.x / 2),
+				obj_loc.y - (obj_size.y / 2) - obj_shift,
+				obj_loc.x + (obj_size.x / 2),
+				obj_loc.y + (obj_size.y / 2) - obj_shift,
+				0xaaaa00, TRUE);
 			DrawBoxAA(obj_loc.x - (obj_size.x/2),
 				obj_loc.y - (obj_size.y / 2) - obj_shift,
 				obj_loc.x - (obj_size.x/2) + (obj_size.x / 30) * (aim_timer % 30),
@@ -482,8 +487,9 @@ void Tutorial::DrawAim()const
 			DrawBoxAA(obj_loc.x - (obj_size.x / 2),
 				obj_loc.y - (obj_size.y / 2) - obj_shift,
 				obj_loc.x + (obj_size.x / 2),
-				obj_loc.y +(obj_size.y / 2) - obj_shift,
+				obj_loc.y + (obj_size.y / 2) - obj_shift,
 				0xffffff, FALSE);
+
 			SetFontSize(32);
 			DrawFormatString(obj_loc.x - (GetDrawFormatStringWidth("%d", 3 - (aim_timer / 30)) / 2) + 2, obj_loc.y - 50 + 2, 0x000000, "%d", 3 - (aim_timer / 30));
 			DrawFormatString(obj_loc.x - (GetDrawFormatStringWidth("%d", 3 - (aim_timer / 30)) / 2), obj_loc.y - 50, 0xff0000, "%d", 3 - (aim_timer / 30));
@@ -625,8 +631,9 @@ void Tutorial::DrawAttack()const
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)text_alpha);
 		DrawGraph(text_box_loc.x - text_box_size.x / 2, text_box_loc.y - text_box_size.y / 2, generate_text_box, TRUE);
 		
-		SetFontSize(64);
-		UserData::DrawStringCenter({ text_box_loc.x,text_box_loc.y - 50 }, "撃って倒して稼げ！", 0xffffff);
+		SetFontSize(52);
+		UserData::DrawStringCenter({ text_box_loc.x+15,text_box_loc.y - 70 }, "撃って倒して稼いで、", 0xffffff);
+		UserData::DrawStringCenter({ text_box_loc.x+10,text_box_loc.y - 10 }, "ランキング1位を目指せ！", 0xffffff);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 		break;
 	}
