@@ -40,18 +40,12 @@ eSceneType EndScene::Update(float _delta)
 		return eSceneType::eTitle;
 	}
 	//Aボタンでカウントを早める
-	if (release_button && 
-		(UserData::control_type != 2 && InputPad::OnPressed(XINPUT_BUTTON_A)) ||
-		(UserData::control_type == 2 && input->InputKey::GetKeyState(KEY_INPUT_SPACE) == eInputState::Held)
-		)
+	if (release_button && UserData::CheckEnter(eInputState::Held))
 	{
 		frame += 6;
 	}
 	//↑タイトルからの遷移後すぐにカウントを早めないようにする
-	if (
-		(UserData::control_type != 2 && InputPad::OnRelease(XINPUT_BUTTON_A)) ||
-		(UserData::control_type == 2 && input->InputKey::GetKeyState(KEY_INPUT_SPACE) == eInputState::Released)
-		)
+	if (UserData::CheckEnter(eInputState::Released))
 	{
 		release_button = true;
 	}

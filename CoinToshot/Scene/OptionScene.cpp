@@ -33,9 +33,14 @@ OptionScene::OptionScene()
 		}
 	}
 	end_cursor = 0;
+	cont_left_box_loc = { 650,220 };
+	cont_right_box_loc = { 1100,220 };
+	cont_box_size = { 50,50 };
 	cont_type_timer = 0;
 	cont_type_cursor = 0;
 	old_cont_type = cont_type = UserData::control_type;
+	check_change_loc = { SCREEN_WIDTH / 2 - 180, SCREEN_HEIGHT / 2 + 150 };
+	check_change_size = { 100,50 };
 	check_change_flg = false;
 	//BGM、SE読み込み
 	ResourceManager* rm = ResourceManager::GetInstance();
@@ -294,7 +299,8 @@ void OptionScene::VolumeUpdate()
 		}
 	}
 
-	if (UserData::CheckEnter(eInputState::Held))
+	//マウスカーソルで音量を変更する処理
+	if (UserData::control_type == 2 && UserData::CheckEnter(eInputState::Held))
 	{
 		for (int i = 0; i < 9; i++)
 		{
@@ -386,7 +392,7 @@ void OptionScene::VolumeDraw()const
 void OptionScene::ControlUpdate()
 {
 	//Bボタンで項目の選択を解除
-	if (UserData::CheckCancel() || UserData::CheckEnter())
+	if (UserData::CheckCancel() || (UserData::control_type != 2 && UserData::CheckEnter()))
 	{
 		//操作タイプの変更があるなら
 		if (UserData::control_type != cont_type)
@@ -419,6 +425,21 @@ void OptionScene::ControlUpdate()
 			}
 			ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 		}
+		
+		//マウス処理
+		if (UserData::control_type == 2)
+		{
+			for (int i = 0; i < 2; i++)
+			{
+				if (cont_type_cursor != i && UserData::CheckCursor({ check_change_loc.x+(i*300),check_change_loc.y },check_change_size))
+				{
+					cont_type_cursor = i;
+					ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
+				}
+
+			}
+
+		}
 		//キャンセルボタンで項目の選択を解除
 		if (UserData::CheckCancel())
 		{
@@ -434,6 +455,7 @@ void OptionScene::ControlUpdate()
 				//カーソル左で操作タイプを元に戻す&設定画面終了
 			case 0:
 				UserData::control_type = old_cont_type;
+				cont_type = old_cont_type;
 				current_item = OptionItem::oNull;
 				check_change_flg = false;
 				cont_type_timer = 0;
@@ -471,6 +493,30 @@ void OptionScene::ControlUpdate()
 			}
 			ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
 		}
+
+		//マウス処理
+		if (UserData::control_type == 2)
+		{
+			if (UserData::CheckEnter())
+			{
+				if (UserData::CheckCursor(cont_left_box_loc - (cont_box_size / 2), cont_box_size))
+				{
+					if (--cont_type < 0)
+					{
+						cont_type = 2;
+					}
+					ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
+				}
+				if (UserData::CheckCursor(cont_right_box_loc - (cont_box_size / 2), cont_box_size))
+				{
+					if (++cont_type > 2)
+					{
+						cont_type = 0;
+					}
+					ResourceManager::rPlaySound(cursor_se, DX_PLAYTYPE_BACK);
+				}
+			}
+		}
 	}
 }
 
@@ -484,13 +530,13 @@ void OptionScene::ControlDraw()const
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 	Vector2D cont_text_loc = { 700,300 };
 	DrawFormatString(cont_text_loc.x, cont_text_loc.y - 120, 0x000000, "操作タイプ : %d",cont_type);
-	DrawTriangleAA(cont_text_loc.x - 70, cont_text_loc.y - 80,
-		cont_text_loc.x - 30, cont_text_loc.y - 100,
-		cont_text_loc.x - 30, cont_text_loc.y - 60,
+	DrawTriangleAA(cont_left_box_loc.x - 20, cont_left_box_loc.y,
+		cont_left_box_loc.x + 20, cont_left_box_loc.y - 20,
+		cont_left_box_loc.x + 20, cont_left_box_loc.y + 20,
 		UserData::CheckCursorMove(LEFT) ? 0xffffff : 0x000000, true);
-	DrawTriangleAA(cont_text_loc.x + 420, cont_text_loc.y - 80,
-		cont_text_loc.x +380, cont_text_loc.y - 100,
-		cont_text_loc.x +380, cont_text_loc.y - 60,
+	DrawTriangleAA(cont_right_box_loc.x + 20, cont_right_box_loc.y,
+		cont_right_box_loc.x - 20, cont_right_box_loc.y - 20,
+		cont_right_box_loc.x - 20, cont_right_box_loc.y + 20,
 		UserData::CheckCursorMove(RIGHT) ? 0xffffff : 0x000000, true);
 
 	switch (cont_type)
@@ -537,6 +583,8 @@ void OptionScene::ControlDraw()const
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 		DrawString(SCREEN_WIDTH / 2 - 200, SCREEN_HEIGHT / 2 + 100, "操作方法を変更しますか？", 0xffffff);
 		DrawString(SCREEN_WIDTH / 2 - 180, SCREEN_HEIGHT / 2 + 150, "いいえ", cont_type_cursor == 0 ? 0xffff00 : 0xffffff);
+		DrawBox(check_change_loc.x, check_change_loc.y, check_change_loc.x + check_change_size.x, check_change_loc.y + check_change_size.y, 0xff0000, false);
+		DrawBox(check_change_loc.x+300, check_change_loc.y, check_change_loc.x+300 + check_change_size.x, check_change_loc.y + check_change_size.y, 0xff0000, false);
 		DrawString(SCREEN_WIDTH / 2 + 120, SCREEN_HEIGHT / 2 + 150, "はい", cont_type_cursor == 1 ? 0xffff00 : 0xffffff);
 		UserData::DrawCoin({ (float)SCREEN_WIDTH / 2 - 200 + (cont_type_cursor * 300), SCREEN_HEIGHT / 2 + 185 }, 20, 227 + abs(((int)frame % 56 - 28)), 200);
 	}

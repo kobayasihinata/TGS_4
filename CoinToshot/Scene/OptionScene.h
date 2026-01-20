@@ -47,11 +47,16 @@ private:
 
 	int end_cursor;		//オプション終了の確認画面のカーソル
 
+	Vector2D cont_left_box_loc;		//操作方法変更項目左の座標
+	Vector2D cont_right_box_loc;	//操作方法変更項目右の座標
+	Vector2D cont_box_size;	//操作方法変更項目の大きさ
 	int cont_type_timer;	//時間測定用
 	int cont_type_cursor;	//操作変更確認画面のカーソル
 	int cont_type;	//操作タイプ一時保存用
 	int old_cont_type;		//変更前の操作タイプ保存
-	bool check_change_flg;	//操作タイプ変更確認
+	Vector2D check_change_loc;		//操作タイプ変更確認ボックス座標
+	Vector2D check_change_size;		//操作タイプ変更確認ボックス大きさ
+	bool check_change_flg;			//操作タイプ変更確認
 
 	int option_bgm; //BGM
 	int cursor_se;	//カーソルSE
