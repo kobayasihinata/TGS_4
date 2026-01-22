@@ -1,7 +1,7 @@
 #pragma once
 #define DEBUG_SKIP true		//デバッグ用チュートリアルスキップモード
 #define DEBUG_PLAYER false	//クリアと死をすぐ確認したい時用
-#define WINDOW_MODE false	//ウィンドウモードかどうか
+#define WINDOW_MODE true	//ウィンドウモードかどうか
 #define PLAYER_INV_MODE true	//プレイヤー無敵
 
 #define SE_MAX 13000		//SE音量の上限

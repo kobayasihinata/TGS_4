@@ -253,15 +253,15 @@ eSceneType InGameScene::Update(float _delta)
 		}
 		if (input->GetKeyState(KEY_INPUT_2) == eInputState::Pressed)
 		{
-			objects->CreateObject({ GetRandLoc(), Vector2D{ BOSS1_WIDTH,BOSS1_HEIGHT }, eBOSS1 });
+			objects->CreateObject({ 0, Vector2D{BOSS1_WIDTH,BOSS1_HEIGHT}, eBOSS1 });
 		}
 		if (input->GetKeyState(KEY_INPUT_3) == eInputState::Pressed)
 		{
-			objects->CreateObject({ GetRandLoc(), Vector2D{ BOSS2_WIDTH,BOSS2_HEIGHT }, eBOSS2 });
+			objects->CreateObject({ 0, Vector2D{ BOSS2_WIDTH,BOSS2_HEIGHT }, eBOSS2 });
 		}
 		if (input->GetKeyState(KEY_INPUT_4) == eInputState::Pressed)
 		{
-			objects->CreateObject({ GetRandLoc(), Vector2D{ BOSS3_WIDTH,BOSS3_HEIGHT }, eBOSS3 });
+			objects->CreateObject({ 0, Vector2D{ BOSS3_WIDTH,BOSS3_HEIGHT }, eBOSS3 });
 		}
 		if (InputPad::OnButton(XINPUT_BUTTON_A))
 		{

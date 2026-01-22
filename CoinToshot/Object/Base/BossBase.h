@@ -4,6 +4,7 @@
 #include <vector>
 
 #define BOSS_ANIM 180	//登場アニメーション時間
+#define SAVE_FRAME_NUM 10	//（残像用）何フレーム前の情報まで残すか
 
 class BossBase :
 	public ActorBase
@@ -17,6 +18,11 @@ protected:
 	bool anim_flg;			//登場アニメーション中か
 	bool anim_impact_flg;	//登場演出を始めるか
 	int boss_anim_timer;	//登場アニメーション時間測定
+
+	//残像処理用
+	Vector2D boss_old_loc[SAVE_FRAME_NUM] = { NULL };	//指定のフレーム前までのボスの座標を保存
+	int boss_old_image[SAVE_FRAME_NUM] = { NULL };		//指定のフレーム前までのボスの画像
+	bool boss_old_dir[SAVE_FRAME_NUM] = { NULL };		//指定のフレーム前までのボスの向き
 
 	std::vector<int> aura_image;	//ボスオーラ画像
 	int now_aura_image;				//オーラ画像表示位置
@@ -75,7 +81,36 @@ public:
 				now_aura_image = 0;
 			}
 		}
+		//現在のボス画像をぼかす（登場時演出）
 		boss_gauss_image = image;
+
+		//現在の座標をひとつ前の座標として保存
+		bool shift_flg = true;
+		for (int i = SAVE_FRAME_NUM-1; i >= 0; i--)
+		{
+			//空きがあったら格納して終了
+			if (boss_old_loc[i] == NULL)
+			{
+				boss_old_loc[i] = local_location;
+				boss_old_image[i] = image;
+				boss_old_dir[i] = move_velocity.x < 0;
+				shift_flg = false;
+				break;
+			}
+		}
+		//空きがなければひとつづつずらして先頭に格納
+		if (shift_flg)
+		{
+			for (int i = SAVE_FRAME_NUM - 1; i > 0; i--)
+			{
+				boss_old_loc[i] = boss_old_loc[i - 1];
+				boss_old_image[i] = boss_old_image[i - 1];
+				boss_old_dir[i] = boss_old_dir[i - 1];
+			}
+			boss_old_loc[0] = local_location;
+			boss_old_image[0] = image;
+			boss_old_dir[0] = move_velocity.x < 0;
+		}
 	}
 
 	virtual void Draw()const override
@@ -93,10 +128,17 @@ public:
 				DrawRotaGraphF(local_location.x, local_location.y, box_size.x / 40, 0, image, true, true);
 			}
 		}
+		//残像テスト
+		for (int i = 0; i < SAVE_FRAME_NUM; i++)
+		{
+			DrawRotaGraphF(boss_old_loc[i].x, boss_old_loc[i].y, box_size.x / 40, 0, boss_old_image[i], true, boss_old_dir[i]);
+		}
+
 		if (anim_impact_flg)
 		{
 			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200 - ((200.f/10.f)* (frame % 10)));
-			DrawRotaGraphF(local_location.x, local_location.y, (box_size.x + pow(frame % 10,3)) / 40 , 0, boss_gauss_image, true, false);
+			if (move_velocity.x > 0)DrawRotaGraphF(local_location.x, local_location.y, (box_size.x + pow(frame % 10,3)) / 40 , 0, boss_gauss_image, true, false);
+			else DrawRotaGraphF(local_location.x, local_location.y, (box_size.x + pow(frame % 10, 3)) / 40, 0, boss_gauss_image, true, true);
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 			DrawWaves(local_location, powf(frame % 30, 2)*2);
 			DrawWaves(local_location, powf((frame -10) % 30, 2)*2);
