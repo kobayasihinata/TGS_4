@@ -91,7 +91,7 @@ public:
 			//空きがあったら格納して終了
 			if (boss_old_loc[i] == NULL)
 			{
-				boss_old_loc[i] = local_location;
+				boss_old_loc[i] = location;
 				boss_old_image[i] = image;
 				boss_old_dir[i] = move_velocity.x < 0;
 				shift_flg = false;
@@ -107,7 +107,7 @@ public:
 				boss_old_image[i] = boss_old_image[i - 1];
 				boss_old_dir[i] = boss_old_dir[i - 1];
 			}
-			boss_old_loc[0] = local_location;
+			boss_old_loc[0] = location;
 			boss_old_image[0] = image;
 			boss_old_dir[0] = move_velocity.x < 0;
 		}
@@ -116,6 +116,14 @@ public:
 	virtual void Draw()const override
 	{
 		DrawRotaGraphF(local_location.x, local_location.y, box_size.x / 40, 0, aura_image[now_aura_image], TRUE);
+		//残像テスト
+		for (int i = SAVE_FRAME_NUM - 1; i >= 0; i--)
+		{
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 - i * (255 / SAVE_FRAME_NUM));
+			DrawRotaGraphF(boss_old_loc[i].x - camera->GetCameraLocation().x, boss_old_loc[i].y - camera->GetCameraLocation().y, box_size.x / 40, 0, boss_old_image[i], true, boss_old_dir[i]);
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+		}
+
 		//画像描画
 		if (image != 0)
 		{
@@ -128,12 +136,6 @@ public:
 				DrawRotaGraphF(local_location.x, local_location.y, box_size.x / 40, 0, image, true, true);
 			}
 		}
-		//残像テスト
-		for (int i = 0; i < SAVE_FRAME_NUM; i++)
-		{
-			DrawRotaGraphF(boss_old_loc[i].x, boss_old_loc[i].y, box_size.x / 40, 0, boss_old_image[i], true, boss_old_dir[i]);
-		}
-
 		if (anim_impact_flg)
 		{
 			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200 - ((200.f/10.f)* (frame % 10)));
