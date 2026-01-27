@@ -356,7 +356,7 @@ void Boss3::ChangeMove()
 		}
 		else if (strength_level == 2)
 		{
-			bullet_type = GetRand(4);
+			bullet_type = GetRand(5);
 		}
 		//リセット
 		shot_count = 0;
@@ -427,7 +427,7 @@ void Boss3::MoveBoss3()
 		boss_stop_flg = true;
 		break;
 	case 5:	//プレイヤー攻撃(爆発弾)
-		radian = MoveAround(camera->player_location, player_distance /2);
+		radian = MoveAround(camera->player_location, player_distance);
 		break;
 	case 6:	//プレイヤー攻撃(最強弾)
 		boss_stop_flg = true;
